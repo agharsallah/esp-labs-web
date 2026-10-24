@@ -56,7 +56,8 @@
         "title": "Pin headers",
         "text": "44 pins: 3V3, 5V, GND and the GPIO you wire screens, readers and mics to."
       }
-    }
+    },
+    "goInside": "Go inside the chip"
   },
   "map": {
     "title": "All labs"

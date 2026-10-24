@@ -56,7 +56,8 @@
         "title": "Stiftleisten",
         "text": "44 Pins: 3V3, 5V, GND und die GPIO, an die du Bildschirme, Leser und Mikros verkabelst."
       }
-    }
+    },
+    "goInside": "Ins Innere des Chips"
   },
   "map": {
     "title": "Alle Labs"

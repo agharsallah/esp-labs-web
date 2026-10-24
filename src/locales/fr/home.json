@@ -57,7 +57,8 @@
         "title": "Barrettes de broches",
         "text": "44 broches : 3V3, 5V, GND et les GPIO où tu câbles écrans, lecteurs et micros."
       }
-    }
+    },
+    "goInside": "Entre dans la puce"
   },
   "map": {
     "title": "Tous les labos"

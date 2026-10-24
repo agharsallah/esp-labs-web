@@ -77,7 +77,6 @@
     "seePin": "Vedi GPIO{{n}}",
     "seeBlock": "Vedi il blocco"
   },
-  "goInside": "Entra nel chip",
   "home": {
     "kicker": "Il chip sulla tua scheda",
     "lead": "Un computer dual-core a 240 MHz con Wi-Fi e Bluetooth, su una scheda grande come un dito.",

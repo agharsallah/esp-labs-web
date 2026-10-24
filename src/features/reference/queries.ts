@@ -1,4 +1,4 @@
-import { queryOptions, useQuery } from "@tanstack/react-query";
+import { type QueryClient, queryOptions } from "@tanstack/react-query";
 import { env } from "@/config/env";
 import { fetchJson } from "@/lib/http";
 import { ReferenceIndexSchema, SectionSchema } from "./schema";
@@ -36,7 +36,15 @@ export const referenceSectionQuery = (id: string) =>
     gcTime: 10 * 60_000,
   });
 
-/** Is the reader part of this build? False until its index has loaded. */
-export function useReferenceAvailable(): boolean {
-  return useQuery({ ...referenceIndexQuery(), select: (index) => index !== null }).data ?? false;
+/**
+ * Is the reader part of this build? Known at build time (tools/reference turns the URL off when
+ * the reference is absent), so no page asks the server: nothing of the reference downloads
+ * until a citation is hovered, focused or opened.
+ */
+export const isReferenceBuilt = (): boolean => env.referenceUrl !== null;
+
+/** Warm one section (and the index the reader needs) when its citation is pointed at. */
+export function prefetchSection(client: QueryClient, id: string): void {
+  void client.prefetchQuery(referenceIndexQuery());
+  void client.prefetchQuery(referenceSectionQuery(id));
 }

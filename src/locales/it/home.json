@@ -57,7 +57,8 @@
         "title": "Connettori a pin",
         "text": "44 pin: 3V3, 5V, GND e i GPIO a cui colleghi schermi, lettori e microfoni."
       }
-    }
+    },
+    "goInside": "Entra nel chip"
   },
   "map": {
     "title": "Tutti i lab"

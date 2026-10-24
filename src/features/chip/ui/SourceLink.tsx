@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import type { SourceRef } from "@/domain/chip";
 import { OFFICIAL_DOCS } from "@/features/reference/docs-map";
-import { useReferenceAvailable } from "@/features/reference/queries";
+import { isReferenceBuilt } from "@/features/reference/queries";
 import { refParam, sectionOfParam } from "@/features/reference/ref-param";
 import { SectionLinkTo } from "@/features/reference/ui/SectionLinkTo";
 import { useOpenSection } from "@/features/reference/use-reader-nav";
@@ -16,7 +16,7 @@ import styles from "./SourceLink.module.css";
  */
 export function SourceLink({ source, compact = false }: { source: SourceRef; compact?: boolean }) {
   const { t } = useTranslation("chip");
-  const available = useReferenceAvailable();
+  const available = isReferenceBuilt();
   const open = useOpenSection();
   const id = sectionOfParam(refParam(source));
   const doc = t(`source.docs.${source.doc}`);

@@ -1,5 +1,7 @@
 import { Trans, useTranslation } from "react-i18next";
 import { PartIcon } from "@/ui/parts/PartIcon";
+import { CHIP_PART_NAMES } from "@/ui/parts/chip-registry";
+import { ChipPartIcon } from "@/ui/parts/ChipPartIcon";
 import { PART_NAMES } from "@/ui/parts/registry";
 import styles from "./PartsPage.module.css";
 
@@ -23,6 +25,13 @@ export function PartsPage() {
         {PART_NAMES.map((name) => (
           <li key={name}>
             <PartIcon name={name} size={96} />
+            <code>{name}</code>
+            <span>{t(`names.${name}`)}</span>
+          </li>
+        ))}
+        {CHIP_PART_NAMES.map((name) => (
+          <li key={name}>
+            <ChipPartIcon name={name} size={96} />
             <code>{name}</code>
             <span>{t(`names.${name}`)}</span>
           </li>

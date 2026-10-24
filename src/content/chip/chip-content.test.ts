@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { HEADER } from "@/domain/board";
 import { BLOCK_FAMILIES, type BlockFamily, blockCoverage, type SourceRef } from "@/domain/chip";
 import type { LessonEntry } from "@/domain/lesson";
-import { PARTS } from "@/ui/parts/registry";
+import { CHIP_PARTS } from "@/ui/parts/chip-registry";
 import { bleLessons } from "../lessons/ble";
 import { displayLessons } from "../lessons/display";
 import { introLessons } from "../lessons/intro";
@@ -95,7 +95,7 @@ describe("chip content", () => {
   it("draws every block with its parts-library icon", () => {
     for (const b of blocks) {
       expect(b.icon).toBe(b.id === "flash-psram" ? "blk-flash" : `blk-${b.id}`);
-      expect(PARTS, b.icon).toHaveProperty([b.icon]);
+      expect(CHIP_PARTS, b.icon).toHaveProperty([b.icon]);
     }
   });
 

@@ -2,7 +2,7 @@ import { Suspense, useEffect, useEffectEvent, useId, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { ErrorBoundary } from "@/ui/ErrorBoundary";
 import { Icon } from "@/ui/Icon";
-import { useReferenceAvailable } from "./queries";
+import { isReferenceBuilt } from "./queries";
 import { ReaderSection } from "./ui/ReaderSection";
 import { useCloseReader, useOpenSection } from "./use-reader-nav";
 import styles from "./ui/reader.module.css";
@@ -15,7 +15,7 @@ import styles from "./ui/reader.module.css";
 export function ReferenceDrawer() {
   const id = useOpenSection();
   // A shared `?ref=` link on a build without the reference simply shows the page.
-  const available = useReferenceAvailable();
+  const available = isReferenceBuilt();
   return id === null || !available ? null : <ReaderDialog id={id} />;
 }
 

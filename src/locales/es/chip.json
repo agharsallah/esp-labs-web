@@ -77,7 +77,6 @@
     "seePin": "Ver GPIO{{n}}",
     "seeBlock": "Ver el bloque"
   },
-  "goInside": "Entra en el chip",
   "home": {
     "kicker": "El chip de tu placa",
     "lead": "Un ordenador de doble núcleo a 240 MHz con Wi-Fi y Bluetooth, en una placa del tamaño de un dedo.",

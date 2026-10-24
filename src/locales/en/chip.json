@@ -77,7 +77,6 @@
     "seePin": "See GPIO{{n}}",
     "seeBlock": "See the block"
   },
-  "goInside": "Go inside the chip",
   "home": {
     "kicker": "The chip on your board",
     "lead": "A dual-core 240 MHz computer with Wi-Fi and Bluetooth, on a board the size of a finger.",

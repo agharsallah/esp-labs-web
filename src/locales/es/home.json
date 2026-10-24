@@ -57,7 +57,8 @@
         "title": "Tiras de pines",
         "text": "44 pines: 3V3, 5V, GND y los GPIO donde cableas pantallas, lectores y micrófonos."
       }
-    }
+    },
+    "goInside": "Entra en el chip"
   },
   "map": {
     "title": "Todos los laboratorios"

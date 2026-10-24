@@ -77,7 +77,6 @@
     "seePin": "Siehe GPIO{{n}}",
     "seeBlock": "Zum Block"
   },
-  "goInside": "Ins Innere des Chips",
   "home": {
     "kicker": "Der Chip auf deinem Board",
     "lead": "Ein Dualcore-Computer mit 240 MHz, WLAN und Bluetooth, auf einem Board so groß wie ein Finger.",

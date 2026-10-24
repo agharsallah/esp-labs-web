@@ -77,7 +77,6 @@
     "seePin": "Voir GPIO{{n}}",
     "seeBlock": "Voir le bloc"
   },
-  "goInside": "Entre dans la puce",
   "home": {
     "kicker": "La puce de ta carte",
     "lead": "Un ordinateur à deux cœurs de 240 MHz avec Wi-Fi et Bluetooth, sur une carte de la taille d'un doigt.",

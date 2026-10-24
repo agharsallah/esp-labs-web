@@ -77,7 +77,6 @@
     "seePin": "GPIO{{n}}を見る",
     "seeBlock": "ブロックを見る"
   },
-  "goInside": "チップの中へ",
   "home": {
     "kicker": "ボードの上のチップ",
     "lead": "Wi-FiとBluetoothを備えた、240 MHzのデュアルコアのコンピュータです。指ほどの大きさのボードに載っています。",

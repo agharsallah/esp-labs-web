@@ -77,7 +77,6 @@
     "seePin": "查看 GPIO{{n}}",
     "seeBlock": "查看这个模块"
   },
-  "goInside": "走进芯片内部",
   "home": {
     "kicker": "你开发板上的芯片",
     "lead": "一台双核 240 MHz 的小电脑，带 Wi-Fi 和蓝牙，却只有手指那么大一块板子。",

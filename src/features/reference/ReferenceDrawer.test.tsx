@@ -87,6 +87,10 @@ describe("reference reader", () => {
 
   it("without the reference, citations stay citations with a link to Espressif's PDF", async () => {
     serve(false);
+    // What tools/reference sets when the build has no reference: the reader's URL is off.
+    const { env } = await import("@/config/env");
+    // A fresh module per test (vi.resetModules), so the override never leaks.
+    Object.defineProperty(env, "referenceUrl", { value: null });
     await openApp("#/chip/blocks/uart");
     expect(await screen.findByRole("heading", { level: 1, name: "UART" }, LOAD)).toBeTruthy();
     expect(screen.queryAllByRole("link", { name: /Technical reference §26\.2/ })).toEqual([]);

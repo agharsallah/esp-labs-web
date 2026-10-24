@@ -1,9 +1,10 @@
-import { PART_NAMES, type PartName } from "@/ui/parts/registry";
-import { PartIcon } from "@/ui/parts/PartIcon";
+import { CHIP_PART_NAMES, type ChipPartName } from "@/ui/parts/chip-registry";
+import { ChipPartIcon } from "@/ui/parts/ChipPartIcon";
 
-const isPart = (name: string): name is PartName => (PART_NAMES as readonly string[]).includes(name);
+const isBlockPart = (name: string): name is ChipPartName =>
+  (CHIP_PART_NAMES as readonly string[]).includes(name);
 
-/** A block's parts-library drawing (decorative); nothing if the content names an unknown part. */
+/** A block's drawing (decorative); nothing if the content names an unknown part. */
 export function BlockIcon({ icon, size }: { icon: string; size: number }) {
-  return isPart(icon) ? <PartIcon name={icon} size={size} /> : null;
+  return isBlockPart(icon) ? <ChipPartIcon name={icon} size={size} /> : null;
 }

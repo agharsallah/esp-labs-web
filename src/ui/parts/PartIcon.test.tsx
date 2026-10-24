@@ -1,5 +1,7 @@
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
+import { CHIP_PART_NAMES } from "./chip-registry";
+import { ChipPartIcon } from "./ChipPartIcon";
 import { PartIcon } from "./PartIcon";
 import { PART_NAMES } from "./registry";
 
@@ -12,6 +14,11 @@ describe("PartIcon", () => {
     expect(svg?.getAttribute("aria-hidden")).toBe("true");
   });
 
+  it.each(CHIP_PART_NAMES)("draws the chip block %s", (name) => {
+    const { container } = render(<ChipPartIcon name={name} />);
+    expect(container.querySelector("svg")?.querySelectorAll("path, ellipse, circle").length).toBeGreaterThan(2);
+  });
+
   it("names the part for screen readers when asked", () => {
     const { getByRole } = render(<PartIcon name="led" label />);
     expect(getByRole("img").getAttribute("aria-label")).toBe("LED");
@@ -22,6 +29,9 @@ describe("PartIcon", () => {
       <>
         {PART_NAMES.map((name) => (
           <PartIcon key={name} name={name} />
+        ))}
+        {CHIP_PART_NAMES.map((name) => (
+          <ChipPartIcon key={name} name={name} />
         ))}
       </>,
     );

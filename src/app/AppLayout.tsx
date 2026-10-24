@@ -7,6 +7,7 @@ import { BackToTop } from "@/ui/BackToTop";
 import { Icon, type IconName } from "@/ui/Icon";
 import styles from "./AppLayout.module.css";
 import { isNewUntil } from "./new-badge";
+import { prefetchChip } from "./prefetch-chip";
 
 const SECTIONS = [
   { to: "/", key: "labs", icon: "board", match: /^\/($|lessons|tracks)/ },
@@ -67,6 +68,8 @@ export function AppLayout() {
               <Link
                 key={s.to}
                 to={s.to}
+                onPointerEnter={s.key === "chip" ? prefetchChip : undefined}
+                onFocus={s.key === "chip" ? prefetchChip : undefined}
                 aria-current={here ? (pathname === s.to ? "page" : "true") : undefined}
               >
                 <Icon name={s.icon} size={17} />

@@ -1,0 +1,342 @@
+{
+  "pages": {
+    "home": "Dentro l'ESP32-S3",
+    "pins": "Pin e alimentazione",
+    "blocks": "Atlante delle periferiche",
+    "inside": "Memoria, clock e modalità di risparmio"
+  },
+  "scenes": {
+    "descent": {
+      "model": "L'ESP32-S3 DevKitC, dalla scheda fino al die",
+      "fallback": "la mappa piatta qui sotto",
+      "stepper": "Livelli",
+      "prev": "Livello precedente",
+      "next": "Livello successivo",
+      "layer": "Livello {{n}} di {{count}}: {{caption}}"
+    },
+    "die": {
+      "model": "Il die dell'ESP32-S3: tessere dei blocchi raggruppate per famiglia, più alte quanto più i lab le hanno usate",
+      "fallback": "l'elenco dei blocchi",
+      "list": "Blocchi sul die",
+      "legend": "Famiglie di blocchi e i loro colori",
+      "pick": "{{name}}, {{coverage}}"
+    },
+    "coverage": {
+      "done": "completo",
+      "works": "funziona",
+      "built": "costruito",
+      "planned": "in programma",
+      "none": "non ancora usato"
+    },
+    "families": {
+      "system": "Sistema",
+      "memory": "Memoria",
+      "security": "Sicurezza",
+      "connectivity": "Connettività",
+      "timing": "Temporizzazione",
+      "analog": "Analogico",
+      "radio": "Radio"
+    },
+    "bus": {
+      "model": "La CPU che parla con il blocco {{name}} attraverso le sue linee di segnale",
+      "cpu": "CPU",
+      "bus": "Bus",
+      "peripheral": "Periferica",
+      "fallback": "le linee di segnale elencate qui sotto",
+      "lines": "Linee di segnale"
+    },
+    "flat": {
+      "label": "Mappa del die"
+    }
+  },
+  "nav": {
+    "label": "Pagine del chip",
+    "pill": "{{title}}: {{used}} blocchi su {{total}} usati dai lab"
+  },
+  "markers": {
+    "key": "Da ricordare",
+    "gotcha": "Trabocchetto",
+    "used": "Usato nei nostri lab"
+  },
+  "source": {
+    "read": "Leggi la sezione completa",
+    "cite": "{{doc}} §{{section}}",
+    "note": "Sezione del manuale dell'ESP32-S3 da cui nasce la guida",
+    "docs": {
+      "A": "Guida della scheda",
+      "M": "Datasheet del modulo",
+      "C": "Datasheet del chip",
+      "T": "Manuale tecnico di riferimento",
+      "X": "Appendice"
+    }
+  },
+  "coverage": {
+    "none": "Non ancora"
+  },
+  "gotchas": {
+    "seePin": "Vedi GPIO{{n}}",
+    "seeBlock": "Vedi il blocco"
+  },
+  "goInside": "Entra nel chip",
+  "home": {
+    "kicker": "Il chip sulla tua scheda",
+    "lead": "Un computer dual-core a 240 MHz con Wi-Fi e Bluetooth, su una scheda grande come un dito.",
+    "numbers": "Il chip in numeri",
+    "layerStep": "Livello {{n}} di {{count}}",
+    "layers": {
+      "board": {
+        "title": "Scheda",
+        "text": "La DevKitC: porte USB, pulsanti, un regolatore e due file di pin intorno a un modulo."
+      },
+      "module": {
+        "title": "Modulo",
+        "text": "Il modulo WROOM: il chip, la sua flash e la PSRAM, un quarzo e l'antenna, sotto un unico schermo di metallo."
+      },
+      "can": {
+        "title": "Sotto lo schermo",
+        "text": "Togli lo schermo e compaiono i componenti: il package dell'ESP32-S3 accanto alla sua memoria e al quarzo da 40 MHz."
+      },
+      "package": {
+        "title": "Package",
+        "text": "Un QFN da 7 × 7 mm con 56 piazzole: ogni pin che colleghi sulla scheda finisce su una di queste."
+      },
+      "die": {
+        "title": "Die",
+        "text": "Il silicio vero e proprio, disegnato come 32 blocchi per famiglia. Quelli che i tuoi lab hanno usato sono più alti."
+      }
+    },
+    "progress": "Il tuo avanzamento nel chip",
+    "ringCaption": "I blocchi del chip, in base a quanto lontano i tuoi lab li hanno portati",
+    "ringCenter": "{{used}}/{{total}}",
+    "sentence": "I tuoi lab hanno usato {{used}} blocchi su {{total}}.",
+    "next": "Prossimi blocchi da sbloccare",
+    "nextLesson": "{{id}} · {{title}}",
+    "nextNone": "Ogni blocco che i lab raggiungono è completo. Gli altri aspettano nuovi lab.",
+    "families": "Famiglie",
+    "familyCount_one": "{{count}} blocco",
+    "familyCount_other": "{{count}} blocchi",
+    "gotchas": "Cinque cose che mordono"
+  },
+  "atlas": {
+    "kicker": "Ogni blocco del die",
+    "lead": "Tutti i {{count}} blocchi dell'ESP32-S3, raggruppati per famiglia. Le tessere più alte sul die e uno stato su ogni scheda mostrano quanto lontano i lab li hanno portati.",
+    "filters": "Filtra i blocchi",
+    "family": "Famiglia",
+    "all": "Tutti",
+    "usedLabel": "Usato dai lab",
+    "used": {
+      "all": "Tutti",
+      "yes": "Usati",
+      "no": "Non ancora"
+    },
+    "search": "Cerca i blocchi",
+    "results_one": "{{count}} blocco mostrato",
+    "results_other": "{{count}} blocchi mostrati",
+    "count_one": "{{count}} blocco",
+    "count_other": "{{count}} blocchi",
+    "spark": "{{value}} {{unit}}"
+  },
+  "pins": {
+    "kicker": "Quale pin sa fare cosa",
+    "lead": "{{count}} GPIO, ognuno con più compiti. I nostri lab ne hanno collegati {{used}}.",
+    "matrixTitle": "Funzioni dei pin",
+    "legend": "Le righe evidenziate sono i pin usati dai nostri lab; un triangolo segna un pericolo del pin.",
+    "matrix": "Ogni GPIO e i tipi di funzione che può assumere",
+    "filter": "Mostra i pin con",
+    "all": "Tutti",
+    "kinds": {
+      "adc": "ADC",
+      "touch": "Touch",
+      "rtc": "RTC",
+      "uart": "UART",
+      "spi": "SPI",
+      "usb": "USB",
+      "jtag": "JTAG",
+      "clock": "Clock",
+      "strap": "Strapping"
+    },
+    "pick": "Scegli un pin",
+    "pickHint": "Scegli un pin per vedere le sue funzioni, il suo ruolo di strapping e i pericoli che lo riguardano.",
+    "pickLegend": "Barra sotto un numero: usato nei nostri lab. Triangolo nell'angolo: un pericolo del pin. Tratteggiato: non è sull'header.",
+    "pin": "GPIO{{n}}",
+    "used": "Usato nei nostri lab",
+    "offHeader": "Non è sull'header della DevKitC: appartiene alla flash o alla PSRAM del modulo.",
+    "strapping": "Strapping:",
+    "strappingTitle": "Pin di strapping",
+    "strappingLead": "Questi pin vengono letti nell'istante in cui il chip esce dal reset. Quello che colleghi a loro non deve tirarli dalla parte sbagliata all'accensione.",
+    "gotchasTitle": "Pin che mordono",
+    "gotchasLead": "Alcuni pin hanno un compito prima che parta il tuo codice, oppure appartengono a qualcos'altro. Le altre regole valgono per ogni pin.",
+    "gotchasPins": "Pin specifici",
+    "gotchasChip": "Tutto il chip"
+  },
+  "block": {
+    "back": "Tutti i blocchi",
+    "facts": "Da ricordare",
+    "gotchas": "Trabocchetti",
+    "labs": "Nei nostri lab",
+    "labsNone": "Nessun lab usa ancora questo blocco.",
+    "labsLead_one": "{{count}} lab usa questo blocco, in {{tracks}} percorso. Apri un percorso per vederli.",
+    "labsLead_other": "{{count}} lab usano questo blocco, in {{tracks}} percorsi. Apri un percorso per vederli.",
+    "labsCount_one": "{{count}} lab",
+    "labsCount_other": "{{count}} lab",
+    "registers": "Registri principali",
+    "offset": "offset {{offset}}",
+    "bits": "Bit",
+    "field": "Campo",
+    "does": "Cosa fa",
+    "pager": "Altri blocchi",
+    "prev": "Blocco precedente",
+    "next": "Blocco successivo",
+    "listedNote": "Solo elencato: l'essenziale in poche righe, con il capitolo completo a una citazione di distanza.",
+    "lines": {
+      "default": [
+        "Dati",
+        "Clock"
+      ],
+      "gpio": [
+        "IN",
+        "OUT",
+        "OE"
+      ],
+      "uart": [
+        "TX",
+        "RX",
+        "RTS",
+        "CTS"
+      ],
+      "i2c": [
+        "SDA",
+        "SCL"
+      ],
+      "spi": [
+        "SCK",
+        "MOSI",
+        "MISO",
+        "CS"
+      ],
+      "ledc": [
+        "PWM",
+        "Timer"
+      ],
+      "adc": [
+        "AIN",
+        "VREF"
+      ],
+      "touch": [
+        "TOUCH",
+        "Carica"
+      ],
+      "i2s": [
+        "BCLK",
+        "WS",
+        "DIN",
+        "DOUT"
+      ],
+      "rmt": [
+        "TX",
+        "RX",
+        "Portante"
+      ],
+      "wifi": [
+        "RF",
+        "MAC",
+        "Baseband"
+      ],
+      "ble": [
+        "RF",
+        "Link",
+        "HCI"
+      ],
+      "usb-serial-jtag": [
+        "D+",
+        "D−"
+      ]
+    }
+  },
+  "inside": {
+    "kicker": "Sotto il cofano",
+    "lead": "Dove vivono il tuo codice e i tuoi dati, quale clock guida cosa e quanto fa risparmiare ogni modalità di risparmio.",
+    "memory": {
+      "title": "La mappa degli indirizzi",
+      "lead": "La CPU vede un unico grande spazio di indirizzi: ROM, SRAM interna, la flash e la PSRAM attraverso le cache, e i registri delle periferiche.",
+      "caption": "La mappa degli indirizzi dell'ESP32-S3, indirizzi bassi in alto",
+      "yours": "Dove vive il tuo sketch"
+    },
+    "clocks": {
+      "title": "L'albero dei clock",
+      "lead": "Un quarzo da 40 MHz alimenta un PLL; dei divisori ne ricavano i clock di CPU, APB e periferiche, mentre i lenti oscillatori RC tengono in vita l'RTC durante il sonno.",
+      "caption": "Sorgenti di clock, divisori e i blocchi che pilotano",
+      "mhz": "{{value}} MHz"
+    },
+    "power": {
+      "title": "Modalità di risparmio",
+      "lead": "Ogni gradino della scala spegne più parti del chip, e la corrente scende di ordini di grandezza.",
+      "caption": "Corrente tipica in ogni modalità di risparmio, su scala logaritmica, e cosa resta acceso",
+      "gain": "{{last}} assorbe {{gain}} volte meno di {{first}}."
+    }
+  },
+  "reader": {
+    "dialog": "Sezione del manuale",
+    "close": "Chiudi il manuale",
+    "loading": "Apro la sezione…",
+    "missing": "Questa sezione non è nel manuale.",
+    "unavailable": "Il manuale non fa parte di questa versione.",
+    "breadcrumb": "Dove si trova questa sezione",
+    "minutes_one": "{{count}} min di lettura",
+    "minutes_other": "{{count}} min di lettura",
+    "related": "Sul blocco {{block}}",
+    "why": {
+      "title": "Perché sei qui",
+      "lead": "La guida cita questa sezione per:",
+      "highlighted": "Il passaggio corrispondente è evidenziato qui sotto.",
+      "jump": "Mostramelo"
+    },
+    "key": {
+      "title": "Informazioni chiave",
+      "numbers": "Numeri",
+      "warnings": "Attenzione",
+      "jump": "Vai a questo passaggio: {{text}}"
+    },
+    "body": "Testo della sezione",
+    "warning": "Avvertenza",
+    "table": {
+      "source": "Mostra la tabella originale",
+      "fallback": "Tabella"
+    },
+    "register": {
+      "fields": "Tutti i campi",
+      "bits": "Bit",
+      "field": "Campo",
+      "access": "Accesso",
+      "reset": "Reset",
+      "description": "Descrizione"
+    },
+    "figure": {
+      "enlarge": "Ingrandisci: {{caption}}",
+      "close": "Chiudi la figura"
+    },
+    "pins": "Apri un pin",
+    "chart": {
+      "untitled": "Valori di questa tabella",
+      "unit": "{{caption}} ({{unit}})",
+      "timing": "Temporizzazione, in {{unit}}",
+      "parameter": "Parametro"
+    },
+    "foot": {
+      "nav": "Sezioni vicine",
+      "prev": "Precedente",
+      "next": "Successiva",
+      "children": "In questa sezione",
+      "back": "Torna dove eri",
+      "pdf": "Apri nel PDF di Espressif",
+      "web": "Apri sul sito di Espressif"
+    },
+    "cite": {
+      "open": "Apri {{doc}} §{{section}} nel lettore",
+      "pdf": "PDF",
+      "pdfLabel": "Apri {{doc}} sul sito di Espressif (nuova scheda)",
+      "web": "Guida"
+    },
+    "newTab": "(si apre in una nuova scheda)"
+  }
+}

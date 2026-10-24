@@ -23,7 +23,10 @@ const dieColours = definePalette({ silicon: "--metal-dark", hotspot: "--hotspot"
 const GAP = 0.18; // of a cell
 /** The tallest tile (coverage "done"), in slab widths. */
 export const MAX_H = 0.3;
-const MIN_H = 0.015;
+// Flat tiles keep a visible thickness and float a hair above the slab: a top or bottom face level
+// with the slab's top flickers (z-fighting), worst on the tiles no lab uses yet.
+const MIN_H = 0.03;
+const LIFT = 0.004;
 
 export interface DieTiles {
   readonly group: Three.Group;
@@ -42,9 +45,10 @@ export function buildDieTiles(T: ThreeModule, S: Stage3d, plan: Floorplan): DieT
   const cell = 1 / plan.cols;
   const depth = cell * plan.rows;
   const rim = slabSize(plan);
+  // Pushed back in depth, so the tiles standing on it always win the depth test.
   const slab = new T.Mesh(
     new T.BoxGeometry(rim.w, 0.04, rim.d),
-    toon(T, C.silicon),
+    toon(T, C.silicon, { polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 }),
   );
   slab.position.y = -0.02;
   group.add(slab);
@@ -60,7 +64,7 @@ export function buildDieTiles(T: ThreeModule, S: Stage3d, plan: Floorplan): DieT
     mesh.scale.set(size, MIN_H, size);
     mesh.position.set(
       -0.5 + cell * (tile.col + 0.5),
-      0,
+      LIFT,
       -depth / 2 + cell * (tile.row + 0.5),
     );
     mesh.userData.blockId = tile.id;
@@ -84,7 +88,7 @@ export function buildDieTiles(T: ThreeModule, S: Stage3d, plan: Floorplan): DieT
     for (const t of tiles) {
       const on = t.tile.id === lifted;
       t.mesh.scale.y = MIN_H + (MAX_H * t.tile.height - MIN_H) * rise + (on ? 0.04 : 0);
-      t.mesh.position.y = on ? 0.03 : 0;
+      t.mesh.position.y = LIFT + (on ? 0.03 : 0);
       t.material.emissive.copy(on ? hotspot : black);
       t.material.emissiveIntensity = on ? 0.35 : 0;
     }

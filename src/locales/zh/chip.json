@@ -1,0 +1,336 @@
+{
+  "pages": {
+    "home": "走进 ESP32-S3",
+    "pins": "引脚与供电",
+    "blocks": "外设图鉴",
+    "inside": "内存、时钟与电源模式"
+  },
+  "scenes": {
+    "descent": {
+      "model": "ESP32-S3 DevKitC，从开发板一路看到裸片",
+      "fallback": "下面的平面图",
+      "stepper": "层级",
+      "prev": "上一层",
+      "next": "下一层",
+      "layer": "第 {{n}} 层，共 {{count}} 层：{{caption}}"
+    },
+    "die": {
+      "model": "ESP32-S3 裸片：模块方块按家族分组，实验用得越多，方块抬得越高",
+      "fallback": "模块列表",
+      "list": "裸片上的模块",
+      "legend": "模块家族及其颜色",
+      "pick": "{{name}}，{{coverage}}"
+    },
+    "coverage": {
+      "done": "已完成",
+      "works": "能用",
+      "built": "已搭建",
+      "planned": "已计划",
+      "none": "还没用到"
+    },
+    "families": {
+      "system": "系统",
+      "memory": "存储",
+      "security": "安全",
+      "connectivity": "连接",
+      "timing": "定时",
+      "analog": "模拟",
+      "radio": "射频"
+    },
+    "bus": {
+      "model": "CPU 通过信号线与 {{name}} 模块通信",
+      "cpu": "CPU",
+      "bus": "总线",
+      "peripheral": "外设",
+      "fallback": "下面列出的信号线",
+      "lines": "信号线"
+    },
+    "flat": {
+      "label": "裸片平面图"
+    }
+  },
+  "nav": {
+    "label": "芯片页面",
+    "pill": "{{title}}：实验已用到 {{used}}/{{total}} 个模块"
+  },
+  "markers": {
+    "key": "关键事实",
+    "gotcha": "小心有坑",
+    "used": "我们的实验用到了"
+  },
+  "source": {
+    "read": "阅读完整章节",
+    "cite": "{{doc}} §{{section}}",
+    "note": "本指南所依据的 ESP32-S3 参考资料章节",
+    "docs": {
+      "A": "开发板指南",
+      "M": "模组数据手册",
+      "C": "芯片数据手册",
+      "T": "技术参考手册",
+      "X": "附录"
+    }
+  },
+  "coverage": {
+    "none": "还没有"
+  },
+  "gotchas": {
+    "seePin": "查看 GPIO{{n}}",
+    "seeBlock": "查看这个模块"
+  },
+  "goInside": "走进芯片内部",
+  "home": {
+    "kicker": "你开发板上的芯片",
+    "lead": "一台双核 240 MHz 的小电脑，带 Wi-Fi 和蓝牙，却只有手指那么大一块板子。",
+    "numbers": "数字里的芯片",
+    "layerStep": "第 {{n}} 层，共 {{count}} 层",
+    "layers": {
+      "board": {
+        "title": "开发板",
+        "text": "DevKitC：USB 接口、按钮、稳压器，以及围着一个模组的两排排针。"
+      },
+      "module": {
+        "title": "模组",
+        "text": "WROOM 模组：芯片、它的 flash 和 PSRAM、一颗晶振和天线，都罩在一个金属屏蔽罩下。"
+      },
+      "can": {
+        "title": "屏蔽罩下面",
+        "text": "揭开屏蔽罩，零件就露出来了：ESP32-S3 封装挨着它的存储器和 40 MHz 晶振。"
+      },
+      "package": {
+        "title": "封装",
+        "text": "7 × 7 mm 的 QFN，有 56 个焊盘：你接在排针上的每个引脚，最后都通到其中一个焊盘。"
+      },
+      "die": {
+        "title": "裸片",
+        "text": "硅片本身，按家族画成 32 个模块。你的实验用到过的模块会更高。"
+      }
+    },
+    "progress": "你在芯片上的进度",
+    "ringCaption": "芯片的各个模块，按你的实验推进到哪一步来划分",
+    "ringCenter": "{{used}}/{{total}}",
+    "sentence": "你的实验已经用到 {{total}} 个模块中的 {{used}} 个。",
+    "next": "接下来可解锁的模块",
+    "nextLesson": "{{id}} · {{title}}",
+    "nextNone": "实验能触及的模块都完成了，其余的等新实验来解锁。",
+    "families": "家族",
+    "familyCount_other": "{{count}} 个模块",
+    "gotchas": "五个容易踩的坑"
+  },
+  "atlas": {
+    "kicker": "裸片上的每个模块",
+    "lead": "ESP32-S3 的全部 {{count}} 个模块，按家族分组。裸片上更高的方块和每张卡片上的状态，显示实验已经推进到哪一步。",
+    "filters": "筛选模块",
+    "family": "家族",
+    "all": "全部",
+    "usedLabel": "实验是否用到",
+    "used": {
+      "all": "全部",
+      "yes": "已用到",
+      "no": "还没有"
+    },
+    "search": "搜索模块",
+    "results_other": "显示 {{count}} 个模块",
+    "count_other": "{{count}} 个模块",
+    "spark": "{{value}} {{unit}}"
+  },
+  "pins": {
+    "kicker": "哪个引脚能做什么",
+    "lead": "{{count}} 个 GPIO，每个都有好几种用途。我们的实验已经接过其中 {{used}} 个。",
+    "matrixTitle": "引脚功能",
+    "legend": "加粗强调的行是我们实验用过的引脚；三角形表示这个引脚有隐患。",
+    "matrix": "每个 GPIO 以及它能承担的功能类别",
+    "filter": "显示具有以下功能的引脚",
+    "all": "全部",
+    "kinds": {
+      "adc": "ADC",
+      "touch": "触摸",
+      "rtc": "RTC",
+      "uart": "UART",
+      "spi": "SPI",
+      "usb": "USB",
+      "jtag": "JTAG",
+      "clock": "时钟",
+      "strap": "启动配置"
+    },
+    "pick": "选一个引脚",
+    "pickHint": "选一个引脚，查看它的功能、启动配置作用，以及适用于它的隐患。",
+    "pickLegend": "数字下面的横条：我们的实验用过。角上的三角形：引脚有隐患。虚线：没有引到排针上。",
+    "pin": "GPIO{{n}}",
+    "used": "我们的实验用到了",
+    "offHeader": "没有引到 DevKitC 的排针上：它属于模组的 flash 或 PSRAM。",
+    "strapping": "启动配置：",
+    "strappingTitle": "启动配置引脚",
+    "strappingLead": "芯片一离开复位，就会立刻读取这些引脚。接到它们上面的东西，不能在上电时把它们拉向错误的电平。",
+    "gotchasTitle": "容易踩坑的引脚",
+    "gotchasLead": "有些引脚在你的代码运行之前就有任务，或者另有所属。其余规则对每个引脚都适用。",
+    "gotchasPins": "特定引脚",
+    "gotchasChip": "整颗芯片"
+  },
+  "block": {
+    "back": "全部模块",
+    "facts": "关键事实",
+    "gotchas": "小心有坑",
+    "labs": "在我们的实验里",
+    "labsNone": "目前还没有实验用到这个模块。",
+    "labsLead_other": "有 {{count}} 个实验用到这个模块，分布在 {{tracks}} 条路线里。打开一条路线就能看到它们。",
+    "labsCount_other": "{{count}} 个实验",
+    "registers": "关键寄存器",
+    "offset": "偏移 {{offset}}",
+    "bits": "位",
+    "field": "字段",
+    "does": "作用",
+    "pager": "其他模块",
+    "prev": "上一个模块",
+    "next": "下一个模块",
+    "listedNote": "仅作列示：几行讲清要点，完整章节只需一次引用就能找到。",
+    "lines": {
+      "default": [
+        "Data",
+        "Clock"
+      ],
+      "gpio": [
+        "IN",
+        "OUT",
+        "OE"
+      ],
+      "uart": [
+        "TX",
+        "RX",
+        "RTS",
+        "CTS"
+      ],
+      "i2c": [
+        "SDA",
+        "SCL"
+      ],
+      "spi": [
+        "SCK",
+        "MOSI",
+        "MISO",
+        "CS"
+      ],
+      "ledc": [
+        "PWM",
+        "Timer"
+      ],
+      "adc": [
+        "AIN",
+        "VREF"
+      ],
+      "touch": [
+        "TOUCH",
+        "Charge"
+      ],
+      "i2s": [
+        "BCLK",
+        "WS",
+        "DIN",
+        "DOUT"
+      ],
+      "rmt": [
+        "TX",
+        "RX",
+        "Carrier"
+      ],
+      "wifi": [
+        "RF",
+        "MAC",
+        "Baseband"
+      ],
+      "ble": [
+        "RF",
+        "Link",
+        "HCI"
+      ],
+      "usb-serial-jtag": [
+        "D+",
+        "D−"
+      ]
+    }
+  },
+  "inside": {
+    "kicker": "引擎盖下面",
+    "lead": "你的代码和数据住在哪里，哪个时钟驱动什么，以及每种电源模式能省多少电。",
+    "memory": {
+      "title": "地址映射",
+      "lead": "CPU 看到的是一整块大地址空间：ROM、内部 SRAM、经过缓存访问的 flash 和 PSRAM，还有各外设的寄存器。",
+      "caption": "ESP32-S3 地址映射，低地址在上",
+      "yours": "你的程序住在哪里"
+    },
+    "clocks": {
+      "title": "时钟树",
+      "lead": "一颗 40 MHz 晶振驱动一个 PLL；分频器从中产生 CPU、APB 和外设时钟，而慢速 RC 振荡器让 RTC 在睡眠中继续走时。",
+      "caption": "时钟源、分频器，以及它们驱动的模块",
+      "mhz": "{{value}} MHz"
+    },
+    "power": {
+      "title": "电源模式",
+      "lead": "每往下一级，芯片就多关掉一部分，电流也随之下降好几个数量级。",
+      "caption": "各电源模式下的典型电流（对数刻度），以及仍然保持开启的部分",
+      "gain": "{{last}} 的耗电比 {{first}} 少 {{gain}} 倍。"
+    }
+  },
+  "reader": {
+    "dialog": "参考章节",
+    "close": "关闭参考资料",
+    "loading": "正在打开章节…",
+    "missing": "参考资料里没有这个章节。",
+    "unavailable": "这个版本不包含参考资料。",
+    "breadcrumb": "这个章节所在的位置",
+    "minutes_other": "阅读约 {{count}} 分钟",
+    "related": "关于 {{block}} 模块",
+    "why": {
+      "title": "你为什么来到这里",
+      "lead": "本指南引用这个章节，是为了：",
+      "highlighted": "下面已高亮对应的段落。",
+      "jump": "带我去看"
+    },
+    "key": {
+      "title": "关键信息",
+      "numbers": "数字",
+      "warnings": "注意",
+      "jump": "跳到这一段：{{text}}"
+    },
+    "body": "章节正文",
+    "warning": "警告",
+    "table": {
+      "source": "显示原始表格",
+      "fallback": "表格"
+    },
+    "register": {
+      "fields": "所有字段",
+      "bits": "位",
+      "field": "字段",
+      "access": "访问",
+      "reset": "复位值",
+      "description": "说明"
+    },
+    "figure": {
+      "enlarge": "放大：{{caption}}",
+      "close": "关闭图片"
+    },
+    "pins": "打开引脚",
+    "chart": {
+      "untitled": "这张表里的数值",
+      "unit": "{{caption}}（{{unit}}）",
+      "timing": "时序，单位 {{unit}}",
+      "parameter": "参数"
+    },
+    "foot": {
+      "nav": "相邻章节",
+      "prev": "上一节",
+      "next": "下一节",
+      "children": "本节内容",
+      "back": "回到刚才的位置",
+      "pdf": "在乐鑫的 PDF 中打开",
+      "web": "在乐鑫官网中打开"
+    },
+    "cite": {
+      "open": "在阅读器中打开 {{doc}} §{{section}}",
+      "pdf": "PDF",
+      "pdfLabel": "在乐鑫官网打开 {{doc}}（新标签页）",
+      "web": "指南"
+    },
+    "newTab": "（在新标签页打开）"
+  }
+}

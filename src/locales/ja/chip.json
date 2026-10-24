@@ -1,0 +1,336 @@
+{
+  "pages": {
+    "home": "ESP32-S3の中へ",
+    "pins": "ピンと電源",
+    "blocks": "ペリフェラル図鑑",
+    "inside": "メモリ、クロック、電源モード"
+  },
+  "scenes": {
+    "descent": {
+      "model": "ESP32-S3 DevKitC を、ボードからダイまで掘り下げて見る",
+      "fallback": "下の平面図",
+      "stepper": "レイヤー",
+      "prev": "前のレイヤー",
+      "next": "次のレイヤー",
+      "layer": "レイヤー {{n}} / {{count}}：{{caption}}"
+    },
+    "die": {
+      "model": "ESP32-S3のダイ：ファミリーごとにまとめたブロックのタイル。ラボでどこまで使ったかで高さが変わります",
+      "fallback": "ブロックの一覧",
+      "list": "ダイ上のブロック",
+      "legend": "ブロックのファミリーと色",
+      "pick": "{{name}}、{{coverage}}"
+    },
+    "coverage": {
+      "done": "完了",
+      "works": "動作",
+      "built": "ビルド済み",
+      "planned": "計画中",
+      "none": "未使用"
+    },
+    "families": {
+      "system": "システム",
+      "memory": "メモリ",
+      "security": "セキュリティ",
+      "connectivity": "通信",
+      "timing": "タイミング",
+      "analog": "アナログ",
+      "radio": "無線"
+    },
+    "bus": {
+      "model": "CPUが{{name}}ブロックと信号線を通じて話している様子",
+      "cpu": "CPU",
+      "bus": "バス",
+      "peripheral": "ペリフェラル",
+      "fallback": "下に並べた信号線",
+      "lines": "信号線"
+    },
+    "flat": {
+      "label": "ダイの平面図"
+    }
+  },
+  "nav": {
+    "label": "チップのページ",
+    "pill": "{{title}}：ラボで使ったブロックは{{total}}個中{{used}}個"
+  },
+  "markers": {
+    "key": "押さえたい事実",
+    "gotcha": "落とし穴",
+    "used": "ラボで使用"
+  },
+  "source": {
+    "read": "このセクションを全文読む",
+    "cite": "{{doc}} §{{section}}",
+    "note": "このガイドの元になったESP32-S3リファレンスのセクション",
+    "docs": {
+      "A": "ボードガイド",
+      "M": "モジュールのデータシート",
+      "C": "チップのデータシート",
+      "T": "テクニカルリファレンス",
+      "X": "付録"
+    }
+  },
+  "coverage": {
+    "none": "まだ"
+  },
+  "gotchas": {
+    "seePin": "GPIO{{n}}を見る",
+    "seeBlock": "ブロックを見る"
+  },
+  "goInside": "チップの中へ",
+  "home": {
+    "kicker": "ボードの上のチップ",
+    "lead": "Wi-FiとBluetoothを備えた、240 MHzのデュアルコアのコンピュータです。指ほどの大きさのボードに載っています。",
+    "numbers": "数字で見るチップ",
+    "layerStep": "レイヤー {{n}} / {{count}}",
+    "layers": {
+      "board": {
+        "title": "ボード",
+        "text": "DevKitC：USBポート、ボタン、レギュレータ、そして1つのモジュールを囲む2列のヘッダピンです。"
+      },
+      "module": {
+        "title": "モジュール",
+        "text": "WROOMモジュール：チップ、フラッシュとPSRAM、水晶振動子、アンテナが、1つの金属カバーの下に入っています。"
+      },
+      "can": {
+        "title": "カバーの下",
+        "text": "シールドを外すと部品が見えます。ESP32-S3のパッケージが、メモリと40 MHzの水晶振動子の隣にあります。"
+      },
+      "package": {
+        "title": "パッケージ",
+        "text": "56パッドの7 × 7 mm QFNです。ヘッダに配線するどのピンも、このパッドのどれかにつながっています。"
+      },
+      "die": {
+        "title": "ダイ",
+        "text": "シリコン本体を、ファミリーごとに32個のブロックとして描きました。ラボで使ったブロックは背が高くなります。"
+      }
+    },
+    "progress": "チップの進み具合",
+    "ringCaption": "ラボでどこまで進めたかを表した、チップのブロック",
+    "ringCenter": "{{used}}/{{total}}",
+    "sentence": "ラボで使ったブロックは、{{total}}個中{{used}}個です。",
+    "next": "次に解放するブロック",
+    "nextLesson": "{{id}} · {{title}}",
+    "nextNone": "ラボが届くブロックは、すべて完了しました。残りは新しいラボを待っています。",
+    "families": "ファミリー",
+    "familyCount_other": "{{count}}ブロック",
+    "gotchas": "つまずきやすい5つのこと"
+  },
+  "atlas": {
+    "kicker": "ダイ上のすべてのブロック",
+    "lead": "ESP32-S3の{{count}}個のブロックを、ファミリーごとにまとめました。ダイ上のタイルの高さと各カードの状態で、ラボでどこまで進めたかが分かります。",
+    "filters": "ブロックを絞り込む",
+    "family": "ファミリー",
+    "all": "すべて",
+    "usedLabel": "ラボで使用",
+    "used": {
+      "all": "すべて",
+      "yes": "使用済み",
+      "no": "まだ"
+    },
+    "search": "ブロックを検索",
+    "results_other": "{{count}}ブロックを表示中",
+    "count_other": "{{count}}ブロック",
+    "spark": "{{value}} {{unit}}"
+  },
+  "pins": {
+    "kicker": "どのピンに何ができるか",
+    "lead": "GPIOは{{count}}本あり、それぞれ複数の役割を持ちます。ラボで配線したのは、そのうち{{used}}本です。",
+    "matrixTitle": "ピンの機能",
+    "legend": "強調した行はラボで使ったピンです。三角はピンの注意点を示します。",
+    "matrix": "各GPIOが取れる機能の種類",
+    "filter": "次の機能を持つピンを表示",
+    "all": "すべて",
+    "kinds": {
+      "adc": "ADC",
+      "touch": "タッチ",
+      "rtc": "RTC",
+      "uart": "UART",
+      "spi": "SPI",
+      "usb": "USB",
+      "jtag": "JTAG",
+      "clock": "クロック",
+      "strap": "ストラッピング"
+    },
+    "pick": "ピンを選ぶ",
+    "pickHint": "ピンを選ぶと、その機能、ストラッピングの役割、当てはまる注意点が見られます。",
+    "pickLegend": "番号の下のバー：ラボで使用。角の三角：ピンの注意点。破線：ヘッダには出ていません。",
+    "pin": "GPIO{{n}}",
+    "used": "ラボで使用",
+    "offHeader": "DevKitCのヘッダにはありません。モジュールのフラッシュかPSRAMが使っています。",
+    "strapping": "ストラッピング：",
+    "strappingTitle": "ストラッピングピン",
+    "strappingLead": "これらのピンは、チップがリセットから抜けた瞬間に読み取られます。配線した先が、電源投入時にピンを間違った向きへ引っ張らないようにしてください。",
+    "gotchasTitle": "つまずきやすいピン",
+    "gotchasLead": "いくつかのピンは、コードが動く前から役割があったり、別のものに使われていたりします。残りのルールは、どのピンにも当てはまります。",
+    "gotchasPins": "特定のピン",
+    "gotchasChip": "チップ全体"
+  },
+  "block": {
+    "back": "すべてのブロック",
+    "facts": "押さえたい事実",
+    "gotchas": "落とし穴",
+    "labs": "ラボでの利用",
+    "labsNone": "このブロックを使うラボは、まだありません。",
+    "labsLead_other": "このブロックを使うラボは{{count}}件、{{tracks}}テーマにまたがります。テーマを開くと見られます。",
+    "labsCount_other": "{{count}}ラボ",
+    "registers": "主なレジスタ",
+    "offset": "オフセット {{offset}}",
+    "bits": "ビット",
+    "field": "フィールド",
+    "does": "役割",
+    "pager": "ほかのブロック",
+    "prev": "前のブロック",
+    "next": "次のブロック",
+    "listedNote": "掲載のみ：要点を数行にまとめました。章の全文は、出典を1つたどれば読めます。",
+    "lines": {
+      "default": [
+        "Data",
+        "Clock"
+      ],
+      "gpio": [
+        "IN",
+        "OUT",
+        "OE"
+      ],
+      "uart": [
+        "TX",
+        "RX",
+        "RTS",
+        "CTS"
+      ],
+      "i2c": [
+        "SDA",
+        "SCL"
+      ],
+      "spi": [
+        "SCK",
+        "MOSI",
+        "MISO",
+        "CS"
+      ],
+      "ledc": [
+        "PWM",
+        "Timer"
+      ],
+      "adc": [
+        "AIN",
+        "VREF"
+      ],
+      "touch": [
+        "TOUCH",
+        "Charge"
+      ],
+      "i2s": [
+        "BCLK",
+        "WS",
+        "DIN",
+        "DOUT"
+      ],
+      "rmt": [
+        "TX",
+        "RX",
+        "Carrier"
+      ],
+      "wifi": [
+        "RF",
+        "MAC",
+        "Baseband"
+      ],
+      "ble": [
+        "RF",
+        "Link",
+        "HCI"
+      ],
+      "usb-serial-jtag": [
+        "D+",
+        "D−"
+      ]
+    }
+  },
+  "inside": {
+    "kicker": "ボンネットの下",
+    "lead": "コードとデータがどこにあるか、どのクロックが何を動かすか、各電源モードでどれだけ節約できるかを見ます。",
+    "memory": {
+      "title": "アドレスマップ",
+      "lead": "CPUからは1つの大きなアドレス空間に見えます。ROM、内部SRAM、キャッシュ経由のフラッシュとPSRAM、そしてペリフェラルのレジスタです。",
+      "caption": "ESP32-S3のアドレスマップ（上ほど低いアドレス）",
+      "yours": "スケッチが置かれる場所"
+    },
+    "clocks": {
+      "title": "クロックツリー",
+      "lead": "1つの40 MHz水晶振動子がPLLを動かします。分周器がそこからCPU、APB、ペリフェラルのクロックを作り、低速のRC発振器がスリープ中のRTCを動かし続けます。",
+      "caption": "クロックソース、分周器、そしてそれらが動かすブロック",
+      "mhz": "{{value}} MHz"
+    },
+    "power": {
+      "title": "電源モード",
+      "lead": "階段を1段下りるごとに、チップのより多くの部分が切れ、電流は桁違いに減ります。",
+      "caption": "各電源モードの標準的な電流（対数目盛）と、オンのままの部分",
+      "gain": "{{last}}の消費電流は、{{first}}の{{gain}}分の1です。"
+    }
+  },
+  "reader": {
+    "dialog": "リファレンスのセクション",
+    "close": "リファレンスを閉じる",
+    "loading": "セクションを開いています…",
+    "missing": "このセクションはリファレンスにありません。",
+    "unavailable": "このビルドにはリファレンスが含まれていません。",
+    "breadcrumb": "このセクションの位置",
+    "minutes_other": "読了{{count}}分",
+    "related": "{{block}}ブロックについて",
+    "why": {
+      "title": "ここに来た理由",
+      "lead": "ガイドは、次の内容でこのセクションを引用しています。",
+      "highlighted": "該当する箇所は、下でハイライトされています。",
+      "jump": "見せて"
+    },
+    "key": {
+      "title": "重要な情報",
+      "numbers": "数値",
+      "warnings": "ご注意",
+      "jump": "この箇所へ移動：{{text}}"
+    },
+    "body": "セクションの本文",
+    "warning": "警告",
+    "table": {
+      "source": "元の表を表示",
+      "fallback": "表"
+    },
+    "register": {
+      "fields": "すべてのフィールド",
+      "bits": "ビット",
+      "field": "フィールド",
+      "access": "アクセス",
+      "reset": "リセット値",
+      "description": "説明"
+    },
+    "figure": {
+      "enlarge": "拡大：{{caption}}",
+      "close": "図を閉じる"
+    },
+    "pins": "ピンを開く",
+    "chart": {
+      "untitled": "この表の値",
+      "unit": "{{caption}}（{{unit}}）",
+      "timing": "タイミング（{{unit}}）",
+      "parameter": "パラメータ"
+    },
+    "foot": {
+      "nav": "近くのセクション",
+      "prev": "前へ",
+      "next": "次へ",
+      "children": "このセクションの中",
+      "back": "元の場所に戻る",
+      "pdf": "EspressifのPDFで開く",
+      "web": "Espressifのサイトで開く"
+    },
+    "cite": {
+      "open": "{{doc}} §{{section}} をリーダーで開く",
+      "pdf": "PDF",
+      "pdfLabel": "Espressifのサイトで{{doc}}を開く（新しいタブ）",
+      "web": "ガイド"
+    },
+    "newTab": "（新しいタブで開きます）"
+  }
+}

@@ -1,0 +1,1429 @@
+{
+  "headline": {
+    "cores": {
+      "unit": "Kerne",
+      "label": "Xtensa-LX7-Kerne"
+    },
+    "cpu-mhz": {
+      "unit": "MHz",
+      "label": "Höchster CPU-Takt"
+    },
+    "sram": {
+      "unit": "KB",
+      "label": "SRAM auf dem Chip"
+    },
+    "rom": {
+      "unit": "KB",
+      "label": "Boot-ROM"
+    },
+    "gpio": {
+      "unit": "GPIOs",
+      "label": "Programmierbare Pins"
+    },
+    "adc-channels": {
+      "unit": "Kanäle",
+      "label": "12-Bit-ADC-Eingänge"
+    },
+    "wifi-rate": {
+      "unit": "Mbps",
+      "label": "Höchste WLAN-Datenrate"
+    },
+    "deep-sleep": {
+      "unit": "µA",
+      "label": "Strom im Deep-Sleep"
+    }
+  },
+  "facts": {
+    "home-dual-core": {
+      "text": "Zwei 32-Bit-Xtensa-LX7-Kerne mit bis zu 240 MHz, mit Gleitkommaeinheit, 128-Bit-Datenbus und SIMD-Befehlen."
+    },
+    "home-radio": {
+      "text": "WLAN (802.11b/g/n, 2.4 GHz) und Bluetooth 5 LE teilen sich eine Antenne, mit eingebautem Koexistenz-Mechanismus."
+    },
+    "home-matrix": {
+      "text": "Fast jedes Peripherie-Signal kann an fast jeden Pin: Die GPIO-Matrix leitet 175 Eingänge und 184 Ausgänge."
+    },
+    "home-psram": {
+      "text": "Bis zu 32 MB externer Flash oder PSRAM werden über die Caches direkt in den Adressraum der CPU eingeblendet."
+    },
+    "home-ulp": {
+      "text": "Zwei winzige Koprozessoren (ULP-RISC-V und ULP-FSM) lesen weiter Sensoren, während die Hauptkerne schlafen."
+    },
+    "home-3v3": {
+      "text": "Er läuft mit 3.0-3.6 V. Seine Pins sind nicht 5-V-tolerant."
+    }
+  },
+  "blocks": {
+    "cpu": {
+      "name": "CPU",
+      "short": "Zwei Xtensa-LX7-Kerne mit bis zu 240 MHz",
+      "facts": {
+        "cpu-cores": {
+          "text": "Dualcore-32-Bit-Xtensa-LX7, fünfstufige Pipeline, bis zu 240 MHz, mit Gleitkommaeinheit."
+        },
+        "cpu-reset-clock": {
+          "text": "Nach dem Reset läuft die CPU mit dem durch 2 geteilten 40-MHz-Quarz, also mit 20 MHz, bis die Firmware auf die PLL umschaltet."
+        }
+      }
+    },
+    "ulp": {
+      "name": "ULP-Koprozessoren",
+      "short": "Ein winziger RISC-V und eine Zustandsmaschine, die arbeiten, während die CPU schläft",
+      "facts": {
+        "ulp-two": {
+          "text": "Zwei Koprozessoren, ULP-RISC-V und ULP-FSM, beide mit 17.5 MHz und 8 KB langsamem RTC-Speicher. Es kann immer nur einer laufen."
+        },
+        "ulp-reach": {
+          "text": "Sie können die ADCs, Touch-Pins und den Temperatursensor lesen, RTC-GPIOs und RTC-I2C ansteuern und dann die Haupt-CPU wecken."
+        }
+      }
+    },
+    "gdma": {
+      "name": "GDMA",
+      "short": "Bewegt Daten zwischen Speicher und Peripherie ohne die CPU",
+      "facts": {
+        "gdma-channels": {
+          "text": "Fünf Sende- und fünf Empfangskanäle, geteilt von SPI2, SPI3, UHCI0, I2S0, I2S1, LCD/CAM, AES, SHA, ADC und RMT."
+        },
+        "gdma-reach": {
+          "text": "Er erreicht bis zu 480 KB internes RAM und 32 MB externes RAM, aber nicht das SRAM, das als Cache dient."
+        }
+      }
+    },
+    "gpio": {
+      "name": "GPIO und IO MUX",
+      "short": "45 Pins und eine Matrix, die fast jedes Signal an fast jeden Pin leitet",
+      "spark": {
+        "unit": "Pins"
+      },
+      "facts": {
+        "gpio-count": {
+          "text": "45 GPIOs, nummeriert 0-21 und 26-48. Jeder kann Eingang oder Ausgang sein."
+        },
+        "gpio-matrix": {
+          "text": "Die GPIO-Matrix verbindet 175 Peripherie-Eingänge und 184 Peripherie-Ausgänge mit jedem beliebigen Pin. Schnelle Signale (SPI, JTAG, UART) können sie über den IO MUX umgehen und bekommen so besseres Timing."
+        },
+        "gpio-drive": {
+          "text": "Jeder Pin treibt etwa 5, 10, 20 oder 40 mA. Standard sind 20 mA (10 mA an GPIO17/18, 40 mA an GPIO19/20)."
+        },
+        "gpio-pulls": {
+          "text": "Die internen Pull-up- und Pull-down-Widerstände haben etwa 45 kΩ: gut für einen Taster, zu schwach für einen langen I2C-Bus."
+        },
+        "gpio-5v": {
+          "text": "Eingänge vertragen bis zur Versorgungsspannung plus 0.3 V. Die Pins sind nicht 5-V-tolerant."
+        },
+        "gpio-hold": {
+          "text": "Ein Pin kann eingerastet (gehalten) werden, damit er seinen Pegel durch einen Watchdog-Reset oder Deep-Sleep behält."
+        }
+      },
+      "registers": {
+        "0": {
+          "fields": {
+            "0": {
+              "does": "Schreib eine 1, um den Ausgang dieses Pins auf high zu setzen (GPIO0-31). Bits mit 0 bleiben unberührt."
+            }
+          }
+        },
+        "1": {
+          "fields": {
+            "0": {
+              "does": "Schreib eine 1, um diesen Pin zum Ausgang zu machen (GPIO0-31)."
+            }
+          }
+        },
+        "2": {
+          "fields": {
+            "0": {
+              "does": "Der Pegel an GPIO0-31, ein Bit pro Pin: 1 high, 0 low."
+            }
+          }
+        },
+        "3": {
+          "fields": {
+            "0": {
+              "does": "Welches Peripherie-Ausgangssignal Pin x treibt. 256 heißt einfacher GPIO-Ausgang."
+            },
+            "1": {
+              "does": "Den Ausgang invertieren."
+            }
+          }
+        },
+        "4": {
+          "fields": {
+            "0": {
+              "does": "Interner Pull-down an."
+            },
+            "1": {
+              "does": "Interner Pull-up an."
+            },
+            "2": {
+              "does": "Eingang aktiviert."
+            },
+            "3": {
+              "does": "Treiberstärke: 0 ist etwa 5 mA, 3 etwa 40 mA."
+            },
+            "4": {
+              "does": "Welche IO-MUX-Funktion der Pin übernimmt (Funktion 1 ist bei den meisten Pins GPIO)."
+            }
+          }
+        }
+      }
+    },
+    "rtc": {
+      "name": "RTC und Energieverwaltung",
+      "short": "Die Always-on-Ecke, die die Schlafmodi steuert und den Chip weckt",
+      "facts": {
+        "rtc-modes": {
+          "text": "Vier vordefinierte Energiemodi: Active, Modem-Sleep, Light-Sleep und Deep-Sleep. Im Deep-Sleep bleibt nur die RTC an."
+        },
+        "rtc-memory": {
+          "text": "16 KB RTC-Speicher (8 KB schnell, 8 KB langsam) behalten ihren Inhalt durch den Deep-Sleep."
+        },
+        "rtc-wake": {
+          "text": "Aus dem Deep-Sleep können nur die RTC-GPIOs (0-21), der RTC-Timer, Touch und das ULP den Chip wecken."
+        }
+      }
+    },
+    "sram": {
+      "name": "SRAM",
+      "short": "512 KB schnelles RAM auf dem Chip für deinen Code und deine Daten",
+      "facts": {
+        "sram-size": {
+          "text": "512 KB SRAM auf dem Chip, dazu 16 KB RTC-SRAM. Ein Teil davon kann den Caches zugeteilt werden."
+        },
+        "sram-speed": {
+          "text": "Die CPU liest das SRAM normalerweise innerhalb eines einzigen Taktzyklus."
+        }
+      }
+    },
+    "rom": {
+      "name": "ROM",
+      "short": "384 KB Code ab Werk: der Bootloader und der Download-Modus",
+      "facts": {
+        "rom-size": {
+          "text": "384 KB Nur-Lese-Speicher mit dem Boot-Code und Low-Level-Routinen. Er lässt sich nicht ändern."
+        },
+        "rom-download": {
+          "text": "Sind GPIO0 und GPIO46 beim Reset low, wartet das ROM über UART oder USB auf neue Firmware, statt deine auszuführen."
+        }
+      }
+    },
+    "flash-psram": {
+      "name": "Flash und PSRAM",
+      "short": "Der Flash des Moduls enthält dein Programm; PSRAM gibt Megabytes an RAM dazu",
+      "facts": {
+        "flash-psram-size": {
+          "text": "Bis zu 1 GB externer Flash und 1 GB externes RAM, jeweils 32 MB auf einmal über die Caches eingeblendet."
+        },
+        "flash-psram-clock": {
+          "text": "Der Flash läuft standardmäßig mit bis zu 80 MHz; seine Sektoren halten etwa 100,000 Löschzyklen aus."
+        },
+        "flash-psram-pins": {
+          "text": "GPIO26-32 führen den Flash-Bus, und Octal-PSRAM belegt außerdem GPIO33-37."
+        }
+      }
+    },
+    "cache": {
+      "name": "Cache",
+      "short": "Hält zuletzt genutzten Flash und PSRAM im schnellen SRAM",
+      "facts": {
+        "cache-sizes": {
+          "text": "Ein Befehls-Cache mit 16 oder 32 KB und ein Daten-Cache mit 32 oder 64 KB, von beiden Kernen gemeinsam genutzt."
+        }
+      }
+    },
+    "efuse": {
+      "name": "eFuse",
+      "short": "4096 Einmal-Bits: MAC-Adresse, Schlüssel und Boot-Einstellungen",
+      "facts": {
+        "efuse-size": {
+          "text": "4096 Bit einmal programmierbarer Speicher, davon 1792 frei für dich (Schlüssel, Geräte-ID)."
+        },
+        "efuse-one-way": {
+          "text": "Ein eFuse-Bit, das einmal auf 1 gebrannt wurde, geht nie zurück auf 0."
+        }
+      }
+    },
+    "crypto": {
+      "name": "Krypto-Beschleuniger",
+      "short": "SHA, AES, RSA, HMAC und digitale Signaturen in Hardware",
+      "facts": {
+        "crypto-set": {
+          "text": "SHA (SHA-1 bis SHA-512), AES-128/256, RSA, HMAC und ein Block für RSA-Signaturen, viel schneller als Software."
+        },
+        "crypto-flash": {
+          "text": "Firmware und Daten im externen Flash und PSRAM lassen sich mit XTS-AES im Fluge ver- und entschlüsseln."
+        }
+      }
+    },
+    "rng": {
+      "name": "Zufallszahlengenerator",
+      "short": "Echte Zufallszahlen aus thermischem Rauschen",
+      "facts": {
+        "rng-source": {
+          "text": "Jedes 32-Bit-Lesen von RNG_DATA_REG liefert eine echte Zufallszahl, gespeist aus ADC-Rauschen und Taktjitter."
+        },
+        "rng-entropy": {
+          "text": "Für volle Entropie lass eine ADC-Quelle laufen (den SAR-ADC oder den schnellen ADC des Funkteils); Taktjitter allein ist schwächer."
+        }
+      }
+    },
+    "uart": {
+      "name": "UART",
+      "short": "Drei serielle Ports, einer davon ist der im Serial Monitor",
+      "spark": {
+        "unit": "Mbps"
+      },
+      "facts": {
+        "uart-count": {
+          "text": "Drei UART-Controller (UART0, 1, 2) mit bis zu 5 Mbps, mit RS485- und IrDA-Modus."
+        },
+        "uart-frame": {
+          "text": "5 bis 8 Datenbits, optional Parität und 1, 1.5 oder 2 Stoppbits. (Das Datenblatt nennt auch 3 Stoppbits; das TRM nicht.)"
+        },
+        "uart-fifo": {
+          "text": "Die drei UARTs teilen sich 1024 Bytes FIFO-RAM, können die Baudrate erkennen und regeln die RTS/CTS-Flusskontrolle in Hardware."
+        },
+        "uart-boot": {
+          "text": "UART0 sitzt an GPIO43 (TX) und 44 (RX), wo das ROM sein Boot-Log ausgibt."
+        }
+      },
+      "registers": {
+        "0": {
+          "fields": {
+            "0": {
+              "does": "Ein empfangenes Byte lesen oder eines zum Senden schreiben."
+            }
+          }
+        },
+        "1": {
+          "fields": {
+            "0": {
+              "does": "Ganzzahliger Teil des Baudraten-Teilers."
+            },
+            "1": {
+              "does": "Bruchteil des Teilers."
+            }
+          }
+        },
+        "2": {
+          "fields": {
+            "0": {
+              "does": "Bytes, die im Empfangs-FIFO warten."
+            },
+            "1": {
+              "does": "Bytes, die noch im Sende-FIFO liegen."
+            }
+          }
+        },
+        "3": {
+          "fields": {
+            "0": {
+              "does": "Paritätsmodus."
+            },
+            "1": {
+              "does": "Paritätsprüfung an."
+            },
+            "2": {
+              "does": "Datenbits (3 heißt 8)."
+            },
+            "3": {
+              "does": "Länge der Stoppbits."
+            },
+            "4": {
+              "does": "TX für einen Selbsttest zurück auf RX schleifen."
+            }
+          }
+        },
+        "4": {
+          "fields": {
+            "0": {
+              "does": "Taktquelle: 1 APB_CLK, 2 RC_FAST_CLK, 3 XTAL_CLK."
+            },
+            "1": {
+              "does": "Teiler vor dem Baudraten-Generator."
+            }
+          }
+        }
+      }
+    },
+    "i2c": {
+      "name": "I2C",
+      "short": "Zwei-Draht-Bus für Sensoren und kleine Displays",
+      "spark": {
+        "unit": "Mbps"
+      },
+      "facts": {
+        "i2c-count": {
+          "text": "Zwei I2C-Controller, jeder Master oder Slave, mit 7-Bit- und 10-Bit-Adressen."
+        },
+        "i2c-speed": {
+          "text": "Standard (100 kbit/s) und Fast (400 kbit/s); das Datenblatt nennt zusätzlich bis zu 800 kbit/s, wenn die Pull-ups stark genug sind."
+        },
+        "i2c-commands": {
+          "text": "Im Master-Modus reihst du bis zu acht Befehle ein (write, read, stop...), und die Hardware führt die ganze Transaktion aus."
+        },
+        "i2c-pullups": {
+          "text": "SDA und SCL sind Open-Drain: Der Bus braucht Pull-up-Widerstände, und die internen mit 45 kΩ sind schwach."
+        }
+      },
+      "registers": {
+        "0": {
+          "fields": {
+            "0": {
+              "does": "Wie lange SCL low bleibt, in Taktzyklen des Moduls."
+            }
+          }
+        },
+        "1": {
+          "fields": {
+            "0": {
+              "does": "1 macht den Controller zum Master."
+            },
+            "1": {
+              "does": "Die eingereihten Befehle starten."
+            },
+            "2": {
+              "does": "0 für Open-Drain-SDA."
+            }
+          }
+        },
+        "2": {
+          "fields": {
+            "0": {
+              "does": "Das letzte ACK-Bit: 0 ACK, 1 NACK."
+            },
+            "1": {
+              "does": "Der Bus ist belegt."
+            },
+            "2": {
+              "does": "Ein anderer Master hat den Bus gewonnen."
+            }
+          }
+        },
+        "3": {
+          "fields": {
+            "0": {
+              "does": "Aus dem RX-FIFO lesen, in den TX-FIFO schreiben."
+            }
+          }
+        },
+        "4": {
+          "fields": {
+            "0": {
+              "does": "Erster Befehl: Op-Code (1 WRITE, 2 STOP, 3 READ, 4 END, 6 RSTART) und Byte-Anzahl."
+            },
+            "1": {
+              "does": "Gesetzt, wenn der Befehl gelaufen ist."
+            }
+          }
+        }
+      }
+    },
+    "i2s": {
+      "name": "I2S",
+      "short": "Digitales Audio rein und raus: Mikrofone, Verstärker, Codecs",
+      "spark": {
+        "unit": "MHz"
+      },
+      "facts": {
+        "i2s-count": {
+          "text": "Zwei I2S-Schnittstellen (I2S0, I2S1) mit getrennten Sende- und Empfangseinheiten, die gleichzeitig laufen."
+        },
+        "i2s-format": {
+          "text": "Samples mit 8, 16, 24 oder 32 Bit bei 8 bis 192 kHz, mit einem Bittakt von 10 kHz bis 40 MHz."
+        },
+        "i2s-pdm": {
+          "text": "Nur I2S0 wandelt PDM-Mikrofone in PCM um und PCM in PDM."
+        },
+        "i2s-dma": {
+          "text": "Audio läuft über ein eigenes DMA, ohne dass die CPU jedes Sample kopiert."
+        }
+      },
+      "registers": {
+        "0": {
+          "fields": {
+            "0": {
+              "does": "Die Empfangseinheit zurücksetzen."
+            },
+            "1": {
+              "does": "Mit dem Empfangen beginnen."
+            },
+            "2": {
+              "does": "BCK und WS von außen nehmen (Slave)."
+            },
+            "3": {
+              "does": "Mono-Modus."
+            },
+            "4": {
+              "does": "PDM-Empfangsmodus."
+            }
+          }
+        },
+        "1": {
+          "fields": {
+            "0": {
+              "does": "Die Sendeeinheit zurücksetzen."
+            },
+            "1": {
+              "does": "Mit dem Senden beginnen."
+            },
+            "2": {
+              "does": "Mono-Modus."
+            },
+            "3": {
+              "does": "Welche Kanäle Daten tragen."
+            }
+          }
+        },
+        "2": {
+          "fields": {
+            "0": {
+              "does": "Bittakt-Teiler (nie 1)."
+            },
+            "1": {
+              "does": "Bits pro Sample minus 1: 15 für 16 Bit."
+            }
+          }
+        },
+        "3": {
+          "fields": {
+            "0": {
+              "does": "Ganzzahliger Teil des Taktteilers."
+            },
+            "1": {
+              "does": "Empfangstakt an."
+            },
+            "2": {
+              "does": "Taktquelle: 0 XTAL, 1 PLL_D2, 2 PLL_F160M, 3 MCLK-Eingang."
+            }
+          }
+        }
+      }
+    },
+    "spi": {
+      "name": "SPI",
+      "short": "Schneller Vier-Draht-Bus für Bildschirme, Kartenleser und Flash",
+      "spark": {
+        "unit": "MHz"
+      },
+      "facts": {
+        "spi-count": {
+          "text": "Vier SPI-Controller: SPI0 und SPI1 sprechen mit dem Flash und PSRAM; GP-SPI2 und GP-SPI3 gehören dir."
+        },
+        "spi-speed": {
+          "text": "Als Master bis zu 80 MHz, als Slave bis zu 60 MHz, in allen vier Taktmodi (0-3)."
+        },
+        "spi-lines": {
+          "text": "GP-SPI2 hat sechs Chip-Selects und bis zu 8 Datenleitungen; GP-SPI3 hat drei Chip-Selects und bis zu 4 Leitungen."
+        },
+        "spi-dma": {
+          "text": "Die CPU kann bis zu 64 Bytes pro Transfer bewegen; mit DMA nimmt ein einzelner Transfer bis zu 32 KB, segmentierte haben kein Limit."
+        },
+        "spi-iomux": {
+          "text": "GP-SPI2 (FSPI) kann seine Pins über den IO MUX oder die GPIO-Matrix erreichen; GP-SPI3 geht immer über die Matrix."
+        }
+      },
+      "registers": {
+        "0": {
+          "fields": {
+            "0": {
+              "does": "Einen Transfer starten; setzt sich selbst zurück, wenn er fertig ist."
+            },
+            "1": {
+              "does": "Die neuen Einstellungen in die SPI-Taktdomäne übernehmen."
+            }
+          }
+        },
+        "1": {
+          "fields": {
+            "0": {
+              "does": "1: SPI-Takt = APB-Takt (80 MHz)."
+            },
+            "1": {
+              "does": "Vorteiler."
+            },
+            "2": {
+              "does": "Teiler: f = APB / (PRE+1) / (N+1)."
+            }
+          }
+        },
+        "2": {
+          "fields": {
+            "0": {
+              "does": "Datenlänge des Transfers, in Bits, minus 1."
+            }
+          }
+        },
+        "3": {
+          "fields": {
+            "0": {
+              "does": "1 schaltet den CS0-Pin ab."
+            },
+            "1": {
+              "does": "Taktpegel im Leerlauf (die Polarität, CPOL)."
+            }
+          }
+        },
+        "4": {
+          "fields": {
+            "0": {
+              "does": "Erster von 16 Datenpuffern (SPI_W0 bis W15, 64 Bytes) für CPU-gesteuerte Transfers."
+            }
+          }
+        }
+      }
+    },
+    "lcd-cam": {
+      "name": "LCD und Kamera",
+      "short": "Paralleler 8- oder 16-Bit-Bus für große Bildschirme und Kamerasensoren",
+      "facts": {
+        "lcd-cam-bus": {
+          "text": "Paralleler Ausgang mit 8 bis 16 Bit (RGB, I8080, MOTO6800) und Eingang von DVP-Kameras, mit bis zu 40 MHz."
+        }
+      }
+    },
+    "twai": {
+      "name": "TWAI (CAN)",
+      "short": "Robuster Zwei-Draht-Bus aus Autos und Maschinen",
+      "facts": {
+        "twai-spec": {
+          "text": "Kompatibel mit CAN 2.0 (ISO 11898-1), 11- oder 29-Bit-IDs, von 1 kbit/s bis 1 Mbit/s."
+        },
+        "twai-transceiver": {
+          "text": "Er braucht einen externen Transceiver-Chip, um den Bus zu erreichen."
+        }
+      }
+    },
+    "usb-otg": {
+      "name": "USB OTG",
+      "short": "USB Full-Speed als Host oder Gerät: Tastaturen, MIDI, Massenspeicher",
+      "facts": {
+        "usb-otg-speed": {
+          "text": "USB 2.0 Full-Speed (12 Mbit/s) und Low-Speed, als Host oder Gerät, mit einem Transceiver auf dem Chip."
+        },
+        "usb-otg-shared": {
+          "text": "Er teilt sich den Transceiver auf dem Chip (GPIO19/20) mit dem USB-Serial/JTAG-Port."
+        }
+      }
+    },
+    "usb-serial-jtag": {
+      "name": "USB Serial/JTAG",
+      "short": "Ein serieller Port und ein Debugger an zwei Pins, kein Adapter nötig",
+      "spark": {
+        "unit": "Mbps"
+      },
+      "facts": {
+        "usb-serial-jtag-what": {
+          "text": "Ein festes USB-Gerät: ein CDC-ACM-Port plus ein JTAG-Adapter für den Debugger, an GPIO19 (D-) und 20 (D+)."
+        },
+        "usb-serial-jtag-speed": {
+          "text": "Nur USB 2.0 Full-Speed: 12 Mbit/s, nicht die 480 Mbit/s von High-Speed."
+        },
+        "usb-serial-jtag-reset": {
+          "text": "Der Host kann den Chip über USB zurücksetzen und in den Download-Modus schicken, also ist kein BOOT-Taster nötig."
+        },
+        "usb-serial-jtag-pins": {
+          "text": "Wenn du GPIO19/20 als normale GPIOs nutzt, schaltet das diesen Port ab."
+        }
+      },
+      "registers": {
+        "0": {
+          "fields": {
+            "0": {
+              "does": "Ein Byte vom Host lesen oder eines zum Senden schreiben (bis zu 64 pro Paket)."
+            }
+          }
+        },
+        "1": {
+          "fields": {
+            "0": {
+              "does": "Das Geschriebene senden."
+            },
+            "1": {
+              "does": "Platz zum Schreiben."
+            },
+            "2": {
+              "does": "Bytes vom Host warten."
+            }
+          }
+        },
+        "2": {
+          "fields": {
+            "0": {
+              "does": "Ein Paket vom Host ist angekommen."
+            },
+            "1": {
+              "does": "Der Sendepuffer ist leer."
+            },
+            "2": {
+              "does": "Der Host hat den Bus zurückgesetzt."
+            }
+          }
+        },
+        "3": {
+          "fields": {
+            "0": {
+              "does": "0 interner PHY, 1 externer."
+            },
+            "1": {
+              "does": "D+-Pull-up: sagt dem Host, dass ein Gerät da ist."
+            },
+            "2": {
+              "does": "USB-Funktion auf den Pads."
+            }
+          }
+        }
+      }
+    },
+    "sdmmc": {
+      "name": "SD/MMC-Host",
+      "short": "Spricht mit SD-Karten und eMMC im 1-, 4- oder 8-Bit-Modus",
+      "facts": {
+        "sdmmc-spec": {
+          "text": "Zwei Kartenslots (nicht gleichzeitig), SD 3.0/3.01 und MMC bis 4.51, mit bis zu 80 MHz."
+        }
+      }
+    },
+    "timers": {
+      "name": "Timer",
+      "short": "Ein 52-Bit-Systemtimer und vier 54-Bit-Allzweck-Timer",
+      "facts": {
+        "timers-systimer": {
+          "text": "Der 52-Bit-Systemtimer zählt mit 16 MHz vom Quarz und gibt dem Betriebssystem seinen Tick."
+        },
+        "timers-timg": {
+          "text": "Zwei Timer-Gruppen mit je zwei 54-Bit-Timern, einem 16-Bit-Vorteiler, Alarmen und Auto-Reload."
+        }
+      }
+    },
+    "wdt": {
+      "name": "Watchdogs",
+      "short": "Setzen den Chip zurück, wenn das Programm hängt",
+      "facts": {
+        "wdt-three": {
+          "text": "Drei digitale Watchdogs (einer pro Timer-Gruppe, einer in der RTC) plus ein analoger Super-Watchdog."
+        },
+        "wdt-boot": {
+          "text": "Bei einem Flash-Boot schalten sich der RTC-Watchdog und der Watchdog der ersten Timer-Gruppe von selbst ein."
+        }
+      }
+    },
+    "ledc": {
+      "name": "LED-PWM",
+      "short": "Acht PWM-Kanäle, die LEDs von allein dimmen und ausblenden",
+      "spark": {
+        "unit": "Kanäle"
+      },
+      "facts": {
+        "ledc-channels": {
+          "text": "Acht PWM-Kanäle, angetrieben von vier Timern. Mehrere Kanäle können sich einen Timer teilen."
+        },
+        "ledc-resolution": {
+          "text": "Bis zu 14 Bit Tastgrad-Auflösung (laut Datenblatt: 14 Bit innerhalb einer Periode von 1 ms)."
+        },
+        "ledc-fade": {
+          "text": "Fading in Hardware: Der Tastgrad steigt oder fällt von allein, mit einem Interrupt, wenn das Fading endet."
+        },
+        "ledc-sleep": {
+          "text": "Mit Takt von RC_FAST_CLK läuft sein PWM im Light-Sleep weiter."
+        }
+      },
+      "registers": {
+        "0": {
+          "fields": {
+            "0": {
+              "does": "Welchem der vier Timer dieser Kanal folgt."
+            },
+            "1": {
+              "does": "Ausgang an."
+            },
+            "2": {
+              "does": "Den neuen Tastgrad und die Einstellungen übernehmen."
+            }
+          }
+        },
+        "1": {
+          "fields": {
+            "0": {
+              "does": "Tastgrad: der Zählerstand, bei dem der Ausgang auf low geht."
+            }
+          }
+        },
+        "2": {
+          "fields": {
+            "0": {
+              "does": "Ein Fading starten."
+            },
+            "1": {
+              "does": "Hoch (1) oder runter (0) faden."
+            },
+            "2": {
+              "does": "Anzahl der Fading-Schritte."
+            }
+          }
+        },
+        "3": {
+          "fields": {
+            "0": {
+              "does": "Zählerbereich: die Tastgrad-Auflösung in Bits."
+            },
+            "1": {
+              "does": "Taktteiler; die unteren 8 Bits sind der Bruchteil."
+            }
+          }
+        },
+        "4": {
+          "fields": {
+            "0": {
+              "does": "Takt für alle Timer: 1 APB_CLK, 2 RC_FAST_CLK, 3 XTAL_CLK."
+            }
+          }
+        }
+      }
+    },
+    "mcpwm": {
+      "name": "Motorsteuerungs-PWM",
+      "short": "PWM-Paare mit Totzeit, für Motoren und Leistungsstufen",
+      "facts": {
+        "mcpwm-units": {
+          "text": "Zwei MCPWM-Einheiten, jede mit drei Timern, drei Operatoren (je zwei Ausgänge), Fehlereingängen und einem Capture-Modul."
+        }
+      }
+    },
+    "rmt": {
+      "name": "RMT",
+      "short": "Spielt und zeichnet exakte Pulsfolgen auf: IR-Fernbedienungen, RGB-LEDs",
+      "spark": {
+        "unit": "Kanäle"
+      },
+      "facts": {
+        "rmt-channels": {
+          "text": "Acht Kanäle: 0-3 senden, 4-7 empfangen."
+        },
+        "rmt-ram": {
+          "text": "Jeder Puls besteht aus einem Pegel und einer Dauer. Die Kanäle teilen sich 384 × 32-Bit-Wörter RAM, standardmäßig 48 Wörter pro Kanal."
+        },
+        "rmt-carrier": {
+          "text": "Er kann beim Senden eine Trägerwelle hinzufügen und beim Empfangen entfernen, wie IR-Fernbedienungen es brauchen."
+        },
+        "rmt-rgb": {
+          "text": "Die adressierbare RGB-LED des Boards wird mit RMT-Pulsfolgen angesteuert; prüf, ob deine an GPIO38 oder GPIO48 hängt."
+        }
+      },
+      "registers": {
+        "0": {
+          "fields": {
+            "0": {
+              "does": "Mit dem Senden beginnen."
+            },
+            "1": {
+              "does": "Taktteiler: die Länge eines Ticks."
+            },
+            "2": {
+              "does": "Wie viele RAM-Blöcke zu je 48 Wörtern der Kanal nutzt."
+            },
+            "3": {
+              "does": "Eine Trägerwelle hinzufügen."
+            }
+          }
+        },
+        "1": {
+          "fields": {
+            "0": {
+              "does": "Was der Kanal gerade tut."
+            },
+            "1": {
+              "does": "Die Daten sind ausgegangen (Wrap-Modus aus)."
+            }
+          }
+        },
+        "2": {
+          "fields": {
+            "0": {
+              "does": "Taktquelle: 1 APB_CLK, 2 RC_FAST_CLK, 3 XTAL_CLK."
+            },
+            "1": {
+              "does": "Ganzzahliger Teil des Taktteilers."
+            },
+            "2": {
+              "does": "Registertakt an."
+            }
+          }
+        }
+      }
+    },
+    "pcnt": {
+      "name": "Pulszähler",
+      "short": "Zählt Flanken von allein: Encoder, Durchflussmesser",
+      "facts": {
+        "pcnt-units": {
+          "text": "Vier Zähleinheiten mit je zwei Kanälen, Glitch-Filtern und Pulsen bis zu 40 MHz."
+        }
+      }
+    },
+    "adc": {
+      "name": "SAR-ADC",
+      "short": "Zwei 12-Bit-Wandler, die eine Spannung in eine Zahl verwandeln",
+      "spark": {
+        "unit": "Kanäle"
+      },
+      "facts": {
+        "adc-count": {
+          "text": "Zwei 12-Bit-SAR-ADCs an 20 Pins: ADC1 an GPIO1-10, ADC2 an GPIO11-20."
+        },
+        "adc-atten": {
+          "text": "Die Referenz liegt bei etwa 1.1 V. Die Dämpfung (0, 2.5, 6 oder 12 dB) dehnt den Bereich; kalibriert misst 12 dB bis etwa 2.9 V."
+        },
+        "adc-rate": {
+          "text": "Bis zu 100 k Samples pro Sekunde, und DIG ADC1 kann Samples per DMA in den Speicher streamen."
+        },
+        "adc-accuracy": {
+          "text": "Nach der Kalibrierung liegt der Fehler bei 0 dB innerhalb von 5 mV und bei 12 dB innerhalb von 50 mV. Mitteln hilft."
+        },
+        "adc-wifi": {
+          "text": "ADC2 lässt sich nicht nutzen, solange WLAN an ist: Leg analoge Eingänge auf ADC1."
+        },
+        "adc-dig2": {
+          "text": "Der digitale (DMA-)Controller von ADC2 arbeitet nicht richtig, also nutzt kontinuierliches Sampling ADC1."
+        }
+      },
+      "registers": {
+        "0": {
+          "fields": {
+            "0": {
+              "does": "Das ADC1-Ergebnis."
+            },
+            "1": {
+              "does": "Wandlung fertig."
+            },
+            "2": {
+              "does": "Eine Wandlung starten (Software-Start)."
+            },
+            "3": {
+              "does": "Welcher Pin gemessen wird, als Bitmap."
+            }
+          }
+        },
+        "1": {
+          "fields": {
+            "0": {
+              "does": "2 Bit Dämpfung pro ADC1-Kanal."
+            }
+          }
+        },
+        "2": {
+          "fields": {
+            "0": {
+              "does": "1: Wandlungen per Software starten."
+            },
+            "1": {
+              "does": "ADC-Taktteiler."
+            },
+            "2": {
+              "does": "Wie viele Einträge der Musterliste gescannt werden."
+            }
+          }
+        },
+        "3": {
+          "fields": {
+            "0": {
+              "does": "Priorität der Funkeinheit bei der Nutzung von ADC2."
+            },
+            "1": {
+              "does": "Priorität deiner ADC2-Lesevorgänge."
+            }
+          }
+        }
+      }
+    },
+    "touch": {
+      "name": "Touch-Sensor",
+      "short": "Vierzehn Pins, die einen Finger über Kapazität spüren",
+      "spark": {
+        "unit": "Kanäle"
+      },
+      "facts": {
+        "touch-pins": {
+          "text": "14 Touch-Kanäle, T1-T14 an GPIO1-14, plus ein interner T0, der Rauschen misst."
+        },
+        "touch-hw": {
+          "text": "Eine Zustandsmaschine scannt die Pins von allein; die Hardware kann mit Filtern anhand einer Schwelle entscheiden, ob 'berührt' ist."
+        },
+        "touch-sleep": {
+          "text": "Touch arbeitet weiter, während die CPU schläft, und kann sie aus dem Deep-Sleep wecken."
+        },
+        "touch-water": {
+          "text": "Bis zu drei Pins können Annäherung erkennen; Feuchtigkeitstoleranz und Wasserunterdrückung sind eingebaut."
+        },
+        "touch-cs": {
+          "text": "Er hat den Conducted-Susceptibility-Test nicht bestanden, also können verrauschte Versorgungen Berührungen vortäuschen."
+        }
+      },
+      "registers": {
+        "0": {
+          "fields": {
+            "0": {
+              "does": "1: Scans per Software starten, 0: per Timer."
+            },
+            "1": {
+              "does": "Einen Scan starten (Software-Start)."
+            },
+            "2": {
+              "does": "Touch-Takt an."
+            }
+          }
+        },
+        "1": {
+          "fields": {
+            "0": {
+              "does": "Welche Touch-Kanäle melden."
+            },
+            "1": {
+              "does": "Rohdaten, Benchmark oder geglättete Daten lesen."
+            }
+          }
+        },
+        "2": {
+          "fields": {
+            "0": {
+              "does": "Finger-Schwelle für Touch-Pin n."
+            }
+          }
+        },
+        "3": {
+          "fields": {
+            "0": {
+              "does": "Welche Pins berührt sind, je ein Bit."
+            },
+            "1": {
+              "does": "Messung fertig."
+            }
+          }
+        },
+        "4": {
+          "fields": {
+            "0": {
+              "does": "Der Messwert von Touch-Pin n."
+            }
+          }
+        }
+      }
+    },
+    "temp-sensor": {
+      "name": "Temperatursensor",
+      "short": "Misst die Eigentemperatur des Dies",
+      "facts": {
+        "temp-sensor-range": {
+          "text": "Misst -40 bis 125 °C im Chip. Er zeigt mehr an als die Raumtemperatur, unter Last noch mehr."
+        }
+      }
+    },
+    "wifi": {
+      "name": "WLAN",
+      "short": "2.4 GHz 802.11b/g/n, als Station, als Access Point oder beides",
+      "spark": {
+        "unit": "Mbps"
+      },
+      "facts": {
+        "wifi-standard": {
+          "text": "802.11b/g/n auf 2.4 GHz (2412-2484 MHz), Kanäle mit 20 oder 40 MHz, bis zu 150 Mbps."
+        },
+        "wifi-modes": {
+          "text": "Station, SoftAP oder beides gleichzeitig, mit WPA2- und WPA3-Sicherheit in Hardware."
+        },
+        "wifi-power": {
+          "text": "Bis zu +21 dBm Sendeleistung (802.11b). Beim Senden fließen bis zu 340 mA, also muss die Versorgung mindestens 500 mA liefern."
+        },
+        "wifi-adc2": {
+          "text": "Solange WLAN an ist, steht ADC2 (GPIO11-20) nicht für deine Messungen zur Verfügung."
+        },
+        "wifi-pll": {
+          "text": "Die Funkeinheit arbeitet nur, solange die CPU von der PLL getaktet wird."
+        }
+      },
+      "registers": {
+        "0": {
+          "fields": {
+            "0": {
+              "does": "Quelle des CPU-Takts: 1 (PLL) ist für WLAN nötig."
+            },
+            "1": {
+              "does": "Die Quarzfrequenz in MHz (40)."
+            }
+          }
+        },
+        "1": {
+          "fields": {
+            "0": {
+              "does": "ADC2 an die Funkeinheit abgeben."
+            },
+            "1": {
+              "does": "Die Priorität der Funkeinheit an ADC2."
+            }
+          }
+        },
+        "2": {
+          "fields": {
+            "0": {
+              "does": "Weckquellen; das WLAN-Bit (0x20) lässt die Funkeinheit den Chip aus dem Light-Sleep wecken."
+            }
+          }
+        }
+      }
+    },
+    "ble": {
+      "name": "Bluetooth LE",
+      "short": "Bluetooth 5 Low Energy: Beacons, Handys, Tastaturen, MIDI",
+      "spark": {
+        "unit": "Mbps"
+      },
+      "facts": {
+        "ble-version": {
+          "text": "Bluetooth 5 LE und Bluetooth Mesh, mit 125 kbps, 500 kbps, 1 Mbps oder 2 Mbps."
+        },
+        "ble-range": {
+          "text": "Bis zu 20 dBm Sendeleistung, und die Coded PHY (125 kbps) hört bis hinunter zu -104.5 dBm, für große Reichweite."
+        },
+        "ble-features": {
+          "text": "Erweiterte und mehrfache Advertising-Sets, mehrere Verbindungen gleichzeitig als Central und Peripheral, Verschlüsselung auf der Link-Ebene."
+        },
+        "ble-antenna": {
+          "text": "WLAN und Bluetooth teilen sich eine Antenne; ein eingebauter Koexistenz-Mechanismus lässt sie abwechselnd senden."
+        }
+      },
+      "registers": {
+        "0": {
+          "fields": {
+            "0": {
+              "does": "Stromsparender Takt für die Funkeinheit an."
+            },
+            "1": {
+              "does": "Den 32-kHz-Quarz als diesen Takt nutzen."
+            },
+            "2": {
+              "does": "Den geteilten RC_FAST_CLK nutzen (Standard)."
+            }
+          }
+        },
+        "1": {
+          "fields": {
+            "0": {
+              "does": "Quelle des CPU-Takts: 1 (PLL) ist für Bluetooth nötig."
+            }
+          }
+        },
+        "2": {
+          "fields": {
+            "0": {
+              "does": "Weckquellen; das BT-Bit (0x400) lässt Bluetooth den Chip aus dem Light-Sleep wecken."
+            }
+          }
+        }
+      }
+    }
+  },
+  "pins": {
+    "0": {
+      "strapping": "Boot-Modus: high startet deine Firmware, low (mit GPIO46 low) wechselt in den Download-Modus"
+    },
+    "3": {
+      "strapping": "JTAG-Quelle, wird nur gelesen, wenn die eFuses es verlangen"
+    },
+    "41": {
+      "strapping": "Flash-Spannung (VDD_SPI): low ergibt 3.3 V, high ergibt 1.8 V"
+    },
+    "42": {
+      "strapping": "Boot-Modus (mit GPIO0) und die ROM-Bootmeldungen"
+    }
+  },
+  "gotchas": {
+    "strapping-pins": {
+      "title": "Vier Pins werden beim Reset gelesen",
+      "text": "GPIO0, GPIO3, GPIO45 und GPIO46 werden in dem Moment abgetastet, in dem der Chip aus dem Reset kommt: Sie bestimmen den Boot-Modus, die Flash-Spannung, das ROM-Log und die JTAG-Quelle. Was daran hängt, darf sie beim Einschalten nicht in die falsche Richtung ziehen. Nach dem Reset sind sie wieder normale Pins."
+    },
+    "gpio3-floating": {
+      "title": "GPIO3 hat beim Reset keinen Pull-Widerstand",
+      "text": "GPIO0 hat einen schwachen Pull-up und GPIO45/46 schwache Pull-downs, aber GPIO3 schwebt. Wenn die eFuses ihn die JTAG-Quelle wählen lassen, muss eine äußere Schaltung ihn auf einem klaren Pegel halten."
+    },
+    "adc2-wifi": {
+      "title": "ADC2 funktioniert nicht, solange WLAN an ist",
+      "text": "Die ADC2-Kanäle (GPIO11-20) lassen sich nicht gleichzeitig mit WLAN nutzen: Die Funkeinheit teilt sich ADC2 über einen Arbiter. Leg analoge Sensoren auf ADC1 (GPIO1-10), wie es die Sound-Labs mit GPIO6 tun."
+    },
+    "flash-pins": {
+      "title": "GPIO26-32 gehören zum Flash",
+      "text": "Diese sieben Pins führen den SPI-Bus zum Flash und PSRAM im Modul. Espressif sagt, man soll sie für nichts anderes nutzen, und der DevKitC-Header führt sie gar nicht erst heraus."
+    },
+    "octal-psram-pins": {
+      "title": "GPIO35-37 sind bei Octal-PSRAM-Modulen belegt",
+      "text": "Bei R8- und R16V-Modulen (8 oder 16 MB Octal-PSRAM, wie das N16R8 auf diesem Bench) sprechen GPIO35, 36 und 37 mit dem PSRAM. Sie liegen am Header, aber sie gehören nicht dir."
+    },
+    "r16v-1v8": {
+      "title": "GPIO47 und 48 laufen bei R16V-Modulen mit 1.8 V",
+      "text": "Module mit dem Chip ESP32-S3R16V stellen die Flash-Spannung auf 1.8 V, und GPIO47/48 teilen sich diese Versorgung. Ein 3.3-V-Bauteil an diesen Pins sieht die falschen Pegel."
+    },
+    "not-5v-tolerant": {
+      "title": "Die Pins sind nicht 5-V-tolerant",
+      "text": "Ein High-Eingang darf bis zur Versorgung des Pins plus 0.3 V gehen, also etwa 3.6 V auf einem 3.3-V-Board, und die Stromversorgungs-Pins sind höchstens für 3.6 V ausgelegt. 5 V von einem Sensor oder einem Arduino können den Chip beschädigen: Nimm einen Pegelwandler oder einen Spannungsteiler."
+    },
+    "usb-pins": {
+      "title": "GPIO19 und 20 sind die USB-Leitungen",
+      "text": "Standardmäßig gehören GPIO19 (D-) und GPIO20 (D+) zum eingebauten USB-Serial/JTAG-Port. Machst du sie zu normalen GPIOs, trennst du diesen USB-Port ab."
+    },
+    "uart0-boot-log": {
+      "title": "GPIO43 und 44 tragen das Boot-Log",
+      "text": "TX 43 und RX 44 sind UART0. Das ROM gibt dort seine Bootmeldungen aus, und auf dem DevKitC gehen sie an die USB-zu-UART-Brücke hinter dem COM-Port. Schließt du etwas anderes daran an, verlierst du den Serial Monitor, und das Gerät sieht die Bootmeldungen."
+    },
+    "jtag-pins": {
+      "title": "GPIO39-42 können JTAG sein",
+      "text": "MTCK, MTDO, MTDI und MTMS liegen an GPIO39-42. Sie sind standardmäßig frei, weil JTAG über USB läuft, aber ein externer Debugger braucht sie."
+    },
+    "power-up-glitch": {
+      "title": "Manche Pins zucken beim Einschalten auf low",
+      "text": "GPIO1-20 geben beim Hochfahren des Chips kurz einen Low-Pegel aus (etwa 60 µs), und GPIO18-20 zucken auch auf high. Steuere ein Relais oder einen Motortreiber nicht ohne Pull-Widerstand direkt von ihnen an."
+    },
+    "drive-17-18": {
+      "title": "GPIO17 und 18 zählen die Treiberstärke anders",
+      "text": "An den meisten Pins bedeutet Stufe 1 etwa 10 mA und 2 etwa 20 mA. An GPIO17 und 18 sind die beiden vertauscht, also gibt ihr Standard (Stufe 2) etwa 10 mA, nicht 20."
+    },
+    "deep-sleep-wake-pins": {
+      "title": "Nur GPIO0-21 können den Chip aus dem Deep-Sleep wecken",
+      "text": "Im Deep-Sleep bleibt nur die RTC-Domäne an, also können nur die RTC-GPIOs (0-21) den Chip wecken. Ein Taster an GPIO38 tut das nicht."
+    },
+    "rgb-led-pin": {
+      "title": "Die RGB-LED hängt an GPIO38 oder GPIO48",
+      "text": "Die Anleitung zum DevKitC-1 v1.1 legt die adressierbare RGB-LED auf GPIO38; viele Boards verdrahten sie mit GPIO48. Bleibt die LED dunkel, probier den anderen Pin."
+    },
+    "wifi-needs-pll": {
+      "title": "Die Funkeinheit braucht den PLL-Takt",
+      "text": "WLAN und Bluetooth LE arbeiten nur, solange der CPU-Takt von der PLL kommt. Läuft die CPU zum Stromsparen vom Quarz oder vom RC-Oszillator, steht die Funkeinheit still."
+    },
+    "efuse-one-way": {
+      "title": "eFuses lassen sich nur einmal brennen",
+      "text": "Ein eFuse-Bit, das auf 1 steht, geht nie zurück auf 0. Eine falsch gebrannte Flash-Spannungs- oder JTAG-eFuse ist endgültig, also lies zweimal, bevor du brennst."
+    },
+    "touch-not-cs-tested": {
+      "title": "Touch hat den Test für leitungsgebundene Störungen nicht bestanden",
+      "text": "Espressif vermerkt, dass der Touch-Sensor den Conducted-Susceptibility-Test nicht bestanden hat, also können verrauschte Versorgung oder lange Kabel falsche Berührungen auslösen. Auf dem Bench kein Problem, im Produkt überleg es dir zweimal."
+    }
+  },
+  "memory": {
+    "dcache": {
+      "name": "Externer Speicher, Datenseite",
+      "note": "32-MB-Fenster auf das PSRAM (lesen und schreiben) und den Flash (nur lesen), über den Daten-Cache. Große Puffer wie ein Bild oder ein Soundclip liegen hier."
+    },
+    "sram1-data": {
+      "name": "Internes SRAM 1 (Datenbus)",
+      "note": "416 KB, derselbe Speicher wie SRAM 1 am Befehlsbus. Deine Variablen, der Heap und die Stacks."
+    },
+    "sram2": {
+      "name": "Internes SRAM 2",
+      "note": "64 KB am Datenbus. 32 oder 64 KB davon können zum Daten-Cache werden, und dann kann die CPU diesen Teil nicht nutzen."
+    },
+    "rom1-data": {
+      "name": "Internes ROM 1 (Datenbus)",
+      "note": "128 KB, dieselben Wörter wie ROM 1 am Befehlsbus."
+    },
+    "rom0": {
+      "name": "Internes ROM 0",
+      "note": "256 KB Boot- und Low-Level-Code, ab Werk fest."
+    },
+    "rom1-instr": {
+      "name": "Internes ROM 1 (Befehlsbus)"
+    },
+    "sram0": {
+      "name": "Internes SRAM 0",
+      "note": "32 KB am Befehlsbus. 16 oder 32 KB davon können zum Befehls-Cache werden."
+    },
+    "sram1-instr": {
+      "name": "Internes SRAM 1 (Befehlsbus)",
+      "note": "Dieselben 416 KB wie SRAM 1 am Datenbus, als Befehlsspeicher gesehen: Code, der im internen RAM liegt, läuft von hier."
+    },
+    "icache": {
+      "name": "Externer Speicher, Befehlsseite",
+      "note": "32-MB-Fenster auf den Flash (oder das PSRAM), über den Befehls-Cache, in Seiten zu 64 KB. Code, der im Flash liegt, läuft von hier."
+    },
+    "rtc-slow": {
+      "name": "RTC-SLOW-Speicher",
+      "note": "8 KB, die den Deep-Sleep überleben und die der ULP-Koprozessor nutzen kann. Der TRM-Text nennt auch 0x5000_E000 ~ 0x5001_FFFF; seine Tabelle und Abbildung geben diesen Bereich an."
+    },
+    "peripherals": {
+      "name": "Peripherie-Register",
+      "note": "Die Register jeder Peripherie, je 4 KB: UART0 bei 0x6000_0000, GPIO bei 0x6000_4000, LED-PWM bei 0x6001_9000..."
+    },
+    "rtc-fast": {
+      "name": "RTC-FAST-Speicher",
+      "note": "8 KB nur für die Haupt-CPU, bleiben durch den Deep-Sleep erhalten."
+    }
+  },
+  "clocks": {
+    "nodes": {
+      "xtal": {
+        "name": "XTAL_CLK, Hauptquarz"
+      },
+      "pll": {
+        "name": "PLL_CLK"
+      },
+      "rc-fast": {
+        "name": "RC_FAST_CLK, schneller RC-Oszillator"
+      },
+      "rc-slow": {
+        "name": "RC_SLOW_CLK, langsamer RC-Oszillator"
+      },
+      "xtal32k": {
+        "name": "XTAL32K_CLK, 32-kHz-Quarz"
+      },
+      "rc-fast-div": {
+        "name": "RC_FAST_DIV_CLK (RC_FAST ÷ 256)"
+      },
+      "cpu-clk": {
+        "name": "CPU_CLK"
+      },
+      "apb-clk": {
+        "name": "APB_CLK"
+      },
+      "pll-f160m": {
+        "name": "PLL_F160M_CLK"
+      },
+      "pll-d2": {
+        "name": "PLL_D2_CLK"
+      },
+      "crypto-pwm-clk": {
+        "name": "CRYPTO_PWM_CLK"
+      },
+      "rtc-slow-clk": {
+        "name": "RTC_SLOW_CLK"
+      },
+      "rtc-fast-clk": {
+        "name": "RTC_FAST_CLK"
+      },
+      "cpu": {
+        "name": "CPU-Kerne"
+      },
+      "radio": {
+        "name": "WLAN und Bluetooth LE"
+      },
+      "uart": {
+        "name": "UART"
+      },
+      "spi": {
+        "name": "SPI"
+      },
+      "i2c": {
+        "name": "I2C"
+      },
+      "i2s": {
+        "name": "I2S"
+      },
+      "ledc": {
+        "name": "LED-PWM"
+      },
+      "rmt": {
+        "name": "RMT"
+      },
+      "saradc": {
+        "name": "SAR-ADC"
+      },
+      "crypto": {
+        "name": "Krypto-Beschleuniger"
+      },
+      "systimer": {
+        "name": "Systemtimer"
+      },
+      "rtc": {
+        "name": "RTC: Energieverwaltung, RTC-Watchdog"
+      },
+      "ulp": {
+        "name": "ULP-Koprozessor, Sensoren auf dem Chip"
+      }
+    },
+    "edges": {
+      "1": {
+        "label": "÷ (n+1), 20 MHz beim Reset"
+      },
+      "2": {
+        "label": "÷ 2, 3, 4 oder 6"
+      },
+      "4": {
+        "label": "÷ 256"
+      },
+      "23": {
+        "label": "hält das PWM im Light-Sleep am Laufen"
+      },
+      "32": {
+        "label": "÷ 2"
+      }
+    }
+  },
+  "power": {
+    "active-wifi-tx": {
+      "name": "Active, WLAN sendet",
+      "keepsOn": [
+        "CPU",
+        "HF-Schaltungen",
+        "WLAN",
+        "alle Peripherie"
+      ],
+      "note": "Spitzenstrom beim Dauersenden: 340 mA für 802.11b mit 21 dBm, etwa 285 mA für 802.11g/n."
+    },
+    "active-ble-tx": {
+      "name": "Active, Bluetooth LE sendet",
+      "keepsOn": [
+        "CPU",
+        "HF-Schaltungen",
+        "Bluetooth LE",
+        "alle Peripherie"
+      ],
+      "note": "176 mA bei 0 dBm; von 116 mA bei -15 dBm bis zu 335 mA bei 21 dBm."
+    },
+    "active-rx": {
+      "name": "Active, hört zu",
+      "keepsOn": [
+        "CPU",
+        "HF-Schaltungen",
+        "alle Peripherie"
+      ],
+      "note": "WLAN-Empfang braucht 88 mA (91 mA bei einem 40-MHz-Kanal), Bluetooth-LE-Empfang 93 mA, bei untätiger CPU."
+    },
+    "modem-sleep": {
+      "name": "Modem-Sleep",
+      "keepsOn": [
+        "CPU",
+        "digitale Peripherie",
+        "RTC"
+      ],
+      "note": "Funk aus, CPU mit 240 MHz: 32.9 mA im Leerlauf, 66.2 mA mit beiden Kernen unter Last, bis zu 107.9 mA mit jedem Peripherietakt an. In diesem Modus startet der Chip nach einem Reset."
+    },
+    "light-sleep": {
+      "name": "Light-Sleep",
+      "keepsOn": [
+        "RTC",
+        "RAM-Inhalt",
+        "digitale Peripherie (optional)"
+      ],
+      "note": "CPU pausiert, Flash-Versorgung und WLAN aus. Ein Timer, ein Pin, UART oder die Funkeinheit können ihn wecken. Rechne etwa 0.14 mA für 8 MB Octal-PSRAM dazu."
+    },
+    "deep-sleep-ulp": {
+      "name": "Deep-Sleep mit laufendem ULP",
+      "keepsOn": [
+        "RTC",
+        "RTC-Speicher",
+        "ULP-Koprozessor"
+      ],
+      "note": "0.17 mA mit dem ULP-FSM an, 0.19 mA mit dem ULP-RISC-V; 18 µA, wenn das ULP oder ein Touch-Sensor nur ab und zu aufwacht."
+    },
+    "deep-sleep": {
+      "name": "Deep-Sleep",
+      "keepsOn": [
+        "RTC",
+        "RTC-Speicher"
+      ],
+      "note": "Nur die RTC bleibt an: 8 µA mit den RTC-Peripheriegeräten, 7 µA allein mit dem RTC-Speicher."
+    },
+    "power-off": {
+      "name": "Ausgeschaltet",
+      "keepsOn": [],
+      "note": "CHIP_PU (der EN-Pin) auf low gehalten: Der Chip ist abgeschaltet und zieht etwa 1 µA."
+    }
+  }
+}

@@ -1,0 +1,1429 @@
+{
+  "headline": {
+    "cores": {
+      "unit": "核",
+      "label": "Xtensa LX7 内核"
+    },
+    "cpu-mhz": {
+      "unit": "MHz",
+      "label": "CPU 最高时钟"
+    },
+    "sram": {
+      "unit": "KB",
+      "label": "片上 SRAM"
+    },
+    "rom": {
+      "unit": "KB",
+      "label": "启动 ROM"
+    },
+    "gpio": {
+      "unit": "个 GPIO",
+      "label": "可编程引脚"
+    },
+    "adc-channels": {
+      "unit": "个通道",
+      "label": "12 位 ADC 输入"
+    },
+    "wifi-rate": {
+      "unit": "Mbps",
+      "label": "Wi-Fi 最高数据速率"
+    },
+    "deep-sleep": {
+      "unit": "µA",
+      "label": "深度睡眠电流"
+    }
+  },
+  "facts": {
+    "home-dual-core": {
+      "text": "两个 32 位 Xtensa LX7 内核，最高 240 MHz，带浮点运算单元、128 位数据总线和 SIMD 指令。"
+    },
+    "home-radio": {
+      "text": "Wi-Fi（802.11b/g/n，2.4 GHz）和 Bluetooth 5 LE 共用一根天线，并有内置的共存机制。"
+    },
+    "home-matrix": {
+      "text": "几乎任何外设信号都能接到几乎任何引脚：GPIO 矩阵能路由 175 个输入和 184 个输出。"
+    },
+    "home-psram": {
+      "text": "最多 32 MB 的外部 flash 或 PSRAM，通过缓存直接映射进 CPU 的地址空间。"
+    },
+    "home-ulp": {
+      "text": "两个小巧的协处理器（ULP-RISC-V 和 ULP-FSM），在主内核睡觉时继续读取传感器。"
+    },
+    "home-3v3": {
+      "text": "它的工作电压是 3.0-3.6 V，引脚不耐 5 V。"
+    }
+  },
+  "blocks": {
+    "cpu": {
+      "name": "CPU",
+      "short": "两个 Xtensa LX7 内核，最高 240 MHz",
+      "facts": {
+        "cpu-cores": {
+          "text": "双核 32 位 Xtensa LX7，五级流水线，最高 240 MHz，带浮点运算单元。"
+        },
+        "cpu-reset-clock": {
+          "text": "复位后 CPU 使用 40 MHz 晶振二分频的时钟运行，也就是 20 MHz，直到固件切换到 PLL。"
+        }
+      }
+    },
+    "ulp": {
+      "name": "ULP 协处理器",
+      "short": "一个小巧的 RISC-V 和一个状态机，在 CPU 睡眠时继续工作",
+      "facts": {
+        "ulp-two": {
+          "text": "两个协处理器 ULP-RISC-V 和 ULP-FSM，都运行在 17.5 MHz，配有 8 KB RTC 慢速内存。同一时间只能运行其中一个。"
+        },
+        "ulp-reach": {
+          "text": "它们能读取 ADC、触摸引脚和温度传感器，驱动 RTC GPIO 和 RTC I2C，然后唤醒主 CPU。"
+        }
+      }
+    },
+    "gdma": {
+      "name": "GDMA",
+      "short": "不占用 CPU，在内存和外设之间搬运数据",
+      "facts": {
+        "gdma-channels": {
+          "text": "五个发送通道和五个接收通道，由 SPI2、SPI3、UHCI0、I2S0、I2S1、LCD/CAM、AES、SHA、ADC 和 RMT 共用。"
+        },
+        "gdma-reach": {
+          "text": "它能访问最多 480 KB 内部 RAM 和 32 MB 外部 RAM，但访问不了用作缓存的 SRAM。"
+        }
+      }
+    },
+    "gpio": {
+      "name": "GPIO 和 IO MUX",
+      "short": "45 个引脚，外加一个能把几乎任何信号路由到几乎任何引脚的矩阵",
+      "spark": {
+        "unit": "个引脚"
+      },
+      "facts": {
+        "gpio-count": {
+          "text": "45 个 GPIO，编号 0-21 和 26-48。每个都可以做输入或输出。"
+        },
+        "gpio-matrix": {
+          "text": "GPIO 矩阵能把 175 个外设输入和 184 个外设输出连到任意引脚。快速信号（SPI、JTAG、UART）可以通过 IO MUX 绕过它，获得更好的时序。"
+        },
+        "gpio-drive": {
+          "text": "每个引脚的驱动能力约为 5、10、20 或 40 mA。默认是 20 mA（GPIO17/18 为 10 mA，GPIO19/20 为 40 mA）。"
+        },
+        "gpio-pulls": {
+          "text": "内部上拉和下拉电阻约 45 kΩ：接按钮够用，用在长长的 I2C 总线上就太弱了。"
+        },
+        "gpio-5v": {
+          "text": "输入电压最高可达供电电压加 0.3 V。引脚不耐 5 V。"
+        },
+        "gpio-hold": {
+          "text": "引脚可以被锁存（保持），这样它的电平在看门狗复位或深度睡眠期间也不会变。"
+        }
+      },
+      "registers": {
+        "0": {
+          "fields": {
+            "0": {
+              "does": "写 1 让对应引脚的输出变高（GPIO0-31）。写 0 的位保持不变。"
+            }
+          }
+        },
+        "1": {
+          "fields": {
+            "0": {
+              "does": "写 1 让对应引脚变成输出（GPIO0-31）。"
+            }
+          }
+        },
+        "2": {
+          "fields": {
+            "0": {
+              "does": "GPIO0-31 上的电平，每个引脚一位：1 为高，0 为低。"
+            }
+          }
+        },
+        "3": {
+          "fields": {
+            "0": {
+              "does": "由哪个外设输出信号驱动引脚 x。256 表示普通 GPIO 输出。"
+            },
+            "1": {
+              "does": "反相输出。"
+            }
+          }
+        },
+        "4": {
+          "fields": {
+            "0": {
+              "does": "打开内部下拉。"
+            },
+            "1": {
+              "does": "打开内部上拉。"
+            },
+            "2": {
+              "does": "使能输入。"
+            },
+            "3": {
+              "does": "驱动能力：0 约为 5 mA，3 约为 40 mA。"
+            },
+            "4": {
+              "does": "引脚采用哪个 IO MUX 功能（大多数引脚的功能 1 是 GPIO）。"
+            }
+          }
+        }
+      }
+    },
+    "rtc": {
+      "name": "RTC 和电源管理",
+      "short": "始终通电的一角，负责运行各种睡眠模式并唤醒芯片",
+      "facts": {
+        "rtc-modes": {
+          "text": "四种预设电源模式：Active、Modem-sleep、Light-sleep 和 Deep-sleep。深度睡眠时只有 RTC 保持通电。"
+        },
+        "rtc-memory": {
+          "text": "16 KB 的 RTC 内存（8 KB 快速、8 KB 慢速）在深度睡眠期间仍保留内容。"
+        },
+        "rtc-wake": {
+          "text": "从深度睡眠中，只有 RTC GPIO（0-21）、RTC 定时器、触摸和 ULP 能唤醒芯片。"
+        }
+      }
+    },
+    "sram": {
+      "name": "SRAM",
+      "short": "512 KB 快速片上 RAM，放你的代码和数据",
+      "facts": {
+        "sram-size": {
+          "text": "512 KB 片上 SRAM，外加 16 KB RTC SRAM。其中一部分可以分给缓存。"
+        },
+        "sram-speed": {
+          "text": "CPU 通常在一个时钟周期内就能读到 SRAM。"
+        }
+      }
+    },
+    "rom": {
+      "name": "ROM",
+      "short": "384 KB 出厂代码：引导程序和下载模式",
+      "facts": {
+        "rom-size": {
+          "text": "384 KB 只读存储器，存放启动代码和底层例程，无法修改。"
+        },
+        "rom-download": {
+          "text": "复位时如果 GPIO0 和 GPIO46 为低电平，ROM 就会通过 UART 或 USB 等待新固件，而不是运行你的固件。"
+        }
+      }
+    },
+    "flash-psram": {
+      "name": "Flash 和 PSRAM",
+      "short": "模组的 flash 存放你的程序；PSRAM 额外提供几兆字节的 RAM",
+      "facts": {
+        "flash-psram-size": {
+          "text": "最多 1 GB 外部 flash 和 1 GB 外部 RAM，通过缓存每次映射 32 MB。"
+        },
+        "flash-psram-clock": {
+          "text": "flash 默认最高运行在 80 MHz；它的扇区大约能擦写 100,000 次。"
+        },
+        "flash-psram-pins": {
+          "text": "GPIO26-32 承载 flash 总线，八线 PSRAM 还会占用 GPIO33-37。"
+        }
+      }
+    },
+    "cache": {
+      "name": "缓存",
+      "short": "把最近用过的 flash 和 PSRAM 内容放在快速 SRAM 里",
+      "facts": {
+        "cache-sizes": {
+          "text": "16 或 32 KB 的指令缓存和 32 或 64 KB 的数据缓存，由两个内核共用。"
+        }
+      }
+    },
+    "efuse": {
+      "name": "eFuse",
+      "short": "4096 个一次性位：MAC 地址、密钥和启动设置",
+      "facts": {
+        "efuse-size": {
+          "text": "4096 位一次性可编程存储器，其中 1792 位留给用户使用（密钥、设备 ID）。"
+        },
+        "efuse-one-way": {
+          "text": "eFuse 位一旦烧成 1，就再也变不回 0。"
+        }
+      }
+    },
+    "crypto": {
+      "name": "加密加速器",
+      "short": "硬件 SHA、AES、RSA、HMAC 和数字签名",
+      "facts": {
+        "crypto-set": {
+          "text": "SHA（从 SHA-1 到 SHA-512）、AES-128/256、RSA、HMAC 和一个 RSA 数字签名模块，比软件实现快得多。"
+        },
+        "crypto-flash": {
+          "text": "外部 flash 和 PSRAM 中的固件与数据，可以用 XTS-AES 即时加密和解密。"
+        }
+      }
+    },
+    "rng": {
+      "name": "随机数发生器",
+      "short": "来自热噪声的真随机数",
+      "facts": {
+        "rng-source": {
+          "text": "每次读取 32 位的 RNG_DATA_REG 都是一个真随机数，种子来自 ADC 噪声和时钟抖动。"
+        },
+        "rng-entropy": {
+          "text": "想要完整的熵，就让一个 ADC 源保持运行（SAR ADC 或射频的高速 ADC）；只靠时钟抖动会弱一些。"
+        }
+      }
+    },
+    "uart": {
+      "name": "UART",
+      "short": "三个串口，其中一个就是你在串口监视器里看到的那个",
+      "spark": {
+        "unit": "Mbps"
+      },
+      "facts": {
+        "uart-count": {
+          "text": "三个 UART 控制器（UART0、1、2），最高 5 Mbps，支持 RS485 和 IrDA 模式。"
+        },
+        "uart-frame": {
+          "text": "5 到 8 个数据位，可选校验位，以及 1、1.5 或 2 个停止位。（数据手册还列出了 3 个停止位；TRM 没有。）"
+        },
+        "uart-fifo": {
+          "text": "三个 UART 共用 1024 字节的 FIFO RAM，能检测波特率，并用硬件处理 RTS/CTS 流控。"
+        },
+        "uart-boot": {
+          "text": "UART0 在 GPIO43（TX）和 44（RX）上，ROM 的启动日志就从这里打印。"
+        }
+      },
+      "registers": {
+        "0": {
+          "fields": {
+            "0": {
+              "does": "读出收到的一个字节，或写入一个字节来发送。"
+            }
+          }
+        },
+        "1": {
+          "fields": {
+            "0": {
+              "does": "波特率分频器的整数部分。"
+            },
+            "1": {
+              "does": "分频器的小数部分。"
+            }
+          }
+        },
+        "2": {
+          "fields": {
+            "0": {
+              "does": "接收 FIFO 中等待读取的字节数。"
+            },
+            "1": {
+              "does": "发送 FIFO 中还没发出的字节数。"
+            }
+          }
+        },
+        "3": {
+          "fields": {
+            "0": {
+              "does": "校验模式。"
+            },
+            "1": {
+              "does": "打开校验检查。"
+            },
+            "2": {
+              "does": "数据位（3 表示 8 位）。"
+            },
+            "3": {
+              "does": "停止位长度。"
+            },
+            "4": {
+              "does": "把 TX 环回到 RX 做自检。"
+            }
+          }
+        },
+        "4": {
+          "fields": {
+            "0": {
+              "does": "时钟源：1 APB_CLK，2 RC_FAST_CLK，3 XTAL_CLK。"
+            },
+            "1": {
+              "does": "波特率发生器前面的分频器。"
+            }
+          }
+        }
+      }
+    },
+    "i2c": {
+      "name": "I2C",
+      "short": "两线总线，连接传感器和小型显示屏",
+      "spark": {
+        "unit": "Mbps"
+      },
+      "facts": {
+        "i2c-count": {
+          "text": "两个 I2C 控制器，每个都可做主机或从机，支持 7 位和 10 位地址。"
+        },
+        "i2c-speed": {
+          "text": "标准模式（100 kbit/s）和快速模式（400 kbit/s）；数据手册还提到，只要上拉足够强，最高可到 800 kbit/s。"
+        },
+        "i2c-commands": {
+          "text": "主机模式下，你最多可以排队八条命令（写、读、停止……），然后由硬件跑完整个传输。"
+        },
+        "i2c-pullups": {
+          "text": "SDA 和 SCL 是开漏输出：总线需要上拉电阻，而内部的 45 kΩ 电阻很弱。"
+        }
+      },
+      "registers": {
+        "0": {
+          "fields": {
+            "0": {
+              "does": "SCL 保持低电平多久，以模块时钟周期计。"
+            }
+          }
+        },
+        "1": {
+          "fields": {
+            "0": {
+              "does": "置 1 让控制器成为主机。"
+            },
+            "1": {
+              "does": "开始运行排队的命令。"
+            },
+            "2": {
+              "does": "0 表示 SDA 为开漏。"
+            }
+          }
+        },
+        "2": {
+          "fields": {
+            "0": {
+              "does": "最后一个应答位：0 为 ACK，1 为 NACK。"
+            },
+            "1": {
+              "does": "总线正忙。"
+            },
+            "2": {
+              "does": "另一个主机赢得了总线。"
+            }
+          }
+        },
+        "3": {
+          "fields": {
+            "0": {
+              "does": "从 RX FIFO 读，向 TX FIFO 写。"
+            }
+          }
+        },
+        "4": {
+          "fields": {
+            "0": {
+              "does": "第一条命令：操作码（1 WRITE，2 STOP，3 READ，4 END，6 RSTART）和字节数。"
+            },
+            "1": {
+              "does": "命令执行完后置位。"
+            }
+          }
+        }
+      }
+    },
+    "i2s": {
+      "name": "I2S",
+      "short": "数字音频的输入和输出：麦克风、功放、编解码器",
+      "spark": {
+        "unit": "MHz"
+      },
+      "facts": {
+        "i2s-count": {
+          "text": "两个 I2S 接口（I2S0、I2S1），发送单元和接收单元各自独立，可以同时运行。"
+        },
+        "i2s-format": {
+          "text": "8、16、24 或 32 位采样，采样率 8 到 192 kHz，位时钟从 10 kHz 到 40 MHz。"
+        },
+        "i2s-pdm": {
+          "text": "只有 I2S0 能把 PDM 麦克风信号转换成 PCM，也能把 PCM 转成 PDM。"
+        },
+        "i2s-dma": {
+          "text": "音频通过专用的 DMA 传输，不需要 CPU 逐个拷贝采样。"
+        }
+      },
+      "registers": {
+        "0": {
+          "fields": {
+            "0": {
+              "does": "复位接收单元。"
+            },
+            "1": {
+              "does": "开始接收。"
+            },
+            "2": {
+              "does": "BCK 和 WS 取自外部（从机）。"
+            },
+            "3": {
+              "does": "单声道模式。"
+            },
+            "4": {
+              "does": "PDM 接收模式。"
+            }
+          }
+        },
+        "1": {
+          "fields": {
+            "0": {
+              "does": "复位发送单元。"
+            },
+            "1": {
+              "does": "开始发送。"
+            },
+            "2": {
+              "does": "单声道模式。"
+            },
+            "3": {
+              "does": "哪些声道携带数据。"
+            }
+          }
+        },
+        "2": {
+          "fields": {
+            "0": {
+              "does": "位时钟分频器（不能为 1）。"
+            },
+            "1": {
+              "does": "每个采样的位数减 1：16 位写 15。"
+            }
+          }
+        },
+        "3": {
+          "fields": {
+            "0": {
+              "does": "时钟分频器的整数部分。"
+            },
+            "1": {
+              "does": "打开接收时钟。"
+            },
+            "2": {
+              "does": "时钟源：0 XTAL，1 PLL_D2，2 PLL_F160M，3 MCLK 输入。"
+            }
+          }
+        }
+      }
+    },
+    "spi": {
+      "name": "SPI",
+      "short": "快速的四线总线，连接屏幕、读卡器和 flash",
+      "spark": {
+        "unit": "MHz"
+      },
+      "facts": {
+        "spi-count": {
+          "text": "四个 SPI 控制器：SPI0 和 SPI1 负责与 flash 和 PSRAM 通信；GP-SPI2 和 GP-SPI3 归你使用。"
+        },
+        "spi-speed": {
+          "text": "做主机最高 80 MHz，做从机最高 60 MHz，四种时钟模式（0-3）都支持。"
+        },
+        "spi-lines": {
+          "text": "GP-SPI2 有六个片选，最多 8 根数据线；GP-SPI3 有三个片选，最多 4 根数据线。"
+        },
+        "spi-dma": {
+          "text": "CPU 每次传输最多搬 64 字节；用 DMA 时单次传输最多 32 KB，分段传输则没有上限。"
+        },
+        "spi-iomux": {
+          "text": "GP-SPI2（FSPI）可以通过 IO MUX 或 GPIO 矩阵连到引脚；GP-SPI3 始终要经过矩阵。"
+        }
+      },
+      "registers": {
+        "0": {
+          "fields": {
+            "0": {
+              "does": "开始一次传输；完成后自动清零。"
+            },
+            "1": {
+              "does": "把新设置复制到 SPI 时钟域。"
+            }
+          }
+        },
+        "1": {
+          "fields": {
+            "0": {
+              "does": "1：SPI 时钟 = APB 时钟（80 MHz）。"
+            },
+            "1": {
+              "does": "预分频器。"
+            },
+            "2": {
+              "does": "分频器：f = APB / (PRE+1) / (N+1)。"
+            }
+          }
+        },
+        "2": {
+          "fields": {
+            "0": {
+              "does": "传输的数据长度，以位计，减 1。"
+            }
+          }
+        },
+        "3": {
+          "fields": {
+            "0": {
+              "does": "置 1 禁用 CS0 引脚。"
+            },
+            "1": {
+              "does": "空闲时的时钟电平（极性，CPOL）。"
+            }
+          }
+        },
+        "4": {
+          "fields": {
+            "0": {
+              "does": "16 个数据缓冲区（SPI_W0 到 W15，共 64 字节）中的第一个，用于 CPU 驱动的传输。"
+            }
+          }
+        }
+      }
+    },
+    "lcd-cam": {
+      "name": "LCD 和摄像头",
+      "short": "8 位或 16 位并行总线，连接大屏幕和摄像头传感器",
+      "facts": {
+        "lcd-cam-bus": {
+          "text": "8 到 16 位并行输出（RGB、I8080、MOTO6800），以及来自 DVP 摄像头的输入，最高 40 MHz。"
+        }
+      }
+    },
+    "twai": {
+      "name": "TWAI (CAN)",
+      "short": "来自汽车和机器的稳健两线总线",
+      "facts": {
+        "twai-spec": {
+          "text": "兼容 CAN 2.0（ISO 11898-1），11 位或 29 位 ID，速率从 1 kbit/s 到 1 Mbit/s。"
+        },
+        "twai-transceiver": {
+          "text": "它需要一颗外部收发器芯片才能接上总线。"
+        }
+      }
+    },
+    "usb-otg": {
+      "name": "USB OTG",
+      "short": "全速 USB 主机或设备：键盘、MIDI、大容量存储",
+      "facts": {
+        "usb-otg-speed": {
+          "text": "USB 2.0 全速（12 Mbit/s）和低速，可做主机或设备，带片上收发器。"
+        },
+        "usb-otg-shared": {
+          "text": "它与 USB Serial/JTAG 端口共用片上 USB 收发器（GPIO19/20）。"
+        }
+      }
+    },
+    "usb-serial-jtag": {
+      "name": "USB Serial/JTAG",
+      "short": "两个引脚就是一个串口加一个调试器，不需要转接器",
+      "spark": {
+        "unit": "Mbps"
+      },
+      "facts": {
+        "usb-serial-jtag-what": {
+          "text": "一个固定的 USB 设备：CDC-ACM 串口加上给调试器用的 JTAG 适配器，在 GPIO19（D-）和 20（D+）上。"
+        },
+        "usb-serial-jtag-speed": {
+          "text": "只支持 USB 2.0 全速：12 Mbit/s，没有 480 Mbit/s 的高速。"
+        },
+        "usb-serial-jtag-reset": {
+          "text": "主机可以通过 USB 复位芯片并让它进入下载模式，所以不需要 BOOT 按钮。"
+        },
+        "usb-serial-jtag-pins": {
+          "text": "把 GPIO19/20 当作普通 GPIO 使用，就会关闭这个端口。"
+        }
+      },
+      "registers": {
+        "0": {
+          "fields": {
+            "0": {
+              "does": "从主机读一个字节，或写入一个字节来发送（每个数据包最多 64 字节）。"
+            }
+          }
+        },
+        "1": {
+          "fields": {
+            "0": {
+              "does": "发送已写入的内容。"
+            },
+            "1": {
+              "does": "还有空间可写。"
+            },
+            "2": {
+              "does": "有来自主机的字节在等待。"
+            }
+          }
+        },
+        "2": {
+          "fields": {
+            "0": {
+              "does": "收到了来自主机的数据包。"
+            },
+            "1": {
+              "does": "发送缓冲区已空。"
+            },
+            "2": {
+              "does": "主机复位了总线。"
+            }
+          }
+        },
+        "3": {
+          "fields": {
+            "0": {
+              "does": "0 内部 PHY，1 外部。"
+            },
+            "1": {
+              "does": "D+ 上拉：告诉主机这里有设备。"
+            },
+            "2": {
+              "does": "焊盘用作 USB 功能。"
+            }
+          }
+        }
+      }
+    },
+    "sdmmc": {
+      "name": "SD/MMC 主机",
+      "short": "以 1 位、4 位或 8 位模式与 SD 卡和 eMMC 通信",
+      "facts": {
+        "sdmmc-spec": {
+          "text": "两个卡槽（不能同时使用），支持 SD 3.0/3.01 和最高 4.51 的 MMC，最高 80 MHz。"
+        }
+      }
+    },
+    "timers": {
+      "name": "定时器",
+      "short": "一个 52 位系统定时器和四个 54 位通用定时器",
+      "facts": {
+        "timers-systimer": {
+          "text": "52 位系统定时器以晶振提供的 16 MHz 计数，给操作系统提供时钟节拍。"
+        },
+        "timers-timg": {
+          "text": "两个定时器组，每组两个 54 位定时器，带 16 位预分频器、报警和自动重载。"
+        }
+      }
+    },
+    "wdt": {
+      "name": "看门狗",
+      "short": "程序卡住时复位芯片",
+      "facts": {
+        "wdt-three": {
+          "text": "三个数字看门狗（每个定时器组一个，RTC 里一个），外加一个模拟的超级看门狗。"
+        },
+        "wdt-boot": {
+          "text": "从 flash 启动时，RTC 看门狗和第一个定时器组的看门狗会自动打开。"
+        }
+      }
+    },
+    "ledc": {
+      "name": "LED PWM",
+      "short": "八个 PWM 通道，能自己完成 LED 的调光和渐变",
+      "spark": {
+        "unit": "个通道"
+      },
+      "facts": {
+        "ledc-channels": {
+          "text": "八个 PWM 通道，由四个定时器驱动。几个通道可以共用一个定时器。"
+        },
+        "ledc-resolution": {
+          "text": "占空比分辨率最高 14 位（数据手册：1 ms 周期内 14 位）。"
+        },
+        "ledc-fade": {
+          "text": "硬件渐变：占空比自己一步步升高或降低，渐变结束时触发一个中断。"
+        },
+        "ledc-sleep": {
+          "text": "它使用 RC_FAST_CLK 作时钟，在 Light-sleep 中也能让 PWM 继续运行。"
+        }
+      },
+      "registers": {
+        "0": {
+          "fields": {
+            "0": {
+              "does": "这个通道跟随四个定时器中的哪一个。"
+            },
+            "1": {
+              "does": "打开输出。"
+            },
+            "2": {
+              "does": "应用新的占空比和设置。"
+            }
+          }
+        },
+        "1": {
+          "fields": {
+            "0": {
+              "does": "占空比：计数到这个值时输出变低。"
+            }
+          }
+        },
+        "2": {
+          "fields": {
+            "0": {
+              "does": "开始渐变。"
+            },
+            "1": {
+              "does": "向上渐变（1）或向下渐变（0）。"
+            },
+            "2": {
+              "does": "渐变的步数。"
+            }
+          }
+        },
+        "3": {
+          "fields": {
+            "0": {
+              "does": "计数器范围：以位计的占空比分辨率。"
+            },
+            "1": {
+              "does": "时钟分频器；低 8 位是小数部分。"
+            }
+          }
+        },
+        "4": {
+          "fields": {
+            "0": {
+              "does": "所有定时器的时钟：1 APB_CLK，2 RC_FAST_CLK，3 XTAL_CLK。"
+            }
+          }
+        }
+      }
+    },
+    "mcpwm": {
+      "name": "电机控制 PWM",
+      "short": "带死区时间的成对 PWM，用于电机和功率级",
+      "facts": {
+        "mcpwm-units": {
+          "text": "两个 MCPWM 单元，每个有三个定时器、三个操作器（各有两路输出）、故障输入和一个捕获模块。"
+        }
+      }
+    },
+    "rmt": {
+      "name": "RMT",
+      "short": "播放和录制精确的脉冲序列：红外遥控、RGB LED",
+      "spark": {
+        "unit": "个通道"
+      },
+      "facts": {
+        "rmt-channels": {
+          "text": "八个通道：0-3 用于发送，4-7 用于接收。"
+        },
+        "rmt-ram": {
+          "text": "每个脉冲由一个电平加一段时长组成。通道共用 384 × 32 位字的 RAM，默认每个通道 48 个字。"
+        },
+        "rmt-carrier": {
+          "text": "发送时它可以叠加载波，接收时再把载波去掉，红外遥控正需要这样。"
+        },
+        "rmt-rgb": {
+          "text": "开发板上的可寻址 RGB LED 由 RMT 脉冲序列驱动；请确认你的灯接在 GPIO38 还是 GPIO48 上。"
+        }
+      },
+      "registers": {
+        "0": {
+          "fields": {
+            "0": {
+              "does": "开始发送。"
+            },
+            "1": {
+              "does": "时钟分频器：一个节拍的长度。"
+            },
+            "2": {
+              "does": "这个通道使用多少个 48 字的 RAM 块。"
+            },
+            "3": {
+              "does": "叠加载波。"
+            }
+          }
+        },
+        "1": {
+          "fields": {
+            "0": {
+              "does": "通道正在做什么。"
+            },
+            "1": {
+              "does": "数据用完了（回绕模式关闭时）。"
+            }
+          }
+        },
+        "2": {
+          "fields": {
+            "0": {
+              "does": "时钟源：1 APB_CLK，2 RC_FAST_CLK，3 XTAL_CLK。"
+            },
+            "1": {
+              "does": "时钟分频器的整数部分。"
+            },
+            "2": {
+              "does": "打开寄存器时钟。"
+            }
+          }
+        }
+      }
+    },
+    "pcnt": {
+      "name": "脉冲计数器",
+      "short": "自己数边沿：编码器、流量计",
+      "facts": {
+        "pcnt-units": {
+          "text": "四个计数单元，每个有两个通道，带毛刺滤波器，脉冲最高 40 MHz。"
+        }
+      }
+    },
+    "adc": {
+      "name": "SAR ADC",
+      "short": "两个 12 位转换器，把电压变成数字",
+      "spark": {
+        "unit": "个通道"
+      },
+      "facts": {
+        "adc-count": {
+          "text": "两个 12 位 SAR ADC，共 20 个引脚：ADC1 在 GPIO1-10，ADC2 在 GPIO11-20。"
+        },
+        "adc-atten": {
+          "text": "参考电压约 1.1 V。衰减（0、2.5、6 或 12 dB）能扩大量程；校准后，12 dB 最高可读到约 2.9 V。"
+        },
+        "adc-rate": {
+          "text": "每秒最多 10 万个采样，DIG ADC1 还能通过 DMA 把采样流式送进内存。"
+        },
+        "adc-accuracy": {
+          "text": "校准后，误差在 0 dB 时不超过 5 mV，在 12 dB 时不超过 50 mV。多次平均会有帮助。"
+        },
+        "adc-wifi": {
+          "text": "Wi-Fi 打开时不能使用 ADC2：把模拟输入接到 ADC1 上。"
+        },
+        "adc-dig2": {
+          "text": "ADC2 的数字（DMA）控制器不能正常工作，所以连续采样要用 ADC1。"
+        }
+      },
+      "registers": {
+        "0": {
+          "fields": {
+            "0": {
+              "does": "ADC1 的转换结果。"
+            },
+            "1": {
+              "does": "转换完成。"
+            },
+            "2": {
+              "does": "开始一次转换（软件触发）。"
+            },
+            "3": {
+              "does": "要测量哪个引脚，用位图表示。"
+            }
+          }
+        },
+        "1": {
+          "fields": {
+            "0": {
+              "does": "每个 ADC1 通道 2 位的衰减设置。"
+            }
+          }
+        },
+        "2": {
+          "fields": {
+            "0": {
+              "does": "1：由软件启动转换。"
+            },
+            "1": {
+              "does": "ADC 时钟分频器。"
+            },
+            "2": {
+              "does": "要扫描多少个模式表条目。"
+            }
+          }
+        },
+        "3": {
+          "fields": {
+            "0": {
+              "does": "射频使用 ADC2 的优先级。"
+            },
+            "1": {
+              "does": "你读取 ADC2 的优先级。"
+            }
+          }
+        }
+      }
+    },
+    "touch": {
+      "name": "触摸传感器",
+      "short": "十四个引脚，通过电容感知手指",
+      "spark": {
+        "unit": "个通道"
+      },
+      "facts": {
+        "touch-pins": {
+          "text": "14 个触摸通道，T1-T14 在 GPIO1-14 上，外加一个测量噪声的内部通道 T0。"
+        },
+        "touch-hw": {
+          "text": "状态机自己扫描各个引脚；硬件可以对照阈值判断“被触摸了”，还带滤波器。"
+        },
+        "touch-sleep": {
+          "text": "CPU 睡眠时触摸仍在工作，还能把芯片从深度睡眠中唤醒。"
+        },
+        "touch-water": {
+          "text": "最多三个引脚可以做接近感应；内置了防潮和防水干扰的功能。"
+        },
+        "touch-cs": {
+          "text": "它没有通过传导敏感度（Conducted Susceptibility）测试，所以嘈杂的电源可能造成误触。"
+        }
+      },
+      "registers": {
+        "0": {
+          "fields": {
+            "0": {
+              "does": "1：由软件启动扫描，0：由定时器启动。"
+            },
+            "1": {
+              "does": "开始一次扫描（软件触发）。"
+            },
+            "2": {
+              "does": "打开触摸时钟。"
+            }
+          }
+        },
+        "1": {
+          "fields": {
+            "0": {
+              "does": "哪些触摸通道要上报。"
+            },
+            "1": {
+              "does": "读取原始数据、基准数据或平滑后的数据。"
+            }
+          }
+        },
+        "2": {
+          "fields": {
+            "0": {
+              "does": "触摸引脚 n 的手指阈值。"
+            }
+          }
+        },
+        "3": {
+          "fields": {
+            "0": {
+              "does": "哪些引脚被触摸了，每个引脚一位。"
+            },
+            "1": {
+              "does": "测量完成。"
+            }
+          }
+        },
+        "4": {
+          "fields": {
+            "0": {
+              "does": "触摸引脚 n 的读数。"
+            }
+          }
+        }
+      }
+    },
+    "temp-sensor": {
+      "name": "温度传感器",
+      "short": "测量裸片自身的温度",
+      "facts": {
+        "temp-sensor-range": {
+          "text": "测量芯片内部 -40 到 125 °C。它读出的温度比室温高，负载越大越明显。"
+        }
+      }
+    },
+    "wifi": {
+      "name": "Wi-Fi",
+      "short": "2.4 GHz 802.11b/g/n，可做 station、接入点或两者兼具",
+      "spark": {
+        "unit": "Mbps"
+      },
+      "facts": {
+        "wifi-standard": {
+          "text": "2.4 GHz 的 802.11b/g/n（2412-2484 MHz），20 或 40 MHz 信道，最高 150 Mbps。"
+        },
+        "wifi-modes": {
+          "text": "Station、SoftAP，或两者同时运行，WPA2 和 WPA3 安全功能由硬件实现。"
+        },
+        "wifi-power": {
+          "text": "输出功率最高 +21 dBm（802.11b）。发射时电流最高 340 mA，所以电源至少要能提供 500 mA。"
+        },
+        "wifi-adc2": {
+          "text": "Wi-Fi 打开时，ADC2（GPIO11-20）不能用来读取你的信号。"
+        },
+        "wifi-pll": {
+          "text": "只有 CPU 使用 PLL 作时钟时，射频才能工作。"
+        }
+      },
+      "registers": {
+        "0": {
+          "fields": {
+            "0": {
+              "does": "CPU 时钟源：Wi-Fi 要求选 1（PLL）。"
+            },
+            "1": {
+              "does": "晶振频率，单位 MHz（40）。"
+            }
+          }
+        },
+        "1": {
+          "fields": {
+            "0": {
+              "does": "把 ADC2 交给射频使用。"
+            },
+            "1": {
+              "does": "射频在 ADC2 上的优先级。"
+            }
+          }
+        },
+        "2": {
+          "fields": {
+            "0": {
+              "does": "唤醒源；Wi-Fi 位（0x20）让射频能把芯片从 Light-sleep 中唤醒。"
+            }
+          }
+        }
+      }
+    },
+    "ble": {
+      "name": "Bluetooth LE",
+      "short": "Bluetooth 5 低功耗：信标、手机、键盘、MIDI",
+      "spark": {
+        "unit": "Mbps"
+      },
+      "facts": {
+        "ble-version": {
+          "text": "Bluetooth 5 LE 和 Bluetooth Mesh，速率 125 kbps、500 kbps、1 Mbps 或 2 Mbps。"
+        },
+        "ble-range": {
+          "text": "输出最高 20 dBm，编码 PHY（125 kbps）的接收灵敏度可达 -104.5 dBm，适合远距离。"
+        },
+        "ble-features": {
+          "text": "扩展广播和多个广播集，可同时作为中心设备和外设建立多个连接，支持链路层加密。"
+        },
+        "ble-antenna": {
+          "text": "Wi-Fi 和蓝牙共用一根天线；内置的共存机制让它们轮流使用。"
+        }
+      },
+      "registers": {
+        "0": {
+          "fields": {
+            "0": {
+              "does": "打开射频的低功耗时钟。"
+            },
+            "1": {
+              "does": "用 32 kHz 晶振作这个时钟。"
+            },
+            "2": {
+              "does": "使用分频后的 RC_FAST_CLK（默认）。"
+            }
+          }
+        },
+        "1": {
+          "fields": {
+            "0": {
+              "does": "CPU 时钟源：蓝牙要求选 1（PLL）。"
+            }
+          }
+        },
+        "2": {
+          "fields": {
+            "0": {
+              "does": "唤醒源；BT 位（0x400）让蓝牙能把芯片从 Light-sleep 中唤醒。"
+            }
+          }
+        }
+      }
+    }
+  },
+  "pins": {
+    "0": {
+      "strapping": "启动模式：高电平运行你的固件，低电平（且 GPIO46 也为低）进入下载模式"
+    },
+    "3": {
+      "strapping": "JTAG 来源，只有 eFuse 要求时才会读取"
+    },
+    "41": {
+      "strapping": "flash 电压（VDD_SPI）：低电平为 3.3 V，高电平为 1.8 V"
+    },
+    "42": {
+      "strapping": "启动模式（与 GPIO0 配合）和 ROM 启动信息"
+    }
+  },
+  "gotchas": {
+    "strapping-pins": {
+      "title": "有四个引脚会在复位时被读取",
+      "text": "GPIO0、GPIO3、GPIO45 和 GPIO46 会在芯片刚走出复位的那一刻被采样：它们决定启动模式、flash 电压、ROM 日志和 JTAG 来源。接到它们上面的东西，不能在上电时把它们拉向错误的电平。复位之后，它们又变回普通引脚。"
+    },
+    "gpio3-floating": {
+      "title": "GPIO3 在复位时没有上下拉电阻",
+      "text": "GPIO0 有一个弱上拉，GPIO45/46 有弱下拉，但 GPIO3 是悬空的。当 eFuse 让它来选择 JTAG 来源时，需要外部电路把它保持在明确的电平上。"
+    },
+    "adc2-wifi": {
+      "title": "Wi-Fi 打开时 ADC2 就停止工作",
+      "text": "ADC2 通道（GPIO11-20）不能和 Wi-Fi 同时使用：射频通过仲裁器共用 ADC2。把模拟传感器接到 ADC1（GPIO1-10）上，就像声音实验在 GPIO6 上做的那样。"
+    },
+    "flash-pins": {
+      "title": "GPIO26-32 属于 flash",
+      "text": "这七个引脚承载模组内部通往 flash 和 PSRAM 的 SPI 总线。乐鑫建议不要把它们用作别的用途，DevKitC 的排针上甚至根本没有引出它们。"
+    },
+    "octal-psram-pins": {
+      "title": "八线 PSRAM 模组上 GPIO35-37 已被占用",
+      "text": "在 R8 和 R16V 模组（8 或 16 MB 八线 PSRAM，比如这个工作台上的 N16R8）上，GPIO35、36 和 37 用来与 PSRAM 通信。它们在排针上，但不归你使用。"
+    },
+    "r16v-1v8": {
+      "title": "R16V 模组上 GPIO47 和 48 工作在 1.8 V",
+      "text": "采用 ESP32-S3R16V 芯片的模组把 flash 电压设为 1.8 V，GPIO47/48 与它共用这路供电。接在这两个引脚上的 3.3 V 器件会看到错误的电平。"
+    },
+    "not-5v-tolerant": {
+      "title": "引脚不耐 5 V",
+      "text": "高电平输入最高可达引脚供电电压加 0.3 V，也就是 3.3 V 的板子上约 3.6 V，而电源引脚最高只耐 3.6 V。来自传感器或 Arduino 的 5 V 可能损坏芯片：请使用电平转换器或分压器。"
+    },
+    "usb-pins": {
+      "title": "GPIO19 和 20 是 USB 的两根线",
+      "text": "默认情况下，GPIO19（D-）和 GPIO20（D+）属于内置的 USB Serial/JTAG 端口。把它们变成普通 GPIO，就会切断这个 USB 端口。"
+    },
+    "uart0-boot-log": {
+      "title": "GPIO43 和 44 承载启动日志",
+      "text": "TX 43 和 RX 44 就是 UART0。ROM 在这里打印启动信息，在 DevKitC 上，这些信息会送到 COM 端口背后的 USB 转 UART 桥接芯片。如果把别的东西接到它们上面，你就失去了串口监视器，而且那个设备还会收到启动信息。"
+    },
+    "jtag-pins": {
+      "title": "GPIO39-42 可以作 JTAG",
+      "text": "MTCK、MTDO、MTDI 和 MTMS 在 GPIO39-42 上。默认它们是空闲的，因为 JTAG 走的是 USB，但外部调试器需要用到它们。"
+    },
+    "power-up-glitch": {
+      "title": "有些引脚在上电时会短暂变低",
+      "text": "芯片上电时，GPIO1-20 会输出一小段低电平（约 60 µs），GPIO18-20 还会短暂变高。不加上下拉电阻的话，不要用它们直接驱动继电器或电机驱动器。"
+    },
+    "drive-17-18": {
+      "title": "GPIO17 和 18 的驱动能力等级算法不同",
+      "text": "大多数引脚上，驱动等级 1 约为 10 mA，等级 2 约为 20 mA。GPIO17 和 18 上这两级是对调的，所以它们的默认值（等级 2）约为 10 mA，而不是 20 mA。"
+    },
+    "deep-sleep-wake-pins": {
+      "title": "只有 GPIO0-21 能把芯片从深度睡眠中唤醒",
+      "text": "深度睡眠时只有 RTC 域保持通电，所以只有 RTC GPIO（0-21）能唤醒芯片。接在 GPIO38 上的按钮做不到。"
+    },
+    "rgb-led-pin": {
+      "title": "RGB LED 在 GPIO38 或 GPIO48 上",
+      "text": "DevKitC-1 v1.1 的指南把可寻址 RGB LED 放在 GPIO38；很多开发板把它接到 GPIO48。如果 LED 一直不亮，就试试另一个引脚。"
+    },
+    "wifi-needs-pll": {
+      "title": "射频需要 PLL 时钟",
+      "text": "只有 CPU 时钟来自 PLL 时，Wi-Fi 和 Bluetooth LE 才能工作。为了省电让 CPU 用晶振或 RC 振荡器运行，射频就会停止。"
+    },
+    "efuse-one-way": {
+      "title": "eFuse 只能烧一次",
+      "text": "置 1 的 eFuse 位再也变不回 0。烧错 flash 电压或 JTAG 的熔丝是永久性的，所以烧之前要看两遍。"
+    },
+    "touch-not-cs-tested": {
+      "title": "触摸功能没有通过传导噪声测试",
+      "text": "乐鑫指出，触摸传感器没有通过传导敏感度（Conducted Susceptibility）测试，所以嘈杂的电源或过长的线缆可能触发误触。在工作台上没问题，用在产品里要三思。"
+    }
+  },
+  "memory": {
+    "dcache": {
+      "name": "外部存储，数据侧",
+      "note": "通过数据缓存访问的 32 MB 窗口，对应 PSRAM（可读写）和 flash（只读）。像一帧画面或一段声音这样的大缓冲区就放在这里。"
+    },
+    "sram1-data": {
+      "name": "内部 SRAM 1（数据总线）",
+      "note": "416 KB，与指令总线上的 SRAM 1 是同一块存储器。你的变量、堆和栈都在这里。"
+    },
+    "sram2": {
+      "name": "内部 SRAM 2",
+      "note": "数据总线上的 64 KB。其中 32 或 64 KB 可以变成数据缓存，那一部分 CPU 就不能再用了。"
+    },
+    "rom1-data": {
+      "name": "内部 ROM 1（数据总线）",
+      "note": "128 KB，与指令总线上的 ROM 1 是同样的内容。"
+    },
+    "rom0": {
+      "name": "内部 ROM 0",
+      "note": "256 KB 启动和底层代码，出厂时就固定了。"
+    },
+    "rom1-instr": {
+      "name": "内部 ROM 1（指令总线）"
+    },
+    "sram0": {
+      "name": "内部 SRAM 0",
+      "note": "指令总线上的 32 KB。其中 16 或 32 KB 可以变成指令缓存。"
+    },
+    "sram1-instr": {
+      "name": "内部 SRAM 1（指令总线）",
+      "note": "与数据总线上的 SRAM 1 是同样的 416 KB，从指令存储器的角度看：放在内部 RAM 里的代码就从这里运行。"
+    },
+    "icache": {
+      "name": "外部存储，指令侧",
+      "note": "通过指令缓存访问的 32 MB 窗口，对应 flash（或 PSRAM），以 64 KB 为一页。存放在 flash 里的代码就从这里运行。"
+    },
+    "rtc-slow": {
+      "name": "RTC SLOW 内存",
+      "note": "8 KB，深度睡眠后仍保留，ULP 协处理器也能使用。TRM 正文还印了 0x5000_E000 ~ 0x5001_FFFF；这里采用的是它的表格和图中给出的范围。"
+    },
+    "peripherals": {
+      "name": "外设寄存器",
+      "note": "每个外设的寄存器，各占 4 KB：UART0 在 0x6000_0000，GPIO 在 0x6000_4000，LED PWM 在 0x6001_9000……"
+    },
+    "rtc-fast": {
+      "name": "RTC FAST 内存",
+      "note": "8 KB，只供主 CPU 使用，深度睡眠后仍保留。"
+    }
+  },
+  "clocks": {
+    "nodes": {
+      "xtal": {
+        "name": "XTAL_CLK，主晶振"
+      },
+      "pll": {
+        "name": "PLL_CLK"
+      },
+      "rc-fast": {
+        "name": "RC_FAST_CLK，快速 RC 振荡器"
+      },
+      "rc-slow": {
+        "name": "RC_SLOW_CLK，慢速 RC 振荡器"
+      },
+      "xtal32k": {
+        "name": "XTAL32K_CLK，32 kHz 晶振"
+      },
+      "rc-fast-div": {
+        "name": "RC_FAST_DIV_CLK（RC_FAST ÷ 256）"
+      },
+      "cpu-clk": {
+        "name": "CPU_CLK"
+      },
+      "apb-clk": {
+        "name": "APB_CLK"
+      },
+      "pll-f160m": {
+        "name": "PLL_F160M_CLK"
+      },
+      "pll-d2": {
+        "name": "PLL_D2_CLK"
+      },
+      "crypto-pwm-clk": {
+        "name": "CRYPTO_PWM_CLK"
+      },
+      "rtc-slow-clk": {
+        "name": "RTC_SLOW_CLK"
+      },
+      "rtc-fast-clk": {
+        "name": "RTC_FAST_CLK"
+      },
+      "cpu": {
+        "name": "CPU 内核"
+      },
+      "radio": {
+        "name": "Wi-Fi 和 Bluetooth LE"
+      },
+      "uart": {
+        "name": "UART"
+      },
+      "spi": {
+        "name": "SPI"
+      },
+      "i2c": {
+        "name": "I2C"
+      },
+      "i2s": {
+        "name": "I2S"
+      },
+      "ledc": {
+        "name": "LED PWM"
+      },
+      "rmt": {
+        "name": "RMT"
+      },
+      "saradc": {
+        "name": "SAR ADC"
+      },
+      "crypto": {
+        "name": "加密加速器"
+      },
+      "systimer": {
+        "name": "系统定时器"
+      },
+      "rtc": {
+        "name": "RTC：电源管理器、RTC 看门狗"
+      },
+      "ulp": {
+        "name": "ULP 协处理器、片上传感器"
+      }
+    },
+    "edges": {
+      "1": {
+        "label": "÷ (n+1)，复位时 20 MHz"
+      },
+      "2": {
+        "label": "÷ 2、3、4 或 6"
+      },
+      "4": {
+        "label": "÷ 256"
+      },
+      "23": {
+        "label": "在 Light-sleep 中让 PWM 继续运行"
+      },
+      "32": {
+        "label": "÷ 2"
+      }
+    }
+  },
+  "power": {
+    "active-wifi-tx": {
+      "name": "Active，Wi-Fi 发射中",
+      "keepsOn": [
+        "CPU",
+        "射频电路",
+        "Wi-Fi",
+        "所有外设"
+      ],
+      "note": "不间断发射时的峰值电流：802.11b 在 21 dBm 下为 340 mA，802.11g/n 约为 285 mA。"
+    },
+    "active-ble-tx": {
+      "name": "Active，Bluetooth LE 发射中",
+      "keepsOn": [
+        "CPU",
+        "射频电路",
+        "Bluetooth LE",
+        "所有外设"
+      ],
+      "note": "0 dBm 时为 176 mA；从 -15 dBm 时的 116 mA，到 21 dBm 时的 335 mA。"
+    },
+    "active-rx": {
+      "name": "Active，监听中",
+      "keepsOn": [
+        "CPU",
+        "射频电路",
+        "所有外设"
+      ],
+      "note": "CPU 空闲时，Wi-Fi 接收耗电 88 mA（40 MHz 信道为 91 mA），Bluetooth LE 接收耗电 93 mA。"
+    },
+    "modem-sleep": {
+      "name": "Modem-sleep",
+      "keepsOn": [
+        "CPU",
+        "数字外设",
+        "RTC"
+      ],
+      "note": "射频关闭，CPU 以 240 MHz 运行：空闲时 32.9 mA，两个内核都忙时 66.2 mA，所有外设时钟都打开时最高 107.9 mA。复位后芯片从这个模式开始。"
+    },
+    "light-sleep": {
+      "name": "Light-sleep",
+      "keepsOn": [
+        "RTC",
+        "RAM 内容",
+        "数字外设（可选）"
+      ],
+      "note": "CPU 暂停，flash 供电和 Wi-Fi 关闭。定时器、引脚、UART 或射频都能唤醒它。8 MB 八线 PSRAM 还要再加约 0.14 mA。"
+    },
+    "deep-sleep-ulp": {
+      "name": "Deep-sleep，ULP 在运行",
+      "keepsOn": [
+        "RTC",
+        "RTC 内存",
+        "ULP 协处理器"
+      ],
+      "note": "开着 ULP-FSM 时为 0.17 mA，开着 ULP-RISC-V 时为 0.19 mA；如果 ULP 或触摸传感器只是偶尔唤醒一下，则为 18 µA。"
+    },
+    "deep-sleep": {
+      "name": "Deep-sleep",
+      "keepsOn": [
+        "RTC",
+        "RTC 内存"
+      ],
+      "note": "只有 RTC 保持通电：带 RTC 外设时 8 µA，只留 RTC 内存时 7 µA。"
+    },
+    "power-off": {
+      "name": "断电",
+      "keepsOn": [],
+      "note": "CHIP_PU（EN 引脚）被拉低：芯片关闭，耗电约 1 µA。"
+    }
+  }
+}

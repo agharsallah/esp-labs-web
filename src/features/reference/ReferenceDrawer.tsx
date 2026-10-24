@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useId, useRef } from "react";
+import { Suspense, useEffect, useEffectEvent, useId, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { ErrorBoundary } from "@/ui/ErrorBoundary";
 import { Icon } from "@/ui/Icon";
@@ -9,8 +9,8 @@ import styles from "./ui/reader.module.css";
 
 /**
  * The reference reader: opens over any chip page when the URL has `?ref=`, as a modal dialog (a
- * side sheet on wide screens, a bottom sheet on phones). Esc, the close button, Back or "Back to
- * where you were" close it, and focus returns to the citation that opened it.
+ * side sheet on wide screens, a bottom sheet on phones). Esc, a click on the dimmed page, the close
+ * button, Back or "Back to where you were" close it, and focus returns to the citation that opened it.
  */
 export function ReferenceDrawer() {
   const id = useOpenSection();
@@ -24,6 +24,23 @@ function ReaderDialog({ id }: { id: string }) {
   const close = useCloseReader();
   const ref = useRef<HTMLDialogElement>(null);
   const titleId = useId();
+  const closeOnBackdrop = useEffectEvent(close);
+
+  // A modal dialog's backdrop belongs to the dialog: a click there targets the dialog itself, at a
+  // point outside its box. (Keyboard clicks on the buttons inside target the buttons.)
+  useEffect(() => {
+    const dialog = ref.current;
+    if (!dialog) return;
+    const onClick = (e: MouseEvent) => {
+      if (e.target !== dialog) return;
+      const box = dialog.getBoundingClientRect();
+      const inside =
+        e.clientX >= box.left && e.clientX <= box.right && e.clientY >= box.top && e.clientY <= box.bottom;
+      if (!inside) closeOnBackdrop();
+    };
+    dialog.addEventListener("click", onClick);
+    return () => dialog.removeEventListener("click", onClick);
+  }, []);
 
   useEffect(() => {
     const opener = document.activeElement;

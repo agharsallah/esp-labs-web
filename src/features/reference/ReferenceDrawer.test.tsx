@@ -1,4 +1,4 @@
-import { render, screen, waitFor, within } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { buildReference } from "../../../tools/reference/build";
@@ -62,6 +62,18 @@ describe("reference reader", () => {
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
     // The page's citations now open the reader.
     expect(screen.getAllByRole("link", { name: /Technical reference §26\.2/ }).length).toBeGreaterThan(0);
+  });
+
+  it("closes on a click on the dimmed page around it, not on a click inside it", async () => {
+    serve(true);
+    await openApp("#/chip/blocks/uart?ref=T26.2");
+    const dialog = await screen.findByRole("dialog", { name: "§26.2 Features" }, LOAD);
+    vi.spyOn(dialog, "getBoundingClientRect").mockReturnValue(new DOMRect(700, 0, 560, 900));
+    fireEvent.click(dialog, { clientX: 900, clientY: 300 });
+    expect(window.location.hash).toContain("ref=");
+    fireEvent.click(dialog, { clientX: 200, clientY: 300 });
+    expect(window.location.hash).not.toContain("ref=");
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
   });
 
   it("follows a cross-reference inside the reader", async () => {

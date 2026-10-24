@@ -6,13 +6,21 @@ import { LanguageMenu } from "@/features/language/LanguageMenu";
 import { BackToTop } from "@/ui/BackToTop";
 import { Icon, type IconName } from "@/ui/Icon";
 import styles from "./AppLayout.module.css";
+import { isNewUntil } from "./new-badge";
 
 const SECTIONS = [
   { to: "/", key: "labs", icon: "board", match: /^\/($|lessons|tracks)/ },
-  { to: "/chip", key: "chip", icon: "chip", match: /^\/chip/ },
+  // Shipped 25 Oct 2026: marked new for three days.
+  { to: "/chip", key: "chip", icon: "chip", match: /^\/chip/, newUntil: "2026-10-28" },
   { to: "/log", key: "bench", icon: "log", match: /^\/log/ },
   { to: "/settings", key: "settings", icon: "sliders", match: /^\/settings/ },
-] as const satisfies readonly { to: string; key: string; icon: IconName; match: RegExp }[];
+] as const satisfies readonly {
+  to: string;
+  key: string;
+  icon: IconName;
+  match: RegExp;
+  newUntil?: string;
+}[];
 
 /** A slim top bar, the page, and a footnote. Shared by every route. */
 export function AppLayout() {
@@ -63,6 +71,9 @@ export function AppLayout() {
               >
                 <Icon name={s.icon} size={17} />
                 <span className={styles.navLabel}>{t(`layout.nav.${s.key}`)}</span>
+                {"newUntil" in s && isNewUntil(s.newUntil) ? (
+                  <span className={styles.newBadge}>{t("layout.new")}</span>
+                ) : null}
               </Link>
             );
           })}

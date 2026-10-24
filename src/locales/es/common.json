@@ -22,7 +22,8 @@
       "settings": "Ajustes"
     },
     "footnote": "La distribución de pines sigue la Espressif DevKitC-1 v1.0. Los clones son casi idénticos, pero mandan siempre las etiquetas impresas en tu placa. Tus marcas se guardan solo en este navegador.",
-    "partsLink": "La biblioteca de piezas"
+    "partsLink": "La biblioteca de piezas",
+    "new": "Nuevo"
   },
   "titles": {
     "labs": "Laboratorios · Guía de banco ESP32-S3",

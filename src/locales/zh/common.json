@@ -22,7 +22,8 @@
       "settings": "设置"
     },
     "footnote": "引脚布局遵循乐鑫 DevKitC-1 v1.0。兼容板几乎一样，但以你开发板上印的标注为准。你的勾选只保存在这个浏览器里。",
-    "partsLink": "元件库"
+    "partsLink": "元件库",
+    "new": "新"
   },
   "titles": {
     "labs": "实验 · ESP32-S3 工作台指南",

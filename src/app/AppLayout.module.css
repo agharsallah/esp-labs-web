@@ -167,3 +167,33 @@
   color: var(--muted);
   margin: 0;
 }
+
+/* "New" next to a section that just shipped; a dot when the bar shows icons only. */
+.newBadge {
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--copper);
+  color: var(--surface);
+  font: 700 10px var(--font-mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.sections a[aria-current] .newBadge {
+  background: var(--copper-soft);
+  color: var(--copper);
+}
+@media (max-width: 559px) {
+  .sections a {
+    position: relative;
+  }
+  .newBadge {
+    position: absolute;
+    inset-block-start: 4px;
+    inset-inline-end: 4px;
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    overflow: hidden;
+    color: transparent;
+  }
+}

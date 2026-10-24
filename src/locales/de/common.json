@@ -22,7 +22,8 @@
       "settings": "Einstellungen"
     },
     "footnote": "Das Pin-Layout folgt dem Espressif DevKitC-1 v1.0. Klone sind fast identisch, aber die Beschriftung auf deinem Board gilt immer. Deine Haken werden nur in diesem Browser gespeichert.",
-    "partsLink": "Die Bauteil-Bibliothek"
+    "partsLink": "Die Bauteil-Bibliothek",
+    "new": "Neu"
   },
   "titles": {
     "labs": "Labs · ESP32-S3 Bench Guide",

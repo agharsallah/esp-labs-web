@@ -22,7 +22,8 @@
       "settings": "Settings"
     },
     "footnote": "Pin layout follows the Espressif DevKitC-1 v1.0. Clones are nearly identical, but the labels printed on your board always win. Your ticks are saved in this browser only.",
-    "partsLink": "The parts library"
+    "partsLink": "The parts library",
+    "new": "New"
   },
   "titles": {
     "labs": "Labs · ESP32-S3 Bench Guide",

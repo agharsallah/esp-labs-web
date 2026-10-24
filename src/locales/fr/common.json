@@ -22,7 +22,8 @@
       "settings": "Réglages"
     },
     "footnote": "Le brochage suit l'Espressif DevKitC-1 v1.0. Les clones sont presque identiques, mais les étiquettes imprimées sur ta carte font toujours foi. Tes coches sont enregistrées dans ce navigateur uniquement.",
-    "partsLink": "La bibliothèque de pièces"
+    "partsLink": "La bibliothèque de pièces",
+    "new": "Nouveau"
   },
   "titles": {
     "labs": "Labos · Guide d'établi ESP32-S3",

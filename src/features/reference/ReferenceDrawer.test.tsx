@@ -72,7 +72,7 @@ describe("reference reader", () => {
     fireEvent.click(dialog, { clientX: 900, clientY: 300 });
     expect(window.location.hash).toContain("ref=");
     fireEvent.click(dialog, { clientX: 200, clientY: 300 });
-    expect(window.location.hash).not.toContain("ref=");
+    await waitFor(() => expect(window.location.hash).not.toContain("ref="));
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
   });
 

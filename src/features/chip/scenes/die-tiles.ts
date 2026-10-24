@@ -23,8 +23,8 @@ const dieColours = definePalette({ silicon: "--metal-dark", hotspot: "--hotspot"
 const GAP = 0.18; // of a cell
 /** The tallest tile (coverage "done"), in slab widths. */
 export const MAX_H = 0.3;
-// Flat tiles keep a visible thickness and float a hair above the slab: a top or bottom face level
-// with the slab's top flickers (z-fighting), worst on the tiles no lab uses yet.
+// Flat tiles keep a visible thickness and float a hair above the slab: a face level with the
+// slab's top flickers (z-fighting).
 const MIN_H = 0.03;
 const LIFT = 0.004;
 
@@ -87,7 +87,8 @@ export function buildDieTiles(T: ThreeModule, S: Stage3d, plan: Floorplan): DieT
   const apply = () => {
     for (const t of tiles) {
       const on = t.tile.id === lifted;
-      t.mesh.scale.y = MIN_H + (MAX_H * t.tile.height - MIN_H) * rise + (on ? 0.04 : 0);
+      // MIN_H is a floor the rise adds to: a tile no lab uses keeps its thickness, never zero.
+      t.mesh.scale.y = MIN_H + MAX_H * t.tile.height * rise + (on ? 0.04 : 0);
       t.mesh.position.y = LIFT + (on ? 0.03 : 0);
       t.material.emissive.copy(on ? hotspot : black);
       t.material.emissiveIntensity = on ? 0.35 : 0;

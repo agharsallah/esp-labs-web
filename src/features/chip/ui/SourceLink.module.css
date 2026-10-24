@@ -1,0 +1,27 @@
+.source {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+.lead {
+  font-weight: 600;
+}
+.chip {
+  display: inline-flex;
+  padding-block: 2px;
+  padding-inline: 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  font: 600 11.5px var(--font-mono);
+  font-style: normal;
+  color: var(--ink);
+}
+.source[data-compact] .chip {
+  font-size: 10.5px;
+  padding-inline: 6px;
+}

@@ -1,0 +1,38 @@
+.side {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+.sideHead {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 0;
+  font: 800 17px var(--font-display);
+}
+.notes {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.notes li {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid color-mix(in oklab, var(--copper) 40%, var(--line));
+  border-radius: var(--radius-m);
+  background: var(--surface);
+}
+.notes p {
+  margin: 0;
+}
+.gain {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 0 0 12px;
+  font-size: 16px;
+  font-weight: 600;
+}

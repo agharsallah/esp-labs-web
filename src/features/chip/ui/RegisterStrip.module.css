@@ -1,0 +1,72 @@
+.register {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  background: var(--surface);
+  min-width: 0;
+}
+.caption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: baseline;
+  font-weight: 700;
+}
+.caption span {
+  font: 500 12px var(--font-mono);
+  color: var(--muted);
+}
+.strip {
+  display: grid;
+  grid-template-columns: repeat(var(--bits), minmax(0, 1fr));
+  gap: 1px;
+  direction: ltr; /* bit 31 first, as printed, in every language */
+}
+.segment {
+  display: grid;
+  align-content: start;
+  gap: 2px;
+  min-width: 0;
+  min-height: 40px;
+  padding: 3px 2px;
+  border-radius: 3px;
+  background: color-mix(in oklab, var(--copper) 22%, var(--surface));
+  border: 1px solid color-mix(in oklab, var(--copper) 55%, var(--line));
+  overflow: hidden;
+}
+.segment[data-reserved] {
+  background: repeating-linear-gradient(135deg, var(--line) 0 2px, transparent 2px 6px);
+  border-color: var(--line);
+}
+.bits {
+  font: 600 9px var(--font-mono);
+  color: var(--muted);
+}
+.field {
+  font: 600 9.5px var(--font-mono);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.table th,
+.table td {
+  padding: 4px 6px;
+  border-block-end: 1px solid var(--line);
+  text-align: start;
+  vertical-align: top;
+}
+.table td:first-child {
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+.table code {
+  overflow-wrap: anywhere;
+}

@@ -1,0 +1,75 @@
+/* Facts, gotchas and coverage words: the chip pages' small cards. */
+.facts {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+}
+.fact {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  list-style: none;
+}
+.fact p {
+  margin: 0 0 4px;
+}
+.body {
+  min-width: 0;
+}
+.dot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  margin: 6px 5px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+.fact > svg {
+  margin-block-start: 3px;
+}
+.gotcha {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid color-mix(in oklab, var(--warn) 45%, var(--line));
+  border-inline-start: 4px solid var(--warn);
+  border-radius: var(--radius-m);
+  background: color-mix(in oklab, var(--warn) 6%, var(--surface));
+}
+.gotcha p {
+  margin: 0;
+}
+.gotchaTitle {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 0;
+  font: 700 15px var(--font-display);
+}
+.gotchaFoot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+.more {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--copper);
+}
+.coverage {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 600 11.5px var(--font-mono);
+  color: var(--muted);
+}
+.notYet {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1.5px dotted var(--muted);
+  box-sizing: border-box;
+}

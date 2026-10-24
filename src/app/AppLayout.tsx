@@ -9,6 +9,7 @@ import styles from "./AppLayout.module.css";
 
 const SECTIONS = [
   { to: "/", key: "labs", icon: "board", match: /^\/($|lessons|tracks)/ },
+  { to: "/chip", key: "chip", icon: "chip", match: /^\/chip/ },
   { to: "/log", key: "bench", icon: "log", match: /^\/log/ },
   { to: "/settings", key: "settings", icon: "sliders", match: /^\/settings/ },
 ] as const satisfies readonly { to: string; key: string; icon: IconName; match: RegExp }[];

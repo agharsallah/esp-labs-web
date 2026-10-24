@@ -199,3 +199,17 @@
     display: none;
   }
 }
+/* "Go inside the chip": the way from the board to the chip pages. */
+.inside {
+  grid-row: 3;
+  justify-self: center;
+  margin-block-start: 8px;
+  font-weight: 700;
+  color: var(--copper);
+}
+@media (min-width: 1000px) {
+  .inside {
+    grid-column: 2;
+    grid-row: 4;
+  }
+}

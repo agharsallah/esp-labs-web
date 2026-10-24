@@ -1,0 +1,343 @@
+/* The chart kit's shared look. Colours from tokens only; a series colour arrives as --series. */
+
+.frame {
+  --series: var(--copper);
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  margin: 0;
+  min-width: 0;
+  display: grid;
+  gap: 8px;
+}
+.caption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 12px;
+  font-size: 0.9rem;
+  color: var(--ink);
+}
+.toggle {
+  font: 600 11.5px var(--font-mono);
+  color: var(--copper);
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding-block: 3px;
+  padding-inline: 10px;
+  cursor: pointer;
+}
+.toggle:hover {
+  border-color: var(--copper);
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+.table {
+  border-collapse: collapse;
+  font: 12px var(--font-mono);
+  color: var(--ink);
+  min-inline-size: 100%;
+}
+.table th,
+.table td {
+  text-align: start;
+  padding-block: 4px;
+  padding-inline: 8px;
+  border-block-end: 1px solid var(--line);
+}
+.table thead th {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+/* The drawing: fluid width, numbers read left to right in every language. */
+.svg {
+  display: block;
+  inline-size: 100%;
+  max-inline-size: var(--chart-max, 40rem);
+  block-size: auto;
+  direction: ltr;
+}
+.svgWide {
+  display: block;
+  block-size: auto;
+  direction: ltr;
+}
+.svg text,
+.svgWide text {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  fill: var(--muted);
+}
+.svg .strong,
+.svgWide .strong {
+  fill: var(--ink);
+  font-weight: 600;
+}
+.grid {
+  stroke: var(--line);
+  stroke-width: 1;
+}
+.track {
+  fill: var(--line);
+  opacity: 0.5;
+}
+.bar {
+  fill: var(--series);
+}
+.mark {
+  fill: var(--ink);
+}
+
+/* Entry motion: bars grow from the start edge, arcs draw, marks fade, once shown. */
+.grow {
+  transform-box: fill-box;
+  transform-origin: left center;
+  transition: transform 0.7s var(--ease);
+  transition-delay: calc(var(--i, 0) * 60ms);
+}
+.frame:not([data-shown]) .grow {
+  transform: scaleX(0);
+}
+.growY {
+  transform-box: fill-box;
+  transform-origin: center top;
+  transition: transform 0.6s var(--ease);
+  transition-delay: calc(var(--i, 0) * 50ms);
+}
+.frame:not([data-shown]) .growY {
+  transform: scaleY(0);
+}
+.fade {
+  transition: opacity 0.5s ease;
+  transition-delay: calc(var(--i, 0) * 50ms + 0.2s);
+}
+.frame:not([data-shown]) .fade {
+  opacity: 0;
+}
+.draw {
+  stroke-dasharray: 100 100;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.9s var(--ease);
+  transition-delay: calc(var(--i, 0) * 120ms);
+}
+.frame:not([data-shown]) .draw {
+  stroke-dashoffset: 100;
+}
+
+/* Calm mode and the system setting show the end state at once. */
+:root[data-motion="reduced"] .grow,
+:root[data-motion="reduced"] .growY,
+:root[data-motion="reduced"] .fade,
+:root[data-motion="reduced"] .draw {
+  transition: none;
+  transform: none;
+  opacity: 1;
+  stroke-dashoffset: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .grow,
+  .growY,
+  .fade,
+  .draw {
+    transition: none;
+  }
+  .frame:not([data-shown]) .grow,
+  .frame:not([data-shown]) .growY {
+    transform: none;
+  }
+  .frame:not([data-shown]) .fade {
+    opacity: 1;
+  }
+  .frame:not([data-shown]) .draw {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Ladder: HTML rows so labels and lists wrap in any language. */
+.ladder {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.rung {
+  display: grid;
+  grid-template-columns: minmax(5rem, 9rem) minmax(0, 1fr) auto;
+  grid-template-areas: "label bar value" ". items items";
+  align-items: center;
+  gap: 4px 10px;
+  font: 12px var(--font-mono);
+  color: var(--muted);
+}
+.rungLabel {
+  grid-area: label;
+  color: var(--ink);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.rungBar {
+  grid-area: bar;
+  display: block;
+  inline-size: 100%;
+  block-size: 12px;
+  direction: ltr;
+}
+.rungValue {
+  grid-area: value;
+  display: grid;
+  justify-items: end;
+  color: var(--ink);
+}
+.rungValue em {
+  font-style: normal;
+  color: var(--ok);
+}
+.rungItems {
+  grid-area: items;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+@media (max-width: 30rem) {
+  .rung {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "label value" "bar bar" "items items";
+  }
+}
+
+.compareRow[data-highlight] .bar {
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+
+.spark {
+  display: inline-block;
+  inline-size: 60px;
+  block-size: 6px;
+  vertical-align: middle;
+  direction: ltr;
+}
+/* Text-free bars run from the inline start, so they flip in right-to-left pages. */
+.spark:dir(rtl),
+.rungBar:dir(rtl) {
+  transform: scaleX(-1);
+}
+
+/* AddressMap */
+.region rect {
+  fill: color-mix(in oklab, var(--series) 22%, var(--surface));
+  stroke: var(--surface);
+  stroke-width: 1.5;
+}
+.region[data-highlight] rect {
+  fill: var(--series);
+  stroke: var(--ink);
+}
+.leader {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 1;
+}
+.region[data-highlight] .leader {
+  stroke: var(--series);
+}
+
+/* FlowTree */
+.node rect {
+  fill: var(--surface);
+  stroke: var(--series);
+  stroke-width: 1.5;
+}
+.edge {
+  fill: none;
+  stroke: color-mix(in oklab, var(--series) 35%, var(--line));
+  stroke-width: 2;
+}
+.flow {
+  fill: none;
+  stroke: var(--series);
+  stroke-width: 2;
+  stroke-dasharray: 3 9;
+  animation: flow 1.2s linear infinite;
+}
+.frame:not([data-shown]) .flow {
+  animation-play-state: paused;
+}
+@keyframes flow {
+  to {
+    stroke-dashoffset: -12;
+  }
+}
+.svgWide .edgeLabel {
+  fill: var(--ink);
+  paint-order: stroke;
+  stroke: var(--bg);
+  stroke-width: 3px;
+}
+:root[data-motion="reduced"] .flow {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .flow {
+    animation: none;
+  }
+}
+
+/* PinMatrix */
+.rowBand {
+  fill: transparent;
+}
+.matrixRow:nth-child(odd) .rowBand {
+  fill: color-mix(in oklab, var(--line) 30%, transparent);
+}
+.matrixRow[data-highlight] .rowBand {
+  fill: color-mix(in oklab, var(--series) 18%, transparent);
+  stroke: var(--series);
+}
+.warn {
+  fill: var(--warn);
+}
+.svgWide .columnHead[data-active] {
+  fill: var(--ink);
+  font-weight: 600;
+}
+
+/* FlowTree spotlight: pointing at a node lights its edges and neighbours and dims the rest.
+   The entry motion owns `opacity` on nodes and labels, so dimming uses the children and fill-opacity. */
+.flowEdge,
+.node > * {
+  transition: opacity 0.2s ease;
+}
+.flowTree[data-spotlight] .flowEdge:not([data-lit]) {
+  opacity: 0.12;
+}
+.flowTree[data-spotlight] .edgeLabel:not([data-lit]) {
+  fill-opacity: 0.15;
+  stroke-opacity: 0.15;
+}
+.flowTree[data-spotlight] .flowEdge[data-lit] .edge {
+  stroke: var(--series);
+}
+.flowTree[data-spotlight] .node:not([data-lit]) > * {
+  opacity: 0.4;
+}
+.flowTree[data-spotlight] .node[data-lit] rect {
+  stroke-width: 2.5;
+}
+:root[data-motion="reduced"] .flowEdge,
+:root[data-motion="reduced"] .node > * {
+  transition: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .flowEdge,
+  .node > * {
+    transition: none;
+  }
+}

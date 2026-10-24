@@ -1,0 +1,159 @@
+.back {
+  justify-self: start;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--copper);
+}
+.hero {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+}
+@media (min-width: 900px) {
+  .hero[data-depth="full"] {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+  }
+}
+.heading {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  min-width: 0;
+}
+.heading > div {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+.muted {
+  color: var(--muted);
+  margin: 0;
+}
+/* "In our labs": a line per track, opening to its lessons as chips. */
+.tracks {
+  display: grid;
+  gap: 6px;
+  max-width: 760px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.track {
+  border: 1px solid var(--line);
+  border-inline-start: 4px solid var(--track);
+  border-radius: var(--radius-m);
+  background: var(--surface);
+}
+.track > summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  min-block-size: 44px;
+  padding-block: 8px;
+  padding-inline: 12px;
+  cursor: pointer;
+  list-style: none;
+}
+.track > summary::-webkit-details-marker {
+  display: none;
+}
+/* A chevron that turns when the track opens. */
+.track > summary::before {
+  content: "";
+  inline-size: 7px;
+  block-size: 7px;
+  border-block-end: 2px solid var(--muted);
+  border-inline-end: 2px solid var(--muted);
+  transform: rotate(-45deg);
+  transition: transform 0.15s ease;
+}
+.track > summary:dir(rtl)::before {
+  transform: rotate(135deg);
+}
+.track[open] > summary::before {
+  transform: rotate(45deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .track > summary::before {
+    transition: none;
+  }
+}
+.trackName {
+  font-weight: 700;
+}
+.trackCount {
+  font: 600 12px var(--font-mono);
+  color: var(--muted);
+}
+.glyphs {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-inline-start: auto;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding-block: 0 12px;
+  padding-inline: 12px;
+  list-style: none;
+}
+.lab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-block-size: 32px;
+  padding-block: 2px;
+  padding-inline: 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 13px;
+  text-decoration: none;
+}
+.lab:hover,
+.lab:focus-visible {
+  border-color: var(--track);
+}
+.legend {
+  font-size: 12px;
+}
+.labId {
+  font: 700 12px var(--font-mono);
+  color: var(--muted);
+}
+.registers {
+  display: grid;
+  gap: 14px;
+}
+.pager {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-block-start: 16px;
+  border-block-start: 1px solid var(--line);
+}
+.prev,
+.next {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration: none;
+}
+.prev small,
+.next small {
+  display: block;
+  font: 600 11px var(--font-mono);
+  color: var(--muted);
+}
+.next {
+  text-align: end;
+}

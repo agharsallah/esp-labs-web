@@ -27,6 +27,13 @@ const HUES = {
   pink: "--part-pink",
   teal: "--part-teal",
   reader: "--rc522",
+  "fam-system": "--fam-system",
+  "fam-memory": "--fam-memory",
+  "fam-security": "--fam-security",
+  "fam-connectivity": "--fam-connectivity",
+  "fam-timing": "--fam-timing",
+  "fam-analog": "--fam-analog",
+  "fam-radio": "--fam-radio",
 } as const;
 
 export type Hue = keyof typeof HUES;

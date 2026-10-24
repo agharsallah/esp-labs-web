@@ -1,0 +1,183 @@
+.headline {
+  display: grid;
+  gap: 10px;
+}
+.kicker,
+.sectionHead,
+.layerStep {
+  margin: 0;
+  font: 700 12px var(--font-display);
+  font-stretch: 75%;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+.title {
+  margin: 0;
+  font: 800 clamp(30px, 7vw, 52px) / 1.04 var(--font-display);
+}
+.lead {
+  margin: 0;
+  max-width: 56ch;
+  font-size: 18px;
+}
+.numbers {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 140px), 1fr));
+  gap: 10px;
+  margin: 12px 0 0;
+}
+.number {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 2px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  background: var(--surface);
+}
+.number dt {
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.number dd {
+  margin: 0;
+  font-family: var(--font-mono);
+}
+.number strong {
+  font: 800 26px var(--font-display);
+  color: var(--copper);
+  font-variant-numeric: tabular-nums;
+}
+.layerCard {
+  display: grid;
+  gap: 4px;
+  max-width: 420px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  background: color-mix(in oklab, var(--surface) 92%, transparent);
+  animation: card-in 0.35s ease;
+}
+.layerCard h2,
+.layerCard p {
+  margin: 0;
+}
+.layerCard h2 {
+  font: 800 18px var(--font-display);
+}
+.layerLegend {
+  margin-block-start: 6px;
+  gap: 4px 12px;
+  font-size: 12px;
+}
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .layerCard {
+    animation: none;
+  }
+}
+.progress {
+  display: grid;
+  gap: 20px;
+  align-items: start;
+}
+@media (min-width: 820px) {
+  .progress {
+    grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+  }
+}
+.ring {
+  display: grid;
+  gap: 8px;
+}
+.sentence {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+.muted {
+  color: var(--muted);
+}
+.next {
+  display: grid;
+  gap: 10px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.nextCard {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  background: var(--surface);
+  color: var(--ink);
+  text-decoration: none;
+  transition: transform 0.2s ease;
+}
+.nextCard:hover,
+.nextCard:focus-visible {
+  transform: translateY(-2px);
+}
+.nextCard > span {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.nextShort {
+  font-size: 13px;
+  color: var(--muted);
+}
+.nextLesson {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  font: 600 12px var(--font-mono);
+}
+.families {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.family {
+  --fam: var(--copper);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding-inline: 12px;
+  border: 1px solid var(--line);
+  border-inline-start: 4px solid var(--fam);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.2s ease;
+}
+.family svg {
+  color: var(--fam);
+}
+.family:hover,
+.family:focus-visible {
+  transform: translateY(-2px);
+}
+.familyCount {
+  font: 600 11px var(--font-mono);
+  color: var(--muted);
+}
+:root[data-motion="reduced"] .nextCard:hover,
+:root[data-motion="reduced"] .family:hover {
+  transform: none;
+}

@@ -47,11 +47,11 @@ export function checkCatalogue(english: unknown, translated: unknown, locale: st
       if (!categories.has(category)) issues.push({ key, problem: "plural" });
       plurals.set(base, (plurals.get(base) ?? new Set()).add(category));
     }
-    // A plural form may spell its number out ("سطر واحد", "deux lignes") instead of {{count}}.
+    // A plural form may spell its number out ("سطر واحد", "deux lignes") instead of {{count}},
+    // formatted or not ({{count, number}}).
+    const COUNT = /\{\{count(?:,[^}]*)?\}\}/g;
     const compared =
-      base && category && !text.includes("{{count}}")
-        ? reference.replaceAll("{{count}}", "")
-        : reference;
+      base && category && !COUNT.test(text) ? reference.replace(COUNT, "") : reference;
     for (const issue of checkOverlay(compared, text))
       issues.push({ key, problem: issue.problem });
   }

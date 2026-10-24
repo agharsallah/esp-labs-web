@@ -47,6 +47,13 @@ export const PART_ANCHORS: Record<PartId, readonly [number, number, number]> = {
 export interface BoardScene {
   /** Glow one part (the callout you are on), or none. */
   highlight(part: PartId | null): void;
+  /** The module's metal can, for scenes that take the board apart (the chip descent). */
+  readonly can: Three.Mesh;
+  /**
+   * The board's own animation (the LED, the radio waves). The board registers it as the stage's
+   * frame callback; a scene that registers its own afterwards calls it from there.
+   */
+  readonly frame: (t: number) => void;
 }
 
 type Toon = Three.MeshToonMaterial;
@@ -98,7 +105,7 @@ export function buildBoardScene(T: ThreeModule, S: Stage3d): BoardScene {
   mesh(new T.BoxGeometry(2.55, 0.08, 1.8), mat("antenna", C.pcb), modX0 + 1.275, 0.04, 0);
   const can = mat("module", C.metal);
   const canTop = mat("module", C.metal, { map: canLabel(T, C) });
-  mesh(
+  const canMesh = mesh(
     new T.BoxGeometry(1.9, 0.32, 1.66),
     [can, can, canTop, can, can, can],
     modX0 + 0.08 + 0.95,
@@ -202,7 +209,7 @@ export function buildBoardScene(T: ThreeModule, S: Stage3d): BoardScene {
   const black = new T.Color(0);
   const led = new T.Color();
 
-  S.onFrame((t) => {
+  const frame = (t: number) => {
     // The LED walks the colour wheel, like lesson 01's firmware; still when motion is down.
     led.setHSL(S.reduce ? 0.47 : (t * 0.08) % 1, 0.9, 0.55);
     ledMat.emissive.copy(led);
@@ -226,12 +233,15 @@ export function buildBoardScene(T: ThreeModule, S: Stage3d): BoardScene {
         m.emissiveIntensity = part === lit ? pulse : 0;
       }
     }
-  });
+  };
+  S.onFrame(frame);
 
   return {
     highlight(part) {
       lit = part;
     },
+    can: canMesh,
+    frame,
   };
 }
 

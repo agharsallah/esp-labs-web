@@ -17,6 +17,7 @@
     "sections": "Sections",
     "nav": {
       "labs": "Labos",
+      "chip": "Puce",
       "bench": "Établi",
       "settings": "Réglages"
     },
@@ -29,7 +30,8 @@
     "code": "Code {{id}} · {{title}} · Guide d'établi ESP32-S3",
     "log": "Journal de l'établi · Guide d'établi ESP32-S3",
     "parts": "Bibliothèque de pièces · Guide d'établi ESP32-S3",
-    "settings": "Réglages · Guide d'établi ESP32-S3"
+    "settings": "Réglages · Guide d'établi ESP32-S3",
+    "chip": "{{page}} · Puce · Guide d'établi ESP32-S3"
   },
   "routeError": {
     "code": "Erreur",
@@ -41,7 +43,8 @@
       "noPage": "Cette page n'existe pas",
       "noTheme": "Aucun thème nommé « {{id}} »",
       "noLesson": "Aucune leçon nommée « {{id}} »",
-      "plannedLesson": "La leçon {{id}} est prévue, pas encore écrite"
+      "plannedLesson": "La leçon {{id}} est prévue, pas encore écrite",
+      "noBlock": "Aucun bloc nommé « {{id}} »"
     }
   },
   "codeRoute": {

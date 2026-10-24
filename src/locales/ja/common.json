@@ -17,6 +17,7 @@
     "sections": "セクション",
     "nav": {
       "labs": "ラボ",
+      "chip": "チップ",
       "bench": "ベンチ",
       "settings": "設定"
     },
@@ -29,7 +30,8 @@
     "code": "{{id}} コード · {{title}} · ESP32-S3 ベンチガイド",
     "log": "ベンチログ · ESP32-S3 ベンチガイド",
     "parts": "パーツライブラリ · ESP32-S3 ベンチガイド",
-    "settings": "設定 · ESP32-S3 ベンチガイド"
+    "settings": "設定 · ESP32-S3 ベンチガイド",
+    "chip": "{{page}} · チップ · ESP32-S3 ベンチガイド"
   },
   "routeError": {
     "code": "エラー",
@@ -41,7 +43,8 @@
       "noPage": "そのページはありません",
       "noTheme": "「{{id}}」というテーマはありません",
       "noLesson": "「{{id}}」というレッスンはありません",
-      "plannedLesson": "レッスン{{id}}は計画中で、まだ書かれていません"
+      "plannedLesson": "レッスン{{id}}は計画中で、まだ書かれていません",
+      "noBlock": "「{{id}}」というブロックはありません"
     }
   },
   "codeRoute": {

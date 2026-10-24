@@ -17,6 +17,7 @@
     "sections": "章节",
     "nav": {
       "labs": "实验",
+      "chip": "芯片",
       "bench": "工作台",
       "settings": "设置"
     },
@@ -29,7 +30,8 @@
     "code": "{{id}} 代码 · {{title}} · ESP32-S3 工作台指南",
     "log": "工作台日志 · ESP32-S3 工作台指南",
     "parts": "元件库 · ESP32-S3 工作台指南",
-    "settings": "设置 · ESP32-S3 工作台指南"
+    "settings": "设置 · ESP32-S3 工作台指南",
+    "chip": "{{page}} · 芯片 · ESP32-S3 工作台指南"
   },
   "routeError": {
     "code": "错误",
@@ -41,7 +43,8 @@
       "noPage": "没有这个页面",
       "noTheme": "没有名为“{{id}}”的路线",
       "noLesson": "没有名为“{{id}}”的课程",
-      "plannedLesson": "第 {{id}} 课已列入计划，还没写好"
+      "plannedLesson": "第 {{id}} 课已列入计划，还没写好",
+      "noBlock": "没有名为“{{id}}”的模块"
     }
   },
   "codeRoute": {

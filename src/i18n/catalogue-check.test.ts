@@ -29,6 +29,8 @@ describe("checkCatalogue", () => {
       [],
     );
     expect(checkCatalogue(en, { ticked_other: "已勾选 {{count}} 步" }, "zh")).toEqual([]);
+    const formatted = { files_one: "{{count, number}} file", files_other: "{{count, number}} files" };
+    expect(checkCatalogue(formatted, { files_zero: "لا ملفات", files_one: "ملف واحد", files_two: "ملفان", files_few: "{{count, number}} ملفات", files_many: "{{count, number}} ملفًا", files_other: "{{count, number}} ملف" }, "ar")).toEqual([]);
   });
 
   it("reports missing plural forms, foreign forms, unknown keys and broken text", () => {

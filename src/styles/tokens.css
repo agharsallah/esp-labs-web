@@ -44,6 +44,16 @@
   --part-glass: #1c2733;
   --part-screen: #2fd5c4;
 
+  /* Chip block families (src/domain/chip.ts BlockFamily): aliases of existing colours, so both
+     themes follow. Always paired with a family glyph, never the only cue. */
+  --fam-system: var(--copper);
+  --fam-memory: var(--part-purple);
+  --fam-security: var(--part-red);
+  --fam-connectivity: var(--w-sda);
+  --fam-timing: var(--part-orange);
+  --fam-analog: var(--part-teal);
+  --fam-radio: var(--ble);
+
   /* Status */
   --ok: #1f7a4a;
   --warn: #a05a00;

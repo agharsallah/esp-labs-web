@@ -1,0 +1,93 @@
+.tile {
+  --fam: var(--copper);
+  list-style: none;
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 0.4s ease calc(var(--i, 0) * 40ms),
+    transform 0.4s ease calc(var(--i, 0) * 40ms);
+}
+[data-shown] .tile {
+  opacity: 1;
+  transform: none;
+}
+.link {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  grid-template-areas:
+    "icon name"
+    "icon short"
+    "spark spark"
+    "state state";
+  column-gap: 12px;
+  row-gap: 4px;
+  height: 100%;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-block-start: 3px solid var(--fam);
+  border-radius: var(--radius-m);
+  background: var(--surface);
+  color: var(--ink);
+  text-decoration: none;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.link:hover,
+.link:focus-visible {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 18px -10px var(--model-shadow);
+}
+.icon {
+  grid-area: icon;
+}
+.name {
+  grid-area: name;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font: 700 15px var(--font-display);
+}
+.short {
+  grid-area: short;
+  font-size: 13px;
+  color: var(--muted);
+}
+.spark {
+  grid-area: spark;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 600 11px var(--font-mono);
+  color: var(--muted);
+}
+.spark svg {
+  width: 60px;
+}
+.link > :last-child {
+  grid-area: state;
+}
+/* Listed blocks: the same tile, quieter. */
+.tile[data-depth="listed"] .link {
+  border-block-start-color: color-mix(in oklab, var(--fam) 45%, var(--line));
+  background: color-mix(in oklab, var(--surface) 70%, var(--bg));
+}
+.tile[data-depth="listed"] .icon {
+  opacity: 0.75;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tile,
+  .link {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+:root[data-motion="reduced"] .tile {
+  opacity: 1;
+  transform: none;
+}
+:root[data-motion="reduced"] .link:hover,
+:root[data-motion="reduced"] .link:focus-visible {
+  transform: none;
+}

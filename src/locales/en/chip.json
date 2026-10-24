@@ -1,0 +1,340 @@
+{
+  "pages": {
+    "home": "Inside the ESP32-S3",
+    "pins": "Pins and power",
+    "blocks": "Peripheral atlas",
+    "inside": "Memory, clocks and power modes"
+  },
+  "scenes": {
+    "descent": {
+      "model": "The ESP32-S3 DevKitC, from the board down to the die",
+      "fallback": "the flat floor plan below",
+      "stepper": "Layers",
+      "prev": "Previous layer",
+      "next": "Next layer",
+      "layer": "Layer {{n}} of {{count}}: {{caption}}"
+    },
+    "die": {
+      "model": "The ESP32-S3 die: block tiles grouped by family, raised by how far the labs used them",
+      "fallback": "the list of blocks",
+      "list": "Blocks on the die",
+      "legend": "Block families and their colours",
+      "pick": "{{name}}, {{coverage}}"
+    },
+    "coverage": {
+      "done": "done",
+      "works": "works",
+      "built": "built",
+      "planned": "planned",
+      "none": "not used yet"
+    },
+    "families": {
+      "system": "System",
+      "memory": "Memory",
+      "security": "Security",
+      "connectivity": "Connectivity",
+      "timing": "Timing",
+      "analog": "Analog",
+      "radio": "Radio"
+    },
+    "bus": {
+      "model": "The CPU talking to the {{name}} block over its signal lines",
+      "cpu": "CPU",
+      "bus": "Bus",
+      "peripheral": "Peripheral",
+      "fallback": "the signal lines listed below",
+      "lines": "Signal lines"
+    },
+    "flat": {
+      "label": "Floor plan of the die"
+    }
+  },
+  "nav": {
+    "label": "Chip pages",
+    "pill": "{{title}}: {{used}} of {{total}} blocks used by the labs"
+  },
+  "markers": {
+    "key": "Key fact",
+    "gotcha": "Gotcha",
+    "used": "Used in our labs"
+  },
+  "source": {
+    "read": "Read the full section",
+    "cite": "{{doc}} §{{section}}",
+    "note": "Section of the ESP32-S3 reference the guide was written from",
+    "docs": {
+      "A": "Board guide",
+      "M": "Module datasheet",
+      "C": "Chip datasheet",
+      "T": "Technical reference",
+      "X": "Appendix"
+    }
+  },
+  "coverage": {
+    "none": "Not yet"
+  },
+  "gotchas": {
+    "seePin": "See GPIO{{n}}",
+    "seeBlock": "See the block"
+  },
+  "goInside": "Go inside the chip",
+  "home": {
+    "kicker": "The chip on your board",
+    "lead": "A dual-core 240 MHz computer with Wi-Fi and Bluetooth, on a board the size of a finger.",
+    "numbers": "The chip in numbers",
+    "layerStep": "Layer {{n}} of {{count}}",
+    "layers": {
+      "board": {
+        "title": "Board",
+        "text": "The DevKitC: USB ports, buttons, a regulator and two rows of header pins around one module."
+      },
+      "module": {
+        "title": "Module",
+        "text": "The WROOM module: the chip, its flash and PSRAM, a crystal and the antenna, under one metal can."
+      },
+      "can": {
+        "title": "Under the can",
+        "text": "Lift the shield and the parts appear: the ESP32-S3 package sits next to its memory and the 40 MHz crystal."
+      },
+      "package": {
+        "title": "Package",
+        "text": "A 7 × 7 mm QFN with 56 pads: every pin you wire on the header ends at one of them."
+      },
+      "die": {
+        "title": "Die",
+        "text": "The silicon itself, drawn as 32 blocks by family. The ones your labs have used stand taller."
+      }
+    },
+    "progress": "Your progress through the chip",
+    "ringCaption": "Blocks of the chip by how far your labs have taken them",
+    "ringCenter": "{{used}}/{{total}}",
+    "sentence": "Your labs have used {{used}} of {{total}} blocks.",
+    "next": "Next blocks to unlock",
+    "nextLesson": "{{id}} · {{title}}",
+    "nextNone": "Every block the labs reach is done. The rest wait for new labs.",
+    "families": "Families",
+    "familyCount_one": "{{count}} block",
+    "familyCount_other": "{{count}} blocks",
+    "gotchas": "Five things that bite"
+  },
+  "atlas": {
+    "kicker": "Every block on the die",
+    "lead": "All {{count}} blocks of the ESP32-S3, grouped by family. Taller tiles on the die and a state on each card show how far the labs have taken them.",
+    "filters": "Filter the blocks",
+    "family": "Family",
+    "all": "All",
+    "usedLabel": "Used by the labs",
+    "used": {
+      "all": "All",
+      "yes": "Used",
+      "no": "Not yet"
+    },
+    "search": "Search blocks",
+    "results_one": "{{count}} block shown",
+    "results_other": "{{count}} blocks shown",
+    "count_one": "{{count}} block",
+    "count_other": "{{count}} blocks",
+    "spark": "{{value}} {{unit}}"
+  },
+  "pins": {
+    "kicker": "Which pin can do what",
+    "lead": "{{count}} GPIOs, each with several jobs. Our labs have wired {{used}} of them.",
+    "matrixTitle": "Pin functions",
+    "legend": "Emphasised rows are pins our labs used; a triangle marks a pin hazard.",
+    "matrix": "Each GPIO and the kinds of function it can take",
+    "filter": "Show pins with",
+    "all": "All",
+    "kinds": {
+      "adc": "ADC",
+      "touch": "Touch",
+      "rtc": "RTC",
+      "uart": "UART",
+      "spi": "SPI",
+      "usb": "USB",
+      "jtag": "JTAG",
+      "clock": "Clock",
+      "strap": "Strapping"
+    },
+    "pick": "Pick a pin",
+    "pickHint": "Pick a pin to see its functions, its strapping role and the hazards that apply to it.",
+    "pickLegend": "Bar under a number: used in our labs. Corner triangle: a pin hazard. Dashed: not on the header.",
+    "pin": "GPIO{{n}}",
+    "used": "Used in our labs",
+    "offHeader": "Not on the DevKitC header: it belongs to the module's flash or PSRAM.",
+    "strapping": "Strapping:",
+    "strappingTitle": "Strapping pins",
+    "strappingLead": "These pins are read the instant the chip leaves reset. Whatever you wire to them must not pull them the wrong way at power-up.",
+    "gotchasTitle": "Pins that bite",
+    "gotchasLead": "A few pins have a job before your code runs, or belong to something else. The rest of the rules hold for every pin.",
+    "gotchasPins": "Specific pins",
+    "gotchasChip": "Whole chip"
+  },
+  "block": {
+    "back": "All blocks",
+    "facts": "Key facts",
+    "gotchas": "Gotchas",
+    "labs": "In our labs",
+    "labsNone": "No lab uses this block yet.",
+    "labsLead_one": "{{count}} lab uses this block, in {{tracks}} track. Open a track to see them.",
+    "labsLead_other": "{{count}} labs use this block, across {{tracks}} tracks. Open a track to see them.",
+    "labsCount_one": "{{count}} lab",
+    "labsCount_other": "{{count}} labs",
+    "registers": "Key registers",
+    "offset": "offset {{offset}}",
+    "bits": "Bits",
+    "field": "Field",
+    "does": "What it does",
+    "pager": "Other blocks",
+    "prev": "Previous block",
+    "next": "Next block",
+    "listedNote": "Listed only: the essentials in a few lines, with the full chapter one citation away.",
+    "lines": {
+      "default": [
+        "Data",
+        "Clock"
+      ],
+      "gpio": [
+        "IN",
+        "OUT",
+        "OE"
+      ],
+      "uart": [
+        "TX",
+        "RX",
+        "RTS",
+        "CTS"
+      ],
+      "i2c": [
+        "SDA",
+        "SCL"
+      ],
+      "spi": [
+        "SCK",
+        "MOSI",
+        "MISO",
+        "CS"
+      ],
+      "ledc": [
+        "PWM",
+        "Timer"
+      ],
+      "adc": [
+        "AIN",
+        "VREF"
+      ],
+      "touch": [
+        "TOUCH",
+        "Charge"
+      ],
+      "i2s": [
+        "BCLK",
+        "WS",
+        "DIN",
+        "DOUT"
+      ],
+      "rmt": [
+        "TX",
+        "RX",
+        "Carrier"
+      ],
+      "wifi": [
+        "RF",
+        "MAC",
+        "Baseband"
+      ],
+      "ble": [
+        "RF",
+        "Link",
+        "HCI"
+      ],
+      "usb-serial-jtag": [
+        "D+",
+        "D−"
+      ]
+    }
+  },
+  "inside": {
+    "kicker": "Under the hood",
+    "lead": "Where your code and data live, which clock drives what, and how much each power mode saves.",
+    "memory": {
+      "title": "The address map",
+      "lead": "The CPU sees one big address space: ROM, internal SRAM, the flash and PSRAM through the caches, and the peripherals' registers.",
+      "caption": "The ESP32-S3 address map, low addresses at the top",
+      "yours": "Where your sketch lives"
+    },
+    "clocks": {
+      "title": "The clock tree",
+      "lead": "One 40 MHz crystal feeds a PLL; dividers make the CPU, APB and peripheral clocks from it, while slow RC oscillators keep the RTC ticking in sleep.",
+      "caption": "Clock sources, dividers and the blocks they clock",
+      "mhz": "{{value}} MHz"
+    },
+    "power": {
+      "title": "Power modes",
+      "lead": "Each step down the ladder switches more of the chip off, and the current drops by orders of magnitude.",
+      "caption": "Typical current in each power mode, on a log scale, and what stays on",
+      "gain": "{{last}} draws {{gain}} times less than {{first}}."
+    }
+  },
+  "reader": {
+    "dialog": "Reference section",
+    "close": "Close the reference",
+    "loading": "Opening the section…",
+    "missing": "This section isn't in the reference.",
+    "unavailable": "The reference isn't part of this build.",
+    "breadcrumb": "Where this section sits",
+    "minutes_one": "{{count}} min read",
+    "minutes_other": "{{count}} min read",
+    "related": "About the {{block}} block",
+    "why": {
+      "title": "Why you're here",
+      "lead": "The guide cites this section for:",
+      "highlighted": "The matching passage is highlighted below.",
+      "jump": "Show me"
+    },
+    "key": {
+      "title": "Key information",
+      "numbers": "Numbers",
+      "warnings": "Watch out",
+      "jump": "Go to this passage: {{text}}"
+    },
+    "body": "Section text",
+    "warning": "Warning",
+    "table": {
+      "source": "Show the source table",
+      "fallback": "Table"
+    },
+    "register": {
+      "fields": "All fields",
+      "bits": "Bits",
+      "field": "Field",
+      "access": "Access",
+      "reset": "Reset",
+      "description": "Description"
+    },
+    "figure": {
+      "enlarge": "Enlarge: {{caption}}",
+      "close": "Close the figure"
+    },
+    "pins": "Open a pin",
+    "chart": {
+      "untitled": "Values from this table",
+      "unit": "{{caption}} ({{unit}})",
+      "timing": "Timing, in {{unit}}",
+      "parameter": "Parameter"
+    },
+    "foot": {
+      "nav": "Nearby sections",
+      "prev": "Previous",
+      "next": "Next",
+      "children": "In this section",
+      "back": "Back to where you were",
+      "pdf": "Open in Espressif's PDF"
+    },
+    "cite": {
+      "open": "Open {{doc}} §{{section}} in the reader",
+      "pdf": "PDF",
+      "pdfLabel": "Open the {{doc}} on Espressif's site (new tab)"
+    },
+    "newTab": "(opens in a new tab)"
+  }
+}

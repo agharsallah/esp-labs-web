@@ -1,0 +1,26 @@
+.marker {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  vertical-align: -3px;
+}
+.marker[data-kind="key"] {
+  fill: var(--copper);
+}
+.marker[data-kind="gotcha"] {
+  fill: var(--warn);
+}
+.marker[data-kind="used"] {
+  fill: var(--ok);
+}
+.mark {
+  fill: none;
+  stroke: var(--surface);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+.ring {
+  fill: none;
+  stroke: var(--ok);
+  stroke-width: 1.6;
+}

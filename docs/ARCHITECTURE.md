@@ -185,6 +185,33 @@ flowchart TB
 - **Learning aids**: guess first (a quiz or "what do you think?"), line-by-line player, line lens, new-word cards and the phrasebook (words you met are remembered), the map ("setup once, loop forever" and their calls), and an understanding ring (share of the lab's own code lines you read through stops, scenes or the lens).
 - **Checks**: `src/content/code/code-content.test.ts` fails when a lesson's env disappears or a hand-written tour anchor no longer matches the firmware.
 
+## Chip pages
+
+`#/chip` is a section of five lazily loaded pages about the ESP32-S3 itself (plan: [CHIP_PAGES_PLAN.md](CHIP_PAGES_PLAN.md)): the chip at a glance, pins, the peripheral atlas, one page per block, and memory, clocks and power modes. They show the curated 10% of the reference a maker needs, most important first (a headline sentence or number, three to five facts, then the chart or table, then a citation of the reference section), and they light up what the labs have used.
+
+```mermaid
+flowchart LR
+  content["content/chip/*<br/>CHIP: blocks, pins, gotchas,<br/>memory, clocks, power"] -->|"chipContentQuery<br/>+ chip overlay"| pages["features/chip/pages<br/>Home · Pins · Atlas · Block · Inside"]
+  ticks["progress store<br/>(ticks)"] --> cov["useChipCoverage<br/>blockCoverage · chipProgress"]
+  tracks["useTracks<br/>(every track's lessons)"] --> cov
+  cov --> nav["ChipNav meters"] & pages
+  pages --> charts["ui/charts"] & scenes["features/chip/scenes<br/>ChipDescent · DieFloorplan · BlockBus"]
+```
+
+- **Data and rules.** `src/content/chip/` holds the typed data, each fact with a `SourceRef` (document and section of the reference, which is not shipped). `domain/chip.ts` is pure: `blockCoverage` gives each block the best state of the lessons that use it, found from the lessons themselves (pins, track, firmware, USB), so a new lesson lights its blocks without touching chip data.
+- **Progress, live.** `features/chip/hooks/use-chip-coverage.ts` combines the ticks store with every track's lessons (`useTracks`); every page and the section pills read it, so ticking a step in a lab updates the chip pages at once.
+- **Layout.** The layout route renders `ChipSection` (the page pills with a coverage meter each, then the page in its own `Suspense`). Pages are in `features/chip/pages/`, their parts in one folder per page (`home/`, `pins/`, `atlas/`, `block/`, `inside/`), shared cards in `ui/` (`Marker`, `FactCard`, `GotchaCard`, `BlockTile`, `SourceLink`, `RegisterStrip`, `CoverageGlyph`) and pure helpers with tests in `logic/` (atlas and pin URL params, the register bit layout, the count-up curve, gotchas for a pin).
+- **Markers** are shapes, never colour alone: a copper pad (key fact), a warning triangle (gotcha), a ring with a dot (used in our labs), each with an accessible name.
+- **URL state.** The atlas filters (`?family=&used=&q=`) and the picked pin and function (`?pin=&fn=`) are search params, so a filtered view is shareable and the home page's family chips link into it. An unknown block id throws a `NotFoundResponse`, which the route error boundary shows as its 404.
+- **Motion.** Sections rise in once on screen (`useInView` sets `data-shown`; CSS moves only opacity and transform), headline numbers count up, tiles stagger and lift, and links inside the section use React Router's `viewTransition` (a cross-fade where the browser has the View Transitions API). Reduced motion and Calm show the end states.
+
+### The reference reader (optional)
+
+A chip page's citation chip can open the cited section of Espressif's reference in a reader (`features/reference/`): a modal side sheet (bottom sheet on phones) whose open section lives in the URL (`?ref=T26.2`, `?ref=C2.3.5`), so it is shareable and Back closes it. The reference is Espressif's copyrighted text: it is **never committed or bundled by default**.
+
+- **Build time** (`tools/reference/`, pure and tested): splits `REFERENCE_FILE` (default `docs-llm/esp32-s3/ESP32-S3_REFERENCE.md`) by its numbered headings, parses each section into a typed AST (`ast.ts`; no raw HTML), tags numbers with units, register and field names, pins, blocks, warnings and cross-references, and picks a visual for each table from its shape (`classify.ts`: range bars, compare bars, address map, pin grid, timeline). Dev serves `reference/index.json`, `reference/sections/<id>.json` and the figures from memory; a build emits them, with only the figures the sections use.
+- **Enable it**: put the reference (and its `images/` folder) at `REFERENCE_FILE` (see `.env.example`). Without it nothing is emitted, `VITE_REFERENCE_URL` is set to `""`, and citations stay plain citations with a link to Espressif's official document (`features/reference/docs-map.ts`). Do not deploy a build made with the reference unless you may redistribute it.
+
 ## State
 
 | State                               | Where                                                                               | Why                                                      |
@@ -196,7 +223,7 @@ flowchart TB
 | Code settings, motion, code read, words met | Same stores; settings are re-validated (`normalizeSettings`) on every read | Yours; a stale value falls back to defaults |
 | Lab code + phrasebook | Query cache, `staleTime: "static"`; analysis cached per document | Bundled at build time |
 | Language                            | `esp-locale` store ("auto" follows the browser) → i18next → `<html lang dir>`     | Yours; content queries are keyed by language             |
-| Variant, log filter                 | URL search params                                                                   | Shareable                                                |
+| Variant, log filter, chip filters   | URL search params                                                                   | Shareable                                                |
 | Simulator internals                 | refs / `Simulation`                                                                 | 60 fps, not rendering state                              |
 
 ## Configuration, logging, errors

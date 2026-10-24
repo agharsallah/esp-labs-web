@@ -17,6 +17,7 @@
     "sections": "Sections",
     "nav": {
       "labs": "Labs",
+      "chip": "Chip",
       "bench": "Bench",
       "settings": "Settings"
     },
@@ -29,7 +30,8 @@
     "code": "{{id}} code · {{title}} · ESP32-S3 Bench Guide",
     "log": "Bench log · ESP32-S3 Bench Guide",
     "parts": "Parts library · ESP32-S3 Bench Guide",
-    "settings": "Settings · ESP32-S3 Bench Guide"
+    "settings": "Settings · ESP32-S3 Bench Guide",
+    "chip": "{{page}} · Chip · ESP32-S3 Bench Guide"
   },
   "routeError": {
     "code": "Error",
@@ -41,7 +43,8 @@
       "noPage": "No such page",
       "noTheme": "No theme called “{{id}}”",
       "noLesson": "No lesson called “{{id}}”",
-      "plannedLesson": "Lesson {{id}} is planned, not written yet"
+      "plannedLesson": "Lesson {{id}} is planned, not written yet",
+      "noBlock": "No block called “{{id}}”"
     }
   },
   "codeRoute": {
@@ -187,5 +190,31 @@
         "callTimed": "Step {{step}} of {{total}} · {{from}} → {{to}} · about {{duration}}"
       }
     }
+  },
+  "charts": {
+    "showTable": "Show as table",
+    "hideTable": "Hide table",
+    "item": "Item",
+    "value": "Value",
+    "valueIn": "Value ({{unit}})",
+    "min": "Min",
+    "typical": "Typical",
+    "max": "Max",
+    "start": "Start",
+    "end": "End",
+    "size": "Size",
+    "region": "Region",
+    "from": "From",
+    "to": "To",
+    "via": "Via",
+    "state": "State",
+    "count": "Count",
+    "keeps": "Stays on",
+    "gain": "×{{ratio}} less",
+    "none": "Not yet used",
+    "highlight": "Highlighted",
+    "warn": "Watch out",
+    "yes": "Yes",
+    "outOf": "{{value}} of {{max}}"
   }
 }

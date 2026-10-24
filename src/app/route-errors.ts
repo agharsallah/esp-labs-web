@@ -5,9 +5,10 @@ export type RouteErrorReason =
   | { readonly reason: "noPage" }
   | { readonly reason: "noTheme"; readonly id: string }
   | { readonly reason: "noLesson"; readonly id: string }
-  | { readonly reason: "plannedLesson"; readonly id: string };
+  | { readonly reason: "plannedLesson"; readonly id: string }
+  | { readonly reason: "noBlock"; readonly id: string };
 
-const REASONS = new Set<string>(["noPage", "noTheme", "noLesson", "plannedLesson"]);
+const REASONS = new Set<string>(["noPage", "noTheme", "noLesson", "plannedLesson", "noBlock"]);
 
 export function isRouteErrorReason(value: unknown): value is RouteErrorReason {
   return (

@@ -36,3 +36,20 @@ export const TOUR_TEXT: TextPolicy = {
   text: new Set(["bigPicture", "title", "say", "deep", "question", "options", "why"]),
   itemKey: ["env", "path"],
 };
+
+/** The chip pages (src/content/chip). Register and pin-function symbols stay structure. */
+export const CHIP_TEXT: TextPolicy = {
+  text: new Set([
+    "name",
+    "short",
+    "text",
+    "title",
+    "label",
+    "note",
+    "unit",
+    "keepsOn",
+    "strapping",
+    "does",
+  ]),
+  itemKey: ["id"],
+};

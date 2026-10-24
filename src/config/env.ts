@@ -6,6 +6,8 @@ import * as z from "zod/mini";
 const EnvSchema = z.object({
   VITE_BENCH_DATA_URL: z._default(z.string().check(z.minLength(1)), "./data/"),
   VITE_FIRMWARE_URL: z._default(z.string().check(z.minLength(1)), "./firmware/"),
+  // "" turns the reference reader off (set by tools/reference when REFERENCE_FILE is absent).
+  VITE_REFERENCE_URL: z._default(z.string(), "./reference/"),
   VITE_LABS_SOURCE_URL: z._default(
     z.string().check(z.minLength(1)),
     "https://github.com/agharsallah/esp-labs/tree/main/labs/",
@@ -27,6 +29,13 @@ export const env = {
   firmwareUrl: parsed.VITE_FIRMWARE_URL.endsWith("/")
     ? parsed.VITE_FIRMWARE_URL
     : `${parsed.VITE_FIRMWARE_URL}/`,
+  /** Base URL of the reference reader's documents, ending in "/"; null when the guide is built without them. */
+  referenceUrl:
+    parsed.VITE_REFERENCE_URL === ""
+      ? null
+      : parsed.VITE_REFERENCE_URL.endsWith("/")
+        ? parsed.VITE_REFERENCE_URL
+        : `${parsed.VITE_REFERENCE_URL}/`,
   /** Where each lab's PlatformIO project lives online, always ending in "/" (append the lab folder). */
   labsSourceUrl: parsed.VITE_LABS_SOURCE_URL.endsWith("/")
     ? parsed.VITE_LABS_SOURCE_URL

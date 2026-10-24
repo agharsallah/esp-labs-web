@@ -22,6 +22,7 @@ export function BoardExplorer({ lessons }: { lessons: readonly LessonEntry[] }) 
   const [picked, setPicked] = useState<PartId | null>(null);
   const [hover, setHover] = useState<PartId | null>(null);
   const { t } = useTranslation("home");
+  const { t: tChip } = useTranslation("chip");
   const { boxRef, canvasRef, labelsRef, stageRef, status } = useStage3d(
     {
       target: { x: 0.1, y: -0.15, z: 0 },
@@ -124,6 +125,9 @@ export function BoardExplorer({ lessons }: { lessons: readonly LessonEntry[] }) 
           );
         })}
       </ol>
+      <Link to="/chip" className={styles.inside}>
+        {tChip("goInside")}
+      </Link>
     </StageBox>
   );
 }

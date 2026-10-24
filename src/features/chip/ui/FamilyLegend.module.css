@@ -1,0 +1,25 @@
+/* The family key: a wrapped row of swatch + icon + name. */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  color: var(--ink);
+}
+.legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.legend svg {
+  color: var(--fam);
+}
+.swatch {
+  inline-size: 12px;
+  block-size: 12px;
+  border-radius: 3px;
+  background: var(--fam);
+}

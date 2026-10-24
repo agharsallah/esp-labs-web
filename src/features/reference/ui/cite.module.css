@@ -1,0 +1,28 @@
+/* The citation chip's two extra states: a live link into the reader, and the PDF link beside a
+   plain citation when the reader is not part of the build. */
+.live {
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 120ms ease, color 120ms ease;
+}
+.live:hover {
+  border-color: var(--copper);
+  color: var(--copper);
+}
+.live:focus-visible,
+.pdf:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+.live::after {
+  content: "↗";
+  margin-inline-start: 4px;
+  color: var(--copper);
+}
+.pdf {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  font: 600 11.5px var(--font-display);
+  color: var(--copper);
+}

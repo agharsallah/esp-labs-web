@@ -1,4 +1,4 @@
-import { cleanup } from "@testing-library/react";
+import { cleanup, configure } from "@testing-library/react";
 import { afterEach } from "vitest";
 import { initI18n } from "@/i18n/i18n";
 
@@ -24,6 +24,10 @@ globalThis.ResizeObserver ??= class ResizeObserver {
 };
 
 afterEach(() => cleanup());
+
+// Route tests wait for lazily loaded pages; on a cold run (CI, a cleared cache) the first
+// transform of a page and its chunks takes longer than testing-library's 1 s default.
+configure({ asyncUtilTimeout: 5000 });
 
 // Components read their text through i18next; tests see the English source.
 await initI18n();

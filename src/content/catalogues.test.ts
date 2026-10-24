@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { LOCALES, SOURCE_LOCALE } from "@/i18n/locales";
 import { checkOverlay, extractOverlay, type TextPolicy } from "@/i18n/overlay";
+import { CHIP } from "./chip";
 import { GLOSSARY, TOPIC_LABELS } from "./code/glossary";
 import { TOURS } from "./code/tours";
 import { bleLessons } from "./lessons/ble";
@@ -9,7 +10,7 @@ import { introLessons } from "./lessons/intro";
 import { rfidLessons } from "./lessons/rfid";
 import { soundLessons } from "./lessons/sound";
 import { wifiLessons } from "./lessons/wifi";
-import { GLOSSARY_TEXT, LESSON_TEXT, TOUR_TEXT } from "./text-policies";
+import { CHIP_TEXT, GLOSSARY_TEXT, LESSON_TEXT, TOUR_TEXT } from "./text-policies";
 
 // The English content catalogues (src/locales/en/content) are generated from the TypeScript
 // source: `pnpm i18n:extract` rewrites them, and this test fails while they are out of date.
@@ -25,6 +26,7 @@ const CATALOGUES: readonly { name: string; source: unknown; policy: TextPolicy }
   { name: "lessons/sound", source: soundLessons, policy: LESSON_TEXT },
   { name: "glossary", source: { entries: GLOSSARY, topics: TOPIC_LABELS }, policy: GLOSSARY_TEXT },
   { name: "tours", source: TOURS, policy: TOUR_TEXT },
+  { name: "chip", source: CHIP, policy: CHIP_TEXT },
 ];
 
 const translations = import.meta.glob<unknown>("../locales/*/content/**/*.json", {

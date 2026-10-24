@@ -35,7 +35,30 @@ const PATHS = {
   // The board, in the navigation
   board:
     "M7 2h10v20H7zM9.5 4h5v6h-5zM4 6h3M4 9h3M4 12h3M4 15h3M4 18h3M17 6h3M17 9h3M17 12h3M17 15h3M17 18h3M10 19h4",
+  // The chip's block families, for small sizes in text (the parts library draws the blocks)
+  "fam-system": "M6 6h12v12H6zM9 9h6v6H9zM9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3",
+  "fam-memory": "M4 6h16v12H4zM8 9v6M12 9v6M16 9v6M7 18v3M17 18v3",
+  "fam-security": "M6 11h12v10H6zM8.5 11V8a3.5 3.5 0 0 1 7 0v3M12 15v2",
+  "fam-connectivity": `${o(5, 12, 2)}${o(19, 12, 2)}M7 12h10M10 8l-3 4 3 4M14 8l3 4-3 4`,
+  "fam-timing": `${o(12, 13, 8)}M12 13V9M12 13h3M10 2h4M12 2v3`,
+  "fam-analog": "M3 12c2-6 4-6 6 0s4 6 6 0 4-6 6 0",
+  "fam-radio": "M12 20v-6M8.5 10.5a5 5 0 0 1 7 0M5.5 7.5a9 9 0 0 1 13 0M12 13h0",
   chip: "M7 7h10v10H7zM10 3v4M14 3v4M10 17v4M14 17v4M3 10h4M3 14h4M17 10h4M17 14h4",
+
+  // The reference reader: its documents, its controls and the kinds of number it tags
+  module: "M5 3h14v18H5zM8 6h8v5H8zM5 15h-2M5 18h-2M19 15h2M19 18h2M9 15h6",
+  book: "M4 5a2 2 0 0 1 2-2h13v15H6a2 2 0 0 0-2 2zM4 20a2 2 0 0 0 2 1h13v-3M8 7h7M8 10h5",
+  external: "M14 4h6v6M20 4l-9 9M18 14v6H4V6h6",
+  close: "M6 6l12 12M18 6L6 18",
+  expand: "M4 10V4h6M20 14v6h-6M4 4l6 6M20 20l-6-6",
+  volt: "M13 3L6 13h5l-1 8 7-10h-5z",
+  current: `${o(12, 12, 8)}M8 12h8M13 9l3 3-3 3`,
+  frequency: "M2 12h3l2-6 3 12 3-12 3 12 2-6h4",
+  size: "M4 7l8-4 8 4-8 4zM4 12l8 4 8-4M4 17l8 4 8-4",
+  time: `${o(12, 12, 9)}M12 7v5l3 2`,
+  power: "M12 3v8M7 6.5a7 7 0 1 0 10 0",
+  pin: "M9 3h6v4H9zM12 7v14M8 21h8",
+  warning: "M12 3l10 18H2zM12 10v5M12 18v.5",
 } as const;
 
 export type IconName = keyof typeof PATHS;

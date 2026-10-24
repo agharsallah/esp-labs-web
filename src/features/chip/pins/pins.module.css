@@ -1,0 +1,106 @@
+.picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+  gap: 4px;
+}
+.picker button {
+  position: relative;
+  min-height: 36px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-s);
+  background: var(--surface);
+  color: var(--ink);
+  font: 600 12px var(--font-mono);
+  cursor: pointer;
+}
+/* Used in our labs: a solid bar under the number. Gotcha: a corner triangle. Shapes, not only colour. */
+.picker button[data-used] {
+  box-shadow: inset 0 -3px 0 var(--ok);
+}
+.picker button[data-warn]::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 2px;
+  inset-inline-end: 2px;
+  border-inline-start: 7px solid transparent;
+  border-block-start: 7px solid var(--warn);
+}
+.picker button[data-off] {
+  border-style: dashed;
+  color: var(--muted);
+}
+.picker button[aria-pressed="true"] {
+  border-color: var(--copper);
+  background: color-mix(in oklab, var(--copper) 18%, var(--surface));
+}
+.detail {
+  display: grid;
+  gap: 10px;
+  animation: detail-in 0.3s ease;
+}
+@keyframes detail-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .detail {
+    animation: none;
+  }
+}
+.detailTitle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font: 800 20px var(--font-display);
+}
+.used {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  font: 600 12px var(--font-mono);
+  color: var(--muted);
+}
+.note {
+  margin: 0;
+  color: var(--muted);
+}
+.functions {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 6px;
+  margin: 0;
+}
+.functions div {
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-s);
+}
+.functions dt {
+  font-size: 11.5px;
+  color: var(--muted);
+}
+.functions dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.straps {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.straps li {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: baseline;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  background: var(--surface);
+}

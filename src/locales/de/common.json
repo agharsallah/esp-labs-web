@@ -17,6 +17,7 @@
     "sections": "Bereiche",
     "nav": {
       "labs": "Labs",
+      "chip": "Chip",
       "bench": "Bench",
       "settings": "Einstellungen"
     },
@@ -29,7 +30,8 @@
     "code": "{{id}}-Code · {{title}} · ESP32-S3 Bench Guide",
     "log": "Bench-Log · ESP32-S3 Bench Guide",
     "parts": "Bauteil-Bibliothek · ESP32-S3 Bench Guide",
-    "settings": "Einstellungen · ESP32-S3 Bench Guide"
+    "settings": "Einstellungen · ESP32-S3 Bench Guide",
+    "chip": "{{page}} · Chip · ESP32-S3 Bench Guide"
   },
   "routeError": {
     "code": "Fehler",
@@ -41,7 +43,8 @@
       "noPage": "Diese Seite gibt es nicht",
       "noTheme": "Kein Thema namens „{{id}}“",
       "noLesson": "Keine Lektion namens „{{id}}“",
-      "plannedLesson": "Lektion {{id}} ist geplant, aber noch nicht geschrieben"
+      "plannedLesson": "Lektion {{id}} ist geplant, aber noch nicht geschrieben",
+      "noBlock": "Kein Block namens „{{id}}“"
     }
   },
   "codeRoute": {

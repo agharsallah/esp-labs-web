@@ -1,0 +1,77 @@
+/* Like the track pills: one row that scrolls inside itself on phones, wraps on wide screens. */
+.nav {
+  overflow-x: auto;
+  scrollbar-width: none;
+  margin-inline: calc(var(--gutter) * -1);
+  padding: 2px var(--gutter) 4px;
+}
+.nav::-webkit-scrollbar {
+  display: none;
+}
+.nav ul {
+  display: flex;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  width: max-content;
+}
+@media (min-width: 880px) {
+  .nav {
+    overflow: visible;
+    margin-inline: 0;
+    padding-inline: 0;
+  }
+  .nav ul {
+    flex-wrap: wrap;
+    width: auto;
+  }
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding-inline: 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: border-color 0.2s ease;
+}
+.pill:hover {
+  border-color: var(--copper);
+}
+.pill[aria-current="page"] {
+  border-color: var(--copper);
+  background: color-mix(in oklab, var(--copper) 13%, var(--surface));
+  box-shadow: inset 0 0 0 1px var(--copper);
+}
+.title {
+  font: 700 13.5px var(--font-display);
+}
+.meter {
+  position: relative;
+  width: 36px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--line);
+  overflow: hidden;
+}
+.meter i {
+  position: absolute;
+  inset: 0;
+  background: var(--ok);
+  transform-origin: left;
+  transform: scaleX(var(--share, 0));
+  transition: transform 0.5s ease;
+}
+:root[dir="rtl"] .meter i {
+  transform-origin: right;
+}
+.count {
+  font: 600 11px var(--font-mono);
+  color: var(--muted);
+}

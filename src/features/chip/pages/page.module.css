@@ -1,0 +1,124 @@
+/* Shared layout of the chip pages: section frame, headings, reveal motion. */
+.section {
+  display: grid;
+  gap: 24px;
+  min-width: 0;
+}
+.page {
+  display: grid;
+  gap: 40px;
+  min-width: 0;
+}
+.hero {
+  display: grid;
+  gap: 10px;
+}
+.kicker,
+.sectionHead {
+  margin: 0;
+  font: 700 12px var(--font-display);
+  font-stretch: 75%;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+.title {
+  margin: 0;
+  font: 800 clamp(28px, 6vw, 44px) / 1.05 var(--font-display);
+}
+.lead {
+  margin: 0;
+  max-width: 62ch;
+  font-size: 17px;
+  color: var(--ink);
+}
+.h2 {
+  margin: 0;
+  font: 800 22px var(--font-display);
+}
+.h3 {
+  margin: 0;
+  font: 800 16px var(--font-display);
+}
+.note {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+/* A block whose parts belong together (filters and their result count): a tighter rhythm. */
+.tight {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+.sectionIntro {
+  display: grid;
+  gap: 6px;
+}
+.sectionIntro > p {
+  margin: 0;
+}
+/* Pins page: the picker and the picked pin's card side by side, above the full-width matrix. */
+.pickStrip {
+  display: grid;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-l);
+  background: var(--surface);
+  min-width: 0;
+}
+.pickList,
+.pickCard {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  min-width: 0;
+}
+@media (min-width: 900px) {
+  .pickStrip {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  }
+  .pickCard {
+    padding-inline-start: 16px;
+    border-inline-start: 1px solid var(--line);
+  }
+}
+.muted {
+  color: var(--muted);
+}
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Sections rise in once on screen. Only opacity and transform move; reduced motion shows them still. */
+.reveal {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
+}
+.reveal[data-shown] {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+:root[data-motion="reduced"] .reveal {
+  opacity: 1;
+  transform: none;
+}

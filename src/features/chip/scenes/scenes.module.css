@@ -1,0 +1,231 @@
+/* The chip scenes: the scroll-scrubbed descent, the die and the bus, with their flat fallbacks. */
+
+/* The descent: a tall section whose stage stays pinned while it scrolls past, a screen a layer.
+   Stepped (reduced motion), it is one screen with buttons. */
+.descent {
+  position: relative;
+}
+.descent[data-mode="scroll"] {
+  height: calc(var(--layers) * 100svh);
+}
+.pinned {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 12px;
+  min-height: min(100svh, 760px);
+}
+.descent[data-mode="scroll"] .pinned {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+}
+/* The standalone die: a wide, low header on large screens (dieStage frames the slab for 2 / 1). */
+.dieStage {
+  aspect-ratio: 16 / 10;
+}
+@media (min-width: 900px) {
+  .dieStage {
+    aspect-ratio: 2 / 1;
+  }
+}
+.fill {
+  aspect-ratio: auto;
+  min-height: 320px;
+}
+.view canvas {
+  cursor: grab;
+  touch-action: pan-y;
+}
+.caption {
+  min-height: 3lh;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.stepper > button {
+  min-width: 44px;
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+}
+.stepper > button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.dots {
+  display: flex;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.dots button {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.dots button::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--muted);
+}
+.dots button[aria-current="step"]::before {
+  border-color: var(--hotspot);
+  background: var(--hotspot);
+}
+
+/* The standalone die: canvas, then the tiles as a list of buttons. */
+.die {
+  display: grid;
+  gap: 12px;
+}
+
+/* Beside the 3D die: the same tiles as small family-coloured chips, wrapped. */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.chips .tile {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  inline-size: auto;
+  min-block-size: 28px;
+  padding-block: 2px;
+  padding-inline: 8px;
+  border-width: 1px;
+  border-color: color-mix(in oklab, var(--fam) 60%, var(--line));
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--fam) 14%, var(--surface));
+}
+.chips .tile::before {
+  content: "";
+  inline-size: 8px;
+  block-size: 8px;
+  border-radius: 50%;
+  background: var(--fam);
+}
+.chips .tile[data-coverage="none"]::before {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--fam);
+}
+.chips .tile[data-on],
+.chips .tile:focus-visible {
+  border-color: var(--hotspot);
+}
+.chips .bar {
+  display: none;
+}
+
+/* The flat floor plan: a grid of tiles in their family colours, a bar for coverage. */
+.flat {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  gap: 4px;
+  margin: 0;
+  padding: 8px;
+  list-style: none;
+  border-radius: var(--radius-m);
+  background: var(--metal-dark);
+}
+@media (min-width: 600px) {
+  .flat > li {
+    grid-column: var(--col);
+    grid-row: var(--row);
+  }
+}
+@media (max-width: 599px) {
+  .flat {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+.tile {
+  --fam: var(--fam-system);
+  display: grid;
+  align-content: space-between;
+  gap: 4px;
+  inline-size: 100%;
+  min-block-size: 48px;
+  padding: 6px;
+  border: 2px solid transparent;
+  border-radius: var(--radius-s);
+  background: color-mix(in oklab, var(--fam) 70%, var(--surface));
+  color: var(--ink);
+  font: 600 11px var(--font-mono);
+  text-align: start;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+.tile[data-family="memory"] { --fam: var(--fam-memory); }
+.tile[data-family="security"] { --fam: var(--fam-security); }
+.tile[data-family="connectivity"] { --fam: var(--fam-connectivity); }
+.tile[data-family="timing"] { --fam: var(--fam-timing); }
+.tile[data-family="analog"] { --fam: var(--fam-analog); }
+.tile[data-family="radio"] { --fam: var(--fam-radio); }
+.tile[data-coverage="none"] {
+  background: color-mix(in oklab, var(--fam) 30%, var(--surface));
+}
+.tile[data-on],
+.tile:focus-visible {
+  border-color: var(--hotspot);
+  transform: translateY(-2px);
+}
+.tileName {
+  overflow-wrap: anywhere;
+}
+.bar {
+  block-size: 4px;
+  inline-size: calc(var(--h) * 100%);
+  border-radius: 2px;
+  background: var(--ink);
+  opacity: 0.6;
+}
+
+/* The bus: canvas, then the signal lines as a legend. */
+.bus {
+  display: grid;
+  gap: 8px;
+}
+.lines {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font: 600 12px var(--font-mono);
+}
+.lines li {
+  padding-block: 2px;
+  padding-inline: 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tile { transition: none; }
+}
+:root[data-motion="reduced"] .tile {
+  transition: none;
+}
+.stepper > button:dir(rtl) svg {
+  transform: scaleX(-1);
+}

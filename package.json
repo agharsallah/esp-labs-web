@@ -17,6 +17,7 @@
     "test": "vitest run",
     "check": "pnpm typecheck && pnpm lint && pnpm test",
     "i18n:extract": "vitest run src/content/catalogues.test.ts --update",
+    "chip:refs": "node tools/chip/check-refs.ts",
     "deploy:preview": "vercel pull --yes --environment=preview && vercel build && vercel deploy --prebuilt",
     "deploy:prod": "vercel pull --yes --environment=production && vercel build --prod && vercel deploy --prebuilt --prod"
   },

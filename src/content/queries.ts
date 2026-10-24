@@ -2,7 +2,7 @@ import { queryOptions } from "@tanstack/react-query";
 import type { LessonEntry, TrackId } from "@/domain/lesson";
 import type { Locale } from "@/i18n/locales";
 import { localize } from "./localize";
-import { LESSON_TEXT } from "./text-policies";
+import { CHIP_TEXT, LESSON_TEXT } from "./text-policies";
 
 type LessonLoader = () => Promise<readonly LessonEntry[]>;
 
@@ -26,6 +26,21 @@ export const trackLessonsQuery = (track: TrackId, locale: Locale) =>
     queryFn: async () => {
       const lessons = (await LOADERS[track]?.()) ?? [];
       return localize(lessons, locale, `lessons/${track}`, LESSON_TEXT);
+    },
+    staleTime: "static",
+    gcTime: Infinity,
+  });
+
+/**
+ * The chip pages' content (blocks, pins, memory, clocks, power) in one language, as one lazy
+ * chunk with the "chip" overlay (src/locales/<locale>/content/chip.json) laid over it.
+ */
+export const chipContentQuery = (locale: Locale) =>
+  queryOptions({
+    queryKey: ["content", "chip", locale] as const,
+    queryFn: async () => {
+      const { CHIP } = await import("./chip");
+      return localize(CHIP, locale, "chip", CHIP_TEXT);
     },
     staleTime: "static",
     gcTime: Infinity,

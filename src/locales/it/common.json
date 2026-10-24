@@ -17,6 +17,7 @@
     "sections": "Sezioni",
     "nav": {
       "labs": "Lab",
+      "chip": "Chip",
       "bench": "Banco",
       "settings": "Impostazioni"
     },
@@ -29,7 +30,8 @@
     "code": "Codice {{id}} · {{title}} · Guida da banco ESP32-S3",
     "log": "Registro del banco · Guida da banco ESP32-S3",
     "parts": "Libreria dei componenti · Guida da banco ESP32-S3",
-    "settings": "Impostazioni · Guida da banco ESP32-S3"
+    "settings": "Impostazioni · Guida da banco ESP32-S3",
+    "chip": "{{page}} · Chip · Guida da banco ESP32-S3"
   },
   "routeError": {
     "code": "Errore",
@@ -41,7 +43,8 @@
       "noPage": "Pagina inesistente",
       "noTheme": "Nessun tema chiamato “{{id}}”",
       "noLesson": "Nessuna lezione chiamata “{{id}}”",
-      "plannedLesson": "La lezione {{id}} è in programma, non ancora scritta"
+      "plannedLesson": "La lezione {{id}} è in programma, non ancora scritta",
+      "noBlock": "Nessun blocco chiamato «{{id}}»"
     }
   },
   "codeRoute": {

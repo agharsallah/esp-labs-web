@@ -321,14 +321,12 @@
       "next": "下一節",
       "children": "本節內容",
       "back": "回到剛才的位置",
-      "pdf": "在樂鑫的 PDF 中開啟",
-      "web": "在樂鑫官網中開啟"
+      "pdf": "在樂鑫的 PDF 中開啟"
     },
     "cite": {
       "open": "在閱讀器中開啟 {{doc}} §{{section}}",
       "pdf": "PDF",
-      "pdfLabel": "在樂鑫官網開啟 {{doc}}（新分頁）",
-      "web": "指南"
+      "pdfLabel": "在樂鑫官網開啟 {{doc}}（新分頁）"
     },
     "newTab": "（在新分頁開啟）"
   }

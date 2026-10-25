@@ -321,14 +321,12 @@
       "next": "次へ",
       "children": "このセクションの中",
       "back": "元の場所に戻る",
-      "pdf": "EspressifのPDFで開く",
-      "web": "Espressifのサイトで開く"
+      "pdf": "EspressifのPDFで開く"
     },
     "cite": {
       "open": "{{doc}} §{{section}} をリーダーで開く",
       "pdf": "PDF",
-      "pdfLabel": "Espressifのサイトで{{doc}}を開く（新しいタブ）",
-      "web": "ガイド"
+      "pdfLabel": "Espressifのサイトで{{doc}}を開く（新しいタブ）"
     },
     "newTab": "（新しいタブで開きます）"
   }

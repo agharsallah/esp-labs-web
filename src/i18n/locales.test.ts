@@ -7,6 +7,7 @@ describe("matchLocale", () => {
     expect(matchLocale(["zh-CN"])).toBe("zh");
     expect(matchLocale(["ZH-tw"])).toBe("zh-TW");
     expect(matchLocale(["zh-Hant-HK"])).toBe("zh-TW");
+    expect(matchLocale(["zh-Hans-HK"])).toBe("zh");
     expect(matchLocale(["ja_JP"])).toBe("ja");
   });
 

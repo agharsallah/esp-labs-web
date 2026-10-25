@@ -256,6 +256,9 @@
   --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, var(--font-script);
   --leading: 1.75;
 }
+:root:lang(zh-Hant) {
+  --font-script: "PingFang TC", "Hiragino Sans CNS", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+}
 :root:lang(ja) {
   --font-script:
     "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic UI", Meiryo,

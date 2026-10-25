@@ -51,7 +51,9 @@ const TRADITIONAL_PARTS: ReadonlySet<string> = new Set(["tw", "hk", "mo", "hant"
 export function matchLocale(preferred: readonly string[]): Locale {
   for (const tag of preferred) {
     const [base, ...rest] = tag.toLowerCase().split(/[-_]/);
-    if (base === "zh" && rest.some((part) => TRADITIONAL_PARTS.has(part))) return "zh-TW";
+    // An explicit Simplified script wins over a region: zh-Hans-HK is still Simplified.
+    if (base === "zh" && !rest.includes("hans") && rest.some((part) => TRADITIONAL_PARTS.has(part)))
+      return "zh-TW";
     if (isLocale(base)) return base;
   }
   return SOURCE_LOCALE;

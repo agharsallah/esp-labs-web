@@ -351,14 +351,12 @@
       "next": "التالي",
       "children": "في هذا القسم",
       "back": "العودة إلى حيث كنت",
-      "pdf": "افتح في PDF من Espressif",
-      "web": "افتح في موقع Espressif"
+      "pdf": "افتح في PDF من Espressif"
     },
     "cite": {
       "open": "افتح {{doc}} §{{section}} في القارئ",
       "pdf": "PDF",
-      "pdfLabel": "افتح {{doc}} في موقع Espressif (في تبويب جديد)",
-      "web": "الدليل"
+      "pdfLabel": "افتح {{doc}} في موقع Espressif (في تبويب جديد)"
     },
     "newTab": "(يفتح في تبويب جديد)"
   }

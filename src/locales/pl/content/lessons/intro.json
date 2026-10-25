@@ -1,0 +1,89 @@
+{
+  "00": {
+    "title": "Konfiguracja",
+    "heading": "Podłącz płytkę i znajdź ją w systemie",
+    "goal": "Połącz narzędzia z układem: kabel do transmisji danych, właściwy port USB i nazwę portu szeregowego na Macu.",
+    "learn": [
+      "USB-C: kabel danych a kabel do ładowania",
+      "port COM a natywny port USB",
+      "porty szeregowe",
+      "tryb rozruchu"
+    ],
+    "steps": [
+      "Podłącz kabel USB-C <b>do transmisji danych</b> do portu opisanego <code>COM</code> (lub <code>UART</code>).",
+      "Sprawdź, czy zapala się czerwona dioda zasilania.",
+      "Uruchom polecenie powyżej. Powinno pojawić się nowe <code>/dev/cu.usbmodem…</code> albo <code>/dev/cu.wchusbserial…</code>.",
+      "Podaj Claude’owi nazwę portu i to, czy twoja płytka ma jeden, czy dwa porty USB."
+    ],
+    "note": "Wgrywanie kończy się komunikatem „Failed to connect”? Przytrzymaj BOOT, naciśnij RST, puść BOOT i wgraj program ponownie."
+  },
+  "01": {
+    "title": "Witaj",
+    "heading": "Poznaj płytkę",
+    "goal": "Wgraj pierwszy program. Wypisuje on „dowód tożsamości” układu i przełącza wbudowaną diodę RGB przez wszystkie kolory tęczy.",
+    "learn": [
+      "setup() i loop()",
+      "logowanie przez Serial",
+      "millis()",
+      "dioda RGB WS2812"
+    ],
+    "pins": {
+      "0": {
+        "role": "RGB"
+      }
+    },
+    "steps": [
+      "Nic nie trzeba podłączać. Zostaw kabel w porcie <code>COM</code>.",
+      "Uruchom polecenie. Poczekaj, aż pojawi się <code>Hard resetting via RTS pin…</code>.",
+      "Odczytaj dowód tożsamości: flash powinien mieć <b>16 MB</b>, a PSRAM około <b>8 MB</b>.",
+      "Obserwuj diodę RGB obok układu, która zmienia kolory.",
+      "Naciśnij <code>Ctrl+C</code>, aby wyjść z monitora."
+    ],
+    "note": "Dioda nie zmienia kolorów? Niektóre płytki podłączają ją do GPIO 38. Zmień PIN_RGB w kit/include/pins.h."
+  },
+  "02": {
+    "title": "Pierwszy obwód",
+    "heading": "Dioda LED na płytce stykowej",
+    "goal": "Zbuduj pierwszy obwód i steruj nim, wpisując polecenia. Dioda dalej się animuje, kiedy płytka nasłuchuje.",
+    "learn": [
+      "rzędy płytki stykowej",
+      "rezystory",
+      "jasność PWM",
+      "maszyny stanów"
+    ],
+    "pins": {
+      "0": {
+        "role": "LED +"
+      },
+      "1": {
+        "role": "LED −"
+      }
+    },
+    "wiring": {
+      "rows": [
+        [
+          "GPIO 4",
+          "rezystor 220–330 Ω",
+          "pierwsza nóżka"
+        ],
+        [
+          "rezystor",
+          "długa nóżka LED (+)",
+          "druga nóżka, ten sam rząd"
+        ],
+        [
+          "krótka nóżka LED (−)",
+          "GND",
+          "niebieska szyna lub pin GND"
+        ]
+      ]
+    },
+    "steps": [
+      "Przed podłączaniem odłącz USB. Umieść płytkę w poprzek środkowej przerwy płytki stykowej.",
+      "Połącz GPIO 4 → rezystor → długa nóżka LED. Krótka nóżka LED → GND.",
+      "Podłącz USB z powrotem i uruchom polecenie. Dioda zacznie pulsować.",
+      "Wpisz <code>blink 200</code>, <code>sos</code>, <code>level 30</code>, <code>on</code>, <code>off</code>."
+    ],
+    "note": "Nie masz jeszcze rezystora? Kod ustawia najsłabszą wydajność pinu (około 5 mA) jako zabezpieczenie. Mimo to dodaj rezystor jak najszybciej."
+  }
+}

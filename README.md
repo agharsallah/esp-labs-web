@@ -10,7 +10,7 @@ An interactive guide to the ESP32-S3: 32 hands-on labs with live simulators, a 3
 [![React 19](https://img.shields.io/badge/React-19.3-149eca?logo=react&logoColor=white)](https://react.dev)
 [![TypeScript strict](https://img.shields.io/badge/TypeScript-6.0_strict-3178c6?logo=typescript&logoColor=white)](tsconfig.app.json)
 [![Vite 8](https://img.shields.io/badge/Vite-8.3-646cff?logo=vite&logoColor=white)](https://vite.dev)
-[![9 languages](https://img.shields.io/badge/languages-9_incl._RTL-b5651d)](docs/I18N.md)
+[![10 languages](https://img.shields.io/badge/languages-10_incl._RTL-b5651d)](docs/I18N.md)
 [![CI](https://github.com/agharsallah/esp-labs-web/actions/workflows/ci.yml/badge.svg)](https://github.com/agharsallah/esp-labs-web/actions/workflows/ci.yml)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-1f7a55)](CONTRIBUTING.md)
 
@@ -53,7 +53,7 @@ Each lesson is one sheet: the goal, the pins it uses on a live pinout, the wirin
 
 ### In your language, on your phone
 
-The guide is in English, French, Spanish, Italian, German, Chinese (Simplified and Traditional), Japanese and Arabic (right to left). Add `?lang=fr` to any link to share it in a language. It works on a phone at 390 px, in light and dark themes, and respects reduced motion.
+The guide is in English, French, Spanish, Italian, German, Polish, Chinese (Simplified and Traditional), Japanese and Arabic (right to left). Add `?lang=fr` to any link to share it in a language. It works on a phone at 390 px, in light and dark themes, and respects reduced motion.
 
 <table>
   <tr>

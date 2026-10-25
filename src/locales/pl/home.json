@@ -1,0 +1,73 @@
+{
+  "hero": {
+    "kicker": "ESP32-S3 · N16R8 · przewodnik stanowiskowy",
+    "title": "ESP32 <part>Ćwiczenia</part>",
+    "motto": {
+      "wire": "Połącz",
+      "flash": "Wgraj",
+      "watch": "Obserwuj",
+      "read": "Czytaj kod"
+    }
+  },
+  "hud": {
+    "title": "Działające ćwiczenia",
+    "strip": "Każde ćwiczenie, według działu",
+    "works": "na płytce",
+    "done": "zrobione przez ciebie",
+    "built": "gotowe do wypróbowania"
+  },
+  "continue": {
+    "resumed": "Wróć tam, gdzie skończyłeś",
+    "start": "Zacznij tutaj",
+    "continue": "Kontynuuj ćwiczenie",
+    "open": "Otwórz ćwiczenie",
+    "code": "Przeczytaj jego kod"
+  },
+  "board": {
+    "title": "Poznaj płytkę",
+    "intro": "Sześć części, których będziesz używać w kolejnych ćwiczeniach. Przeciągnij płytkę, by ją obrócić; wybierz część, by ją podświetlić i zobaczyć, które ćwiczenia jej używają.",
+    "model": "Model 3D ESP32-S3 DevKitC-1: moduł z anteną, dwa porty USB-C, przyciski BOOT i RST, dioda RGB i dwa rzędy pinów listwy. Przeciągnij, by obrócić.",
+    "fallback": "Każda część jest opisana w kartach.",
+    "usedIn": "Używane w ",
+    "more_one": "+{{count}} ćwiczenie",
+    "more_few": "+{{count}} ćwiczenia",
+    "more_many": "+{{count}} ćwiczeń",
+    "more_other": "+{{count}} ćwiczenia",
+    "parts": {
+      "usb": {
+        "title": "Porty USB-C",
+        "text": "COM wgrywa program na płytkę i obsługuje monitor portu szeregowego. USB to własny port S3."
+      },
+      "buttons": {
+        "title": "BOOT i RST",
+        "text": "RST restartuje twój program. BOOT to GPIO 0: wolny przycisk, gdy płytka już działa."
+      },
+      "rgb": {
+        "title": "Dioda RGB",
+        "text": "Jedna WS2812 na GPIO 48: 16 milionów kolorów z jednego pinu danych."
+      },
+      "module": {
+        "title": "Moduł ESP32-S3",
+        "text": "Dwa rdzenie 240 MHz, 16 MB flash i 8 MB PSRAM pod metalową obudową."
+      },
+      "antenna": {
+        "title": "Antena PCB",
+        "text": "Wi-Fi 4 i Bluetooth 5 wychodzą z tego miedzianego zygzaka: trzymaj go z dala od metalu."
+      },
+      "headers": {
+        "title": "Listwy pinów",
+        "text": "44 piny: 3V3, 5V, GND i GPIO, do których podłączasz ekrany, czytniki i mikrofony."
+      }
+    },
+    "goInside": "Zajrzyj do wnętrza układu"
+  },
+  "map": {
+    "title": "Wszystkie ćwiczenia"
+  },
+  "track": {
+    "planned": "zaplanowane",
+    "working": "<b>{{working}}</b>/{{total}}<span> działa</span>",
+    "state": ", {{state}}",
+    "loading": "Ładowanie…"
+  }
+}

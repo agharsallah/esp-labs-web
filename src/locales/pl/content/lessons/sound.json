@@ -1,0 +1,1967 @@
+{
+  "S1": {
+    "title": "Słuchaj",
+    "heading": "Usłysz, co naprawdę wysyłają mikrofony",
+    "goal": "<span class=\"snd-parts\"><span class=\"need\">KY-037 lub INMP441</span></span>Dwa mikrofony, dwa sposoby wejścia. <b>INMP441</b> jest cyfrowy: ma własny wzmacniacz i 24-bitowy przetwornik, a liczby przesyła po I2S. KY-037 ma dwa wyjścia. <b>AO</b> to napięcie samego mikrofonu: maleńka fala na stałym <i>biasie</i>. <b>DO</b> to odpowiedź tak/nie z komparatora LM393, ustawiana niebieskim potencjometrem. S1 pobiera próbki z AO 16 000 razy na sekundę przez DMA przetwornika ADC (bez <code>analogRead()</code> w pętli), rysuje je jako oscyloskop, pokazuje, gdzie leżą w zakresie ADC, i pozwala dostroić potencjometr. Widok <b>mics</b> zestawia oba mikrofony obok siebie. Na tym opierają się wszystkie pozostałe laboratoria dźwięku: próbkowanie, 4-sekundowy bufor pierścieniowy i miernik poziomu znajdują się w <code>kit/lib/sound-kit</code>.",
+    "goalLine": "Zobacz swój głos i klaśnięcie jako falę, porównaj oba mikrofony, odczytaj bias (albo bity) i dostrój komparator tak, by reagował tylko na głośne dźwięki.",
+    "goalCheck": [
+      "<b>Scope</b> pokazuje płaską linię, gdy jesteś cicho, a falę, gdy mówisz; gwizd stoi w miejscu (wyzwalanie włączone).",
+      "Widok <b>bias</b> pokazuje bias modułu w mV i brak CLIPPING, gdy klaśniesz blisko niego; spróbowałeś <code>atten 6</code> i zobaczyłeś, jak rozmiar kroku maleje o połowę.",
+      "W widoku <b>comparator</b> DO zapala się przy klaśnięciach, a gdy mówisz normalnie, pozostaje zgaszony: „tuned”.",
+      "<code>status</code> pokazuje <code>16000 Hz measured</code> i <code>DMA overruns 0</code>.",
+      "Gdy oba mikrofony są podłączone, widok <b>mics</b> pokazuje, o ile dB wyraźniej INMP441 słyszy słowo."
+    ],
+    "learn": [
+      "mikrofon analogowy a cyfrowy",
+      "I2S",
+      "napięcie biasu",
+      "tłumienie ADC",
+      "ciągły ADC + DMA",
+      "bufor pierścieniowy",
+      "6 dB na bit, zapas głośności (headroom)",
+      "komparator i histereza",
+      "dBFS"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "MICS +"
+      },
+      "2": {
+        "role": "AO"
+      },
+      "3": {
+        "role": "BLK"
+      },
+      "4": {
+        "role": "RES"
+      },
+      "5": {
+        "role": "DC"
+      },
+      "6": {
+        "role": "CS"
+      },
+      "7": {
+        "role": "SDA"
+      },
+      "8": {
+        "role": "SCL"
+      },
+      "9": {
+        "role": "AMP VIN"
+      },
+      "10": {
+        "role": "GND"
+      },
+      "11": {
+        "role": "BTN"
+      },
+      "12": {
+        "role": "MICS G"
+      },
+      "13": {
+        "role": "SD"
+      },
+      "14": {
+        "role": "WS"
+      },
+      "15": {
+        "role": "SCK"
+      },
+      "16": {
+        "role": "BCLK"
+      },
+      "17": {
+        "role": "LRC"
+      },
+      "18": {
+        "role": "BOOT"
+      },
+      "19": {
+        "role": "DIN"
+      },
+      "20": {
+        "role": "DO"
+      },
+      "21": {
+        "role": "AMP G"
+      }
+    },
+    "wiring": {
+      "title": "Podłączenie: mikrofony i głośnik (podłącz to, czego potrzebuje laboratorium; ekran zostaje jak w lekcji 03)",
+      "head": [
+        "Pin modułu",
+        "ESP32-S3",
+        "Uwagi"
+      ],
+      "rows": [
+        [
+          "KY-037 + · G",
+          "3V3",
+          "Mikrofon analogowy. + na drugim pinie 3V3 (ekran ma pierwszy), G na GND. <b>Nigdy 5 V</b>: AO i DO wahają się do napięcia zasilania modułu, a piny ESP32-S3 znoszą co najwyżej 3,3 V."
+        ],
+        [
+          "KY-037 AO",
+          "GPIO 6",
+          "Wyjście analogowe: napięcie mikrofonu. GPIO 6 to kanał 5 ADC1: ADC1 działa dalej, gdy Wi-Fi jest włączone, a ADC2 nie."
+        ],
+        [
+          "KY-037 DO",
+          "GPIO 21",
+          "Wyjście cyfrowe: komparator LM393 podaje stan wysoki, gdy dźwięk jest głośniejszy niż ustawienie niebieskiego potencjometru."
+        ],
+        [
+          "INMP441 VDD · GND",
+          "3V3",
+          "Cyfrowy mikrofon (I2S). VDD na 3V3 (wspólna szyna płytki stykowej z KY-037), GND na GND. Tylko 3,3 V."
+        ],
+        [
+          "INMP441 L/R",
+          "GND",
+          "Stan niski: mikrofon nadaje w lewym kanale, czyli tym, który odczytuje płytka."
+        ],
+        [
+          "INMP441 SCK",
+          "GPIO 40",
+          "Zegar bitów. Steruje nim ESP32: 16 000 × 64 = 1,024 MHz."
+        ],
+        [
+          "INMP441 WS",
+          "GPIO 41",
+          "Wybór słowa: lewy kanał / prawy kanał, przełącza się co 32 impulsy zegara."
+        ],
+        [
+          "INMP441 SD",
+          "GPIO 42",
+          "Dane, najpierw najstarszy bit. Podciągnięte w dół, więc brak mikrofonu daje same zera."
+        ],
+        [
+          "MAX98357A VIN · GND",
+          "5V",
+          "Wzmacniacz głośnika. 5V daje najwięcej (około 3 W na 4 Ω); 3V3 też działa, ale ciszej."
+        ],
+        [
+          "MAX98357A BCLK",
+          "GPIO 39",
+          "Zegar bitów drugiego portu I2S (I2S1; mikrofon używa I2S0, więc oba działają jednocześnie)."
+        ],
+        [
+          "MAX98357A LRC",
+          "GPIO 38",
+          "Wybór słowa (lewy/prawy)."
+        ],
+        [
+          "MAX98357A DIN",
+          "GPIO 47",
+          "Próbki, 16-bitowe."
+        ],
+        [
+          "MAX98357A GAIN · SD",
+          "nic",
+          "Oba zostaw niepodłączone: wzmocnienie 9 dB, a odtwarza (lewy + prawy) / 2."
+        ],
+        [
+          "głośnik (4 Ω, 3 W)",
+          "amp + / −",
+          "Na śrubowym zacisku wzmacniacza: dwa przewody z końcówki JST-PH2.0, czerwony do +."
+        ],
+        [
+          "ekran (8 przewodów)",
+          "jak w lekcji 03",
+          "Bez zmian. Przycisk na GPIO 5 jest opcjonalny: robi to, co BOOT."
+        ]
+      ]
+    },
+    "commands": {
+      "0": {
+        "does": "Buduje laboratorium S1 i wgrywa je na płytkę. Potem otwórz monitor poleceniem <code>uv run pio device monitor</code>.",
+        "see": "<code>Listening for an INMP441 on the I2S pins...</code>, <code>Microphone: INMP441 (I2S, digital) (mic setting: auto)</code> (albo KY-037), potem <code>Sound lab S1 …</code>, lista poleceń i trzy nuty powitania z głośnika. Zachowaj ciszę przez pół sekundy: <code>- learning the quiet...</code>",
+        "fix": "Wybrano zły mikrofon: <code>mic inmp441</code> albo <code>mic ky037</code> (zapisuje i restartuje). Brak powitania: głośnik jest opcjonalny; sprawdź VIN i DIN. „Failed to connect”: przytrzymaj BOOT, dotknij RST, puść BOOT i uruchom ponownie."
+      },
+      "1": {
+        "does": "Którego mikrofonu używa powłoka. <code>auto</code> (domyślnie) przez 0,3 s przy starcie szuka INMP441. Zapisuje w NVS (przestrzeń <code>sound</code>); płytka się restartuje.",
+        "see": "<code>Microphone: INMP441 (I2S, digital) (mic setting: inmp441)</code>; w prawym górnym rogu ekranu mała litera <b>D</b> zamiast lampki DO.",
+        "fix": "Zostaje przy KY-037: sprawdź SCK 40, WS 41, SD 42, L/R do GND."
+      },
+      "2": {
+        "does": "Otwiera też drugi mikrofon i pokazuje oba pasy, INMP441 na górze: cisza każdego w dBFS i o ile jesteś powyżej niej.",
+        "see": "<code>INMP441 hears it 12 dB more clearly</code> (liczba zależy od pomieszczenia); pas KY-037 jest bardziej ziarnisty.",
+        "fix": "Jeden pas: drugi mikrofon nie jest podłączony. Podłącz go i naciśnij RST: S1 szuka go przy starcie."
+      },
+      "3": {
+        "does": "Przy INMP441 nie ma pinu DO: płytka porównuje w oprogramowaniu. thresh to próg w dB powyżej ciszy (domyślnie 15), z 3 dB histerezy.",
+        "see": "<code>- software comparator at 20 dB</code>; w widoku komparatora przekraczają go tylko klaśnięcia.",
+        "fix": ""
+      },
+      "4": {
+        "does": "Widok <b>scope</b> rysuje ostatnie 20 ms. Mówienie daje małą, drgającą falę, a klaśnięcie wypełnia całą ramkę.",
+        "see": "Fala na różowo; skala po lewej rośnie do ±1–5 mV dla głosu, a do ±100 mV i więcej dla klaśnięcia.",
+        "fix": "Płaska linia bez względu na wszystko: AO nie jest na GPIO 6 albo + nie jest na 3V3 (dioda zasilania modułu musi świecić)."
+      },
+      "5": {
+        "does": "Próbkowanie, ADC i poziom w liczbach.",
+        "see": "<code>sampler: 16000 Hz asked, 16000 Hz measured · frames dropped 0 · DMA overruns 0</code>, potem <code>ADC: attenuation 12 dB (0-3.1 V) · bias … mV</code>.",
+        "fix": "Przepełnienia rosną: coś długo blokuje rdzeń 0; powiedz Claude’owi, co jeszcze działa."
+      },
+      "6": {
+        "does": "Linijka 0–3,3 V, twój bias i wahanie z ostatnich 0,1 s.",
+        "see": "Linia biasu gdzieś około 1–2 V i podpowiedź, np. <code>fits in 0-1.75 V: try atten 6 (2x finer)</code>.",
+        "fix": "Bias blisko 0 albo 3,3 V: moduł jest na 5 V albo przewód jest luźny. Użyj 3V3."
+      },
+      "7": {
+        "does": "Zawęża zakres ADC do 0–1,75 V: każdy krok wynosi 0,43 mV zamiast 0,76. (Podwójne kliknięcie na bias przechodzi przez 12 → 6 → 2,5 → 0.)",
+        "see": "<code>- attenuation 6 dB (0-1.75 V)</code>; na linijce zacieniowany zakres się kurczy, a fala na oscyloskopie wygląda na wyższą.",
+        "fix": "<code>CLIPPING</code>: bias albo fala już się nie mieści. Wróć poleceniem <code>atten 12</code>."
+      },
+      "8": {
+        "does": "Wypisuje, jak dostroić komparator, i przechodzi do jego widoku.",
+        "see": "Trzy kroki: cisza → kręć, aż LED2 właśnie zgaśnie; klaśnięcie → mruga; wyreguluj.",
+        "fix": ""
+      },
+      "9": {
+        "does": "Przesuwa próg komparatora. Obserwuj lampkę DO (prawy górny róg) i pasek: głośność u góry, DO na dole.",
+        "see": "Dostrojone: <code>DO follows the loud moments: tuned</code>, LED2 mruga przy klaśnięciach, a gdy mówisz, jest ciemny.",
+        "fix": "<code>DO always on</code>: kręć w drugą stronę. W którą stronę jest czulej, zależy od producenta."
+      },
+      "10": {
+        "does": "Wypisuje poziom jako pasek tekstowy co 50 ms (każde laboratorium dźwięku to ma). <code>plot off</code> to zatrzymuje.",
+        "see": "<code> 23.4 dB |#########          |   | DO 0</code>, linie przewijają się.",
+        "fix": ""
+      },
+      "11": {
+        "does": "Wypisuje 64 najnowsze próbki jako liczby (int16 po usunięciu biasu; jeden krok ADC = 16).",
+        "see": "Cztery wiersze po 16 liczb oddzielonych przecinkami, np. <code>-32,16,48,…</code>. Wklej do arkusza kalkulacyjnego i narysuj wykres liniowy.",
+        "fix": ""
+      },
+      "12": {
+        "does": "Freeze zatrzymuje obraz (podwójne kliknięcie na scope albo długie przytrzymanie); span ustawia czas na całym ekranie.",
+        "see": "<code>scope frozen (freeze again to go on)</code>; przy <code>span 5</code> pojedyncze fale gwizdu stają się wyraźne.",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Ścieżka dźwiękowa, laboratorium po laboratorium",
+        "intro": "Sześć laboratoriów, każde z własnym firmware, wszystkie czytają ten sam mikrofon. Wybierz jedno, by zobaczyć, w co zamienia dźwięk."
+      },
+      "1": {
+        "title": "Od powietrza do liczb",
+        "intro": "Osiem etapów między twoim głosem a liczbą, której kod może użyć. Przechodź przez nie (albo pozwól im grać); przyciski po prawej wydają dźwięki, a każda wartość pod obrazkiem jest na żywo."
+      },
+      "2": {
+        "title": "Mikrofon analogowy, cyfrowy: jak I2S przenosi próbkę",
+        "intro": "KY-037 podaje ESP32 napięcie do zmierzenia; INMP441 mierzy je sam i wysyła liczbę. Poniżej: jedna ramka I2S na jej trzech przewodach. Przechodź ją krok po kroku i obserwuj, jak nadchodzi próbka 24-bitowa, a potem staje się 16-bitową liczbą, której używa każde laboratorium."
+      },
+      "3": {
+        "title": "Gdzie fala leży w zakresie ADC (KY-037)",
+        "intro": "Przesuwaj bias i głośność, zmieniaj tłumienie. ADC mierzy tylko wewnątrz zacienionego zakresu: poza nim fala jest ścinana (clipping). Mniejszy zakres daje drobniejsze kroki, o ile fala się mieści."
+      },
+      "4": {
+        "title": "Komparator i jego potencjometr",
+        "intro": "LM393 porównuje AO z napięciem ustawionym potencjometrem. Powyżej linii DO jest w stanie wysokim (i świeci LED2 na module). Przeciągnij przerywaną linię (albo suwak) i obserwuj DO: za nisko i cały czas drga, za wysoko i nawet klaśnięcie zostaje pominięte."
+      },
+      "5": {
+        "title": "Co pokazuje ekran",
+        "intro": "Pięć widoków. Kliknięcie = następny widok, podwójne kliknięcie = akcja w lewym dolnym rogu, długie przytrzymanie = freeze. Prawy górny róg: pasek poziomu, lampka DO (albo <b>D</b> przy INMP441), fale, gdy gra głośnik, i czerwona kropka, gdy cokolwiek nagrywa (S4, S8)."
+      }
+    },
+    "steps": [
+      "Podłącz KY-037: + → 3V3 (drugi pin), G → GND, AO → GPIO 6, DO → GPIO 21. Ekran zostaje jak w lekcji 03. Świeci dioda zasilania modułu.",
+      "Wgraj <code>sound-lab-s1</code>, otwórz monitor i zachowaj ciszę przez sekundę. <b>Punkt kontrolny 1:</b> linia <code>Mic: AO on GPIO 6 …</code> i płaska linia na scope.",
+      "Mów, gwizdnij i klaśnij blisko mikrofonu. <b>Punkt kontrolny 2:</b> trzy różne fale; gwizd stoi w miejscu.",
+      "Kliknij do <b>bias</b>, odczytaj bias w mV i wypróbuj tłumienie, które podpowiada wskazówka. <b>Punkt kontrolny 3:</b> brak CLIPPING, gdy klaśniesz 20 cm dalej.",
+      "Wpisz <code>pot</code> i dostrój komparator. <b>Punkt kontrolny 4:</b> „tuned” w widoku komparatora.",
+      "Wpisz <code>status</code>. <b>Punkt kontrolny 5:</b> 16000 Hz measured, 0 overruns."
+    ],
+    "note": "Przy INMP441 skala scope jest w % pełnej skali, widok biasu staje się drabiną jego 24 bitów (każdy bit = 6 dB; ile wykorzystuje dźwięk, czyli zapas), komparator działa w oprogramowaniu, a <b>numbers</b> dodaje dB SPL. Realistyczne oczekiwania wobec KY-037: nie ma wzmacniacza. Jego AO to surowe napięcie kapsuły, kilka milivoltów dla głosu, więc mowa wykorzystuje tylko garstkę z 4096 kroków ADC. Dlatego to dobry czujnik <b>głośności</b> (klaśnięcia, stuknięcia, hałas, rytm), a tylko przybliżony mikrofon. DO to pojedynczy komparator: klaśnięcie daje na nim dziesiątki zboczy, gdy fala przecina linię, więc laboratoria słuchają AO, a DO wykorzystują do lampki sprzętowej i jako drugą opinię. ADC próbkuje przez ADC1, które działa dalej, gdy Wi-Fi jest włączone (ADC2 nie)."
+  },
+  "S2": {
+    "title": "Głośność",
+    "heading": "Miernik poziomu dźwięku dla twojego pokoju",
+    "goal": "<span class=\"snd-parts\"><span class=\"need\">KY-037 lub INMP441</span><span class=\"opt\">MAX98357A + głośnik (opcjonalnie)</span></span>Jak głośno jest? Przy <b>INMP441</b> S2 pokazuje prawdziwe <b>dB SPL</b> (karta katalogowa podaje −26 dBFS przy 94 dB SPL, więc RMS dBFS + 111): 30 szept, 60 rozmowa, 85 granica ryzyka dla słuchu. Przy KY-037 pokazuje dB powyżej ciszy w twoim pokoju. S2 zamienia próbki na decybele tak, jak robi to miernik poziomu dźwięku: wygładzanie <b>fast</b> (125 ms) albo <b>slow</b> (1 s), zatrzymanie szczytu i poziom szumu, który uczy się twojego pokoju. Do tego trzyma minutę wykresu, dziesięciominutowy dziennik hałasu i alarm, który zapala diodę z lekcji 02 na GPIO 4, gdy hałas utrzymuje się za długo.",
+    "goalLine": "Odczytaj poziom w swoim pokoju (w dB SPL przy INMP441), zobacz różnicę między fast a slow, prowadź dziennik i uruchom (oraz wycisz) alarm.",
+    "goalCheck": [
+      "<b>Miernik</b> pokazuje około 0, gdy jest cicho, 15–25, gdy mówisz, 40+ przy klaśnięciu, i podpowiada, co to mniej więcej znaczy.",
+      "Przy <code>speed slow</code> liczba się uspokaja; znacznik szczytu i tak wychwyci klaśnięcie.",
+      "Po kilku minutach <code>diary</code> wypisuje wiersze z low / avg / high.",
+      "Głośna muzyka przez sekundę zmienia widok <b>alarm</b> na czerwony, zapala diodę, a naciśnięcie przycisku ją wycisza."
+    ],
+    "learn": [
+      "decybele (+6 = ×2)",
+      "RMS",
+      "dB SPL wymaga znanej czułości",
+      "bez wagi a dBA",
+      "granica ryzyka 85 dB",
+      "wygładzanie fast / slow",
+      "poziom szumu",
+      "ochrona przed echem"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "MICS +"
+      },
+      "2": {
+        "role": "AO"
+      },
+      "3": {
+        "role": "BLK"
+      },
+      "4": {
+        "role": "RES"
+      },
+      "5": {
+        "role": "DC"
+      },
+      "6": {
+        "role": "CS"
+      },
+      "7": {
+        "role": "SDA"
+      },
+      "8": {
+        "role": "SCL"
+      },
+      "9": {
+        "role": "AMP VIN"
+      },
+      "10": {
+        "role": "GND"
+      },
+      "11": {
+        "role": "BTN"
+      },
+      "12": {
+        "role": "MICS G"
+      },
+      "13": {
+        "role": "SD"
+      },
+      "14": {
+        "role": "WS"
+      },
+      "15": {
+        "role": "SCK"
+      },
+      "16": {
+        "role": "BCLK"
+      },
+      "17": {
+        "role": "LRC"
+      },
+      "18": {
+        "role": "BOOT"
+      },
+      "19": {
+        "role": "DIN"
+      },
+      "20": {
+        "role": "DO"
+      },
+      "21": {
+        "role": "AMP G"
+      }
+    },
+    "wiring": {
+      "title": "Podłączenie: mikrofony i głośnik (podłącz to, czego potrzebuje laboratorium; ekran zostaje jak w lekcji 03)",
+      "head": [
+        "Pin modułu",
+        "ESP32-S3",
+        "Uwagi"
+      ],
+      "rows": [
+        [
+          "KY-037 + · G",
+          "3V3",
+          "Mikrofon analogowy. + na drugim pinie 3V3 (ekran ma pierwszy), G na GND. <b>Nigdy 5 V</b>: AO i DO wahają się do napięcia zasilania modułu, a piny ESP32-S3 znoszą co najwyżej 3,3 V."
+        ],
+        [
+          "KY-037 AO",
+          "GPIO 6",
+          "Wyjście analogowe: napięcie mikrofonu. GPIO 6 to kanał 5 ADC1: ADC1 działa dalej, gdy Wi-Fi jest włączone, a ADC2 nie."
+        ],
+        [
+          "KY-037 DO",
+          "GPIO 21",
+          "Wyjście cyfrowe: komparator LM393 podaje stan wysoki, gdy dźwięk jest głośniejszy niż ustawienie niebieskiego potencjometru."
+        ],
+        [
+          "INMP441 VDD · GND",
+          "3V3",
+          "Cyfrowy mikrofon (I2S). VDD na 3V3 (wspólna szyna płytki stykowej z KY-037), GND na GND. Tylko 3,3 V."
+        ],
+        [
+          "INMP441 L/R",
+          "GND",
+          "Stan niski: mikrofon nadaje w lewym kanale, czyli tym, który odczytuje płytka."
+        ],
+        [
+          "INMP441 SCK",
+          "GPIO 40",
+          "Zegar bitów. Steruje nim ESP32: 16 000 × 64 = 1,024 MHz."
+        ],
+        [
+          "INMP441 WS",
+          "GPIO 41",
+          "Wybór słowa: lewy kanał / prawy kanał, przełącza się co 32 impulsy zegara."
+        ],
+        [
+          "INMP441 SD",
+          "GPIO 42",
+          "Dane, najpierw najstarszy bit. Podciągnięte w dół, więc brak mikrofonu daje same zera."
+        ],
+        [
+          "MAX98357A VIN · GND",
+          "5V",
+          "Wzmacniacz głośnika. 5V daje najwięcej (około 3 W na 4 Ω); 3V3 też działa, ale ciszej."
+        ],
+        [
+          "MAX98357A BCLK",
+          "GPIO 39",
+          "Zegar bitów drugiego portu I2S (I2S1; mikrofon używa I2S0, więc oba działają jednocześnie)."
+        ],
+        [
+          "MAX98357A LRC",
+          "GPIO 38",
+          "Wybór słowa (lewy/prawy)."
+        ],
+        [
+          "MAX98357A DIN",
+          "GPIO 47",
+          "Próbki, 16-bitowe."
+        ],
+        [
+          "MAX98357A GAIN · SD",
+          "nic",
+          "Oba zostaw niepodłączone: wzmocnienie 9 dB, a odtwarza (lewy + prawy) / 2."
+        ],
+        [
+          "głośnik (4 Ω, 3 W)",
+          "amp + / −",
+          "Na śrubowym zacisku wzmacniacza: dwa przewody z końcówki JST-PH2.0, czerwony do +."
+        ],
+        [
+          "ekran (8 przewodów)",
+          "jak w lekcji 03",
+          "Bez zmian. Przycisk na GPIO 5 jest opcjonalny: robi to, co BOOT."
+        ]
+      ]
+    },
+    "commands": {
+      "0": {
+        "does": "Buduje laboratorium S2 i wgrywa je na płytkę. Potem otwórz monitor poleceniem <code>uv run pio device monitor</code>.",
+        "see": "<code>Listening for an INMP441 on the I2S pins...</code>, <code>Microphone: INMP441 (I2S, digital) (mic setting: auto)</code> (albo KY-037), potem <code>Sound lab S2 …</code>, lista poleceń i trzy nuty powitania z głośnika. Zachowaj ciszę przez pół sekundy: <code>- learning the quiet...</code>",
+        "fix": "Wybrano zły mikrofon: <code>mic inmp441</code> albo <code>mic ky037</code> (zapisuje i restartuje). Brak powitania: głośnik jest opcjonalny; sprawdź VIN i DIN. „Failed to connect”: przytrzymaj BOOT, dotknij RST, puść BOOT i uruchom ponownie."
+      },
+      "1": {
+        "does": "Widok <b>meter</b>: duża liczba to dB powyżej ciszy w twoim pokoju.",
+        "see": "Około 15–25, gdy mówisz („talking”), 40+ przy klaśnięciu („shout, clap, bang”). Biały znacznik to zatrzymany szczyt.",
+        "fix": "Zawsze 0: cisza została nauczona, gdy mówiłeś. Wpisz <code>quiet</code> i zachowaj ciszę przez pół sekundy."
+      },
+      "2": {
+        "does": "Przełącza miernik, wykresy i alarm na wygładzanie 1 s (podwójne kliknięcie na meter przełącza).",
+        "see": "<code>- slow: 1 s smoothing</code>; liczba porusza się spokojnie, a klaśnięcie ledwo ją podnosi.",
+        "fix": ""
+      },
+      "3": {
+        "does": "Przełącza między dB SPL (tylko INMP441) a dB powyżej ciszy.",
+        "see": "<code>- units: dB above the quiet</code>; <code>units spl</code> przy KY-037: <code>dB SPL needs the INMP441 (its sensitivity is known)</code>.",
+        "fix": ""
+      },
+      "4": {
+        "does": "Próg alarmu: 30–120 dB SPL (domyślnie 80) albo 3–60 dB powyżej ciszy (domyślnie 35). Zapisywany w NVS (przestrzeń <code>loud</code>).",
+        "see": "<code>- limit 75 dB SPL</code>; przerywana czerwona linia się przesuwa.",
+        "fix": ""
+      },
+      "5": {
+        "does": "Melodia alarmu gra raz na alarm w głośniku (przycisk też ją zatrzymuje). Ochrona przed echem nie pozwala S2 mierzyć własnej melodii.",
+        "see": "<code>- alarm sound off</code>.",
+        "fix": ""
+      },
+      "6": {
+        "does": "Przekroczenie progu przez <code>hold</code> (1 s) uruchamia alarm.",
+        "see": "<code>x too loud: 38 dB</code>; widok <b>alarm</b> pulsuje na czerwono, dioda na GPIO 4 się zapala (jeśli jest podłączona).",
+        "fix": "Brak alarmu: <code>alarm on</code> albo niższy <code>limit</code>."
+      },
+      "7": {
+        "does": "Gdy alarm dzwoni, każde naciśnięcie go wycisza; uzbraja się ponownie, gdy w pokoju jest spokojnie (3 dB poniżej progu).",
+        "see": "<code>- alarm silenced</code>, później <code>+ calm again</code>.",
+        "fix": ""
+      },
+      "8": {
+        "does": "Wypisuje ostatnie dziesięć minut, jeden wiersz na 10 s: najciszej, średnio, najgłośniej i ALARM.",
+        "see": "Wiersze <code>  60s     2   11   34  |=====      |</code>.",
+        "fix": "Pusto: dziennik dopisuje jeden wiersz co 10 s. Wróć za kilka minut."
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Czym jest decybel",
+        "intro": "Nasze uszy słyszą stosunki, nie różnice, więc głośność mierzy się w decybelach: 20 × log10(to ÷ cisza). Przesuwaj głośność i obserwuj falę: każde +6 dB podwaja jej wysokość, +20 dB to dziesięciokrotność."
+      },
+      "1": {
+        "title": "Fast, slow i poziom szumu",
+        "intro": "Ten sam dźwięk przez trzy „soczewki” miernika, odtworzony od nowa. Wybierz scenę. Poziom szumu podąża za ciszą: od razu opada i wolno się podnosi o 0,5 dB na sekundę, więc wentylator, który cały czas chodzi, staje się nową ciszą."
+      },
+      "2": {
+        "title": "Co pokazuje ekran",
+        "intro": "Cztery widoki. Kliknięcie = następny, podwójne kliknięcie = akcja w lewym dolnym rogu (speed, quiet, diary, alarm), długie przytrzymanie = ponowna nauka ciszy. Gdy alarm dzwoni, każde naciśnięcie go wycisza."
+      }
+    },
+    "steps": [
+      "Podłączenie jak w S1. Opcjonalnie: dioda z lekcji 02 na GPIO 4 przez rezystor (lampka alarmu).",
+      "Wgraj <code>sound-lab-s2</code> i zachowaj ciszę przez sekundę. <b>Punkt kontrolny 1:</b> miernik pokazuje 0–3 dB, „quiet”.",
+      "Mów normalnym głosem z 30 cm. <b>Punkt kontrolny 2:</b> 15–25 dB, „talking”.",
+      "<code>speed slow</code>, potem <code>speed fast</code>. <b>Punkt kontrolny 3:</b> potrafisz opisać różnicę.",
+      "Odtwórz głośno muzykę blisko mikrofonu. <b>Punkt kontrolny 4:</b> TOO LOUD w widoku alarmu, potem wycisz go przyciskiem.",
+      "Zostaw na dziesięć minut, a potem <code>diary</code>. <b>Punkt kontrolny 5:</b> tabela dziesięciu minut z twojego pokoju."
+    ],
+    "note": "dB SPL wymaga mikrofonu o znanej czułości: czułość INMP441 jest w jego karcie katalogowej, więc S2 może ją pokazać (bez wagi, około ±2 dB; prawdziwe mierniki często pokazują dBA, które waży częstotliwości jak ucho i dla głębokiego brzęczenia pokazuje mniej). Liczby KY-037 to dB powyżej <i>ciszy w twoim pokoju</i>, a nie dB SPL (liczba, którą pokazuje skalibrowany miernik): to wymagałoby mikrofonu referencyjnego i czułości kapsuły. Poziom szumu jest uczony w pierwszej połowie sekundy po starcie albo po <code>quiet</code>, a potem podąża za ciszą (od razu w dół, o 0,5 dB/s w górę). Ustawienia (speed, limit, hold, alarm) przetrwają reset w NVS; dziennik nie."
+  },
+  "S3": {
+    "title": "Sterowanie klaśnięciami",
+    "heading": "Przełączaj rzeczy rękami",
+    "goal": "<span class=\"snd-parts\"><span class=\"need\">KY-037 lub INMP441</span><span class=\"opt\">MAX98357A + głośnik (opcjonalnie)</span></span>Jedno klaśnięcie przełącza diodę, dwa zmieniają kolor RGB, trzy usypiają ekran, cztery urządzają imprezę. Głos, gwizd ani muzyka się nie liczą: klaśnięcie nie jest po prostu głośne, ma <b>kształt</b> (skok w ciągu 4 ms, spadek w ciągu 160 ms). Klaśnięcia blisko siebie tworzą jeden wzorzec; pauza 0,65 s go kończy. To, co robi każdy wzorzec, to mapa w NVS, którą możesz zmienić, a każda akcja odpowiada własnym krótkim dźwiękiem w głośniku.",
+    "goalLine": "Spraw, by 1, 2, 3 i 4 klaśnięcia robiły cztery różne rzeczy, udowodnij, że mówienie ich nie wyzwala, i dostrój detektor do własnych klaśnięć.",
+    "goalCheck": [
+      "Jedno klaśnięcie przełącza diodę na GPIO 4 (albo wypisuje <code>LED on</code>), dwa zmieniają kolor RGB.",
+      "Na <b>timeline</b> klaśnięcie dostaje turkusową flagę, wypowiedziane słowo bursztynowy pasek <i>long</i>, a nic się nie dzieje.",
+      "<code>learn</code> + 5 klaśnięć ustawia <code>sens</code> według twojego najcichszego klaśnięcia.",
+      "Przemapowałeś wzorzec poleceniem <code>map</code> i przetrwał on reset."
+    ],
+    "learn": [
+      "wykrywanie początku (onset)",
+      "kształt klaśnięcia",
+      "histereza",
+      "grupowanie w czasie",
+      "kalibracja na podstawie danych",
+      "mapa w NVS",
+      "dźwięk jako informacja zwrotna",
+      "ochrona przed echem"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "MICS +"
+      },
+      "2": {
+        "role": "AO"
+      },
+      "3": {
+        "role": "BLK"
+      },
+      "4": {
+        "role": "RES"
+      },
+      "5": {
+        "role": "DC"
+      },
+      "6": {
+        "role": "CS"
+      },
+      "7": {
+        "role": "SDA"
+      },
+      "8": {
+        "role": "SCL"
+      },
+      "9": {
+        "role": "AMP VIN"
+      },
+      "10": {
+        "role": "GND"
+      },
+      "11": {
+        "role": "BTN"
+      },
+      "12": {
+        "role": "MICS G"
+      },
+      "13": {
+        "role": "SD"
+      },
+      "14": {
+        "role": "WS"
+      },
+      "15": {
+        "role": "SCK"
+      },
+      "16": {
+        "role": "BCLK"
+      },
+      "17": {
+        "role": "LRC"
+      },
+      "18": {
+        "role": "BOOT"
+      },
+      "19": {
+        "role": "DIN"
+      },
+      "20": {
+        "role": "DO"
+      },
+      "21": {
+        "role": "AMP G"
+      }
+    },
+    "wiring": {
+      "title": "Podłączenie: mikrofony i głośnik (podłącz to, czego potrzebuje laboratorium; ekran zostaje jak w lekcji 03)",
+      "head": [
+        "Pin modułu",
+        "ESP32-S3",
+        "Uwagi"
+      ],
+      "rows": [
+        [
+          "KY-037 + · G",
+          "3V3",
+          "Mikrofon analogowy. + na drugim pinie 3V3 (ekran ma pierwszy), G na GND. <b>Nigdy 5 V</b>: AO i DO wahają się do napięcia zasilania modułu, a piny ESP32-S3 znoszą co najwyżej 3,3 V."
+        ],
+        [
+          "KY-037 AO",
+          "GPIO 6",
+          "Wyjście analogowe: napięcie mikrofonu. GPIO 6 to kanał 5 ADC1: ADC1 działa dalej, gdy Wi-Fi jest włączone, a ADC2 nie."
+        ],
+        [
+          "KY-037 DO",
+          "GPIO 21",
+          "Wyjście cyfrowe: komparator LM393 podaje stan wysoki, gdy dźwięk jest głośniejszy niż ustawienie niebieskiego potencjometru."
+        ],
+        [
+          "INMP441 VDD · GND",
+          "3V3",
+          "Cyfrowy mikrofon (I2S). VDD na 3V3 (wspólna szyna płytki stykowej z KY-037), GND na GND. Tylko 3,3 V."
+        ],
+        [
+          "INMP441 L/R",
+          "GND",
+          "Stan niski: mikrofon nadaje w lewym kanale, czyli tym, który odczytuje płytka."
+        ],
+        [
+          "INMP441 SCK",
+          "GPIO 40",
+          "Zegar bitów. Steruje nim ESP32: 16 000 × 64 = 1,024 MHz."
+        ],
+        [
+          "INMP441 WS",
+          "GPIO 41",
+          "Wybór słowa: lewy kanał / prawy kanał, przełącza się co 32 impulsy zegara."
+        ],
+        [
+          "INMP441 SD",
+          "GPIO 42",
+          "Dane, najpierw najstarszy bit. Podciągnięte w dół, więc brak mikrofonu daje same zera."
+        ],
+        [
+          "MAX98357A VIN · GND",
+          "5V",
+          "Wzmacniacz głośnika. 5V daje najwięcej (około 3 W na 4 Ω); 3V3 też działa, ale ciszej."
+        ],
+        [
+          "MAX98357A BCLK",
+          "GPIO 39",
+          "Zegar bitów drugiego portu I2S (I2S1; mikrofon używa I2S0, więc oba działają jednocześnie)."
+        ],
+        [
+          "MAX98357A LRC",
+          "GPIO 38",
+          "Wybór słowa (lewy/prawy)."
+        ],
+        [
+          "MAX98357A DIN",
+          "GPIO 47",
+          "Próbki, 16-bitowe."
+        ],
+        [
+          "MAX98357A GAIN · SD",
+          "nic",
+          "Oba zostaw niepodłączone: wzmocnienie 9 dB, a odtwarza (lewy + prawy) / 2."
+        ],
+        [
+          "głośnik (4 Ω, 3 W)",
+          "amp + / −",
+          "Na śrubowym zacisku wzmacniacza: dwa przewody z końcówki JST-PH2.0, czerwony do +."
+        ],
+        [
+          "ekran (8 przewodów)",
+          "jak w lekcji 03",
+          "Bez zmian. Przycisk na GPIO 5 jest opcjonalny: robi to, co BOOT."
+        ]
+      ]
+    },
+    "commands": {
+      "0": {
+        "does": "Buduje laboratorium S3 i wgrywa je na płytkę. Potem otwórz monitor poleceniem <code>uv run pio device monitor</code>.",
+        "see": "<code>Listening for an INMP441 on the I2S pins...</code>, <code>Microphone: INMP441 (I2S, digital) (mic setting: auto)</code> (albo KY-037), potem <code>Sound lab S3 …</code>, lista poleceń i trzy nuty powitania z głośnika. Zachowaj ciszę przez pół sekundy: <code>- learning the quiet...</code>",
+        "fix": "Wybrano zły mikrofon: <code>mic inmp441</code> albo <code>mic ky037</code> (zapisuje i restartuje). Brak powitania: głośnik jest opcjonalny; sprawdź VIN i DIN. „Failed to connect”: przytrzymaj BOOT, dotknij RST, puść BOOT i uruchom ponownie."
+      },
+      "1": {
+        "does": "Jedno klaśnięcie = <code>led</code>, dwa = <code>colour</code> (domyślne; trzy = <code>screen</code>, cztery = <code>party</code>).",
+        "see": "<code>- 1 clap -> led</code>, <code>+ LED on</code>; potem <code>- 2 claps -> colour</code>, <code>+ colour: warm white</code>. Widok <b>lamp</b> pokazuje oba.",
+        "fix": "Nic: klaśnięcia są za ciche dla <code>sens</code> 18 dB. Spróbuj <code>learn</code>."
+      },
+      "2": {
+        "does": "Wypisuje każde klaśnięcie, długi dźwięk i grupę w chwili, gdy się pojawi.",
+        "see": "<code>  clap at 5120 ms: 31.0 dB, 48 ms long</code>, <code>  LONG (not a clap) at …: 22.0 dB, 380 ms long</code>, <code>  group of 2: gaps 290 ms</code>.",
+        "fix": "<code>test off</code>, żeby zatrzymać."
+      },
+      "3": {
+        "does": "Przechodzi do <b>tune</b>: klaśnij 5 razy tak, jak zwykle. sens staje się 60 % najcichszego (między 8 a 40 dB) i zostaje zapisane.",
+        "see": "<code>- clap 1 of 5: 29 dB</code> … <code>+ learnt: sens 17 dB (saved)</code>; pięć słupków z ich dB i ms.",
+        "fix": "Mówienie podczas learn liczy się jako <i>long (voice?)</i>, a nie jako klaśnięcie."
+      },
+      "4": {
+        "does": "Trzy klaśnięcia odtwarzają teraz twinkle w głośniku. Akcje: led colour dark screen view party tune none.",
+        "see": "<code>+ 3 claps -> tune (saved)</code>; <code>maps</code> wypisuje wszystkie cztery.",
+        "fix": ""
+      },
+      "5": {
+        "does": "Każda akcja odpowiada dźwiękiem: LED w górę/w dół, arpeggio kolorów, kliknięcie dla screen i view, fanfara dla party, niski dźwięk „No”, gdy wzorzec nie jest zmapowany. <code>sound off</code> je wycisza (zapisane).",
+        "see": "<code>+ pattern sounds off (saved)</code>.",
+        "fix": ""
+      },
+      "6": {
+        "does": "Krótsza pauza kończy wzorzec: szybciej, ale wolno klaszczące osoby rozbiją go na dwa wzorce.",
+        "see": "<code>+ pause 400 ms ends a pattern (saved)</code>.",
+        "fix": ""
+      },
+      "7": {
+        "does": "Uruchamia akcję bez klaskania (do sprawdzenia podłączenia).",
+        "see": "<code>+ party!</code>, 2 s tęczy na diodzie RGB.",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "To klaśnięcie? Detektor, po 4 ms",
+        "intro": "Te same reguły co w kit/lib/sound-kit/src/onsets.h, uruchomione na wybranym dźwięku. Przechodź po jednej ramce albo odtwórz, przesuwaj linie narastania i zwolnienia. Uzbrojony → głośno (ONSET) → cicho (CLAP, jeśli był krótki, LONG, jeśli nie) → ponownie uzbrojony po 40 ms ciszy."
+      },
+      "1": {
+        "title": "Co pokazuje ekran",
+        "intro": "Cztery widoki. Kliknięcie = następny, podwójne kliknięcie = akcja w lewym dolnym rogu (test, colour, maps, learn), długie przytrzymanie = learn."
+      }
+    },
+    "steps": [
+      "Podłączenie jak w S1. Opcjonalnie: dioda z lekcji 02 na GPIO 4.",
+      "Wgraj <code>sound-lab-s3</code> i zachowaj ciszę przez sekundę. <b>Punkt kontrolny 1:</b> <b>timeline</b> pokazuje płaską linię z liniami narastania i zwolnienia.",
+      "Klaśnij raz, potem dwa razy. <b>Punkt kontrolny 2:</b> dioda się przełącza, RGB zmienia kolor.",
+      "Mów normalnie obok mikrofonu. <b>Punkt kontrolny 3:</b> bursztynowe paski <i>long</i>, bez akcji.",
+      "<code>learn</code>, klaśnij 5 razy. <b>Punkt kontrolny 4:</b> nowe <code>sens</code>, zapisane.",
+      "<code>map 1 party</code>, klaśnij raz, zresetuj płytkę, klaśnij jeszcze raz. <b>Punkt kontrolny 5:</b> nadal impreza."
+    ],
+    "note": "Dźwięki samej płytki nigdy nie liczą się jako klaśnięcia: gdy gra głośnik (i przez 200 ms po nim), detektor nie dostaje ramek, to ochrona przed echem. Pięć lub więcej klaśnięć z rzędu liczy się jako oklaski i nie robi nic. Trzy klaśnięcia gaszą podświetlenie: wraca po 30 s albo po naciśnięciu dowolnego przycisku, więc ekranu nie da się „zgubić”. Detektor słucha AO przez miernik poziomu, a nie DO: jedno klaśnięcie daje dziesiątki zboczy DO."
+  },
+  "S4": {
+    "title": "Rejestrator",
+    "heading": "Rejestrator uruchamiany głosem",
+    "goal": "<span class=\"snd-parts\"><span class=\"need\">KY-037 lub INMP441</span><span class=\"opt\">Wi-Fi (W1) (opcjonalnie)</span><span class=\"opt\">MAX98357A + głośnik (opcjonalnie)</span></span>Uzbrojona płytka czeka na dźwięk głośniejszy od wyzwalacza, a potem nagrywa do PSRAM, zaczynając pół sekundy <i>przed</i> wyzwoleniem (bufor pierścieniowy wciąż to ma), aż do 1,2 s ciszy. Do 12 klipów, 6 MB, znikają po resecie. Słuchaj w telefonie pod adresem <code>http://bench.local</code> (zapisana sieć Wi-Fi W1 i token administratora) albo pobierz WAV przez USB poleceniem <code>tools/sound_pull.py</code>, albo odtwórz go w głośniku płytki (<code>play 3 0.7</code>: wolniej i niżej). Płytka zawsze pokazuje REC i czerwoną diodę podczas nagrywania, bez względu na to, kto je uruchomił.",
+    "goalLine": "Nagraj zdanie bez użycia rąk, zobacz pre-roll, odtwórz w telefonie i pobierz jeden klip na Maca jako plik WAV.",
+    "goalCheck": [
+      "<code>arm</code>, potem mów: widok <b>recorder</b> przechodzi ARMED → REC → ARMED, a <code>clips</code> wypisuje klip głosowy.",
+      "Trzaśnięcie drzwiami albo pojedyncze klaśnięcie uruchamia nagranie, ale jest odrzucane (za krótkie).",
+      "Strona w telefonie pod <code>http://bench.local</code> odblokowuje się tokenem, rysuje klip i go odtwarza.",
+      "<code>tools/sound_pull.py</code> zapisał plik .wav, który odtwarza się na Macu.",
+      "<code>play</code> (albo podwójne kliknięcie na <b>clips</b>) odtwarza wybrany klip w głośniku płytki; <code>play 1 2</code> brzmi jak wiewiórka."
+    ],
+    "learn": [
+      "pre-roll z pierścienia",
+      "wyzwalacz + podtrzymanie",
+      "magazyn klipów w PSRAM",
+      "format WAV",
+      "odpowiedzi strumieniowe",
+      "base64 + CRC-32",
+      "prędkość odtwarzania = wysokość",
+      "tokeny i widoczne nagrywanie"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "MICS +"
+      },
+      "2": {
+        "role": "AO"
+      },
+      "3": {
+        "role": "BLK"
+      },
+      "4": {
+        "role": "RES"
+      },
+      "5": {
+        "role": "DC"
+      },
+      "6": {
+        "role": "CS"
+      },
+      "7": {
+        "role": "SDA"
+      },
+      "8": {
+        "role": "SCL"
+      },
+      "9": {
+        "role": "AMP VIN"
+      },
+      "10": {
+        "role": "GND"
+      },
+      "11": {
+        "role": "BTN"
+      },
+      "12": {
+        "role": "MICS G"
+      },
+      "13": {
+        "role": "SD"
+      },
+      "14": {
+        "role": "WS"
+      },
+      "15": {
+        "role": "SCK"
+      },
+      "16": {
+        "role": "BCLK"
+      },
+      "17": {
+        "role": "LRC"
+      },
+      "18": {
+        "role": "BOOT"
+      },
+      "19": {
+        "role": "DIN"
+      },
+      "20": {
+        "role": "DO"
+      },
+      "21": {
+        "role": "AMP G"
+      }
+    },
+    "wiring": {
+      "title": "Podłączenie: mikrofony i głośnik (podłącz to, czego potrzebuje laboratorium; ekran zostaje jak w lekcji 03)",
+      "head": [
+        "Pin modułu",
+        "ESP32-S3",
+        "Uwagi"
+      ],
+      "rows": [
+        [
+          "KY-037 + · G",
+          "3V3",
+          "Mikrofon analogowy. + na drugim pinie 3V3 (ekran ma pierwszy), G na GND. <b>Nigdy 5 V</b>: AO i DO wahają się do napięcia zasilania modułu, a piny ESP32-S3 znoszą co najwyżej 3,3 V."
+        ],
+        [
+          "KY-037 AO",
+          "GPIO 6",
+          "Wyjście analogowe: napięcie mikrofonu. GPIO 6 to kanał 5 ADC1: ADC1 działa dalej, gdy Wi-Fi jest włączone, a ADC2 nie."
+        ],
+        [
+          "KY-037 DO",
+          "GPIO 21",
+          "Wyjście cyfrowe: komparator LM393 podaje stan wysoki, gdy dźwięk jest głośniejszy niż ustawienie niebieskiego potencjometru."
+        ],
+        [
+          "INMP441 VDD · GND",
+          "3V3",
+          "Cyfrowy mikrofon (I2S). VDD na 3V3 (wspólna szyna płytki stykowej z KY-037), GND na GND. Tylko 3,3 V."
+        ],
+        [
+          "INMP441 L/R",
+          "GND",
+          "Stan niski: mikrofon nadaje w lewym kanale, czyli tym, który odczytuje płytka."
+        ],
+        [
+          "INMP441 SCK",
+          "GPIO 40",
+          "Zegar bitów. Steruje nim ESP32: 16 000 × 64 = 1,024 MHz."
+        ],
+        [
+          "INMP441 WS",
+          "GPIO 41",
+          "Wybór słowa: lewy kanał / prawy kanał, przełącza się co 32 impulsy zegara."
+        ],
+        [
+          "INMP441 SD",
+          "GPIO 42",
+          "Dane, najpierw najstarszy bit. Podciągnięte w dół, więc brak mikrofonu daje same zera."
+        ],
+        [
+          "MAX98357A VIN · GND",
+          "5V",
+          "Wzmacniacz głośnika. 5V daje najwięcej (około 3 W na 4 Ω); 3V3 też działa, ale ciszej."
+        ],
+        [
+          "MAX98357A BCLK",
+          "GPIO 39",
+          "Zegar bitów drugiego portu I2S (I2S1; mikrofon używa I2S0, więc oba działają jednocześnie)."
+        ],
+        [
+          "MAX98357A LRC",
+          "GPIO 38",
+          "Wybór słowa (lewy/prawy)."
+        ],
+        [
+          "MAX98357A DIN",
+          "GPIO 47",
+          "Próbki, 16-bitowe."
+        ],
+        [
+          "MAX98357A GAIN · SD",
+          "nic",
+          "Oba zostaw niepodłączone: wzmocnienie 9 dB, a odtwarza (lewy + prawy) / 2."
+        ],
+        [
+          "głośnik (4 Ω, 3 W)",
+          "amp + / −",
+          "Na śrubowym zacisku wzmacniacza: dwa przewody z końcówki JST-PH2.0, czerwony do +."
+        ],
+        [
+          "ekran (8 przewodów)",
+          "jak w lekcji 03",
+          "Bez zmian. Przycisk na GPIO 5 jest opcjonalny: robi to, co BOOT."
+        ]
+      ]
+    },
+    "commands": {
+      "0": {
+        "does": "Buduje laboratorium S4 i wgrywa je na płytkę. Potem otwórz monitor poleceniem <code>uv run pio device monitor</code>.",
+        "see": "<code>Listening for an INMP441 on the I2S pins...</code>, <code>Microphone: INMP441 (I2S, digital) (mic setting: auto)</code> (albo KY-037), potem <code>Sound lab S4 …</code>, lista poleceń i trzy nuty powitania z głośnika. Zachowaj ciszę przez pół sekundy: <code>- learning the quiet...</code>",
+        "fix": "Wybrano zły mikrofon: <code>mic inmp441</code> albo <code>mic ky037</code> (zapisuje i restartuje). Brak powitania: głośnik jest opcjonalny; sprawdź VIN i DIN. „Failed to connect”: przytrzymaj BOOT, dotknij RST, puść BOOT i uruchom ponownie."
+      },
+      "1": {
+        "does": "Uruchamiane głosem: głośniej niż <code>trigger</code> (15 dB powyżej ciszy) rozpoczyna klip.",
+        "see": "<code>- armed: talk and it records</code>; widok <b>recorder</b> pokazuje ARMED (turkusowy pierścień).",
+        "fix": ""
+      },
+      "2": {
+        "does": "Nagrywa od pół sekundy przed pierwszym słowem do 1,2 s po ostatnim głośnym momencie.",
+        "see": "<code>x REC clip 1 (voice)</code>; REC 2.4 s na czerwono, czerwona kropka w nagłówku, dioda RGB na czerwono; potem <code>+ clip 1: 3.1 s</code>.",
+        "fix": "Nigdy nie startuje: mów bliżej albo <code>trigger 10</code>."
+      },
+      "3": {
+        "does": "Odtwarza klip 1 w głośniku płytki z prędkością 0,7× (niżej, wolniej). Bez numeru: klip wybrany w widoku <b>clips</b>. Wzmacniany jak przy pobieraniu, ale najwyżej ×16. <code>stop</code> go zatrzymuje; <code>rec</code> zatrzymuje go przed nagrywaniem; w trakcie nagrywania jest odrzucane.",
+        "see": "<code>+ playing clip 1 (4.4 s) at x0.70</code>, potem <code>- clip 1 played</code>; fale w nagłówku.",
+        "fix": "<code>recording: stop first (the microphone would hear the speaker)</code>."
+      },
+      "4": {
+        "does": "Wypisuje klipy: numer, długość, głos czy klaśnięcie, najgłośniej, o ile jest wzmacniany, kiedy.",
+        "see": "<code>    1    3.1s  voice  -38.2 dBFS  x23.4  2026-10-14 14:02:31</code>",
+        "fix": ""
+      },
+      "5": {
+        "does": "Wypisuje token administratora, o który pyta strona w telefonie (wspólny z W2/R7/R8).",
+        "see": "<code>Admin token: 3f…</code> i gdzie go wkleić.",
+        "fix": "Nie wklejaj go na czaty ani do gita; <code>token new</code> zastępuje go nowym."
+      },
+      "6": {
+        "does": "Własna strona płytki: poziom na żywo, arm / rec / stop, lista klipów z każdym przebiegiem, odtwarzanie i pobieranie, wybór prędkości oraz <b>Play on board</b> / <b>Stop on board</b> przy każdym klipie. Token zostaje tylko w tej karcie.",
+        "see": "Karta klipu z jego kształtem; odtwarzanie przesuwa główkę odtwarzania.",
+        "fix": "„no Wi-Fi saved”: wgraj raz wifi-lab-w1 i dołącz do sieci. Strona nieosiągalna: ta sama sieć? Spróbuj adresu IP z <code>wifi</code>."
+      },
+      "7": {
+        "does": "Najpierw zamknij monitor. Wpisuje <code>send 1</code>, odczytuje WAV w base64, sprawdza CRC-32 i rozmiar, zapisuje plik.",
+        "see": "<code>Receiving clip 1: 99244 bytes as …</code>, potem <code>Saved … (3.1 s at 16000 Hz, 99244 bytes, CRC ok)</code>.",
+        "fix": "<code>Could not open … (is the serial monitor still open?)</code>: zamknij go."
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Nagrywanie uruchamiane głosem, krok po kroku",
+        "intro": "Dziewięć sekund: trzaśnięcie drzwiami, potem zdanie z pauzą w środku. Przechodź krok po kroku albo odtwórz, przesuwaj wyzwalacz i podtrzymanie. Bursztynowy = pre-roll z pierścienia, czerwony = nagrane, szary = odrzucone."
+      },
+      "1": {
+        "title": "Wyciąganie dźwięku",
+        "intro": "Trzy drogi: telefon przez Wi-Fi, Mac przez port szeregowy USB albo własny głośnik płytki. Poniżej: 44 bajty, od których zaczyna się każdy plik WAV (dla klipu 3,2 s przy 16 000 Hz)."
+      },
+      "2": {
+        "title": "Co pokazuje ekran",
+        "intro": "Trzy widoki. Kliknięcie = następny, podwójne kliknięcie = akcja w lewym dolnym rogu (arm, next, wifi), długie przytrzymanie = rec / stop."
+      }
+    },
+    "steps": [
+      "Podłączenie jak w S1. Płytka potrzebuje zapisanej sieci Wi-Fi z W1 (tylko dla strony w telefonie).",
+      "Wgraj <code>sound-lab-s4</code>. <b>Punkt kontrolny 1:</b> OFF w widoku recorder i <code>page: http://bench.local</code>, gdy Wi-Fi się połączy.",
+      "<code>arm</code>, powiedz zdanie. <b>Punkt kontrolny 2:</b> jeden klip; bursztynowy pre-roll przed pierwszym słowem.",
+      "Klaśnij raz. <b>Punkt kontrolny 3:</b> <code>a bang, not a voice: clip 2 dropped</code>.",
+      "Otwórz stronę w telefonie, wklej <code>token</code>. <b>Punkt kontrolny 4:</b> twój klip się odtwarza.",
+      "Zamknij monitor, uruchom <code>tools/sound_pull.py</code>. <b>Punkt kontrolny 5:</b> plik .wav na twoim Macu."
+    ],
+    "note": "Prywatność jest wbudowana, a nie opcjonalna: nagrywanie zawsze pokazuje się na płytce (REC, czerwona kropka, czerwona dioda), bez względu na to, kto je uruchomił; każda ścieżka audio na stronie wymaga tokenu administratora; klipy żyją tylko w RAM i znikają po resecie. Dźwięk będzie cienki i szumiący: klipy są normalizowane (wzmacniane do 64 razy) przy wysyłaniu, a to podnosi głos ponad szum. Ten moduł to przede wszystkim czujnik głośności, a dopiero potem mikrofon."
+  },
+  "S5": {
+    "title": "Widmo",
+    "heading": "Zobacz, jakie częstotliwości są w dźwięku",
+    "goal": "<span class=\"snd-parts\"><span class=\"need\">KY-037 lub INMP441</span><span class=\"opt\">MAX98357A + głośnik (opcjonalnie)</span></span>Nasza własna FFT (bez biblioteki) działa na najnowszych 512 próbkach około 25 razy na sekundę: słupki od 100 Hz do 8 kHz, przewijający się wodospad, tuner, który nazywa nutę, jaką gwiżdżesz albo nucisz, oraz gra, w której sterujesz wysokością gwizdu. Z głośnikiem płytka sama się sprawdza: <code>ref</code> odtwarza nutę referencyjną dla tunera, a <code>sweep</code> wspina się od 100 Hz do 8 kHz po słupkach.",
+    "goalLine": "Znajdź częstotliwość swojego gwizdu, zobacz, dlaczego drobniejsze biny są wolniejsze, i zdobywaj punkty w grze steer.",
+    "goalCheck": [
+      "Widok <b>bars</b> pokazuje jeden wysoki słupek, gdy gwiżdżesz, i wiele niskich, gdy mówisz.",
+      "<b>Tuner</b> nazywa twoją nutę, a wskazówka robi się turkusowa w granicach ±5 centów.",
+      "<code>fft 1024</code> i <code>fft 256</code>: potrafisz powiedzieć, co się zmieniło (Hz na bin, jak szybko reaguje).",
+      "<b>steer</b>: zdobyłeś co najmniej 3 cele."
+    ],
+    "learn": [
+      "biny FFT",
+      "okno Hanna i przeciek widma",
+      "Nyquist (8 kHz)",
+      "rozdzielczość a szybkość",
+      "logarytmiczna częstotliwość",
+      "nuty i centy",
+      "tony referencyjne",
+      "logarytmiczne przemiatanie"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "MICS +"
+      },
+      "2": {
+        "role": "AO"
+      },
+      "3": {
+        "role": "BLK"
+      },
+      "4": {
+        "role": "RES"
+      },
+      "5": {
+        "role": "DC"
+      },
+      "6": {
+        "role": "CS"
+      },
+      "7": {
+        "role": "SDA"
+      },
+      "8": {
+        "role": "SCL"
+      },
+      "9": {
+        "role": "AMP VIN"
+      },
+      "10": {
+        "role": "GND"
+      },
+      "11": {
+        "role": "BTN"
+      },
+      "12": {
+        "role": "MICS G"
+      },
+      "13": {
+        "role": "SD"
+      },
+      "14": {
+        "role": "WS"
+      },
+      "15": {
+        "role": "SCK"
+      },
+      "16": {
+        "role": "BCLK"
+      },
+      "17": {
+        "role": "LRC"
+      },
+      "18": {
+        "role": "BOOT"
+      },
+      "19": {
+        "role": "DIN"
+      },
+      "20": {
+        "role": "DO"
+      },
+      "21": {
+        "role": "AMP G"
+      }
+    },
+    "wiring": {
+      "title": "Podłączenie: mikrofony i głośnik (podłącz to, czego potrzebuje laboratorium; ekran zostaje jak w lekcji 03)",
+      "head": [
+        "Pin modułu",
+        "ESP32-S3",
+        "Uwagi"
+      ],
+      "rows": [
+        [
+          "KY-037 + · G",
+          "3V3",
+          "Mikrofon analogowy. + na drugim pinie 3V3 (ekran ma pierwszy), G na GND. <b>Nigdy 5 V</b>: AO i DO wahają się do napięcia zasilania modułu, a piny ESP32-S3 znoszą co najwyżej 3,3 V."
+        ],
+        [
+          "KY-037 AO",
+          "GPIO 6",
+          "Wyjście analogowe: napięcie mikrofonu. GPIO 6 to kanał 5 ADC1: ADC1 działa dalej, gdy Wi-Fi jest włączone, a ADC2 nie."
+        ],
+        [
+          "KY-037 DO",
+          "GPIO 21",
+          "Wyjście cyfrowe: komparator LM393 podaje stan wysoki, gdy dźwięk jest głośniejszy niż ustawienie niebieskiego potencjometru."
+        ],
+        [
+          "INMP441 VDD · GND",
+          "3V3",
+          "Cyfrowy mikrofon (I2S). VDD na 3V3 (wspólna szyna płytki stykowej z KY-037), GND na GND. Tylko 3,3 V."
+        ],
+        [
+          "INMP441 L/R",
+          "GND",
+          "Stan niski: mikrofon nadaje w lewym kanale, czyli tym, który odczytuje płytka."
+        ],
+        [
+          "INMP441 SCK",
+          "GPIO 40",
+          "Zegar bitów. Steruje nim ESP32: 16 000 × 64 = 1,024 MHz."
+        ],
+        [
+          "INMP441 WS",
+          "GPIO 41",
+          "Wybór słowa: lewy kanał / prawy kanał, przełącza się co 32 impulsy zegara."
+        ],
+        [
+          "INMP441 SD",
+          "GPIO 42",
+          "Dane, najpierw najstarszy bit. Podciągnięte w dół, więc brak mikrofonu daje same zera."
+        ],
+        [
+          "MAX98357A VIN · GND",
+          "5V",
+          "Wzmacniacz głośnika. 5V daje najwięcej (około 3 W na 4 Ω); 3V3 też działa, ale ciszej."
+        ],
+        [
+          "MAX98357A BCLK",
+          "GPIO 39",
+          "Zegar bitów drugiego portu I2S (I2S1; mikrofon używa I2S0, więc oba działają jednocześnie)."
+        ],
+        [
+          "MAX98357A LRC",
+          "GPIO 38",
+          "Wybór słowa (lewy/prawy)."
+        ],
+        [
+          "MAX98357A DIN",
+          "GPIO 47",
+          "Próbki, 16-bitowe."
+        ],
+        [
+          "MAX98357A GAIN · SD",
+          "nic",
+          "Oba zostaw niepodłączone: wzmocnienie 9 dB, a odtwarza (lewy + prawy) / 2."
+        ],
+        [
+          "głośnik (4 Ω, 3 W)",
+          "amp + / −",
+          "Na śrubowym zacisku wzmacniacza: dwa przewody z końcówki JST-PH2.0, czerwony do +."
+        ],
+        [
+          "ekran (8 przewodów)",
+          "jak w lekcji 03",
+          "Bez zmian. Przycisk na GPIO 5 jest opcjonalny: robi to, co BOOT."
+        ]
+      ]
+    },
+    "commands": {
+      "0": {
+        "does": "Buduje laboratorium S5 i wgrywa je na płytkę. Potem otwórz monitor poleceniem <code>uv run pio device monitor</code>.",
+        "see": "<code>Listening for an INMP441 on the I2S pins...</code>, <code>Microphone: INMP441 (I2S, digital) (mic setting: auto)</code> (albo KY-037), potem <code>Sound lab S5 …</code>, lista poleceń i trzy nuty powitania z głośnika. Zachowaj ciszę przez pół sekundy: <code>- learning the quiet...</code>",
+        "fix": "Wybrano zły mikrofon: <code>mic inmp441</code> albo <code>mic ky037</code> (zapisuje i restartuje). Brak powitania: głośnik jest opcjonalny; sprawdź VIN i DIN. „Failed to connect”: przytrzymaj BOOT, dotknij RST, puść BOOT i uruchom ponownie."
+      },
+      "1": {
+        "does": "Widok <b>bars</b>: jeden wysoki słupek dla gwizdu (1–3 kHz), niższy i szerszy dla nucenia.",
+        "see": "<code>loudest 1.76 kHz (A6)</code> u góry; po prawej: <code>N 512 - 31 Hz/bin - … us</code>.",
+        "fix": "Nic się nie rusza: gwiżdż z odległości szerokości dłoni (moduł nie ma wzmacniacza)."
+      },
+      "2": {
+        "does": "Wypisuje 5 najsilniejszych częstotliwości z ich nutami.",
+        "see": "<code>   1765.6 Hz   -31.2 dBFS  A6   +2 cents</code> …",
+        "fix": ""
+      },
+      "3": {
+        "does": "Dwa razy więcej próbek: biny oddalone o 15,6 Hz, ale każda odpowiedź patrzy na 64 ms. <code>fft 256</code>: biny 62,5 Hz, 16 ms.",
+        "see": "<code>- FFT 1024: 15.6 Hz per bin, 64 ms window</code>.",
+        "fix": ""
+      },
+      "4": {
+        "does": "Sinus 1 s w głośniku: nuta najbliższa temu, co gwizdnąłeś w ostatnich 2 s, a jeśli nic, A4. S5 czyta bufor bezpośrednio, więc celowo słyszy własny ton. Podwójne kliknięcie na <b>tuner</b> robi to samo.",
+        "see": "<code>- reference A4 = 440.0 Hz, 1 s</code>; tuner pokazuje A4, a wskazówka blisko 0.",
+        "fix": "Odchylenie o wiele centów: głośnik i mikrofon są w porządku; sprawdź <code>a4</code>."
+      },
+      "5": {
+        "does": "Ton 4 s od 100 Hz do 8 kHz w skali logarytmicznej; ekran przeskakuje do wodospadu.",
+        "see": "Ukośna linia wspinająca się po wodospadzie równomiernym nachyleniem: skala logarytmiczna, jak na słupkach.",
+        "fix": ""
+      },
+      "6": {
+        "does": "Stroi nazwy nut na A4 = 442 Hz (niektóre orkiestry tak robią).",
+        "see": "<code>- A4 = 442.0 Hz</code>; centy tunera przesuwają się o około 8.",
+        "fix": ""
+      },
+      "7": {
+        "does": "Kropka podąża za twoją wysokością w skali logarytmicznej (600–2500 Hz); utrzymaj ją w pierścieniu przez 1 s, by zdobyć punkt. Dioda RGB przyjmuje kolor kropki.",
+        "see": "<code>+ target 1!</code>, nowy pierścień w innym miejscu.",
+        "fix": "Nie da się dosięgnąć góry: <code>range 500 2000</code>."
+      },
+      "8": {
+        "does": "Co ta FFT widzi, a czego nie widzi.",
+        "see": "Do 8000 Hz (Nyquist), biny oddalone o 31,2 Hz, 32 ms na odpowiedź i ostrzeżenie o braku wzmacniacza.",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Zbuduj dźwięk, zobacz jego widmo",
+        "intro": "Do trzech tonów plus szum, próbki u góry i biny FFT na dole. Odznacz okno, by zobaczyć przeciek; zmień N, by wymienić ostre biny na wolniejszą odpowiedź."
+      },
+      "1": {
+        "title": "Od gwizdu do nuty",
+        "intro": "Sześć kroków, tyle samo, ile widok tunera wykonuje 25 razy na sekundę. Przesuń suwak gwizdu i obserwuj, jak parabola znajduje wysokość między dwoma binami."
+      },
+      "2": {
+        "title": "Co pokazuje ekran",
+        "intro": "Cztery widoki. Kliknięcie = następny, podwójne kliknięcie = akcja w lewym dolnym rogu (hold, hold, peaks, target), długie przytrzymanie = hold."
+      }
+    },
+    "steps": [
+      "Podłączenie jak w S1.",
+      "Wgraj <code>sound-lab-s5</code>. <b>Punkt kontrolny 1:</b> limity wypisane przy starcie.",
+      "Gwizdnij równą nutę na <b>bars</b>, potem na <b>waterfall</b>. <b>Punkt kontrolny 2:</b> jedna jasna linia na wodospadzie.",
+      "<b>tuner</b>: gwiżdż, aż wskazówka będzie turkusowa. <b>Punkt kontrolny 3:</b> nazwa nuty, którą potrafisz powtórzyć.",
+      "<code>fft 256</code>, <code>fft 1024</code>, z powrotem do <code>fft 512</code>. <b>Punkt kontrolny 4:</b> zobaczyłeś kompromis.",
+      "<b>steer</b>: zdobądź 3 punkty. <b>Punkt kontrolny 5:</b> <code>target 3!</code>."
+    ],
+    "note": "Warto znać ograniczenia: przy 16 000 próbkach na sekundę nie widać niczego powyżej 8 kHz (Nyquist), a wyższe dźwięki wracają jako fałszywki. Każde pasmo uczy się własnej ciszy (wentylator brzęczy nisko, laptop piszczy wysoko), więc widoki pokazują dB powyżej poziomu każdego pasma. Mowa ma wiele harmonicznych i brak jednego wyraźnego szczytu, dlatego tuner wymaga czytelności ≥ 12 dB: gwiżdż albo nuć."
+  },
+  "S6": {
+    "title": "Gry dźwiękowe",
+    "heading": "Baw się tym, co słyszy mikrofon",
+    "goal": "<span class=\"snd-parts\"><span class=\"need\">KY-037 lub INMP441</span><span class=\"opt\">MAX98357A + głośnik (opcjonalnie)</span></span>Trzy gry na jednym mikrofonie, każda słucha tylko wtedy, gdy jej widok jest na ekranie. <b>knock</b>: zamek na pukanie, który otwiera się na twój sekretny rytm, szybki albo wolny. <b>bird</b>: Clap Bird, każde klaśnięcie to trzepot skrzydeł. <b>party</b>: płytka znajduje rytm w muzyce i rzuca na niego światło. Z głośnikiem: piski, dzwonki i huk w Clap Bird, odtworzone sekretne pukanie i melodia odblokowania.",
+    "goalLine": "Otwórz zamek swoim sekretnym pukaniem (i zobacz porażkę przy złym), przejdź 5 rur w Clap Bird i spraw, by party podążało za tempem piosenki.",
+    "goalCheck": [
+      "<code>knock set</code> + rytm zapisuje sekret; ten sam rytm, nawet wolniejszy, nadal otwiera (dioda na GPIO 4, zielony RGB przez 5 s).",
+      "Inny rytm szarpie kłódką: <code>locked: the rhythm is off</code>.",
+      "Clap Bird: wynik 5 lub więcej, a <code>best</code> przetrwa reset.",
+      "<b>party</b> pokazuje BPM zbliżone do tempa piosenki."
+    ],
+    "learn": [
+      "rytm niezależny od tempa",
+      "tolerancja",
+      "fizyka gry z krokiem stałym",
+      "opóźnienie (początek a klaśnięcie)",
+      "wykrywanie uderzeń",
+      "mediana tempa",
+      "jeden czujnik, wiele zastosowań"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "MICS +"
+      },
+      "2": {
+        "role": "AO"
+      },
+      "3": {
+        "role": "BLK"
+      },
+      "4": {
+        "role": "RES"
+      },
+      "5": {
+        "role": "DC"
+      },
+      "6": {
+        "role": "CS"
+      },
+      "7": {
+        "role": "SDA"
+      },
+      "8": {
+        "role": "SCL"
+      },
+      "9": {
+        "role": "AMP VIN"
+      },
+      "10": {
+        "role": "GND"
+      },
+      "11": {
+        "role": "BTN"
+      },
+      "12": {
+        "role": "MICS G"
+      },
+      "13": {
+        "role": "SD"
+      },
+      "14": {
+        "role": "WS"
+      },
+      "15": {
+        "role": "SCK"
+      },
+      "16": {
+        "role": "BCLK"
+      },
+      "17": {
+        "role": "LRC"
+      },
+      "18": {
+        "role": "BOOT"
+      },
+      "19": {
+        "role": "DIN"
+      },
+      "20": {
+        "role": "DO"
+      },
+      "21": {
+        "role": "AMP G"
+      }
+    },
+    "wiring": {
+      "title": "Podłączenie: mikrofony i głośnik (podłącz to, czego potrzebuje laboratorium; ekran zostaje jak w lekcji 03)",
+      "head": [
+        "Pin modułu",
+        "ESP32-S3",
+        "Uwagi"
+      ],
+      "rows": [
+        [
+          "KY-037 + · G",
+          "3V3",
+          "Mikrofon analogowy. + na drugim pinie 3V3 (ekran ma pierwszy), G na GND. <b>Nigdy 5 V</b>: AO i DO wahają się do napięcia zasilania modułu, a piny ESP32-S3 znoszą co najwyżej 3,3 V."
+        ],
+        [
+          "KY-037 AO",
+          "GPIO 6",
+          "Wyjście analogowe: napięcie mikrofonu. GPIO 6 to kanał 5 ADC1: ADC1 działa dalej, gdy Wi-Fi jest włączone, a ADC2 nie."
+        ],
+        [
+          "KY-037 DO",
+          "GPIO 21",
+          "Wyjście cyfrowe: komparator LM393 podaje stan wysoki, gdy dźwięk jest głośniejszy niż ustawienie niebieskiego potencjometru."
+        ],
+        [
+          "INMP441 VDD · GND",
+          "3V3",
+          "Cyfrowy mikrofon (I2S). VDD na 3V3 (wspólna szyna płytki stykowej z KY-037), GND na GND. Tylko 3,3 V."
+        ],
+        [
+          "INMP441 L/R",
+          "GND",
+          "Stan niski: mikrofon nadaje w lewym kanale, czyli tym, który odczytuje płytka."
+        ],
+        [
+          "INMP441 SCK",
+          "GPIO 40",
+          "Zegar bitów. Steruje nim ESP32: 16 000 × 64 = 1,024 MHz."
+        ],
+        [
+          "INMP441 WS",
+          "GPIO 41",
+          "Wybór słowa: lewy kanał / prawy kanał, przełącza się co 32 impulsy zegara."
+        ],
+        [
+          "INMP441 SD",
+          "GPIO 42",
+          "Dane, najpierw najstarszy bit. Podciągnięte w dół, więc brak mikrofonu daje same zera."
+        ],
+        [
+          "MAX98357A VIN · GND",
+          "5V",
+          "Wzmacniacz głośnika. 5V daje najwięcej (około 3 W na 4 Ω); 3V3 też działa, ale ciszej."
+        ],
+        [
+          "MAX98357A BCLK",
+          "GPIO 39",
+          "Zegar bitów drugiego portu I2S (I2S1; mikrofon używa I2S0, więc oba działają jednocześnie)."
+        ],
+        [
+          "MAX98357A LRC",
+          "GPIO 38",
+          "Wybór słowa (lewy/prawy)."
+        ],
+        [
+          "MAX98357A DIN",
+          "GPIO 47",
+          "Próbki, 16-bitowe."
+        ],
+        [
+          "MAX98357A GAIN · SD",
+          "nic",
+          "Oba zostaw niepodłączone: wzmocnienie 9 dB, a odtwarza (lewy + prawy) / 2."
+        ],
+        [
+          "głośnik (4 Ω, 3 W)",
+          "amp + / −",
+          "Na śrubowym zacisku wzmacniacza: dwa przewody z końcówki JST-PH2.0, czerwony do +."
+        ],
+        [
+          "ekran (8 przewodów)",
+          "jak w lekcji 03",
+          "Bez zmian. Przycisk na GPIO 5 jest opcjonalny: robi to, co BOOT."
+        ]
+      ]
+    },
+    "commands": {
+      "0": {
+        "does": "Buduje laboratorium S6 i wgrywa je na płytkę. Potem otwórz monitor poleceniem <code>uv run pio device monitor</code>.",
+        "see": "<code>Listening for an INMP441 on the I2S pins...</code>, <code>Microphone: INMP441 (I2S, digital) (mic setting: auto)</code> (albo KY-037), potem <code>Sound lab S6 …</code>, lista poleceń i trzy nuty powitania z głośnika. Zachowaj ciszę przez pół sekundy: <code>- learning the quiet...</code>",
+        "fix": "Wybrano zły mikrofon: <code>mic inmp441</code> albo <code>mic ky037</code> (zapisuje i restartuje). Brak powitania: głośnik jest opcjonalny; sprawdź VIN i DIN. „Failed to connect”: przytrzymaj BOOT, dotknij RST, puść BOOT i uruchom ponownie."
+      },
+      "1": {
+        "does": "Następny wzorzec staje się sekretem (2–12 pukań; 1,5 s ciszy go kończy). Zapisane w NVS.",
+        "see": "<code>- knock your new secret, then wait 1.5 s</code>, potem <code>+ secret saved: 5 knocks, 1.2 s</code>.",
+        "fix": "<code>a secret needs 2 knocks or more</code>."
+      },
+      "2": {
+        "does": "Każdy zakończony wzorzec jest porównywany z sekretem.",
+        "see": "<code>+ OPEN (score 92)</code>: zaczep się unosi, dioda na GPIO 4 i RGB zielony przez 5 s. Źle: <code>x locked: the rhythm is off</code>.",
+        "fix": "Pukania pominięte: pukaj mocno, blisko mikrofonu; <code>knock show</code> wypisuje oba rytmy."
+      },
+      "3": {
+        "does": "Odtwarza sekret jako kliknięcia w dokładnych momentach pukań (esp_timer sprawdza co 2 ms).",
+        "see": "<code>- playing the secret: 5 knocks</code> i twój rytm z głośnika.",
+        "fix": "<code>sound is off: sound on</code>."
+      },
+      "4": {
+        "does": "Każda przerwa może się różnić o 20 % wzorca (domyślnie 12).",
+        "see": "<code>- tolerance 20%</code>.",
+        "fix": ""
+      },
+      "5": {
+        "does": "Clap Bird: nowa runda. Klaśnięcie ją zaczyna; każde klaśnięcie to trzepot.",
+        "see": "<code>clap to fly!</code>; później <code>+ new best: 6</code>.",
+        "fix": "Trzepot spóźniony: klaśnięcia w stylu pukania (krótkie i ostre) najszybciej wyzwalają początek."
+      },
+      "6": {
+        "does": "Dźwięki gry w głośniku wyłączone (zapisane w NVS, przestrzeń <code>games</code>).",
+        "see": "<code>- game sounds off</code>.",
+        "fix": ""
+      },
+      "7": {
+        "does": "Tyknięcie na każde uderzenie. Płytka nie słyszy przez około 200 ms po każdym tyknięciu (ochrona przed echem), więc uderzenia w tym oknie są pomijane. Domyślnie wyłączone.",
+        "see": "<code>- a tick on every beat (the board can't hear for ~200 ms after it)</code>.",
+        "fix": ""
+      },
+      "8": {
+        "does": "Na <b>party</b> każde uderzenie błyska kolorem, wysyła pierścień i zapala diodę RGB.",
+        "see": "Liczba BPM (np. 120) po kilku uderzeniach.",
+        "fix": "Za dużo uderzeń: <code>party sens 2.0</code>. Za mało: <code>party sens 1.3</code>."
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Dopasowywanie zamka na pukanie",
+        "intro": "Pukaj przyciskiem (albo spacją). Pierwszy wzorzec staje się sekretem; kolejne są porównywane przerwa po przerwie, każda jako część całego wzorca, więc szybkość nie ma znaczenia. Przesuń tolerancję."
+      },
+      "1": {
+        "title": "Co pokazuje ekran",
+        "intro": "Trzy widoki. Kliknięcie = następny, podwójne kliknięcie = akcja w lewym dolnym rogu (knock set, bird, party reset), długie przytrzymanie = knock show. W tym podglądzie kliknięcie ekranu (albo spacja) to klaśnięcie: Clap Bird da się grać."
+      }
+    },
+    "steps": [
+      "Podłączenie jak w S1. Opcjonalnie: dioda z lekcji 02 na GPIO 4 jako zasuwa zamka.",
+      "Wgraj <code>sound-lab-s6</code>. Na <b>knock</b>: <code>knock set</code> i zapukaj rytm. <b>Punkt kontrolny 1:</b> sekret zapisany.",
+      "Zapukaj ponownie, trochę wolniej. <b>Punkt kontrolny 2:</b> OPEN. Potem zły rytm: locked.",
+      "Kliknij na <b>bird</b> i klaśnij. <b>Punkt kontrolny 3:</b> przelot przez 5 rur.",
+      "Kliknij na <b>party</b>, odtwórz piosenkę. <b>Punkt kontrolny 4:</b> BPM się ustabilizuje."
+    ],
+    "note": "Pukania są dla detektora klaśnięciami (krótkie huki, tu do 200 ms). Zamek porównuje rytm, a nie głośność ani szybkość, więc to zabawka, a nie zabezpieczenie: każdy, kto usłyszy pukanie, może je skopiować. Clap Bird liczy fizykę w stałych krokach 1/60 s, niezależnie od tego, co robi ekran, więc gra czuje się tak samo przy każdej liczbie klatek; trzepocze na początku dźwięku (od razu), a nie po zakończeniu klaśnięcia (160 ms później)."
+  },
+  "S7": {
+    "title": "Głośnik",
+    "heading": "Niech płytka zagra: syntezator na jednym głośniku",
+    "goal": "<span class=\"snd-parts\"><span class=\"need\">MAX98357A + głośnik</span></span>Liczby wychodzą przez I2S do <b>MAX98357A</b>, wzmacniacza klasy D: włącza i wyłącza głośnik całkowicie około 300 000 razy na sekundę, a to, jak długo trwa każdy impuls, zależy od liczby. Membrana jest zbyt wolna, by za tym nadążyć, więc porusza się ze średnią: powstaje fala. S7 generuje nuty w pięciu barwach, akordy, obwiednie, melodie i dźwięki gier i pokazuje to, co słyszysz.",
+    "goalLine": "Usłysz różnicę między pięcioma falami, zagraj akord i melodię, zmieniaj obwiednię, aż nuta zabrzmi jak szarpnięta, i odpal każdy dźwięk gry.",
+    "goalCheck": [
+      "<code>beep</code> i dzwonek powitania grają z głośnika przy <code>vol 20</code>.",
+      "Na <b>wave</b> widmo pokazuje jedną linię dla sinusa, nieparzyste harmoniczne dla prostokąta, wszystkie dla piły.",
+      "<code>adsr 1 300 0 50</code> sprawia, że <code>note A4 600</code> brzmi jak szarpnięta; <code>adsr 300 80 65 300</code> brzmi miękko.",
+      "<code>tune korobeiniki</code> gra, a piano roll się przewija; <code>fx explosion</code> huczy."
+    ],
+    "learn": [
+      "wyjście I2S",
+      "wzmacniacz klasy D",
+      "barwa = harmoniczne",
+      "aliasing przy 16 kHz",
+      "ADSR a kliknięcia",
+      "półtony i akordy",
+      "tempo",
+      "dźwięk proceduralny",
+      "kwadratowa głośność"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "MICS +"
+      },
+      "2": {
+        "role": "AO"
+      },
+      "3": {
+        "role": "BLK"
+      },
+      "4": {
+        "role": "RES"
+      },
+      "5": {
+        "role": "DC"
+      },
+      "6": {
+        "role": "CS"
+      },
+      "7": {
+        "role": "SDA"
+      },
+      "8": {
+        "role": "SCL"
+      },
+      "9": {
+        "role": "AMP VIN"
+      },
+      "10": {
+        "role": "GND"
+      },
+      "11": {
+        "role": "BTN"
+      },
+      "12": {
+        "role": "MICS G"
+      },
+      "13": {
+        "role": "SD"
+      },
+      "14": {
+        "role": "WS"
+      },
+      "15": {
+        "role": "SCK"
+      },
+      "16": {
+        "role": "BCLK"
+      },
+      "17": {
+        "role": "LRC"
+      },
+      "18": {
+        "role": "BOOT"
+      },
+      "19": {
+        "role": "DIN"
+      },
+      "20": {
+        "role": "DO"
+      },
+      "21": {
+        "role": "AMP G"
+      }
+    },
+    "wiring": {
+      "title": "Podłączenie: mikrofony i głośnik (podłącz to, czego potrzebuje laboratorium; ekran zostaje jak w lekcji 03)",
+      "head": [
+        "Pin modułu",
+        "ESP32-S3",
+        "Uwagi"
+      ],
+      "rows": [
+        [
+          "KY-037 + · G",
+          "3V3",
+          "Mikrofon analogowy. + na drugim pinie 3V3 (ekran ma pierwszy), G na GND. <b>Nigdy 5 V</b>: AO i DO wahają się do napięcia zasilania modułu, a piny ESP32-S3 znoszą co najwyżej 3,3 V."
+        ],
+        [
+          "KY-037 AO",
+          "GPIO 6",
+          "Wyjście analogowe: napięcie mikrofonu. GPIO 6 to kanał 5 ADC1: ADC1 działa dalej, gdy Wi-Fi jest włączone, a ADC2 nie."
+        ],
+        [
+          "KY-037 DO",
+          "GPIO 21",
+          "Wyjście cyfrowe: komparator LM393 podaje stan wysoki, gdy dźwięk jest głośniejszy niż ustawienie niebieskiego potencjometru."
+        ],
+        [
+          "INMP441 VDD · GND",
+          "3V3",
+          "Cyfrowy mikrofon (I2S). VDD na 3V3 (wspólna szyna płytki stykowej z KY-037), GND na GND. Tylko 3,3 V."
+        ],
+        [
+          "INMP441 L/R",
+          "GND",
+          "Stan niski: mikrofon nadaje w lewym kanale, czyli tym, który odczytuje płytka."
+        ],
+        [
+          "INMP441 SCK",
+          "GPIO 40",
+          "Zegar bitów. Steruje nim ESP32: 16 000 × 64 = 1,024 MHz."
+        ],
+        [
+          "INMP441 WS",
+          "GPIO 41",
+          "Wybór słowa: lewy kanał / prawy kanał, przełącza się co 32 impulsy zegara."
+        ],
+        [
+          "INMP441 SD",
+          "GPIO 42",
+          "Dane, najpierw najstarszy bit. Podciągnięte w dół, więc brak mikrofonu daje same zera."
+        ],
+        [
+          "MAX98357A VIN · GND",
+          "5V",
+          "Wzmacniacz głośnika. 5V daje najwięcej (około 3 W na 4 Ω); 3V3 też działa, ale ciszej."
+        ],
+        [
+          "MAX98357A BCLK",
+          "GPIO 39",
+          "Zegar bitów drugiego portu I2S (I2S1; mikrofon używa I2S0, więc oba działają jednocześnie)."
+        ],
+        [
+          "MAX98357A LRC",
+          "GPIO 38",
+          "Wybór słowa (lewy/prawy)."
+        ],
+        [
+          "MAX98357A DIN",
+          "GPIO 47",
+          "Próbki, 16-bitowe."
+        ],
+        [
+          "MAX98357A GAIN · SD",
+          "nic",
+          "Oba zostaw niepodłączone: wzmocnienie 9 dB, a odtwarza (lewy + prawy) / 2."
+        ],
+        [
+          "głośnik (4 Ω, 3 W)",
+          "amp + / −",
+          "Na śrubowym zacisku wzmacniacza: dwa przewody z końcówki JST-PH2.0, czerwony do +."
+        ],
+        [
+          "ekran (8 przewodów)",
+          "jak w lekcji 03",
+          "Bez zmian. Przycisk na GPIO 5 jest opcjonalny: robi to, co BOOT."
+        ]
+      ]
+    },
+    "commands": {
+      "0": {
+        "does": "Buduje laboratorium S7 i wgrywa je na płytkę. Potem otwórz monitor poleceniem <code>uv run pio device monitor</code>.",
+        "see": "<code>Listening for an INMP441 on the I2S pins...</code>, <code>Microphone: INMP441 (I2S, digital) (mic setting: auto)</code> (albo KY-037), potem <code>Sound lab S7 …</code>, lista poleceń i trzy nuty powitania z głośnika. Zachowaj ciszę przez pół sekundy: <code>- learning the quiet...</code>",
+        "fix": "Wybrano zły mikrofon: <code>mic inmp441</code> albo <code>mic ky037</code> (zapisuje i restartuje). Brak powitania: głośnik jest opcjonalny; sprawdź VIN i DIN. „Failed to connect”: przytrzymaj BOOT, dotknij RST, puść BOOT i uruchom ponownie."
+      },
+      "1": {
+        "does": "Start cicho: głośność jest podnoszona do kwadratu, 20 = 4 % pełnej mocy. Zapisane w NVS (domyślnie 40).",
+        "see": "<code>- volume 20</code>; potem <code>beep</code> gra 440 Hz.",
+        "fix": "Cisza: VIN do 5V, DIN do 47, BCLK 39, LRC 38; głośnik na zacisku."
+      },
+      "2": {
+        "does": "Barwa: sinus, prostokąt, trójkąt, piła, szum (<code>wave next</code>, albo podwójne kliknięcie na <b>wave</b>).",
+        "see": "<code>- wave square</code>; linie widma przy 1, 3, 5… × nuta.",
+        "fix": ""
+      },
+      "3": {
+        "does": "Jedna nuta (nazwa albo Hz) przez 600 ms. Podwójne kliknięcie na <b>envelope</b> robi to samo.",
+        "see": "Kropka podąża za krzywą ADSR.",
+        "fix": "<code>close to 8 kHz: the limit at 16 kHz</code>, powyżej 7 kHz."
+      },
+      "4": {
+        "does": "Obwiednia: attack w ms, decay w ms, sustain w %, release w ms (domyślnie 6 80 65 90). Attack 0 daje kliknięcie.",
+        "see": "<code>- adsr 1 300 0 50</code>: szarpnięta struna.",
+        "fix": ""
+      },
+      "5": {
+        "does": "Nuty razem w głośniku jednogłosowym: płytka sumuje je w jeden bufor (30 s w PSRAM).",
+        "see": "<code>- Am = A4 C5 E5</code>; trzy klawisze świecą się na <b>keys</b>.",
+        "fix": ""
+      },
+      "6": {
+        "does": "Nuty jedna po drugiej w <code>bpm</code> (domyślnie 120): /4 ćwierćnuta, /8 ósemka, r pauza, . z kropką.",
+        "see": "Klawisze świecą się po kolei.",
+        "fix": ""
+      },
+      "7": {
+        "does": "twinkle ode happy korobeiniki scale arpeggio. Podwójne kliknięcie na <b>tunes</b> odtwarza wybraną; długie przytrzymanie wybiera następną.",
+        "see": "Piano roll przewija się obok bursztynowej główki odtwarzania.",
+        "fix": ""
+      },
+      "8": {
+        "does": "Dźwięki gier z przepisów: przemiatania, szum, zamykający się filtr.",
+        "see": "Cały przebieg na <b>fx</b>, a główka odtwarzania przesuwa się po nim.",
+        "fix": ""
+      },
+      "9": {
+        "does": "Cisza.",
+        "see": "Fale w nagłówku się zatrzymują.",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Od liczb do poruszającej się membrany",
+        "intro": "Co dzieje się z próbką, gdy płytka ją obliczy, dlaczego pokrętło głośności jest podnoszone do kwadratu i ochrona przed echem, która nie pozwala mikrofonowi słyszeć głośnika jako klaśnięć."
+      },
+      "1": {
+        "title": "Syntezator do zabawy",
+        "intro": "Te same fale i obwiednia co na płytce. Wybierz falę, naciśnij klawisz, by ją usłyszeć w tej przeglądarce (cicho; nic nie gra, dopóki nie naciśniesz), i przeciągaj uchwyty obwiedni. Czerwone słupki to harmoniczne, których płytka nie wytworzy przy 16 kHz: zawijają się jako błędne nuty."
+      },
+      "2": {
+        "title": "Co pokazuje ekran",
+        "intro": "Pięć widoków. Kliknięcie = następny, podwójne kliknięcie = akcja w lewym dolnym rogu. Keys: długie przytrzymanie = następny akord. Tunes i fx: długie przytrzymanie wybiera następny. W pozostałych długie przytrzymanie zatrzymuje dźwięk."
+      }
+    },
+    "steps": [
+      "Podłącz MAX98357A: VIN → 5V, GND, BCLK → 39, LRC → 38, DIN → 47; głośnik na śrubowym zacisku (czerwony do +). GAIN i SD zostają niepodłączone. Mikrofon nie jest potrzebny.",
+      "Wgraj <code>sound-lab-s7</code>. <b>Punkt kontrolny 1:</b> dzwonek powitania i <code>start quiet: vol 20, then raise it</code>.",
+      "<code>vol 20</code>, potem pięć razy <code>wave next</code> z <code>note A4</code>. <b>Punkt kontrolny 2:</b> pięć barw, pięć widm.",
+      "<code>adsr 1 300 0 50</code>, <code>note A4 600</code>; potem <code>adsr 0 0 100 0</code>. <b>Punkt kontrolny 3:</b> słyszysz kliknięcie, które usuwa obwiednia.",
+      "<code>chord Am</code>, <code>tune ode</code>, <code>fx coin</code>. <b>Punkt kontrolny 4:</b> wszystkie trzy grają."
+    ],
+    "note": "Jeden głośnik, jeden strumień: akordy i melodie najpierw są renderowane do PSRAM (do 30 s), a potem odtwarzane. Przy 16 000 próbkach na sekundę nic powyżej 8 kHz nie istnieje, więc wysokie harmoniczne prostokąta czy piły zawijają się jako błędne częstotliwości: lekkie szorstkie brzmienie wysokich nut, uczciwy limit prostego syntezatora. Każde inne laboratorium dźwięku używa tego samego głośnika do swoich dzwonków, a ochrona przed echem na czas grania wyłącza jego detektory."
+  },
+  "S8": {
+    "title": "Efekty głosowe",
+    "heading": "Papuga, która powtarza, i żywy robotyczny głos",
+    "goal": "<span class=\"snd-parts\"><span class=\"need\">INMP441</span><span class=\"need\">MAX98357A + głośnik</span></span>Mikrofon na wejściu, głośnik na wyjściu. Powiedz coś, a papuga to powtórzy: normalnie, jako <b>wiewiórka</b> (1,5× szybciej), <b>olbrzym</b> (0,7×), <b>robot</b> (modulator pierścieniowy + 6-bitowy zgrzyt), z <b>echem</b> albo <b>wspak</b>. Potem efekty na żywo: echo, do którego mówisz, i robotyczny głos. Papuga uruchamia się głosem jak S4 (12 dB, 0,3 s pre-rollu, 0,7 s podtrzymania, najwyżej 6 s) i nigdy nie słyszy samej siebie.",
+    "goalLine": "Spraw, by papuga powtarzała cię trzema głosami, mów przez żywe echo bez wycia i wyjaśnij, dlaczego wiewiórka mówi szybko.",
+    "goalCheck": [
+      "Powiedziałeś słowo, a papuga odpowiedziała głosem wiewiórki; <code>fx giant</code> + <code>again</code> odpowiedziało głęboko i wolno.",
+      "Widok <b>echo</b>: <code>echo on</code>, klaśnięcie wraca jako zanikające powtórzenia, opóźnienie około 60–80 ms.",
+      "Sprowokowałeś wycie (i ochrona je zatrzymała), kierując głośnik na mikrofon: <code>Howl! Move the speaker away or turn it down</code>."
+    ],
+    "learn": [
+      "resampling = wysokość + szybkość",
+      "modulacja pierścieniowa f±c",
+      "bitcrush",
+      "opóźnienie + sprzężenie zwrotne",
+      "wzmocnienie pętli < 1",
+      "wykrywanie wycia",
+      "budżet opóźnienia",
+      "ochrona przed echem"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "MICS +"
+      },
+      "2": {
+        "role": "AO"
+      },
+      "3": {
+        "role": "BLK"
+      },
+      "4": {
+        "role": "RES"
+      },
+      "5": {
+        "role": "DC"
+      },
+      "6": {
+        "role": "CS"
+      },
+      "7": {
+        "role": "SDA"
+      },
+      "8": {
+        "role": "SCL"
+      },
+      "9": {
+        "role": "AMP VIN"
+      },
+      "10": {
+        "role": "GND"
+      },
+      "11": {
+        "role": "BTN"
+      },
+      "12": {
+        "role": "MICS G"
+      },
+      "13": {
+        "role": "SD"
+      },
+      "14": {
+        "role": "WS"
+      },
+      "15": {
+        "role": "SCK"
+      },
+      "16": {
+        "role": "BCLK"
+      },
+      "17": {
+        "role": "LRC"
+      },
+      "18": {
+        "role": "BOOT"
+      },
+      "19": {
+        "role": "DIN"
+      },
+      "20": {
+        "role": "DO"
+      },
+      "21": {
+        "role": "AMP G"
+      }
+    },
+    "wiring": {
+      "title": "Podłączenie: mikrofony i głośnik (podłącz to, czego potrzebuje laboratorium; ekran zostaje jak w lekcji 03)",
+      "head": [
+        "Pin modułu",
+        "ESP32-S3",
+        "Uwagi"
+      ],
+      "rows": [
+        [
+          "KY-037 + · G",
+          "3V3",
+          "Mikrofon analogowy. + na drugim pinie 3V3 (ekran ma pierwszy), G na GND. <b>Nigdy 5 V</b>: AO i DO wahają się do napięcia zasilania modułu, a piny ESP32-S3 znoszą co najwyżej 3,3 V."
+        ],
+        [
+          "KY-037 AO",
+          "GPIO 6",
+          "Wyjście analogowe: napięcie mikrofonu. GPIO 6 to kanał 5 ADC1: ADC1 działa dalej, gdy Wi-Fi jest włączone, a ADC2 nie."
+        ],
+        [
+          "KY-037 DO",
+          "GPIO 21",
+          "Wyjście cyfrowe: komparator LM393 podaje stan wysoki, gdy dźwięk jest głośniejszy niż ustawienie niebieskiego potencjometru."
+        ],
+        [
+          "INMP441 VDD · GND",
+          "3V3",
+          "Cyfrowy mikrofon (I2S). VDD na 3V3 (wspólna szyna płytki stykowej z KY-037), GND na GND. Tylko 3,3 V."
+        ],
+        [
+          "INMP441 L/R",
+          "GND",
+          "Stan niski: mikrofon nadaje w lewym kanale, czyli tym, który odczytuje płytka."
+        ],
+        [
+          "INMP441 SCK",
+          "GPIO 40",
+          "Zegar bitów. Steruje nim ESP32: 16 000 × 64 = 1,024 MHz."
+        ],
+        [
+          "INMP441 WS",
+          "GPIO 41",
+          "Wybór słowa: lewy kanał / prawy kanał, przełącza się co 32 impulsy zegara."
+        ],
+        [
+          "INMP441 SD",
+          "GPIO 42",
+          "Dane, najpierw najstarszy bit. Podciągnięte w dół, więc brak mikrofonu daje same zera."
+        ],
+        [
+          "MAX98357A VIN · GND",
+          "5V",
+          "Wzmacniacz głośnika. 5V daje najwięcej (około 3 W na 4 Ω); 3V3 też działa, ale ciszej."
+        ],
+        [
+          "MAX98357A BCLK",
+          "GPIO 39",
+          "Zegar bitów drugiego portu I2S (I2S1; mikrofon używa I2S0, więc oba działają jednocześnie)."
+        ],
+        [
+          "MAX98357A LRC",
+          "GPIO 38",
+          "Wybór słowa (lewy/prawy)."
+        ],
+        [
+          "MAX98357A DIN",
+          "GPIO 47",
+          "Próbki, 16-bitowe."
+        ],
+        [
+          "MAX98357A GAIN · SD",
+          "nic",
+          "Oba zostaw niepodłączone: wzmocnienie 9 dB, a odtwarza (lewy + prawy) / 2."
+        ],
+        [
+          "głośnik (4 Ω, 3 W)",
+          "amp + / −",
+          "Na śrubowym zacisku wzmacniacza: dwa przewody z końcówki JST-PH2.0, czerwony do +."
+        ],
+        [
+          "ekran (8 przewodów)",
+          "jak w lekcji 03",
+          "Bez zmian. Przycisk na GPIO 5 jest opcjonalny: robi to, co BOOT."
+        ]
+      ]
+    },
+    "commands": {
+      "0": {
+        "does": "Buduje laboratorium S8 i wgrywa je na płytkę. Potem otwórz monitor poleceniem <code>uv run pio device monitor</code>.",
+        "see": "<code>Listening for an INMP441 on the I2S pins...</code>, <code>Microphone: INMP441 (I2S, digital) (mic setting: auto)</code> (albo KY-037), potem <code>Sound lab S8 …</code>, lista poleceń i trzy nuty powitania z głośnika. Zachowaj ciszę przez pół sekundy: <code>- learning the quiet...</code>",
+        "fix": "Wybrano zły mikrofon: <code>mic inmp441</code> albo <code>mic ky037</code> (zapisuje i restartuje). Brak powitania: głośnik jest opcjonalny; sprawdź VIN i DIN. „Failed to connect”: przytrzymaj BOOT, dotknij RST, puść BOOT i uruchom ponownie."
+      },
+      "1": {
+        "does": "Trzymaj cicho: mikrofon słyszy głośnik.",
+        "see": "<code>- volume 25</code>.",
+        "fix": "Przy KY-037: <code>KY-037: it works, but an INMP441 sounds much clearer</code>."
+      },
+      "2": {
+        "does": "Głośniej niż 12 dB powyżej ciszy zaczyna nagranie z 0,3 s sprzed chwili; 0,7 s ciszy je kończy; potem odtwarza je przez głos.",
+        "see": "Dymek: <code>I'm listening...</code>, REC, potem <code>Squawk!</code> z poruszającym się dziobem; <code>+ chipmunk, 1.4 s, x9 louder</code>.",
+        "fix": "<code>too short: a bang, not a word</code>: mów trochę dłużej. Nigdy nie startuje: <code>trigger 8</code>."
+      },
+      "3": {
+        "does": "Głos papugi: normal chipmunk giant robot echo reverse. Podwójne kliknięcie na <b>parrot</b>.",
+        "see": "<code>- voice: robot (ring modulator + bitcrush)</code>.",
+        "fix": ""
+      },
+      "4": {
+        "does": "Powtarza ostatnie nagranie z bieżącym głosem (podwójne kliknięcie na <b>scope</b>).",
+        "see": "Te same słowa, inny głos.",
+        "fix": "<code>nothing recorded yet: say something first</code>."
+      },
+      "5": {
+        "does": "Na żywo: mikrofon → linia opóźniająca → głośnik. <code>delay 120</code> (20–500 ms), <code>feedback 60</code> (0–70 %). Wymaga mikrofonu przy 16 000 Hz.",
+        "see": "<code>! live echo: speaker away from the mic, volume low</code>; odbicia jednego klaśnięcia na widoku <b>echo</b> i opóźnienie ~60–80 ms.",
+        "fix": "Wycie: ochrona zatrzymuje je niskim „No”. Odwróć głośnik, obniż <code>vol</code> albo <code>feedback</code>."
+      },
+      "6": {
+        "does": "Na żywo: twój głos × wolny sinus (<code>carrier 50</code>, 10–300 Hz) + zgrzyt. Każda częstotliwość f staje się f − c i f + c.",
+        "see": "Usta robota świecą się w rytm tego, co wychodzi. <code>carrier 200</code> brzmi jak dzwon.",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Papuga w twojej przeglądarce",
+        "intro": "Te same efekty co w fx.h, na tej stronie. Wczytywany jest przykładowy głos; nagrywanie własnego jest opcjonalne i zaczyna się dopiero po naciśnięciu przycisku (3 s, czerwony wskaźnik podczas nagrywania, nic nie opuszcza strony)."
+      },
+      "1": {
+        "title": "Co pokazuje ekran",
+        "intro": "Cztery widoki. Kliknięcie = następny, podwójne kliknięcie = akcja w lewym dolnym rogu (fx next, echo, robot, again), długie przytrzymanie = nagraj ręcznie / stop."
+      }
+    },
+    "steps": [
+      "Podłącz INMP441 (VDD 3V3, GND, L/R → GND, SCK 40, WS 41, SD 42) oraz MAX98357A + głośnik jak w S7. Skieruj głośnik z dala od mikrofonu.",
+      "Wgraj <code>sound-lab-s8</code>, <code>vol 25</code>. <b>Punkt kontrolny 1:</b> <code>Microphone: INMP441</code> i papuga mówi „Say something!”.",
+      "Powiedz krótkie zdanie. <b>Punkt kontrolny 2:</b> wiewiórka odpowiada.",
+      "<code>fx giant</code>, <code>again</code>; <code>fx reverse</code>, <code>again</code>. <b>Punkt kontrolny 3:</b> potrafisz powiedzieć, dlaczego olbrzym jest wolny.",
+      "<code>echo on</code>, klaśnij. <b>Punkt kontrolny 4:</b> zanikające powtórzenia; <code>echo off</code>.",
+      "<code>robot on</code>, mów. <b>Punkt kontrolny 5:</b> robotyczny głos; <code>robot off</code>."
+    ],
+    "note": "Zmiana prędkości nagrania zmienia jednocześnie jego wysokość i długość: dlatego wiewiórka mówi szybko. Zachowanie prędkości przy zmianie wysokości wymaga dużo więcej DSP (ziarna albo vocoder fazowy). Sprzężenie zwrotne: jeśli to, co słyszy mikrofon, wraca głośniej, niż wyszło (wzmocnienie pętli powyżej 1), krąży w kółko: to jest wycie. Ochrona wyłącza efekt na żywo, gdy poziom wciąż rośnie (9 dB w 300 ms) albo utrzymuje się powyżej −12 dBFS. Opóźnienie = jedna klatka ekranu przetwarzania + kolejka głośnika + jego blok DMA 16 ms."
+  }
+}

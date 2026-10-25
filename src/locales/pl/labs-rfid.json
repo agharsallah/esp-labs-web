@@ -1,0 +1,1033 @@
+{
+  "rfidSeq": {
+    "legend": {
+      "msg": "dostęp SPI lub ramka radiowa (pomarańczowy: ten krok)",
+      "wait": "zadanie czytnika czeka (przewód IRQ lub odpytywanie)"
+    },
+    "lanes": {
+      "names": [
+        "zadanie czytnika",
+        "MFRC522",
+        "karta"
+      ],
+      "subs": [
+        "ESP32, rdzeń 0",
+        "układ czytnika",
+        "bez baterii"
+      ]
+    },
+    "flows": {
+      "wake": {
+        "label": "Wybudzenie (WUPA → ATQA)",
+        "steps": [
+          {
+            "title": "Załaduj ramkę do układu",
+            "text": "Przez SPI zadanie czytnika zapisuje WUPA (52h) do 64-bajtowego bufora FIFO układu i każe mu wysłać tylko 7 bitów: krótką ramkę."
+          },
+          {
+            "title": "Wyślij, potem nasłuchuj",
+            "text": "Jedno polecenie sprawia, że układ wysyła zawartość FIFO, a potem przełącza się na odbiór. Od tej chwili zadanie czytnika czeka: na przewodzie IRQ albo, czytając ComIrqReg raz za razem."
+          },
+          {
+            "title": "100 % ASK: pole się zatrzymuje",
+            "text": "Układ moduluje własne pole 13,56 MHz: przerwa około 3 µs na początku (Z) albo w środku (X) bitu, albo brak przerwy (Y). Kartę zasila to samo pole, także w czasie przerw."
+          },
+          {
+            "msg": "wybudzenie · czekaj 86 µs",
+            "title": "Karta budzi się i czeka na swoją kolej",
+            "text": "Układ karty włącza się dzięki polu, dekoduje WUPA, a potem czeka stały czas przed odpowiedzią. Każda karta czeka dokładnie tyle samo, więc wszystkie odpowiadają w tym samym momencie: to właśnie powoduje możliwość kolizji."
+          },
+          {
+            "title": "Modulacja obciążenia: karta odpowiada",
+            "text": "Karta nie może nadawać. Włącza i wyłącza obciążenie na swojej cewce z częstotliwością 847 kHz (fc/16), a antena czytnika wyczuwa drgania własnego pola. Kodowanie Manchester, 2 bajty."
+          },
+          {
+            "title": "Układ mówi „gotowe”",
+            "text": "Układ ustawia RxIRq i IdleIRq w ComIrqReg. Przy przewodzie IRQ pin opada i od razu budzi zadanie czytnika; bez niego zadanie odpytuje ComIrqReg przez SPI (R6 liczy koszt)."
+          },
+          {
+            "msg": "odczyt FIFO",
+            "title": "Odbierz odpowiedź",
+            "text": "Bez błędów, 2 bajty czekają, ostatni bajt jest kompletny. Sterownik przekazuje ATQA warstwie protokołu."
+          }
+        ]
+      },
+      "select": {
+        "label": "Wybór (UID → SAK)",
+        "steps": [
+          {
+            "title": "Kim jesteś?",
+            "text": "SEL 93h = poziom kaskady 1. NVB 20h = wysłano 2 bajty, bez dodatkowych bitów: „podaj mi wszystkie 32 bity swojego UID”."
+          },
+          {
+            "title": "UID + BCC",
+            "text": "Karta wysyła 4 bajty UID i bajt kontrolny, czyli XOR wszystkich czterech. Przy dwóch kartach to tutaj ich bity się zderzają (R3)."
+          },
+          {
+            "msg": "sprawdź BCC · CRC_A",
+            "title": "Sprawdź, potem dodaj CRC",
+            "text": "Sterownik sprawdza BCC, a potem dokłada 2-bajtowe CRC_A do ramki SELECT (R6 ściga się układu CRC z ESP32, który liczy to samo)."
+          },
+          {
+            "title": "WYBIERZ tę kartę",
+            "text": "NVB 70h: 7 pełnych bajtów za chwilę. Odpowiada tylko karta o dokładnie tym UID; każda inna milknie."
+          },
+          {
+            "title": "SAK: jaki to typ karty",
+            "text": "08h: MIFARE Classic 1K, a bit 2 jest wyzerowany, więc UID jest kompletny. Gdyby bit 2 był ustawiony, UID kontynuowałby się na poziomie kaskady 2 (95h)."
+          },
+          {
+            "title": "HLTA: idź spać",
+            "text": "Nasze odpytanie natychmiast usypia kartę. Uśpiona karta ignoruje REQA, ale budzi się na WUPA, więc następne odpytanie (80 ms później) znajduje ją ponownie: tak widok karty wie, że nadal tam jest."
+          }
+        ]
+      },
+      "read": {
+        "label": "Uwierzytelnienie + odczyt bloku 4",
+        "steps": [
+          {
+            "title": "Przekaż klucz układowi",
+            "text": "12 bajtów do FIFO: AUTH z kluczem A (60h), blok 4, 6-bajtowy klucz i ostatnie 4 bajty UID. Potem polecenie MFAuthent: resztę układ robi sam."
+          },
+          {
+            "title": "Przebieg 1: który sektor, który klucz",
+            "text": "Układ prosi kartę o otwarcie sektora bloku 4 (sektor 1) kluczem A."
+          },
+          {
+            "msg": "wyzwanie nT",
+            "title": "Przebieg 2: wyzwanie karty",
+            "text": "Karta odpowiada 4-bajtową liczbą losową."
+          },
+          {
+            "msg": "nR + odpowiedź",
+            "title": "Przebieg 3: czytnik dowodzi, że ma klucz",
+            "text": "Układ wysyła własną liczbę losową i odpowiedź na wyzwanie karty, obie wyliczone z kluczem. Od tej chwili Crypto1 szyfruje każdą ramkę."
+          },
+          {
+            "msg": "odpowiedź karty",
+            "title": "Karta też dowodzi",
+            "text": "Odpowiedź karty pokazuje, że zna ten sam klucz. Układ ustawia MFCrypto1On w Status2Reg; sterownik to sprawdza."
+          },
+          {
+            "msg": "30 04 + CRC (zaszyfrowane)",
+            "title": "ODCZYT bloku 4",
+            "text": "FIFO zawiera zwykłe bajty; układ szyfruje je przy wysyłaniu. Sniffer oznacza te ramki jako „zaszyfrowane w eterze”."
+          },
+          {
+            "msg": "16 bajtów + CRC",
+            "title": "Blok",
+            "text": "Wracają 18 bajtów, odszyfrowanych przez układ."
+          },
+          {
+            "msg": "18 bajtów → ESP32",
+            "title": "Sprawdź CRC samodzielnie",
+            "text": "Sterownik odczytuje 18 bajtów z FIFO i sprawdza CRC_A z pierwszych 16. Błędne CRC oznacza zakłóconą ramkę: test obciążeniowy w R6 liczy, jak często to się zdarza."
+          }
+        ]
+      },
+      "credits": {
+        "label": "wykorzystanie kredytów: 3",
+        "steps": [
+          {
+            "title": "Załaduj wartość",
+            "text": "Karta sprawdza, czy blok 8 jest poprawnym blokiem wartości (wartość, wartość odwrócona, wartość, adres ×4) i ładuje go do swojego rejestru wewnętrznego. NAK, jeśli format jest uszkodzony."
+          },
+          {
+            "title": "Zapisz w kopii zapasowej",
+            "text": "TRANSFER zapisuje rejestr do bloku 9. Kopia zapasowa zawiera teraz wartość sprzed zmiany."
+          },
+          {
+            "title": "Odejmij, na karcie",
+            "text": "Karta ładuje blok 8 i odejmuje operand ze swojego rejestru. Sam blok 8 jeszcze się nie zmienia."
+          },
+          {
+            "title": "Zatwierdź",
+            "text": "Do tego TRANSFER blok 8 wciąż mówi 50. Karta zapisuje cały 16-bajtowy blok albo nic, więc karta wyciągnięta w połowie zostawia 50 lub 47, nigdy zepsutą liczbę."
+          },
+          {
+            "msg": "odczyt 8 i 9",
+            "title": "Sprawdź, co karta mówi teraz",
+            "text": "Oprogramowanie odczytuje oba bloki i je dekoduje."
+          }
+        ]
+      }
+    }
+  },
+  "doorSeq": {
+    "legend": {
+      "msg": "HTTP, WebSocket lub radio (pomarańczowy: ten krok)",
+      "wait": "aplikacja czeka na płytkę"
+    },
+    "lanes": {
+      "names": [
+        "aplikacja React",
+        "serwer Vite",
+        "serwer WWW",
+        "zadanie czytnika",
+        "karta"
+      ],
+      "subs": [
+        "twoja przeglądarka",
+        "na twoim Macu",
+        "płytka, rdzeń 1",
+        "płytka, rdzeń 0",
+        "twój znacznik"
+      ]
+    },
+    "flows": {
+      "tap": {
+        "label": "Przyłożenie",
+        "steps": [
+          {
+            "title": "Karta mówi, kim jest",
+            "text": "Wybudzenie, antykolizja i wybór, jak w R2: karta wnosi tylko swoje UID."
+          },
+          {
+            "msg": "decyzja z listy",
+            "title": "Płytka decyduje na podstawie własnej listy",
+            "text": "registry.tap() wyszukuje UID i sprawdza reguły po kolei (zablokowana, blokada, zegar, data końcowa, godziny, użycia). Nic z karty nie jest odczytywane ani ufane."
+          },
+          {
+            "title": "Drzwi się otwierają",
+            "text": "Kłódka na ekranie się otwiera, dioda świeci na zielono i rusza 5-sekundowe odliczanie. Odrzucone przyłożenia pokazują DENIED z powodem przez 2 s, dioda czerwona."
+          },
+          {
+            "msg": "zdarzenie JSON",
+            "title": "Zdarzenie do dziennika",
+            "text": "Zadanie czytnika wkłada komunikat JSON do swojej skrzynki wyjściowej; loop() na drugim rdzeniu wysyła go do każdego klienta WebSocket."
+          },
+          {
+            "msg": "wysłanie przez WebSocket",
+            "title": "Aplikacja słyszy to od razu",
+            "text": "Przez proxy Vite do przeglądarki: nowa linia w dzienniku dostępu, panel drzwi zmienia kolor na zielony. Co sekundę przychodzi komunikat o stanie."
+          }
+        ]
+      },
+      "block": {
+        "label": "Zablokowanie z aplikacji",
+        "steps": [
+          {
+            "title": "Naciskasz Zablokuj",
+            "text": "Aplikacja wysyła tylko to, co się zmieniło. Nie ma tokenu: przeglądarka nigdy go nie przechowuje."
+          },
+          {
+            "title": "Serwer deweloperski dodaje token",
+            "text": "Proxy Vite, na twoim Macu, dodaje nagłówek z door-app/.env i przekazuje żądanie przez twoje Wi-Fi."
+          },
+          {
+            "msg": "sprawdź, zaktualizuj, zapisz",
+            "title": "Płytka najpierw sprawdza wszystko",
+            "text": "Token porównywany w stałym czasie, każde pole sprawdzone, a potem registry.update() zmienia kartę pod swoim mutexem i zapisuje listę do NVS."
+          },
+          {
+            "msg": "200 + karta",
+            "title": "Odpowiedź, z tym, co zrobiłoby teraz przyłożenie",
+            "text": "Karta wraca z nowym stanem, a komunikat „cards” przez WebSocket aktualizuje każdą otwartą aplikację."
+          },
+          {
+            "msg": "następne przyłożenie",
+            "title": "Następne przyłożenie",
+            "text": "Ta sama karta, to samo UID: na karcie nic się nie zmieniło."
+          },
+          {
+            "msg": "zablokowana → DENIED",
+            "title": "Blokada wygrywa jako pierwsza",
+            "text": "Pierwsza reguła po „jest na liście?” to „zablokowana?”, więc nie ma znaczenia, co jeszcze karta może: DENIED · zablokowana, dioda czerwona."
+          }
+        ]
+      },
+      "copy": {
+        "label": "Skopiuj kartę",
+        "steps": [
+          {
+            "title": "Skopiuj tę kartę na inną",
+            "text": "Biała karta leży na czytniku. Przez proxy, z tokenem; serwer WWW ustawia zadanie w kolejce i od razu odpowiada."
+          },
+          {
+            "title": "Odczytaj źródło, sektor po sektorze",
+            "text": "Fabryczny klucz A dla sektora 1, potem ODCZYT bloków 4, 5 i 6 (po 16 bajtów, z CRC_A), tak samo dla sektora 2. Nagłówki sektorów nie są kopiowane: klucze i bity dostępu zostają tam, gdzie są."
+          },
+          {
+            "msg": "czekaj na inną kartę",
+            "title": "Płytka czeka na drugą kartę",
+            "text": "Ekran pokazuje COPY: 2ND CARD, a dioda miga na fioletowo. Źródło, które wciąż leży na czytniku, się nie liczy; podniesienie go i ponowne położenie też nie."
+          },
+          {
+            "title": "Kładziesz breloczek",
+            "text": "Inne UID: to jest cel."
+          },
+          {
+            "msg": "ZAPIS 4 … 10, odczyt kontrolny",
+            "title": "Zapisz każdy blok, odczytaj go z powrotem",
+            "text": "ZAPIS to dwa kroki (polecenie → ACK, 16 bajtów → ACK); potem ODCZYT sprawdza, czy karta naprawdę je ma. Tylko bloki, na które bity dostępu celu pozwalają kluczem A, są zapisywane; sektor, który się nie otwiera, zostaje pominięty."
+          },
+          {
+            "msg": "zadanie 9 ok",
+            "title": "Skopiowano 6 z 6 bloków",
+            "text": "Wynik trafia do aplikacji jako powiadomienie, a w dzienniku pojawia się wpis „data copied here”. Teraz przyłóż breloczek: otworzy się jako Key tag, bo drzwi szukają jego UID, a ono się nie zmieniło."
+          }
+        ]
+      },
+      "enroll": {
+        "label": "Dodaj kartę",
+        "steps": [
+          {
+            "title": "Nazwa i rola",
+            "text": "Przez proxy, z tokenem. Serwer WWW tylko ustawia zadanie dla zadania czytnika (jeden właściciel na układ) i od razu odpowiada."
+          },
+          {
+            "msg": "zadanie 7 w skrzynce",
+            "title": "Zadanie, nie czekanie",
+            "text": "Żądanie HTTP jest już odpowiedziane; wynik przyjdzie później przez WebSocket. Obsługa sieci nigdy nie może blokować."
+          },
+          {
+            "msg": "czekaj 20 s, niebieska dioda",
+            "title": "Płytka czeka na kartę, której jeszcze nie widziała",
+            "text": "Ekran pokazuje ADD A CARD, a dioda miga na niebiesko. Karta już obecna na liście zostaje odrzucona, z podaniem jej nazwy."
+          },
+          {
+            "title": "Kładziesz breloczek",
+            "text": "Nie ma go na liście: staje się nową kartą. Goście zaczynają z 5 użyciami."
+          },
+          {
+            "msg": "zadanie 7 ok + karty",
+            "title": "Wynik trafia do aplikacji",
+            "text": "Komunikat „job” z id 7 rozwiązuje oczekującą obietnicę aplikacji (powiadomienie), a komunikat „cards” aktualizuje listę."
+          }
+        ]
+      }
+    }
+  },
+  "friendsSeq": {
+    "lanes": {
+      "names": [
+        "aplikacja friends",
+        "serwer Vite",
+        "serwer WWW",
+        "zadanie czytnika",
+        "karta"
+      ],
+      "subs": [
+        "przeglądarka / tablet",
+        "na twoim Macu",
+        "płytka, rdzeń 1",
+        "płytka, rdzeń 0",
+        "twój znacznik"
+      ]
+    },
+    "flows": {
+      "tap": {
+        "label": "Przyłóż kartę 1",
+        "steps": [
+          {
+            "title": "Karta mówi, kim jest",
+            "text": "Wybudzenie, antykolizja i wybór, jak w R2. R8 nie czyta z karty nic więcej: żadnych bloków, żadnych kluczy."
+          },
+          {
+            "msg": "kto tu mieszka?",
+            "title": "Płytka szuka UID",
+            "text": "friends::List::tap() znajduje kartę 1, dolicza wizytę i zapisuje listę do NVS. Przyjaciel to tylko ciąg znaków id."
+          },
+          {
+            "msg": "Foxy wyskakuje",
+            "title": "Własny ekran płytki",
+            "text": "Widok sceny wyrasta Foxy z karty z przeskokiem, gwiazdki wylatują w jego kolorach, a potem podskakuje: „Hi again! Foxy · card 1 · 5 visits”. Dioda miga na pomarańczowo."
+          },
+          {
+            "msg": "JSON przyłożenia",
+            "title": "Wiadomość dla każdej aplikacji",
+            "text": "Zadanie czytnika wkłada ją do swojej skrzynki wyjściowej; loop() na drugim rdzeniu wysyła ją przez WebSocket."
+          },
+          {
+            "msg": "wysłanie przez WebSocket",
+            "title": "Scena 3D gra",
+            "text": "Aplikacja stawia Foxy na scenie: obłoczek, wyskok z karty 1, podwójny obrót, złote gwiazdki, niebo zmienia się w zachód słońca i gra jego melodia. Przyłóż teraz kartę 2, a dołączy Bolt i zacznie tańczyć."
+          }
+        ]
+      },
+      "newcard": {
+        "label": "Nowa karta dostaje przyjaciela",
+        "steps": [
+          {
+            "title": "Karta, której płytka nigdy nie widziała",
+            "text": "Ten sam wybór co zawsze, ale tego UID nie ma na liście."
+          },
+          {
+            "msg": "dodaj jako kartę 2, na razie nikt",
+            "title": "Dodaje się sama",
+            "text": "Do 12 kart. character = \"\": ekran pokazuje kołyszący się znak „?” i napis „New card! Give it a friend”."
+          },
+          {
+            "title": "Aplikacja prosi o przyjaciela",
+            "text": "Dymek mówi „New card 2! Who lives here?”, a kafelek karty 2 domaga się uwagi."
+          },
+          {
+            "title": "Przeciągasz Bolta na kartę 2",
+            "text": "Albo stukasz Bolta, a potem kartę. Przeglądarka nie ma tokenu."
+          },
+          {
+            "title": "Serwer deweloperski dodaje token",
+            "text": "Proxy Vite dodaje go z friends-app/.env (ten sam token co W2 i R7)."
+          },
+          {
+            "msg": "sprawdź id, zapisz",
+            "title": "Płytka sprawdza id",
+            "text": "Akceptowane są tylko id z characters.h (GET /api/cast je wymienia). Lista kart zmienia się pod mutexem i trafia do NVS."
+          },
+          {
+            "title": "Pokaż od razu",
+            "text": "Aplikacja prosi płytkę o pokazanie karty 2 (to nie liczy się jako wizyta): Bolt wyskakuje na ekranie i w 3D w tym samym momencie."
+          }
+        ]
+      }
+    }
+  },
+  "controls": {
+    "back": "◀ Wstecz",
+    "next": "Dalej ▶",
+    "play": "▶ Odtwórz",
+    "pause": "❚❚ Pauza",
+    "playback": "Odtwarzanie",
+    "turn": "Obrót",
+    "stepOf": "krok {{step}} / {{count}}"
+  },
+  "spi": {
+    "register": "Rejestr",
+    "readOrWrite": "Odczyt lub zapis",
+    "read": "odczyt",
+    "write": "zapis 03h",
+    "fault": "Usterka do zasymulowania",
+    "faults": {
+      "none": "podłączone poprawnie",
+      "miso": "przewód MISO luźny",
+      "power": "brak 3,3 V",
+      "ss": "przewód SDA (wybór układu) luźny"
+    },
+    "prevBit": "Poprzedni bit",
+    "nextBit": "Następny bit",
+    "pause": "Pauza",
+    "play": "Odtwórz",
+    "playShort": "▶ Odtwórz",
+    "diagram": "Widok analizatora stanów jednego transferu SPI: wybór układu, zegar, MOSI i MISO przez 16 cykli zegara.",
+    "dontCare": "bez znaczenia",
+    "dontCareWrite": "bez znaczenia (zapis)",
+    "byte0": "bajt 0 · MOSI {{hex}}h",
+    "byte1Miso": "bajt 1 · MISO {{hex}}h",
+    "byte1Mosi": "bajt 1 · MOSI {{hex}}h",
+    "regs": {
+      "VersionReg": "92h = MFRC522 w wersji 2.0",
+      "ComIrqReg": "14h po resecie: IdleIRq + LoAlertIRq",
+      "TxControlReg": "83h: obie anteny włączone (bity 1-0)",
+      "RFCfgReg": "40h: wzmocnienie odbiornika 100b = 33 dB (48h zaraz po resecie)"
+    },
+    "bits": {
+      "rwRead": {
+        "key": "bit 7 bajtu adresu:",
+        "text": "1 = odczyt. Najpierw MSB; dane zmieniają się na opadającym zboczu zegara i są odczytywane na narastającym (tryb SPI 0)."
+      },
+      "rwWrite": {
+        "key": "bit 7 bajtu adresu:",
+        "text": "0 = zapis. Najpierw MSB; dane zmieniają się na opadającym zboczu zegara i są odczytywane na narastającym (tryb SPI 0)."
+      },
+      "addrRead": {
+        "key": "bity 6-1:",
+        "text": "adres rejestru {{a}}h = {{bits}}, jeden bit na takt zegara. Czyli {{name}} odczytuje się jako {{addr}}h."
+      },
+      "addrWrite": {
+        "key": "bity 6-1:",
+        "text": "adres rejestru {{a}}h = {{bits}}, jeden bit na takt zegara. Czyli {{name}} zapisuje się jako {{addr}}h."
+      },
+      "zero": {
+        "key": "bit 0:",
+        "text": "zawsze 0. Układ ma 64 rejestry, do tego wystarczy 6 bitów."
+      },
+      "write": {
+        "key": "bajt 1:",
+        "text": "wartość do zapisu, {{data}}h. Podczas zapisu MISO nie przenosi nic użytecznego."
+      },
+      "answer": {
+        "key": "bajt 1 na MISO:",
+        "text": "{{answer}}h. {{what}}. Tymczasem MOSI wysyła 00 (albo kolejny adres w serii)."
+      },
+      "power": {
+        "key": "bajt 1 na MISO:",
+        "text": "00h. Układ bez zasilania nie może podciągnąć MISO do wysokiego stanu: każdy rejestr odczytuje się jako 00. Oprogramowanie wypisuje „nothing (MISO stuck low?)”: sprawdź 3,3 V i GND."
+      },
+      "float": {
+        "key": "bajt 1 na MISO:",
+        "text": "FFh (zwykle). Nikt nie steruje MISO, więc wisi w stanie wysokim: każdy rejestr odczytuje się jako FF. Układ odpowiada, ale odpowiedź nigdy nie dociera przez przewód."
+      },
+      "floatSs": {
+        "key": "bajt 1 na MISO:",
+        "text": "FFh (zwykle). Nikt nie steruje MISO, więc wisi w stanie wysokim: każdy rejestr odczytuje się jako FF. Przy luźnym SDA układ nigdy nie zostaje wybrany i milczy."
+      }
+    }
+  },
+  "anticoll": {
+    "steps": {
+      "identical": {
+        "title": "Identyczne UID",
+        "text": "Dwie karty nigdy nie mają tego samego UID (o to właśnie chodzi). Zmień jeden bajt."
+      },
+      "wake": {
+        "title": "WUPA: obie karty się budzą",
+        "text": "Obie odpowiadają ATQA 04 00 w tym samym momencie. Identyczne bity nałożone na siebie wyglądają jak jedna karta, więc na razie bez kolizji."
+      },
+      "all": {
+        "title": "93 20: „wszyscy, wyślijcie swoje UID”",
+        "text": "Obie karty wysyłają 32 bity naraz. Bity 1–{{shared}} są takie same i docierają czysto. Przy bicie {{p}} jedna karta wysyła 0, a druga 1: czytnik słyszy obie połówki bitu, czyli kolizję. CollReg mówi CollPos = {{p}}. Bity po niej odczytują się jako 0 (ValuesAfterColl = 0)."
+      },
+      "pick": {
+        "title": "Wybierz 1 przy bicie {{p}}, zapytaj ponownie",
+        "text": "Czytnik wysyła {{p}} bitów, które już zna, kończąc na 1: SEL 93, NVB {{nvb}}h ({{bytes}} pełnych bajtów + {{bits}} bitów). Bit {{p}} to bit {{bitIn}} bajtu UID {{byte}}. Karta {{loser}} ma tam 0, więc milknie do następnego REQA lub WUPA."
+      },
+      "rest": {
+        "title": "Resztę odpowiada tylko karta {{winner}}",
+        "text": "Karta {{winner}} wysyła bity {{after}}–32 i swoje BCC. Bez kolizji: czytnik ma już pełne UID {{winnerUid}}, a BCC {{bcc}} się zgadza."
+      },
+      "select": {
+        "title": "SELECT {{winnerUid}} → SAK 08",
+        "text": "93 70 + UID + BCC + CRC_A. Karta {{winner}} jest teraz AKTYWNA, gotowa do uwierzytelnienia i odczytów. Wędrówka zawsze wybiera 1 przy kolizji, dlatego za każdym razem wygrywa ta sama karta."
+      },
+      "halt": {
+        "title": "HLTA karta {{winner}}, potem znowu REQA",
+        "text": "Karta {{winner}} przechodzi w HALT i ignoruje REQA. Karta {{loser}} tylko czekała (READY → z powrotem do IDLE), więc odpowiada samodzielnie na REQA."
+      },
+      "second": {
+        "title": "93 20 → karta {{loser}} sama: {{loserUid}}",
+        "text": "Tym razem bez kolizji. SELECT, SAK, HLTA. Następne REQA nie dostaje żadnej odpowiedzi: inwentaryzacja znalazła 2 karty. To jest to, co wypisuje polecenie inwentaryzacji w oprogramowaniu."
+      }
+    },
+    "tree": {
+      "label": "Drzewo binarne, po którym idzie wędrówka: wspólne bity, potem rozgałęzienie przy pierwszej kolizji.",
+      "shared": "bity 1–{{last}}: wspólne ({{count}} bitów)",
+      "collision": "bit {{p}}: kolizja",
+      "zero": "bit = 0",
+      "one": "bit = 1, wybierany pierwszy",
+      "card": "karta {{name}}",
+      "foundFirst": "karta {{name}} ✓ znaleziona jako pierwsza",
+      "foundSecond": "karta {{name}} ✓ znaleziona jako druga"
+    },
+    "uidA": "UID karty A",
+    "uidB": "UID karty B",
+    "uidAHint": "UID karty A, 4 bajty w hex",
+    "uidBHint": "UID karty B, 4 bajty w hex",
+    "random": "Losowa para",
+    "grid": "Bity UID obu kart oraz to, co słyszy czytnik, w kolejności, w jakiej się przesyłają.",
+    "rowCard": "karta {{name}} {{uid}}",
+    "rowHears": "czytnik słyszy",
+    "rowBit": "bit nr"
+  },
+  "access": {
+    "data": {
+      "c0": "odczyt i zapis kluczem A lub B; inkrementacja, dekrementacja (ustawienie transportowe)",
+      "c1": "odczyt, dekrementacja kluczem A lub B; bez zapisów (wartość, która może tylko maleć)",
+      "c2": "odczyt kluczem A lub B; nigdy więcej nie zapisywany",
+      "c3": "odczyt i zapis tylko kluczem B",
+      "c4": "odczyt kluczem A lub B, zapis kluczem B",
+      "c5": "odczyt tylko kluczem B; nigdy nie zapisywany",
+      "c6": "odczyt kluczem A lub B; zapis i inkrementacja kluczem B; dekrementacja kluczem A lub B (blok wartości)",
+      "c7": "nic, nigdy"
+    },
+    "trailer": {
+      "c0": "klucz A zapisuje oba klucze; bity dostępu ustalone; klucz B czytelny (więc nie może być kluczem)",
+      "c1": "klucz A zapisuje klucze i bity dostępu (ustawienie transportowe)",
+      "c2": "nic już się nie zmieni; klucz B czytelny",
+      "c3": "klucz B zapisuje klucze i bity dostępu",
+      "c4": "klucz B zapisuje klucze; bity dostępu ustalone",
+      "c5": "klucz B zapisuje bity dostępu; klucze ustalone",
+      "c6": "nic już się nie zmieni",
+      "c7": "nic już się nie zmieni"
+    },
+    "presets": {
+      "factory": "fabryczne FF 07 80",
+      "values": "bloki wartości",
+      "readOnly": "tylko do odczytu, na zawsze"
+    },
+    "typeBytes": "albo bajty typu 6–8",
+    "colBlock": "Blok",
+    "colAllows": "Co pozwala",
+    "rowTrailer": "trailer",
+    "rowBlock": "blok {{n}}",
+    "theTrailer": "trailer",
+    "bitOf": "C{{n}} z {{block}}",
+    "invertedBitOf": "odwrócone C{{n}} z {{block}}",
+    "byte": "bajt {{n}}",
+    "byteNote": "{{bits}} · każda połowa: bloki 3 2 1 0",
+    "inconsistent": "<b>Niespójne:</b> odwrócone kopie się nie zgadzają. Karta odrzuca taki trailer albo blokuje sektor.",
+    "locked": "<b>Nigdy nie zapisuj tego na karcie.</b> Przy ustawieniu trailera {{bits}} żaden klucz nie zmieni ponownie kluczy tego sektora. Oprogramowanie laboratorium w ogóle nie zapisuje trailerów."
+  },
+  "value": {
+    "value": "Wartość",
+    "address": "Bajt adresu",
+    "add": "dodaj 10",
+    "use": "użyj 3",
+    "block": "16 bajtów bloku wartości MIFARE: {{bytes}}",
+    "legend": {
+      "value": "wartość, little-endian (bajty 0–3 i 8–11)",
+      "inverted": "wartość odwrócona (4–7)",
+      "address": "adres",
+      "addressInverted": "adres odwrócony"
+    },
+    "refused": "Za mało kredytów: oprogramowanie sprawdza saldo, zanim poprosi kartę o dekrementację.",
+    "explain": "{{value}} = {{bytes}} (najpierw najniższy bajt). Zapisane trzy razy, raz odwrócone: karta odrzuca INCREMENT, DECREMENT i RESTORE na bloku, gdzie kopie się nie zgadzają. Bajt adresu jest do twojej dyspozycji (wpisujemy w niego numer bloku)."
+  },
+  "field3d": {
+    "stage": "Widok 3D: płytka RC522 z cewką anteny, linie pola magnetycznego wokół niej i karta trzymana nad nią. Przeciągnij, żeby obrócić.",
+    "fallback": "Wykres i sterowanie poniżej nadal działają.",
+    "height": "Wysokość karty nad anteną",
+    "gain": "Wzmocnienie odbiornika (RFCfgReg)",
+    "send": "▶ Wyślij WUPA",
+    "slice": "Jeden przekrój",
+    "powered": "karta zasilana",
+    "unpowered": "karta bez zasilania",
+    "nothingToHear": "czytnik to słyszy: nie ma czego słyszeć",
+    "heard": "czytnik to słyszy",
+    "unheard": "czytnik tego nie słyszy",
+    "range": "zasięg przy {{db}} dB: około {{mm}} mm",
+    "air": "Co teraz jest w eterze",
+    "symbols": {
+      "start": "start",
+      "bit": "bit {{bit}} = {{value}}",
+      "end0": "koniec 0",
+      "end": "koniec"
+    },
+    "labels": {
+      "coil": "cewka anteny · 13,56 MHz",
+      "chip": "MFRC522",
+      "pins": "8 pinów → ESP32",
+      "cardCoil": "cewka karty: zasilanie + antena",
+      "cardChip": "układ karty (bez baterii)"
+    },
+    "captions": {
+      "field": {
+        "title": "Pole",
+        "text": "Antena to płaska cewka na płytce. 13,56 miliona razy na sekundę jej prąd zmienia kierunek i tak samo zmienia się pole magnetyczne wokół niej: linie wychodzą ze środka cewki, zakrzywiają się i wracają. Tutaj zmienia kierunek co 2 sekundy."
+      },
+      "send": {
+        "title": "Czytnik wysyła WUPA",
+        "text": "100 % ASK: przy każdym bicie układ wyłącza pole na około 3 µs, na początku (Z) albo w środku (X) bitu, albo wcale (Y). 7 bitów plus start i koniec zajmuje około 85 µs; tutaj każdy trwa trzecią część sekundy. Karta zachowuje zasilanie w przerwach."
+      },
+      "wake": {
+        "title": "Karta się budzi i czeka",
+        "text": "Jej układ zasilił się z pola i zdekodował WUPA. Każda karta czeka dokładnie ten sam czas (około 86 µs) przed odpowiedzią, więc wszystkie karty w polu odpowiadają naraz."
+      },
+      "dark": {
+        "title": "Karta pozostaje ciemna",
+        "text": "Na tej wysokości pole jest za słabe, by zasilić układ karty. Większe wzmocnienie tu nie pomaga: wzmocnienie czyni czytnik lepszym słuchaczem, ale nie daje więcej mocy."
+      },
+      "answer": {
+        "title": "Karta odpowiada: ATQA 04 00",
+        "text": "Karta nie może nadawać. Włącza mały wzmacniacz obciążenia na swojej cewce 847 000 razy na sekundę (fc/16); antena czytnika wyczuwa drgania własnego pola i dekoduje 2 bajty. Układ podnosi RxIRq, przewód IRQ opada, zadanie czytnika się budzi."
+      },
+      "quiet": {
+        "title": "Karta odpowiada… zbyt cicho",
+        "text": "Karta jest zasilona i odpowiada, ale przy tym wzmocnieniu czytnik nie odróżnia jej drobnych zmian obciążenia od szumu. Zwiększ wzmocnienie albo przybliż kartę."
+      }
+    },
+    "chart": {
+      "label": "Natężenie pola przy karcie w zależności od wysokości, w skali logarytmicznej, z poziomem potrzebnym karcie do wybudzenia i poziomem potrzebnym czytnikowi do usłyszenia odpowiedzi.",
+      "x": "wysokość karty nad anteną (mm)",
+      "y": "pole",
+      "wakes": "karta budzi się powyżej tego",
+      "hears": "czytnik to słyszy powyżej tego ({{db}} dB)",
+      "works": "działa: 0–{{mm}} mm",
+      "nothing": "nic nie działa"
+    }
+  },
+  "memory3d": {
+    "legend": {
+      "keyA": "klucz A (odczytuje się jako 00)",
+      "access": "bity dostępu",
+      "user": "bajt użytkownika",
+      "keyB": "klucz B · wartość",
+      "uid": "UID + BCC",
+      "text": "twój tekst"
+    },
+    "kinds": {
+      "maker": "producent",
+      "empty": "pusty",
+      "data": "dane",
+      "value": "wartość",
+      "trailer": "trailer"
+    },
+    "captions": {
+      "auth": {
+        "title": "Uwierzytelnienie w 3 przebiegach",
+        "text": "Układ prosi kartę o sektor {{sector}} kluczem A; karta wysyła losowe wyzwanie, układ odpowiada własnym, i oboje dowodzą, że znają klucz, nigdy go nie wysyłając. Od teraz Crypto1 szyfruje każdą ramkę."
+      },
+      "open": {
+        "title": "Sektor {{sector}}, otwarty",
+        "text": "Uwierzytelniono kluczem A (fabrycznym FF FF FF FF FF FF). Bloki {{first}}–{{last}} można odczytać. Klucz A odczytuje się jako 00: karta nigdy go nie ujawnia. Bajty 6–8 trailera to bity dostępu; bajt 9 jest wolny."
+      },
+      "locked": {
+        "title": "Sektor {{sector}}, zablokowany",
+        "text": "Bloki {{first}}–{{last}} pozostają nieczytelne, dopóki czytnik nie udowodni, że zna klucz tego sektora: naciśnij Uwierzytelnij."
+      }
+    },
+    "labels": {
+      "maker": "sektor 0 · blok 0 = producent",
+      "trailer": "trailer: klucze + bity dostępu",
+      "last": "sektor 15"
+    },
+    "stage": "Widok 3D: 16 sektorów karty jako szafki po 4 bloki, przy czym najwyższy blok każdego sektora to trailer z kłódką. Kliknij sektor, żeby go otworzyć.",
+    "fallback": "Tabela bajtów poniżej nadal działa.",
+    "after": "Po R5",
+    "sector": "Sektor",
+    "sectorN": "sektor {{n}}",
+    "authenticate": "🔑 Uwierzytelnij ten sektor",
+    "byte": "bajt {{n}}",
+    "lockedNote": "Zablokowane: każdy sektor ma własne klucze, więc otwarcie sektora 1 nie otwiera sektora 2."
+  },
+  "edge": {
+    "experiments": {
+      "spi": {
+        "label": "Zegar SPI",
+        "unit": "% błędnych bajtów",
+        "xTitle": "zegar SPI (MHz)",
+        "what": "64 losowe bajty do FIFO układu i z powrotem, 20 razy przy każdej prędkości zegara, plus dwukrotny odczyt VersionReg.",
+        "look": "MFRC522 jest przeznaczony do 10 Mbit/s. Powyżej tego o wyniku decydują twoje przewody: długie lub luźne zaokrąglają zbocza zegara, a MISO (słabe wyjście układu) zwykle zawodzi jako pierwsze. Przy domyślnych 4 MHz powinno wyjść dokładnie 0.",
+        "markText": "maks. wg karty katalogowej"
+      },
+      "gain": {
+        "label": "Wzmocnienie a odległość",
+        "unit": "% znalezionych",
+        "xTitle": "wzmocnienie odbiornika (dB)",
+        "what": "30 prób wybudzenia + wyboru przy każdym wzmocnieniu odbiornika, z kartą trzymaną nieruchomo na jednej wysokości.",
+        "look": "Wzmocnienie czyni czytnik lepszym słuchaczem; nie daje karcie więcej mocy. Z bliska działają wszystkie wzmocnienia. Dalej najpierw zawodzą niskie wzmocnienia, aż nawet 48 dB nie pomoże, bo karta nie ma już mocy (widok 3D z R2 pokazuje dlaczego).",
+        "markText": "domyślne"
+      },
+      "timeout": {
+        "label": "Czas odpowiedzi karty",
+        "unit": "% odpowiedzi na WUPA",
+        "xTitle": "timer układu (µs, chyba że oznaczono ms)",
+        "what": "Timer układu decyduje, jak długo czekać na odpowiedź po naszej ramce. Test zmniejsza go krok po kroku i liczy odpowiedzi na WUPA, po 20 prób.",
+        "look": "ISO 14443 mówi, że karta odpowiada około 86 µs po ostatnim bicie czytnika, a timer liczy w krokach po 25 µs: odpowiedzi powinny ustać między 100 a 75 µs. Domyślne 25 ms to 250 razy dłużej, niż karta potrzebuje; tyle kosztuje pusty odpytanie.",
+        "betweenText": "ISO: ~86 µs"
+      },
+      "timing": {
+        "label": "Czas na krok",
+        "unit": "µs, średnio",
+        "xTitle": "krok protokołu",
+        "what": "40 pełnych cykli WUPA, końcowej ramki SELECT, uwierzytelnienia i jednego odczytu bloku, każdy mierzony od startu polecenia do jego końca.",
+        "look": "Przerywany kontur to czysty czas w eterze przy 106 kbit/s; wszystko powyżej to ruch SPI i praca samego ESP32. Uwierzytelnienie to trzy wymiany wewnątrz układu, więc spodziewaj się, że będzie najwolniejsze.",
+        "ghostText": "sam czas w eterze"
+      },
+      "irq": {
+        "label": "Odpytywanie a IRQ",
+        "unit": "dostępów SPI na WUPA",
+        "xTitle": "jak zadanie czytnika czeka",
+        "what": "30 WUPA z odpytywaniem ComIrqReg przez SPI, potem 30 ze spaniem, aż odpali przewód IRQ, licząc dostępy SPI na polecenie.",
+        "look": "Gdy karta jest obecna, oba kończą szybko, ale odpytywanie zajmuje magistralę podczas czekania. Uruchom to ponownie bez karty: każde WUPA czeka teraz na upływ timera 25 ms, a liczba odpytywania rośnie gwałtownie, podczas gdy liczba IRQ pozostaje ta sama."
+      },
+      "crc": {
+        "label": "CRC: układ czy CPU",
+        "unit": "µs na ramkę",
+        "xTitle": "kto liczy CRC_A",
+        "what": "300 losowych ramek: CRC_A z koprocesora układu (bajty idą przez SPI i wracają) i z ESP32 (te same pięć linii z rfid_format.h).",
+        "look": "Obie metody muszą się zgadzać przy każdej ramce: 0 niezgodności. Sam koprocesor jest szybki, ale obieg przez SPI kosztuje znacznie więcej niż liczenie przez ESP32: tutaj odciążenie przegrywa."
+      },
+      "stress": {
+        "label": "Test obciążeniowy",
+        "unit": "cykle",
+        "xTitle": "wynik każdego cyklu wybudzenie → wybór → uwierzytelnienie → odczyt",
+        "what": "Setki pełnych cykli z rzędu: wybudzenie, wybór, uwierzytelnienie, odczyt bloku 4, uśpienie. Każdy wynik policzony.",
+        "look": "Gdy karta trzymana jest blisko i nieruchomo, spodziewaj się 99 % lub więcej. Podnoś lub przechylaj kartę powoli w trakcie testu: chybienia zaczynają się jako „absent” (brak odpowiedzi), a potem na samej krawędzi zasięgu pojawiają się błędy CRC i protokołu."
+      }
+    },
+    "tabs": "Eksperyment",
+    "solid_one": "Pełne: twój {{count}} wiersz. Cienki kontur obok każdego słupka: przykład.",
+    "solid_few": "Pełne: twoje {{count}} wiersze. Cienki kontur obok każdego słupka: przykład.",
+    "solid_many": "Pełne: twoich {{count}} wierszy. Cienki kontur obok każdego słupka: przykład.",
+    "solid_other": "Pełne: twoich {{count}} wierszy. Cienki kontur obok każdego słupka: przykład.",
+    "noRows": "Nie rozpoznano wierszy: wklej linie pod nagłówkiem tabeli.",
+    "example": "Przykładowe liczby (typowy RC522 na przewodach 15 cm), nie twoja płytka. Wklej poniżej swoją tabelę, żeby je zastąpić.",
+    "paste": "Wklej tabelę z monitora portu szeregowego (znaczniki czasu mogą zostać):",
+    "placeholder": "np.   1     0,0 %        0 / 20",
+    "chart": {
+      "label": "{{name}}: {{unit}} na {{x}}. {{values}}",
+      "bar": "{{name}}: {{value}} {{unit}}",
+      "barWithExample": "{{name}}: {{value}} {{unit}} (przykład {{example}})",
+      "dashed": "przerywany: {{text}}"
+    }
+  },
+  "screens": {
+    "chip": {
+      "when": "Pierwszy widok do sprawdzenia po podłączeniu (R1). Dwuklik uruchamia autotest.",
+      "parts": [
+        "Układ. Jego środek świeci na turkusowo, gdy układ odpowiada; nie może świecić, jeśli VersionReg odczytuje 00h albo FFh.",
+        "VersionReg: 92h = MFRC522 v2.0, 91h = v1.0, inne wartości = klon. 00h albo FFh oznacza, że nic nie odpowiedziało: sprawdź połączenia.",
+        "Autotest: „not run”, dopóki nie wpiszesz selftest (albo nie klikniesz dwukrotnie). Potem „passed” (układ NXP, zgodny z kartą katalogową), „consistent” (klon, dwa przebiegi się zgadzają), „not supported” (klon bez tego) albo „FAILED”.",
+        "Zegar SPI: domyślnie 4 MHz. Zmienia kolor na bursztynowy powyżej 10 MHz, na jakie przewidziany jest układ (spi <MHz>).",
+        "Sposób, w jaki zadanie czytnika czeka na układ: „IRQ wire” albo „polling”, jeśli IRQ nie jest podłączone (oprogramowanie przełącza się samo i o tym informuje).",
+        "Wzmocnienie odbiornika, od 18 do 48 dB (gain <0-7>); domyślnie 33 dB.",
+        "Liczniki magistrali: dostępy SPI i polecenia. Stale rosną, około 12 odpytań na sekundę: zadanie czytnika działa.",
+        "Kropka karty: turkusowa z obwódką, gdy karta jest w polu. Tak samo w każdym widoku.",
+        "Stopka, po lewej: co robi dwuklik w tym widoku.",
+        "Stopka, po prawej: ostatni wynik. Turkus = w porządku, koral = problem, bursztyn z rosnącą linią = zajęte."
+      ]
+    },
+    "card": {
+      "when": "Widok, na którym zaczyna płytka. Pokazuje kartę aktualnie w polu. Dwuklik uruchamia inwentaryzację.",
+      "parts": [
+        "Antena i jej pole: zawsze animowane, z kartą czy bez.",
+        "Karta pojawia się tutaj, gdy jest w polu; mały kwadrat to jej układ.",
+        "UID: numer seryjny karty, tak jak odczytała go antykolizja.",
+        "Typ karty, zdekodowany z SAK.",
+        "ATQA (00 04) i SAK (08): odpowiedzi karty na wybudzenie i wybór. Rozmiar UID: 4, 7 lub 10 bajtów.",
+        "Wskaźnik odczytu: ile z ostatnich 20 odpytań znalazło kartę. 100 % = stabilnie; bursztyn lub koral = krawędź zasięgu.",
+        "Tylko przy dwóch kartach na czytniku: bit, w którym ich UID-y różnią się po raz pierwszy (R3)."
+      ]
+    },
+    "trace": {
+      "when": "Sniffer: ramki ostatniego wybudzenia karty albo polecenia. Dwuklik włącza lub wyłącza go.",
+      "parts": [
+        "Czas w ms od pierwszej ramki tej wymiany.",
+        "> czytnik do karty (bursztyn), < karta do czytnika (turkus).",
+        "Bajty w eterze. Szare bajty zostały zaszyfrowane w eterze (po uwierzytelnieniu); widzisz zwykły tekst.",
+        "Czym jest ramka: WUPA, ATQA, ANTICOLL, SELECT, SAK, HLTA, READ…"
+      ]
+    },
+    "memory": {
+      "when": "Ostatni zrzut, blok po bloku. Dwuklik uruchamia zrzut (trzymaj kartę nieruchomo).",
+      "parts": [
+        "Jedna kolumna na sektor, od 0 do 15.",
+        "Blok 0 (bursztyn): blok producenta z UID. Tylko do odczytu.",
+        "Bloki danych: ciemne = same zera, zielone = coś zapisano, niebieskie = blok wartości (kredyty).",
+        "Dolny wiersz: trailer każdego sektora (klucze + bity dostępu), koral. Laboratorium nigdy ich nie zapisuje.",
+        "Z której karty pochodzi ten zrzut."
+      ]
+    },
+    "credits": {
+      "when": "Licznik kredytów w blokach 8 i 9 (R5). Dwuklik dodaje 1 kredyt.",
+      "parts": [
+        "Jedna moneta na 10 kredytów (do 8).",
+        "Wartość w bloku 8, tak jak ją policzyła karta.",
+        "Kopia zapasowa w bloku 9: wartość sprzed ostatniej zmiany."
+      ]
+    },
+    "edge": {
+      "when": "Ostatni eksperyment laboratorium brzegowego jako wykres słupkowy (R6). Dwuklik uruchamia następny eksperyment.",
+      "parts": [
+        "Który eksperyment.",
+        "Jeden słupek na każde wypróbowane ustawienie, wszystkie w jednej skali; wartość jest zapisana nad każdym słupkiem.",
+        "Słupek z obwódką oznacza wzorzec: limit z karty katalogowej albo wartość domyślną.",
+        "Wniosek w jednym wierszu, również wypisany w monitorze z pełną tabelą."
+      ]
+    }
+  },
+  "views": {
+    "chip": "układ",
+    "card": "karta",
+    "trace": "ślad",
+    "memory": "pamięć",
+    "credits": "kredyty",
+    "edge": "brzeg",
+    "cards": "karty",
+    "stage": "scena",
+    "door": "drzwi",
+    "log": "dziennik"
+  },
+  "screen": {
+    "tabs": "Widok ekranu",
+    "tab": "{{n}} · {{view}}",
+    "example": "Przykład widoku: {{view}}. Lista poniżej opisuje każdą ponumerowaną część."
+  },
+  "preview": {
+    "field": {
+      "card": "połóż kartę",
+      "tag": "połóż breloczek",
+      "both": "obie",
+      "none": "zdejmij"
+    },
+    "button": "Przycisk: kliknięcie przechodzi do następnego widoku, dwuklik wykonuje akcję tego widoku, przytrzymanie wstrzymuje odpytywanie",
+    "views": "Widoki",
+    "status": "widok {{view}} · odpytywanie",
+    "statusPaused": "widok {{view}} · wstrzymany",
+    "cards": "Karty na czytniku",
+    "screen": "Symulowany ekran płytki: widok {{view}}",
+    "example": "Przykładowe dane: UID-y, czasy i liczby są zmyślone. Twoja płytka wypisze własne.",
+    "quick": "Szybkie polecenia"
+  },
+  "friends": {
+    "cast": {
+      "fox": {
+        "what": "mały, szybki lisek",
+        "move": "kręci się dwa razy w skoku",
+        "fx": "złote gwiazdki",
+        "sky": "zachód słońca"
+      },
+      "robot": {
+        "what": "tańczący robot",
+        "move": "tańczy, machając rękami",
+        "fx": "iskry",
+        "sky": "głęboki turkus"
+      },
+      "dragon": {
+        "what": "maleńki smok",
+        "move": "robi pętlę w locie",
+        "fx": "ogień",
+        "sky": "wulkaniczny pomarańcz"
+      },
+      "penguin": {
+        "what": "ślizgający się pingwin",
+        "move": "ślizga się brzuchem po okręgu",
+        "fx": "śnieg",
+        "sky": "zimowy błękit"
+      },
+      "alien": {
+        "what": "przyjazny kosmita",
+        "move": "wciąga w promień i się kręci",
+        "fx": "pierścienie",
+        "sky": "kosmiczny fiolet"
+      },
+      "cat": {
+        "what": "przytulny kot",
+        "move": "radosne kołysanie",
+        "fx": "serduszka",
+        "sky": "cukierkowy róż"
+      },
+      "frog": {
+        "what": "skaczący żabka",
+        "move": "wysoko skacze z fikołkiem",
+        "fx": "bańki",
+        "sky": "stawowe"
+      },
+      "unicorn": {
+        "what": "magiczny jednorożec",
+        "move": "galopuje na boki",
+        "fx": "tęczowe gwiazdki",
+        "sky": "pastelowe"
+      }
+    },
+    "chosen": "<b>{{name}}</b>, id <code>{{id}}</code> (jedyna rzecz, jaką płytka zapisuje dla karty). W aplikacji: <b>{{move}}</b>, {{fx}}, niebo {{sky}} i własna melodia. Przypisz go do karty 1 poleceniem szeregowym <code>give 1 {{id}}</code> albo przeciągnij go w aplikacji.",
+    "pick": "Naciśnij przyjaciela: podskoczy, a ty zobaczysz, co robi na ekranie płytki i w aplikacji 3D.",
+    "taps": "Przyłożenia",
+    "tapWhite": "przyłożenie: White card",
+    "tapTag": "przyłożenie: Key tag",
+    "tapNew": "przyłożenie: nowa karta",
+    "app": "Aplikacja i przycisk",
+    "move": "aplikacja: przenieś <friend/> na kartę <card/>",
+    "whichFriend": "Który przyjaciel",
+    "whichCard": "Która karta",
+    "moveIn": "przenieś",
+    "nextView": "przycisk: następny widok",
+    "screen": "Symulowany ekran przyjaciół: widok {{view}}",
+    "example": "Przykładowe dane. Płytka rysuje te same kształty (characters.h); aplikacja pokazuje je w 3D."
+  },
+  "door": {
+    "taps": "Przyłożenia",
+    "tap": {
+      "white": "przyłożenie: White card (mieszkaniec)",
+      "tag": "przyłożenie: Key tag (gość)",
+      "stranger": "przyłożenie: karta spoza listy"
+    },
+    "app": "Aplikacja i przycisk",
+    "block": "aplikacja: zablokuj White card",
+    "lockdown": "aplikacja: blokada",
+    "open": "aplikacja: otwórz na 5 s",
+    "copy": "aplikacja: skopiuj White card → Key tag",
+    "nextView": "przycisk: następny widok",
+    "screen": "Symulowany ekran drzwi: widok {{view}}",
+    "example": "Przykładowe dane. W laboratorium aplikacja wykonuje akcje „app:”, a twoje ręce wykonują przyłożenia."
+  },
+  "doorRules": {
+    "tappedAt": "przyłożono o",
+    "front": "drzwi frontowe",
+    "adminRoom": "pokój administratora",
+    "listed": "na liście",
+    "role": "rola",
+    "roles": {
+      "resident": "mieszkaniec",
+      "guest": "gość",
+      "maintenance": "serwis",
+      "admin": "administrator"
+    },
+    "blocked": "zablokowana",
+    "endDate": "data końcowa",
+    "until": {
+      "none": "brak",
+      "future": "za tydzień",
+      "past": "wczoraj"
+    },
+    "hoursFrom": "godziny od",
+    "to": "do",
+    "uses": "użycia",
+    "unlimited": "bez limitu",
+    "usesLeft_one": "{{count}} użycie zostało",
+    "usesLeft_few": "{{count}} użycia zostały",
+    "usesLeft_many": "{{count}} użyć zostało",
+    "usesLeft_other": "{{count}} użycia zostały",
+    "lockdown": "blokada",
+    "synced": "płytka ma czas z internetu",
+    "timeNow": "aktualny czas",
+    "rules": {
+      "unknown": {
+        "name": "Jest na liście?",
+        "says": "nieznana karta"
+      },
+      "blocked": {
+        "name": "Zablokowana?",
+        "says": "zablokowana"
+      },
+      "admin": {
+        "name": "Pokój administratora: karta administratora?",
+        "says": "tylko dla administratorów"
+      },
+      "lockdown": {
+        "name": "Blokada (serwis i administrator nadal mają dostęp)",
+        "says": "blokada"
+      },
+      "clock": {
+        "name": "Potrzebuje zegara i ma go?",
+        "says": "brak zegara"
+      },
+      "expired": {
+        "name": "Przed datą końcową?",
+        "says": "wygasła"
+      },
+      "hours": {
+        "name": "W swoich godzinach?",
+        "says": "poza godzinami"
+      },
+      "uses": {
+        "name": "Zostały użycia?",
+        "says": "brak pozostałych użyć"
+      }
+    },
+    "trail": {
+      "skip": "nie sprawdzono",
+      "pass": "tak",
+      "stop": "nie → {{says}}"
+    },
+    "allPassed": "Wszystkie zaliczone",
+    "openNote": "OTWARTE (użycia gościa zmniejszają się o jeden)",
+    "denied": "<now>DENIED · {{says}}</now> pierwsza reguła, która mówi nie, wygrywa; reszty nie sprawdzamy.",
+    "granted": "<now>OTWARTE</now> wszystkie reguły zaliczone."
+  },
+  "copy": {
+    "zeros": "zera",
+    "value": "wartość {{n}}",
+    "keys": "klucze",
+    "closed": "nie otwiera się",
+    "quoted": "„{{text}}”",
+    "cell": "blok {{n}}: {{text}}",
+    "rest": "sektory 3-15: nietknięte",
+    "save": "Zapisz White card",
+    "copy": "Skopiuj White card → Key tag",
+    "again": "Zacznij od nowa",
+    "otherKey": "Sektor 2 breloczka ma inny klucz",
+    "legend": {
+      "uid": "blok 0: UID + dane producenta, nigdy nie zapisywane",
+      "lab": "bloki laboratorium: zapisywane i kopiowane",
+      "trailer": "trailer: klucze + bity dostępu, nigdy nie zapisywane",
+      "sector0": "dane sektora 0: poza obszarem laboratorium"
+    },
+    "read": "Najpierw odczytaj białą kartę: 6 z 6 bloków.",
+    "saved": "<now>6 z 6 zapisano</now>Migawka „White card” na płytce (NVS). Blok 0 i trailery nie są jej częścią.",
+    "copied": "{{done}} z 6 skopiowano",
+    "skipped": "Sektor 2 nie otworzył się fabrycznym kluczem, więc bloki 8-10 zostały pominięte: płytka nigdy nie wymusza sektora.",
+    "allCopied": "Każdy blok zapisany i odczytany z powrotem.",
+    "uidStays": "UID wciąż <b>{{uid}}</b>: przyłożenie breloczkiem jest wyszukiwane jako <b>Key tag</b>, a nie jako White card. Drzwi decydują po UID, a UID się nie zmienił."
+  }
+}

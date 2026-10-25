@@ -1,0 +1,1361 @@
+{
+  "controls": {
+    "play": "▶ Odtwórz",
+    "pause": "❚❚ Pauza",
+    "playAria": "Odtwórz",
+    "pauseAria": "Pauza"
+  },
+  "kit": {
+    "previewCaption": "Przykładowe dane, narysowane tak, jak robi to płytka. Przyciski zastępują przycisk, telefon i monitor portu szeregowego.",
+    "galleryComing": "Pojawi się wraz z tym laboratorium.",
+    "previewComing": "Podgląd pojawi się wraz z tym laboratorium."
+  },
+  "journey": {
+    "aria": "Osiem laboratoriów Bluetooth jako ścieżka: co robi płytka w każdym z nich i w którą stronę płyną dane.",
+    "stageLabel": "{{id}} {{title}}: {{what}}",
+    "stages": {
+      "B1": {
+        "title": "Nasłuch",
+        "role": "skaner",
+        "what": "słyszy ogłoszenia każdego urządzenia",
+        "caption": "B1 Nasłuch: płytka jest skanerem i słyszy ogłoszenia każdego urządzenia. Dane płyną do płytki."
+      },
+      "B2": {
+        "title": "Bądź widoczny",
+        "role": "nadajnik",
+        "what": "nadaje na żywo własne dane",
+        "caption": "B2 Bądź widoczny: płytka jest nadajnikiem i nadaje na żywo własne dane. Dane płyną z płytki."
+      },
+      "B3": {
+        "title": "Połącz i rozmawiaj",
+        "role": "peryferium",
+        "what": "jest odczytywana i zapisywana przez twój telefon",
+        "caption": "B3 Połącz i rozmawiaj: płytka jest peryferium, a twój telefon ją odczytuje i zapisuje. Dane płyną w obie strony."
+      },
+      "B4": {
+        "title": "Parowanie i zaufanie",
+        "role": "peryferium + klucze",
+        "what": "dodaje szyfrowanie, klucze passkey i wiązania",
+        "caption": "B4 Parowanie i zaufanie: płytka jest peryferium z kluczami i dodaje szyfrowanie, klucze passkey i wiązania. Dane płyną w obie strony."
+      },
+      "B5": {
+        "title": "Aplikacja na telefon",
+        "role": "peryferium",
+        "what": "rozmawia z twoją własną aplikacją webową przez Web Bluetooth",
+        "caption": "B5 Aplikacja na telefon: płytka jest peryferium i rozmawia z twoją własną aplikacją webową przez Web Bluetooth. Dane płyną w obie strony."
+      },
+      "B6": {
+        "title": "Klawiatura i multimedia",
+        "role": "peryferium HID",
+        "what": "pisze i zmienia głośność",
+        "caption": "B6 Klawiatura i multimedia: płytka jest peryferium HID, pisze i zmienia głośność. Dane płyną z płytki."
+      },
+      "B7": {
+        "title": "Muzyka",
+        "role": "peryferium MIDI",
+        "what": "gra nuty w GarageBand",
+        "caption": "B7 Muzyka: płytka jest peryferium MIDI i gra nuty w GarageBand. Dane płyną w obie strony."
+      },
+      "B8": {
+        "title": "Host",
+        "role": "centrala",
+        "what": "pozwala twojej klawiaturze pisać na niej",
+        "caption": "B8 Host: płytka jest centralą i pozwala twojej klawiaturze pisać na niej. Dane płyną do płytki."
+      }
+    }
+  },
+  "radio": {
+    "window": "okno nasłuchu",
+    "windowAria": "Okno skanowania w procentach interwału",
+    "percent": "{{value, number}} %",
+    "mode": "Tryb skanowania",
+    "passive": "skanowanie pasywne",
+    "active": "skanowanie aktywne",
+    "aria": "Pasmo 2,4 GHz z 40 kanałami Bluetooth i trzema kanałami Wi-Fi, a pod nim oś czasu pakietów ogłoszeń na kanałach 37, 38 i 39 oraz okna nasłuchu skanera.",
+    "caption": "Płytka nasłuchuje przez {{value, number}} % czasu, po jednym kanale co 100 ms. Każde urządzenie wysyła każdy pakiet trzy razy, raz na kanał, więc odbiornik na dowolnym jednym kanale też go usłyszy.",
+    "activeNote": "Aktywne: każdy pakiet od urządzenia, które można skanować, dostaje z powrotem żądanie skanowania, a urządzenie odpowiada drugim pakietem (więcej nazw, więcej danych).",
+    "passiveNote": "Pasywne: płytka nigdy niczego nie nadaje.",
+    "devices": {
+      "phone": "telefon",
+      "speaker": "głośnik",
+      "keyboard": "klawiatura"
+    },
+    "draw": {
+      "band": "Pasmo 2,4 GHz: 40 kanałów Bluetooth LE, po 2 MHz każdy",
+      "listening": "nasłuch",
+      "channel": "kan. {{ch}}",
+      "tally": "zdarzenia ogłoszeń usłyszane {{heard, number}} · pominięte {{missed, number}} · złapane {{caught, number}} %",
+      "slowed": "czas spowolniony 20×"
+    }
+  },
+  "anatomy": {
+    "device": "Które urządzenie",
+    "previous": "Poprzednie pole",
+    "next": "Następne pole",
+    "bytes": "Bajty pakietu",
+    "used": "Wykorzystano {{used, number}}/31 bajtów danych",
+    "position": "{{at, number}}/{{n, number}} · {{what}}",
+    "samples": {
+      "phone": "iPhone",
+      "jbl": "głośnik JBL",
+      "keyboard": "klawiatura BLE",
+      "bench": "twój beacon B2"
+    },
+    "pdu": {
+      "0": "ADV_IND (łączalny, skanowalny)",
+      "2": "ADV_NONCONN_IND (tylko nadawanie)",
+      "6": "ADV_SCAN_IND (skanowalny)"
+    },
+    "field": {
+      "preamble": "preambuła",
+      "preambleWhat": "Preambuła AAh: 10101010, żeby odbiornik mógł złapać takt bitów. Każdy pakiet ogłoszeniowy tak się zaczyna.",
+      "access": "adres dostępu",
+      "accessWhat": "Adres dostępu 8E89BED6h (wysyłany little-endian): stała wartość dla wszystkich ogłoszeń. Połączenie dostanie później własny, losowy.",
+      "header": "nagłówek",
+      "headerWhat": "Nagłówek PDU: typ {{pdu}} = {{pduName}}, TxAdd {{txAdd}} = {{kind}}, a potem długość: {{length}} bajtów (6 adresu + {{data}} danych).",
+      "random": "adres losowy",
+      "public": "adres publiczny",
+      "advaWhat": "Adres nadawcy {{address}}, wysłany od tyłu (little-endian). {{kind}}",
+      "addressResolvable": "Górne bity 01: rozwiązywalny prywatny adres, który zmienia się co około 15 min.",
+      "addressRandom": "Adres losowy.",
+      "addressPublic": "Adres publiczny, wpisany fabrycznie.",
+      "ad": "AD {{n}}",
+      "adWhat": "Struktura AD: długość {{length}}, typ {{type}}. {{meaning}}",
+      "crcWhat": "CRC-24 po nagłówku, adresie i danych: odbiornik liczy je ponownie i wyrzuca pakiet, jeśli zmienił się choć jeden bit. (W eterze każdy bit po adresie dostępu jest też „wybielany”, mieszany wzorem zależnym od kanału, żeby uniknąć długich ciągów zer.)"
+    },
+    "ad": {
+      "discoverable": {
+        "general": "ogólnie wykrywalne",
+        "limited": "ograniczenie wykrywalne (tylko przez chwilę, jak tryb parowania)",
+        "none": "niewykrywalne"
+      },
+      "flagsLeOnly": "Flagi {{value}}: {{mode}}, tylko LE (bez klasycznego Bluetooth).",
+      "flagsClassic": "Flagi {{value}}: {{mode}}, także klasyczne Bluetooth.",
+      "name": "Pełna nazwa: „{{name}}”. Zwykły ASCII, bez zera na końcu: bajt długości mówi, gdzie się kończy.",
+      "tx": "Moc nadawania TX {{dbm}} dBm: jak głośno nadaje, żeby odbiornik mógł oszacować odległość.",
+      "appearance": "Wygląd {{value}}h (little-endian {{bytes}}): 03C1 = klawiatura. Kategoria to górne 10 bitów.",
+      "services": "Pełna lista usług 16-bitowych: {{value}}h = HID, usługa klawiatury i myszy. Host z ogłoszenia wie, że to urządzenie może pisać.",
+      "apple": "Dane producenta, firma 004Ch = Apple (zapisane {{bytes}}: little-endian). Potem typ {{type}} = Nearby info, {{count}} bajtów statusu (ekran włączony, Wi-Fi włączone, wskazówka szyfrowania). Tak iPhone'y znajdują się nawzajem.",
+      "jbl": "Dane producenta, firma 0057h = Harman (JBL). Reszta to własny format JBL dla jego aplikacji: model, kolor, bateria, stan PartyBoost. Poza JBL nikt tego nie opisuje.",
+      "bench": "Dane producenta, firma FFFFh = ID testowe, używane przez nasz beacon B2: wersja 01, naciśnięcia {{presses, number}}, temperatura {{celsius, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} °C, czas pracy {{uptime, number}} s. Wszystko little-endian.",
+      "maker": "Dane producenta."
+    }
+  },
+  "timing": {
+    "sliders": {
+      "adv": {
+        "label": "ogłoszenie co",
+        "aria": "Interwał ogłoszeń w ms"
+      },
+      "si": {
+        "label": "interwał skanowania",
+        "aria": "Interwał skanowania w ms"
+      },
+      "win": {
+        "label": "okno",
+        "aria": "Okno skanowania w procentach interwału skanowania"
+      }
+    },
+    "ms": "{{value, number}} ms",
+    "delay": "losowe 0–10 ms advDelay",
+    "aria": "Oś czasu: zdarzenia ogłoszeń płytki na kanałach 37, 38 i 39, okna nasłuchu skanera, złapane pakiety na zielono, a pominięte na szaro.",
+    "count": "{{caught, number}} z {{total, number}}",
+    "rest": "zdarzenia ogłoszeń usłyszane ({{pct, number}} %). Skaner nasłuchuje przez {{listen, number}} % czasu, po jednym kanale na interwał skanowania.",
+    "restFirst": "zdarzenia ogłoszeń usłyszane ({{pct, number}} %). Skaner nasłuchuje przez {{listen, number}} % czasu, po jednym kanale na interwał skanowania; pierwsze usłyszane po {{first, number}} ms.",
+    "stuck": "Brak losowego opóźnienia i interwały, które dzielą się równo:",
+    "stuckWhy": "dwa zegary zostają w takcie, więc te same pakiety są pomijane w nieskończoność. Temu zapobiega advDelay.",
+    "longer": "Dłuższy interwał = mniej szans = telefon później zauważy płytkę, ale bateria wystarcza dłużej.",
+    "draw": {
+      "now": "teraz",
+      "span": "pokazano {{ms, number}} ms, w czwartej części prawdziwej prędkości",
+      "listening": "skaner nasłuchuje",
+      "caught": "złapane",
+      "missed": "pominięte (nikt nie nasłuchuje na tym kanale)"
+    }
+  },
+  "builder": {
+    "preset": "tryb {{name}}",
+    "presetB3": "ogłoszenie B3",
+    "field": "Pole",
+    "bytes": "Bajty",
+    "goesIn": "Idzie do",
+    "where": "Gdzie idzie {{name}}",
+    "place": {
+      "none": "pominięte",
+      "adv": "ogłoszenie",
+      "rsp": "odpowiedź na skanowanie"
+    },
+    "name": "Nazwa",
+    "nameAria": "Nazwa urządzenia",
+    "url": "URL",
+    "urlAria": "URL Eddystone",
+    "aria": "Dwa rzędy po 31 komórek bajtów, ogłoszenie i odpowiedź na skanowanie, pokolorowane według pól. Komórki za 31 są czerwone: nie mieszczą się.",
+    "row": "{{label}}: {{count, number}} z 31 bajtów",
+    "rowOver": "{{label}}: {{count, number}} z 31 bajtów · {{over, number}} za dużo",
+    "empty": "pusty: nie wysyła się odpowiedzi na skanowanie",
+    "detail": "<b>{{name}}</b> ({{length, number}} + 2 bajty): {{why}}",
+    "badUrl": "<b>Tego URL-a nie da się zakodować:</b> musi zaczynać się od http(s):// i mieć najwyżej 17 bajtów po tym.",
+    "fields": {
+      "flags": {
+        "name": "Flagi",
+        "why": "02 01 06: LE General Discoverable, Classic nieobsługiwane. Telefony pomijają ogłoszenia, które nie są wykrywalne."
+      },
+      "name": {
+        "name": "Nazwa",
+        "why": "Complete Local Name: to, co ludzie widzą na liście. Każda litera to jeden bajt."
+      },
+      "tx": {
+        "name": "Moc TX",
+        "why": "Moc, z jaką płytka nadaje (+9 dBm). Telefon porównuje ją z mierzonym RSSI, żeby zgadnąć odległość."
+      },
+      "app": {
+        "name": "Wygląd",
+        "why": "0540 = ogólny czujnik. Telefony wybierają z tego ikonę (0x03C1 to byłaby klawiatura)."
+      },
+      "svc16": {
+        "name": "Usługa 16-bitowa",
+        "why": "180F, usługa Battery, little-endian: standardowe usługi mieszczą się w 2 bajtach."
+      },
+      "svc128": {
+        "name": "Usługa 128-bitowa",
+        "why": "UUID usługi Bench: nasze własne usługi potrzebują pełnych 16 bajtów, czyli ponad połowę budżetu. B3 umieszcza go tutaj, żeby aplikacje mogły po nim filtrować."
+      },
+      "maker": {
+        "name": "Producent FFFF",
+        "why": "Dane producenta: 2 bajty ID firmy (FFFF = test), potem cokolwiek chcesz: wersja B2, naciśnięcia, temperatura, czas pracy."
+      },
+      "ibeacon": {
+        "name": "iBeacon",
+        "why": "Dane producenta Apple: 4C 00 02 15, UUID, major, minor, moc na 1 m. 27 bajtów: poza Flagami nic się nie zmieści."
+      },
+      "url": {
+        "name": "Eddystone-URL",
+        "why": "Dane usługi dla FEAA: ramka 10, moc na 0 m, bajt schematu, potem URL, w którym .com/ i podobne końcówki są pojedynczymi bajtami."
+      }
+    }
+  },
+  "legend": {
+    "b3": "pakiet radiowy lub wywołanie (pomarańczowy: ten krok)",
+    "b4": "pakiet SMP lub warstwy łącza (pomarańczowy: ten krok)",
+    "b4Wait": "czeka na człowieka",
+    "b5": "wywołanie, zdarzenie lub pakiet radiowy (pomarańczowy: ten krok)",
+    "b8": "pakiet w eterze (pomarańczowy: ten krok)",
+    "b8Wait": "płytka czeka na ciebie"
+  },
+  "table": {
+    "aria": "Telefon po lewej, tabela GATT płytki po prawej; pakiet przelatuje między nimi dla wybranej operacji.",
+    "phone": "telefon",
+    "service": "usługa Bench ba5e0000-… (płytka)",
+    "operations": "Operacje",
+    "toPhone": "płytka → telefon",
+    "toBoard": "telefon → płytka",
+    "what": ": {{what}}.",
+    "value": "Wartość: {{value}}",
+    "ops": {
+      "read": {
+        "action": "odczyt {{name}}",
+        "what": "Read Request (0A) + uchwyt → Read Response (0B) + wartość"
+      },
+      "write": {
+        "action": "zapis {{name}}",
+        "what": "Write Request (12) + uchwyt + wartość → Write Response (13)"
+      },
+      "subscribe": {
+        "action": "subskrypcja {{name}}",
+        "what": "Write Request do deskryptora CCCD (uchwyt + 1): 01 00 = powiadomienia włączone"
+      },
+      "notify": {
+        "action": "powiadomienie {{name}}",
+        "what": "Handle Value Notification (1B) + uchwyt + wartość, bez odpowiedzi"
+      }
+    },
+    "show": {
+      "cccd": "CCCD = powiadomienia włączone",
+      "gesture": "gest {{gesture}} ({{name}}), liczba {{count, number}}",
+      "celsius": "{{value, number}} °C",
+      "seconds": "{{value, number}} s"
+    }
+  },
+  "matrix": {
+    "phone": "telefon (zaczyna parowanie)",
+    "phoneAria": "Możliwości wejścia i wyjścia telefonu",
+    "board": "płytka",
+    "boardAria": "Możliwości wejścia i wyjścia płytki",
+    "mitm": "zażądano ochrony MITM",
+    "aria": "Telefon i płytka: kto pokazuje liczbę, a kto ją wpisuje lub potwierdza, dla wybranych możliwości.",
+    "initiator": "telefon (inicjator)",
+    "responder": "płytka (odpowiadająca)",
+    "unchecked": "szyfrowane, ale nikt nie sprawdził: brak ochrony MITM",
+    "checked": "człowiek sprawdza: chronione przed człowiekiem pośrodku",
+    "methodTitle": "{{method}}.",
+    "corner": "telefon ↓ · płytka →",
+    "sixDigits": "⌨ 6 cyfr",
+    "methods": {
+      "J": "Just Works",
+      "N": "Numeric Comparison",
+      "PI": "Passkey Entry",
+      "PR": "Passkey Entry",
+      "PB": "Passkey Entry (obaj wpisują)"
+    },
+    "short": {
+      "J": "Just Works",
+      "N": "Numeric Comparison",
+      "PI": "Passkey · płytka pokazuje",
+      "PR": "Passkey · telefon pokazuje",
+      "PB": "Passkey (obaj)"
+    },
+    "roles": {
+      "nothing": "nic do zrobienia",
+      "tapYes": "takie same? dotknij tak",
+      "pressYes": "takie same? naciśnij tak",
+      "types": "wpisuje ją",
+      "shows": "pokazuje ją",
+      "typeSame": "wpisujesz to samo",
+      "onBoth": "na obu"
+    },
+    "why": {
+      "JNoMitm": "Żadna strona nie zażądała ochrony MITM, więc stos wybiera łatwą drogę, cokolwiek potrafią ekrany.",
+      "JNoInput": "Jedna strona nie może nic pokazać ani wpisać (albo obie tylko pokazują), więc nie ma czego człowiek mógłby porównać. Łącze jest szyfrowane przed podsłuchem, ale atakujący przekazujący obie strony mógłby zrobić to samo. Vault w B4 odmawia takiego połączenia: wymaga uwierzytelnienia.",
+      "N": "Obie strony mają ekran i mogą powiedzieć tak: każda oblicza sześć cyfr z wymienionych kluczy publicznych. Człowiek pośrodku miałby inne klucze, więc liczby by się różniły. Tylko przy LE Secure Connections.",
+      "PI": "Płytka pokazuje sześć losowych cyfr; wpisujesz je w telefonie. Obie strony dowodzą bit po bicie, że znają ten sam passkey, zanim uzgodnią klucze.",
+      "PR": "Telefon pokazuje cyfry, a płytka je wpisuje. Płytka w B4 nie potrafi wpisywać, więc w laboratorium tego nie zobaczysz: tak paruje się klawiatura (B8).",
+      "PB": "Żadna strona nie ma ekranu: wymyślasz sześć cyfr i wpisujesz je na obu klawiaturach."
+    }
+  },
+  "throughput": {
+    "sliders": {
+      "mtu": {
+        "label": "MTU",
+        "aria": "MTU w bajtach"
+      },
+      "interval": {
+        "label": "Interwał połączenia",
+        "aria": "Interwał połączenia w ms"
+      },
+      "cap": {
+        "label": "Pakiety radiowe, na które centrala pozwala w zdarzeniu",
+        "aria": "Pakiety na zdarzenie połączenia"
+      }
+    },
+    "mtuValue": "{{mtu, number}} B ({{data, number}} B danych)",
+    "ms": "{{value, number}} ms",
+    "count": "{{value, number}}",
+    "longOn": "długie pakiety: włączone (251 B)",
+    "longOff": "długie pakiety: wyłączone (27 B)",
+    "aria": "Trzy zdarzenia połączenia na osi czasu, każdy pakiet radiowy narysowany w skali.",
+    "event": "zdarzenie {{n, number}} · {{ms, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} ms",
+    "data": "płytka → centrala: pakiety powiadomień",
+    "acks": "centrala → płytka: puste potwierdzenia (pod linią)",
+    "shown": "pokazano {{ms, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} ms · radia śpią w przerwach",
+    "result_one": "<b>{{kBps, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} kB/s</b> = {{count, number}} powiadomienie × {{data, number}} B na zdarzenie ÷ {{interval, number}} ms.",
+    "result_few": "<b>{{kBps, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} kB/s</b> = {{count, number}} powiadomienia × {{data, number}} B na zdarzenie ÷ {{interval, number}} ms.",
+    "result_many": "<b>{{kBps, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} kB/s</b> = {{count, number}} powiadomień × {{data, number}} B na zdarzenie ÷ {{interval, number}} ms.",
+    "result_other": "<b>{{kBps, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} kB/s</b> = {{count, number}} powiadomień × {{data, number}} B na zdarzenie ÷ {{interval, number}} ms.",
+    "frags_one": "Każde powiadomienie to {{count, number}} pakiet radiowy ({{ms, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} ms z potwierdzeniami).",
+    "frags_few": "Każde powiadomienie to {{count, number}} pakiety radiowe ({{ms, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} ms z potwierdzeniami).",
+    "frags_many": "Każde powiadomienie to {{count, number}} pakietów radiowych ({{ms, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} ms z potwierdzeniami).",
+    "frags_other": "Każde powiadomienie to {{count, number}} pakietów radiowych ({{ms, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} ms z potwierdzeniami).",
+    "limit": {
+      "cap": "Ograniczone przez liczbę pakietów centrali na zdarzenie.",
+      "time": "Ograniczone przez czas w eterze: zdarzenie jest pełne."
+    },
+    "nothing": "<b>Nic się nie mieści:</b> zwiększ liczbę pakietów na zdarzenie albo skróć MTU."
+  },
+  "sound": {
+    "keys": "Klawisze multimediów",
+    "key": {
+      "play": "odtwórz/pauza",
+      "next": "następny utwór",
+      "down": "głośność −",
+      "up": "głośność +"
+    },
+    "directButton": "płytka → głośnik bezpośrednio?",
+    "aria": "Płytka wysyła klawisz multimediów do telefonu przez Bluetooth LE; telefon przesyła dźwięk do głośnika przez klasyczne Bluetooth",
+    "start": "Naciśnij klawisz multimediów.",
+    "sent": "Płytka wysyła jeden maleńki raport HID (użycie {{usage}}) i zwolnienie. Resztę robi telefon: zmienia własną muzykę, a jego strumień audio do głośnika podąża za nią.",
+    "direct": "Radio S3 mówi tylko przez Bluetooth LE. Dźwięk do głośnika idzie klasycznym Bluetooth (BR/EDR), inną modulacją i protokołem, więc płytka nawet nie widzi strony audio JBL. Oryginalny ESP32 ma klasyczne Bluetooth i potrafi strumieniować (A2DP); nowsze głośniki z LE Audio/Auracast wymagają Bluetooth 5.2, a S3 ma 5.0.",
+    "draw": {
+      "leOnly": "tylko LE",
+      "phone": "telefon",
+      "orMac": "albo Mac",
+      "playing": "▶ gra",
+      "paused": "❚❚ pauza",
+      "volume": "gł. {{value, number}}",
+      "speaker": "głośnik JBL",
+      "classic": "audio Classic BT",
+      "reports": "raporty 2–8 bajtów",
+      "rate": "~ 300 kbit/s, bez przerwy",
+      "fail": "✕ inne radio: pakiety LE nic nie znaczą dla ujścia A2DP"
+    }
+  },
+  "report": {
+    "layouts": "Układy",
+    "boardLayout": "<code>layout</code> płytki",
+    "boardAria": "Układ płytki",
+    "computer": "komputer ustawiony na",
+    "computerAria": "Układ komputera",
+    "us": "US",
+    "de": "niemiecki",
+    "text": "Tekst do wpisania",
+    "type": "wpisz",
+    "clear": "wyczyść",
+    "aria": "Naciśnięcie klawisza przechodzące z tabeli znaków płytki jako raport 8-bajtowy do tabeli układu komputera",
+    "mismatchUs": "Płytka szuka znaków w swojej tabeli {{board}}, ale komputer czyta numery klawiszy wg US: y i z się zamieniają, a znaki interpunkcyjne lądują gdzie indziej. Naprawa: ustaw układ {{host}}.",
+    "mismatchDe": "Płytka szuka znaków w swojej tabeli {{board}}, ale komputer czyta numery klawiszy wg niemieckiego układu: y i z się zamieniają, a znaki interpunkcyjne lądują gdzie indziej. Naprawa: ustaw układ {{host}}.",
+    "agree": "Obie strony się zgadzają, więc każdy znak przechodzi tę drogę bez szwanku.",
+    "agreeSkipped": "Obie strony się zgadzają, więc każdy znak przechodzi tę drogę bez szwanku. Pominięte (wymagają AltGr/Option): {{skipped}}",
+    "draw": {
+      "board": "płytka",
+      "report": "raport 8-bajtowy",
+      "overLe": "przez Bluetooth LE",
+      "computer": "komputer",
+      "setUs": "ustawiony na US",
+      "setDe": "ustawiony na niemiecki",
+      "noShift": "mod 00 = bez Shift",
+      "typed": "wpisujesz",
+      "shows": "komputer pokazuje"
+    }
+  },
+  "packet": {
+    "options": "Opcje pakietu",
+    "running": "status ciągły (running status)",
+    "collect": "zbieraj przez",
+    "interval": "Interwał połączenia",
+    "ms": "{{value, number}} ms",
+    "slow": "300 ms (wolno, żeby zobaczyć grupowanie)",
+    "hear": "posłuchaj",
+    "keyboard": "Mini klawiatura",
+    "keyAria": "{{name}} (klawisz {{key}})",
+    "notes": {
+      "C": "do",
+      "D": "re",
+      "E": "mi",
+      "F": "fa",
+      "G": "sol",
+      "A": "la",
+      "B": "si"
+    },
+    "aria": "Bajty ostatniego pakietu BLE-MIDI, pokolorowane według roli",
+    "start": "Zagraj nutę.",
+    "built_one": "{{count, number}} nuta w jednym pakiecie, {{real, number}} bajt.",
+    "built_few": "{{count, number}} nuty w jednym pakiecie, {{real, number}} bajty.",
+    "built_many": "{{count, number}} nut w jednym pakiecie, {{real, number}} bajtów.",
+    "built_other": "{{count, number}} nut w jednym pakiecie, {{real, number}} bajtów.",
+    "builtSaved_one": "{{count, number}} nuta w jednym pakiecie, {{real, number}} bajt: running status zaoszczędził {{saved, number}}.",
+    "builtSaved_few": "{{count, number}} nuty w jednym pakiecie, {{real, number}} bajty: running status zaoszczędził {{saved, number}}.",
+    "builtSaved_many": "{{count, number}} nut w jednym pakiecie, {{real, number}} bajtów: running status zaoszczędził {{saved, number}}.",
+    "builtSaved_other": "{{count, number}} nut w jednym pakiecie, {{real, number}} bajtów: running status zaoszczędził {{saved, number}}.",
+    "timestamps": "Każda nuta ma własny znacznik czasu, więc syntezator może rozstawić je tak, jak je grasz. Zwolnienie nuty idzie tą samą drogą 300 ms później (status 80).",
+    "empty": "Zagraj kilka nut: zbiorą się w jeden pakiet.",
+    "legend": {
+      "header": "nagłówek: najwyższy bit 1, potem wysokie bity zegara",
+      "ts": "znacznik czasu: najwyższy bit 1, niskie 7 bitów zegara w ms",
+      "status": "status: co + kanał (90 = nuta wł., kan. 1)",
+      "note": "numer nuty (60 = środkowe do)",
+      "vel": "prędkość (jak mocno)"
+    }
+  },
+  "latency": {
+    "group": "Interwał i rytm",
+    "play": "graj",
+    "rhythm": "Rytm",
+    "rhythms": {
+      "sixteenths": "szesnastki przy 240 bpm (62,5 ms)",
+      "trill": "szybki trel (40 ms)",
+      "eighths": "ósemki przy 240 bpm (125 ms)"
+    },
+    "aria": "Zagrane nuty, zdarzenia połączenia, które je przenoszą, i kiedy dwa rodzaje syntezatorów je grają",
+    "lanes": {
+      "play": "grasz",
+      "events": "zdarzenia radiowe",
+      "arrival": "syntezator: po przybyciu",
+      "timestamps": "syntezator: znaczniki czasu"
+    },
+    "caption": "Interwał {{interval, number}} ms: każda nuta czeka od 0 do {{interval, number}} ms na kolejne zdarzenie radiowe. Syntezator, który gra nuty po przybyciu, przesuwa przerwy między nimi o do {{err, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} ms (czerwone). Ze znacznikami czasu zachowuje twój rytm dokładnie, ale gra wszystko o {{interval, number}} ms późno (zielone)."
+  },
+  "decoder": {
+    "keyboardScreen": "Widok klawiatury płytki: {{text}}▌",
+    "empty": "(pusto)",
+    "mouseScreen": "Widok myszy płytki: kursor na {{x}}, {{y}}, pędzel {{brush}}.",
+    "pressKey": "Naciśnij klawisz: jeden raport w dół, jeden w górę.",
+    "drag": "Przeciągnij po padzie: każdy ruch to jeden raport.",
+    "backspace": "backspace",
+    "enter": "enter",
+    "char": "„{{c}}”",
+    "keyUs": "klawisz {{code}} z modyfikatorami {{mods}} → {{typed}} na układzie US",
+    "keyDe": "klawisz {{code}} z modyfikatorami {{mods}} → {{typed}} na układzie niemieckim",
+    "releaseKey": "zwolnienie: każdy slot klawisza znów 00, nic nie wpisano",
+    "media": "klawisz multimediów {{usage}}: {{name}}",
+    "mediaName": {
+      "up": "głośność w górę",
+      "down": "głośność w dół",
+      "play": "odtwórz/pauza"
+    },
+    "releaseMedia": "zwolnienie: 00 00",
+    "mouse": "przyciski {{buttons}} · X {{dx}} · Y {{dy}} · kółko {{wheel}}",
+    "group": "Report Map i układ",
+    "map": "Report Map",
+    "maps": {
+      "combo": "Klawiatura + klawisze multimediów",
+      "boot": "Klawiatura rozruchowa (specyfikacja HID)",
+      "mouse": "5-przyciskowa mysz, X/Y 12-bitowe"
+    },
+    "layout": "Układ",
+    "layoutAria": "Układ klawiatury",
+    "german": "Układ niemiecki: klawisz o kodzie 1C wpisuje teraz z, a 2D wpisuje ß. Klawiatura wysyła te same kody.",
+    "us": "Układ US.",
+    "usOption": "US (QWERTY)",
+    "deOption": "niemiecki (QWERTZ)",
+    "aria": "Raport przechodzący od urządzenia do płytki, jego bajty i bity, każde pole podświetlane po kolei",
+    "keyboard": "Klawiatura",
+    "keyAria": "kod klawisza {{code}}: {{c}}",
+    "nothing": "nic",
+    "space": "Spacja (2C)",
+    "mediaKey": {
+      "down": "gł. − (EA)",
+      "up": "gł. + (E9)",
+      "play": "odtwórz (CD)"
+    },
+    "field": {
+      "padding": "dopełnienie",
+      "modifier": "modyfikator",
+      "keys_one": "kody klawiszy ({{count, number}} slot)",
+      "keys_few": "kody klawiszy ({{count, number}} sloty)",
+      "keys_many": "kody klawiszy ({{count, number}} slotów)",
+      "keys_other": "kody klawiszy ({{count, number}} slotów)",
+      "button": "przycisk {{n}}",
+      "x": "X (względne)",
+      "y": "Y (względne)",
+      "wheel": "kółko",
+      "media": "klawisz multimediów (użycie konsumenckie)",
+      "other": "inne"
+    },
+    "draw": {
+      "keyboard": "klawiatura",
+      "mouse": "mysz",
+      "board": "płytka",
+      "reportId": "ID raportu {{id}} (od 2908, nie w bajtach)",
+      "bits": "bity, bit 0 pierwszy w każdym bajcie (jasny = 1)",
+      "field_one": "{{name}}: {{count, number}} bit od bitu {{bit}} = {{value}}",
+      "field_few": "{{name}}: {{count, number}} bity od bitu {{bit}} = {{value}}",
+      "field_many": "{{name}}: {{count, number}} bitów od bitu {{bit}} = {{value}}",
+      "field_other": "{{name}}: {{count, number}} bitów od bitu {{bit}} = {{value}}"
+    }
+  },
+  "pad": {
+    "aria": "Pad myszy: przeciągnij, by przesunąć, naciśnij, by kliknąć, przewiń kółkiem albo użyj strzałek",
+    "hint": "przeciągnij tutaj = przesuń · naciśnij = lewy przycisk · przewiń = kółko",
+    "left": "lewe kliknięcie",
+    "right": "prawe kliknięcie",
+    "wheelUp": "kółko +1",
+    "wheelDown": "kółko −1"
+  },
+  "items": {
+    "title": "Pozycje Report Map",
+    "size": "{{bytes, number}} bajtów · pola wejściowe: {{fields, number}}"
+  },
+  "screens": {
+    "b1": {
+      "captions": {
+        "0": "Każde urządzenie to plamka: im bliżej środka, tym mocniejszy sygnał; kolor to rodzaj (niebieski telefon, bursztynowy dźwięk, morski klawiatura, koralowy znacznik). Po prawej najbliższe sześć z oszacowaną odległością.",
+        "1": "Najsilniejsze urządzenia z nazwą lub producentem, typem adresu (rpa = telefon ukryty za prywatnym adresem), sygnałem i tym, jak dawno je słyszano. Wybrane jest podświetlone.",
+        "2": "Ogłoszenie wybranego urządzenia i odpowiedź na skanowanie jako 31 małych komórek, po jednej na bajt, pokolorowane według struktur AD, każda struktura odczytana pod spodem.",
+        "3": "Pakiety na sekundę z ostatniej minuty (słupki) i urządzenia w zasięgu (linia), tryb skanowania i cykl pracy oraz mieszanka typów adresów."
+      },
+      "actions": {
+        "phoneCloser": "telefon: bliżej",
+        "phoneWalkAway": "telefon: oddal się",
+        "doubleClickNext": "podwójne kliknięcie: dalej",
+        "longPressScan": "długie przytrzymanie: skanuj"
+      }
+    },
+    "b2": {
+      "captions": {
+        "0": "Ogłoszenie i odpowiedź na skanowanie jako po 31 komórek, jeden kolor na strukturę AD (bajty długości i typu ciemniejsze), odczytane pod spodem. Bajty, które się właśnie zmieniły, błyskają na biało: czas pracy co sekundę, naciśnięcia przy podwójnym kliknięciu.",
+        "1": "Czas narysowany z ustawień: jedno zdarzenie na interwał plus losowe 0–10 ms (etykiety +n), każde zdarzenie to jeden pakiet na kanałach 37, 38 i 39. Pierścienie opuszczają płytkę, gdy zdarzenie się odpala; wstawka pokazuje jedno zdarzenie powiększone (ok. 0,3 ms na pakiet).",
+        "2": "Oszacowanie dla beacona w ogniwie CR2032 z tymi ustawieniami: dokąd płynie prąd, średnia, czas życia na CR2032 i czas życia względem interwału (bursztynowa kropka = teraz). Sama ta płytka pobiera około 80 mA.",
+        "3": "Dziennik aktywności: zmiany trybu, naciśnięcia, odrzucone ustawienia."
+      },
+      "actions": {
+        "buttonDoubleClickPress": "przycisk: podwójne kliknięcie (naciśnięcie)",
+        "modeNext": "tryb: dalej",
+        "connectableOnOff": "łączalność wł./wył.",
+        "interval1001000": "interwał 100 / 1000"
+      }
+    },
+    "b3": {
+      "captions": {
+        "0": "Usługa Bench jako tabela: nazwa, właściwości (R odczyt, W zapis, N powiadomienie) i bieżąca wartość. Operacja podświetla swój wiersz: morski odczyt, niebieski zapis, fioletowy powiadomienie, bursztynowy subskrypcja. Kropka leci do telefonu albo z niego po prawej; dzwonek oznacza subskrypcję.",
+        "1": "Ostatnia wiadomość zapisana z telefonu, zawijana w 12 pt, i kolor diody LED jako świecący krążek.",
+        "2": "Połączenie na żywo: kto jest centralą, zdarzenia połączenia pulsujące (spowolnione 20×), interwał, MTU, opóźnienie, timeout, PHY, RSSI, zabezpieczenia i liczniki ruchu.",
+        "3": "Dziennik aktywności, najnowsze na dole: < odebrane z telefonu, > wysłane do niego, + dobre wieści, ! ostrzeżenia."
+      },
+      "actions": {
+        "phoneConnect": "telefon: połącz",
+        "phoneWriteLedFf5000": "telefon: zapisz LED FF5000",
+        "phoneWriteMessage": "telefon: zapisz Message",
+        "phoneSubscribeButton": "telefon: subskrybuj Button",
+        "boardClick": "płytka: kliknięcie"
+      }
+    },
+    "b4": {
+      "captions": {
+        "0": "Ceremonia parowania jako osiem faz na torze: wypełnione = zgłoszone przez NimBLE, pierścień = wnioskowane (musiało się wydarzyć, żeby zaszła późniejsza faza), bursztynowy puls = czeka na ciebie, koralowy krzyżyk = miejsce awarii i powód. Fioletowy = zaszyfrowane i powiązane.",
+        "1": "Sparowane urządzenia po adresie tożsamości oraz sztuczka prywatności: adres telefonu w eterze ciągle się zmienia; IRK z parowania rozpoznaje każdy z nich jako ten sam telefon.",
+        "2": "Widok gatt z B3 plus wiersz Vault. Odmowa odczytu Vault mruga na koralowo.",
+        "3": "Połączenie na żywo; wiersz zabezpieczeń mówi teraz: zaszyfrowane, + MITM, + powiązane.",
+        "4": "Dziennik aktywności: passkeye, wyniki ENC_CHANGE, tożsamości, odmowy."
+      },
+      "actions": {
+        "phoneConnect": "telefon: połącz",
+        "phoneReadVault": "telefon: odczytaj Vault",
+        "phoneTypeThePasskeyTapYes": "telefon: wpisz passkey / dotknij tak",
+        "boardClickYes": "płytka: kliknięcie (tak)"
+      }
+    },
+    "b5": {
+      "captions": {
+        "0": "To, co rysuje aplikacja, kopiowane pod paskiem stanu w każdej klatce (płytka trzyma to we własnym buforze 320 × 128), a na dole, ile poleceń, zapisów i bajtów dotarło. DROPPED oznacza, że kolejka 16 zapisów była pełna.",
+        "1": "Cztery wartości, które aplikacja rysuje jako sparkline z ostatnich 12 s: temperatura, dotyk na GPIO 1, wolna pamięć, RSSI łącza. Na dole po prawej: czy aplikacja zasubskrybowała i ile powiadomień wysłano.",
+        "2": "Podczas przebiegu: pakiety lecą do telefonu, pasek postępu i czekania (bufory stosu były pełne). Potem jeden słupek na przebieg z kB/s, MTU, interwałem i PHY.",
+        "3": "Usługa Bench z B3, bez zmian: wiersze świecą, gdy aplikacja czyta, zapisuje lub subskrybuje. Własne cztery charakterystyki B5 tu się nie pojawiają; pokazują je pozostałe widoki.",
+        "4": "Połączenie na żywo: interwał, MTU, PHY i RSSI. Patrz, jak się zmieniają, gdy przyciski Link w zakładce Speed proszą o szybszy interwał albo PHY 2M.",
+        "5": "Dziennik aktywności: < z aplikacji, > do aplikacji, + wyniki, na przykład każdy przebieg prędkości."
+      },
+      "actions": {
+        "appConnect": "aplikacja: połącz",
+        "appDrawAStroke": "aplikacja: narysuj kreskę",
+        "appSubscribeSensors": "aplikacja: subskrybuj Sensors",
+        "touchTheWireOnGpio1": "dotknij przewodu na GPIO 1",
+        "appSpeed50Kb": "aplikacja: prędkość 50 kB",
+        "appFast2m": "aplikacja: szybko + 2M"
+      }
+    },
+    "b6": {
+      "captions": {
+        "0": "Tryb: przycisk to pilot. Ikona, którą nacisnąłeś, faluje; kropka biegnie płytka → telefon → głośnik.",
+        "1": "Tryb: talia slajdów. Kliknięcie = strzałka w prawo, podwójne = strzałka w lewo, przytrzymanie = b (czarny ekran).",
+        "2": "Co wysyła `type`: układ, postęp, fragment oraz światła Caps/Num komputera odsyłane do nas.",
+        "3": "Ostatnie raporty jako bajty: bity modyfikatorów, numery klawiszy, co wpisuje każde naciśnięcie, zwolnienie same zera.",
+        "4": "Połączenie: interwał, MTU, zabezpieczenia (łącze klawiatury jest zawsze szyfrowane).",
+        "5": "Wszystko, co wydarzyło się w eterze."
+      },
+      "actions": {
+        "phonePairBenchB6": "telefon: sparuj Bench B6",
+        "buttonClick": "przycisk: kliknięcie",
+        "typeYes": "wpisz tak"
+      }
+    },
+    "b7": {
+      "captions": {
+        "0": "Pięć klawiszy dotykowych i pianino na dwie oktawy: fioletowy = nuty grane przez tę płytkę, niebieski = nuty z syntezatora.",
+        "1": "Automat perkusyjny: 4 bębny × 16 kroków na kanale 10, głowica przesuwa się w tempie.",
+        "2": "Piano roll z ostatnich 6 sekund, w obu kierunkach, z liczbą nut, które dzieliły pakiet.",
+        "3": "Dlaczego nuty czekają: każda wychodzi przy następnym zdarzeniu połączenia.",
+        "4": "Wszystko, co wydarzyło się w eterze."
+      },
+      "actions": {
+        "macConnectInAudioMidiSetup": "Mac: połącz w Konfiguracji Audio i MIDI",
+        "buttonClickANote": "przycisk: kliknięcie (nuta)",
+        "synthPlayE4": "syntezator: zagraj E4",
+        "seqOnOff": "sekwencer wł./wył."
+      }
+    },
+    "b8": {
+      "captions": {
+        "0": "Tylko urządzenia łączalne, najsilniejsze najpierw. Ikona klawiatury i HID oznaczają klawiatury i myszy; klucz oznacza urządzenia sparowane z płytką. Podświetlony wiersz to wybrany.",
+        "1": "Tabela GATT podłączonego urządzenia: usługi (niebieskie), charakterystyki z R/W/N/I i odczytane wartości publiczne (morskie), deskryptory (szare). Wartości HID pozostają zablokowane do czasu sparowania.",
+        "2": "Twoja klawiatura, pisząca na płytce: tekst z migającym kursorem, osiem nakładek modyfikatorów (bursztynowe, gdy wciśnięte), trzymane kody klawiszy, układ i protokół.",
+        "3": "Twoja mysz jako zabawka do malowania: lewy przycisk rysuje, prawy zmienia kolor, środkowy czyści, kółko ustawia pędzel. Ślad pokazuje, gdzie kursor był przed chwilą.",
+        "4": "Surowe raporty wejściowe, najnowsze na dole: każdy bajt pokolorowany według pola Report Map (bursztynowe modyfikatory i przyciski, morskie klawisze, niebieskie X, fioletowe Y, koralowe kółko), odczytany pod spodem.",
+        "5": "Połączenie na żywo po stronie centrali: płytka prowadzi, klawiatura odpowiada w każdym zdarzeniu połączenia. Interwał, MTU, PHY, sygnał i zabezpieczenia.",
+        "6": "Wszystko, co się wydarzyło, po kolei: co płytka wysłała (>), co odebrała (<) i wyniki."
+      },
+      "actions": {
+        "keyboardPairingModeConnectHost": "klawiatura: tryb parowania, połącz, host",
+        "typeHelloBench": "wpisz „Hello bench”",
+        "mediaVolumeUp": "multimedia: głośność w górę",
+        "mouseConnectDraw": "mysz: połącz + rysuj",
+        "exploreTheJbl": "zbadaj JBL",
+        "disconnect": "rozłącz"
+      }
+    }
+  },
+  "flows": {
+    "b3": {
+      "discover": {
+        "label": "Połącz i wykryj",
+        "lanes": [
+          [
+            "telefon",
+            "centrala"
+          ],
+          [
+            "NimBLE",
+            "płytka, peryferium"
+          ],
+          [
+            "loop()",
+            "ekran i dioda LED"
+          ]
+        ],
+        "steps": {
+          "0": {
+            "msg": "ADV_IND + SCAN_RSP",
+            "title": "Płytka ogłasza się",
+            "text": "Flagi i 128-bitowy UUID usługi Bench w ogłoszeniu, nazwa w odpowiedzi na skanowanie. Skaner telefonu pokazuje Bench B3."
+          },
+          "1": {
+            "msg": "CONNECT_IND",
+            "title": "Telefon się łączy",
+            "text": "W odpowiedzi na jedno ogłoszenie telefon wysyła ustawienia połączenia: nowy losowy adres dostępu, wzór przeskoków po 37 kanałach danych, interwał i timeout. Od tej chwili spotykają się co interwał."
+          },
+          "2": {
+            "msg": "onConnect",
+            "title": "Płytka to zauważa",
+            "text": "NimBLE wywołuje ServerLink::onConnect we własnym wątku. Aktualizuje tylko wspólny stan łącza i dziennik aktywności; loop() rysuje dwa pierścienie i wypisuje linię."
+          },
+          "3": {
+            "msg": "Exchange MTU 517",
+            "title": "Jak duży może być pakiet?",
+            "text": "Domyślnie pakiet ATT niesie 23 bajty. Telefon proponuje więcej, płytka odpowiada tym, ile potrafi przyjąć (255); obie strony używają mniejszej wartości."
+          },
+          "4": {
+            "msg": "Read By Group Type",
+            "title": "Jakie usługi są dostępne?",
+            "text": "Telefon pyta o wszystkie główne usługi (UUID 2800) między uchwytami 0001 a FFFF. Płytka odpowiada pierwszym uchwytem każdej usługi, ostatnim uchwytem i UUID."
+          },
+          "5": {
+            "msg": "Read By Type 2803",
+            "title": "…a jakie charakterystyki?",
+            "text": "Dla każdej usługi deklaracje charakterystyk: właściwości (pole bitowe), uchwyt wartości i UUID. 0A = odczyt + zapis, 12 = odczyt + powiadomienie."
+          },
+          "6": {
+            "msg": "Find Information",
+            "title": "…a ich deskryptory",
+            "text": "Deskryptory leżą zaraz za wartością: 2902 (CCCD, tu się subskrybuje), 2901 (nazwa, którą pokazują aplikacje), 2904 (format liczby: sint16, ×10^-2, °C)."
+          },
+          "7": {
+            "msg": "Write CCCD 01 00",
+            "title": "Subskrybuj przycisk",
+            "text": "Dotknięcie ikony powiadomienia zapisuje 0001 do CCCD przycisku. NimBLE wywołuje onSubscribe: przy wierszu pojawia się dzwonek."
+          }
+        }
+      },
+      "write": {
+        "label": "Zapal diodę",
+        "lanes": [
+          [
+            "telefon",
+            "nRF Connect"
+          ],
+          [
+            "NimBLE",
+            "onWrite()"
+          ],
+          [
+            "loop()",
+            "tick() → LED"
+          ]
+        ],
+        "steps": {
+          "0": {
+            "msg": "Write Request",
+            "title": "Trzy bajty",
+            "text": "Kod operacji 12 (Write Request), uchwyt 0010 (wartość LED), potem FF 50 00. Czeka na następne zdarzenie połączenia: do jednego interwału."
+          },
+          "1": {
+            "msg": "onWrite",
+            "title": "Callback działa w wątku NimBLE",
+            "text": "Sprawdza, że są dokładnie 3 bajty, kopiuje je pod spinlockiem i podnosi flagę. Nie dotyka diody: tylko jedno zadanie nią steruje."
+          },
+          "2": {
+            "msg": "Write Response",
+            "title": "Telefon dostaje potwierdzenie",
+            "text": "Kod operacji 13. Przy „zapisie bez odpowiedzi” (kod 52) w ogóle nie ma odpowiedzi: szybciej, ale telefon nigdy nie dowie się, czy dotarło."
+          },
+          "3": {
+            "msg": "takeLed()",
+            "title": "loop() zapala diodę",
+            "text": "Następne loop() widzi flagę, przejmuje diodę od ekranu stanu i zapisuje kolor do WS2812 na GPIO 48. Wiersz gatt mruga na niebiesko."
+          }
+        }
+      },
+      "notify": {
+        "label": "Powiadom o kliknięciu",
+        "lanes": [
+          [
+            "telefon",
+            "subskrybuje"
+          ],
+          [
+            "NimBLE",
+            "stos"
+          ],
+          [
+            "loop()",
+            "przycisk"
+          ]
+        ],
+        "steps": {
+          "0": {
+            "msg": "kliknięcie",
+            "title": "Klikasz",
+            "text": "Klasa Button eliminuje drgania i zgłasza Click. Hak gestów laboratorium przekazuje go usłudze Bench, a potem powłoka przechodzi do następnego widoku."
+          },
+          "1": {
+            "msg": "notify()",
+            "title": "Ustaw wartość, powiadom",
+            "text": "Gest 1, liczba 7 (little-endian). notify() ustawia go w kolejce na następne zdarzenie połączenia; nic nie czeka na odpowiedź."
+          },
+          "2": {
+            "msg": "Handle Value Notification",
+            "title": "W eterze",
+            "text": "Kod operacji 1B, uchwyt, wartość. Bez odpowiedzi: powiadomienia idą na ślepo. (Indications, 1D, czekałyby na potwierdzenie 1E.)"
+          }
+        }
+      }
+    },
+    "b4": {
+      "passkey": {
+        "label": "Wpisywanie passkey",
+        "lanes": [
+          [
+            "telefon",
+            "centrala"
+          ],
+          [
+            "płytka",
+            "menedżer bezpieczeństwa"
+          ],
+          [
+            "ty",
+            "człowiek"
+          ]
+        ],
+        "steps": {
+          "0": {
+            "msg": "Read Vault",
+            "title": "Telefon dotyka Vault",
+            "text": "Zwykły odczyt ATT uchwytu Vault. NimBLE sprawdza uprawnienia charakterystyki (READ_ENC + READ_AUTHEN) i odmawia."
+          },
+          "1": {
+            "msg": "Pairing Request",
+            "title": "Faza 1: co potrafisz?",
+            "text": "Telefon zaczyna parowanie (SMP we własnym kanale L2CAP, CID 0006). Mówi, że ma ekran i klawiaturę, chce się powiązać, chce ochrony MITM i Secure Connections."
+          },
+          "2": {
+            "msg": "Pairing Response",
+            "title": "Płytka odpowiada: DisplayOnly",
+            "text": "Jej własne możliwości, ustawione poleceniem pair. Na podstawie obu odpowiedzi każda strona szuka tej samej metody w tabeli powyżej."
+          },
+          "3": {
+            "msg": "Public Key",
+            "title": "Faza 2: klucze krzywej eliptycznej",
+            "text": "Każda strona wysyła świeży klucz publiczny P-256 (64 bajty: X i Y). Każda mnoży klucz publiczny drugiej strony przez swój prywatny: obie dostają ten sam DHKey, który nigdy nie podróżuje."
+          },
+          "4": {
+            "msg": "pokazuje 482915",
+            "title": "Płytka pokazuje sześć cyfr",
+            "text": "onPassKeyDisplay zwraca losowy passkey; powłoka rysuje go nad bieżącym widokiem."
+          },
+          "5": {
+            "msg": "wpisujesz 482915",
+            "title": "Wpisujesz je w telefonie",
+            "text": "Zegar 30 sekund biegnie. Wpisanie dowodzi, że widzisz oba ekrany: atakujący pośrodku nie zna tej liczby."
+          },
+          "6": {
+            "msg": "Confirm + Random ×20",
+            "title": "20 rund, jedna na bit passkey",
+            "text": "Passkey ma 20 bitów. Dla każdego bitu obie strony zobowiązują się do wartości (Confirm), a potem ją ujawniają (Random). Zła cyfra zawodzi na swoim bicie, nie zdradzając reszty."
+          },
+          "7": {
+            "msg": "DHKey Check",
+            "title": "Faza 2 kończy się: dowód tego samego DHKey",
+            "text": "Każda strona wysyła wartość kontrolną (f6) obliczoną z DHKey, obu losowych liczb i obu adresów. Tylko ktoś z tym samym DHKey może ją wytworzyć."
+          },
+          "8": {
+            "msg": "LL_ENC_REQ",
+            "title": "Włączenie szyfrowania",
+            "text": "Warstwa łącza uruchamia AES-CCM z LTK. Od następnego pakietu podsłuchujący widzi tylko szum. NimBLE zgłasza ENC_CHANGE: to faza zaszyfrowana ceremonii."
+          },
+          "9": {
+            "msg": "Identity Information",
+            "title": "Faza 3: klucze do zapamiętania",
+            "text": "Teraz zaszyfrowane, obie strony przekazują swój IRK i adres tożsamości. IRK pozwala płytce rozpoznać telefon później, niezależnie od prywatnego adresu, jakiego używa tego dnia."
+          },
+          "10": {
+            "msg": "wiązanie zapisane",
+            "title": "Powiązane i uwierzytelnione",
+            "text": "Klucze w NVS. Telefon ponownie odczytuje Vault i go dostaje. Następnym razem: od razu szyfrowanie zapisanym LTK, bez ceremonii."
+          }
+        }
+      },
+      "compare": {
+        "label": "Numeric Comparison",
+        "lanes": [
+          [
+            "telefon",
+            "centrala"
+          ],
+          [
+            "płytka",
+            "menedżer bezpieczeństwa"
+          ],
+          [
+            "ty",
+            "człowiek"
+          ]
+        ],
+        "steps": {
+          "0": {
+            "msg": "Read Vault",
+            "title": "Telefon dotyka Vault",
+            "text": "Zwykły odczyt ATT uchwytu Vault. NimBLE sprawdza uprawnienia charakterystyki (READ_ENC + READ_AUTHEN) i odmawia."
+          },
+          "1": {
+            "msg": "Pairing Request",
+            "title": "Faza 1: co potrafisz?",
+            "text": "Telefon zaczyna parowanie (SMP we własnym kanale L2CAP, CID 0006). Mówi, że ma ekran i klawiaturę, chce się powiązać, chce ochrony MITM i Secure Connections."
+          },
+          "2": {
+            "msg": "Pairing Response",
+            "title": "Płytka odpowiada: DisplayYesNo",
+            "text": "Jej własne możliwości, ustawione poleceniem pair. Na podstawie obu odpowiedzi każda strona szuka tej samej metody w tabeli powyżej."
+          },
+          "3": {
+            "msg": "Public Key",
+            "title": "Faza 2: klucze krzywej eliptycznej",
+            "text": "Każda strona wysyła świeży klucz publiczny P-256 (64 bajty: X i Y). Każda mnoży klucz publiczny drugiej strony przez swój prywatny: obie dostają ten sam DHKey, który nigdy nie podróżuje."
+          },
+          "4": {
+            "msg": "Confirm",
+            "title": "Płytka się zobowiązuje",
+            "text": "Płytka najpierw wysyła zobowiązanie do swojej losowej liczby, żeby nie mogła jej zmienić po zobaczeniu liczby telefonu."
+          },
+          "5": {
+            "msg": "Random ×2",
+            "title": "Obie strony ujawniają swoje losowe liczby",
+            "text": "Teraz obie liczą g2(PKa, PKb, Na, Nb) mod 1 000 000: sześć cyfr zależnych od obu kluczy publicznych."
+          },
+          "6": {
+            "msg": "takie same 731406?",
+            "title": "Oba ekrany pokazują liczbę",
+            "text": "onConfirmPassKey: wyświetlacz TFT pokazuje NUMERIC COMPARISON. Sprawdzasz, że telefon pokazuje to samo, dotykasz tak w telefonie i klikasz przycisk płytki (długie przytrzymanie = nie)."
+          },
+          "7": {
+            "msg": "DHKey Check",
+            "title": "Faza 2 kończy się: dowód tego samego DHKey",
+            "text": "Każda strona wysyła wartość kontrolną (f6) obliczoną z DHKey, obu losowych liczb i obu adresów. Tylko ktoś z tym samym DHKey może ją wytworzyć."
+          },
+          "8": {
+            "msg": "LL_ENC_REQ",
+            "title": "Włączenie szyfrowania",
+            "text": "Warstwa łącza uruchamia AES-CCM z LTK. Od następnego pakietu podsłuchujący widzi tylko szum. NimBLE zgłasza ENC_CHANGE: to faza zaszyfrowana ceremonii."
+          },
+          "9": {
+            "msg": "Identity Information",
+            "title": "Faza 3: klucze do zapamiętania",
+            "text": "Teraz zaszyfrowane, obie strony przekazują swój IRK i adres tożsamości. IRK pozwala płytce rozpoznać telefon później, niezależnie od prywatnego adresu, jakiego używa tego dnia."
+          },
+          "10": {
+            "msg": "wiązanie zapisane",
+            "title": "Powiązane i uwierzytelnione",
+            "text": "Klucze w NVS. Telefon ponownie odczytuje Vault i go dostaje. Następnym razem: od razu szyfrowanie zapisanym LTK, bez ceremonii."
+          }
+        }
+      },
+      "justworks": {
+        "label": "Just Works",
+        "lanes": [
+          [
+            "telefon",
+            "centrala"
+          ],
+          [
+            "płytka",
+            "menedżer bezpieczeństwa"
+          ],
+          [
+            "ty",
+            "człowiek"
+          ]
+        ],
+        "steps": {
+          "0": {
+            "msg": "Read Vault",
+            "title": "Telefon dotyka Vault",
+            "text": "Zwykły odczyt ATT uchwytu Vault. NimBLE sprawdza uprawnienia charakterystyki (READ_ENC + READ_AUTHEN) i odmawia."
+          },
+          "1": {
+            "msg": "Pairing Request",
+            "title": "Faza 1: co potrafisz?",
+            "text": "Telefon zaczyna parowanie (SMP we własnym kanale L2CAP, CID 0006). Mówi, że ma ekran i klawiaturę, chce się powiązać, chce ochrony MITM i Secure Connections."
+          },
+          "2": {
+            "msg": "Pairing Response",
+            "title": "Płytka odpowiada: NoInputNoOutput",
+            "text": "Jej własne możliwości, ustawione poleceniem pair. Na podstawie obu odpowiedzi każda strona szuka tej samej metody w tabeli powyżej."
+          },
+          "3": {
+            "msg": "Public Key",
+            "title": "Faza 2: klucze krzywej eliptycznej",
+            "text": "Każda strona wysyła świeży klucz publiczny P-256 (64 bajty: X i Y). Każda mnoży klucz publiczny drugiej strony przez swój prywatny: obie dostają ten sam DHKey, który nigdy nie podróżuje."
+          },
+          "4": {
+            "msg": "Confirm + Random",
+            "title": "Nikt nie jest zaangażowany",
+            "text": "Ta sama wymiana co przy porównaniu liczb, ale żaden ekran nie pokazuje liczby: nikt nie zauważy człowieka pośrodku."
+          },
+          "5": {
+            "msg": "DHKey Check",
+            "title": "Faza 2 kończy się: dowód tego samego DHKey",
+            "text": "Każda strona wysyła wartość kontrolną (f6) obliczoną z DHKey, obu losowych liczb i obu adresów. Tylko ktoś z tym samym DHKey może ją wytworzyć."
+          },
+          "6": {
+            "msg": "LL_ENC_REQ",
+            "title": "Włączenie szyfrowania",
+            "text": "Warstwa łącza uruchamia AES-CCM z LTK. Od następnego pakietu podsłuchujący widzi tylko szum. NimBLE zgłasza ENC_CHANGE: to faza zaszyfrowana ceremonii."
+          },
+          "7": {
+            "msg": "Identity Information",
+            "title": "Faza 3: klucze do zapamiętania",
+            "text": "Teraz zaszyfrowane, obie strony przekazują swój IRK i adres tożsamości. IRK pozwala płytce rozpoznać telefon później, niezależnie od prywatnego adresu, jakiego używa tego dnia."
+          },
+          "8": {
+            "msg": "wiązanie zapisane",
+            "title": "Powiązane, ale nieuwierzytelnione",
+            "text": "Klucze w NVS, łącze zaszyfrowane, ale nikt tego nie zweryfikował: poziom bezpieczeństwa to „zaszyfrowane, bez MITM”. Vault nadal odmawia; LED i Message działają nawet przy zablokowanym urządzeniu."
+          }
+        }
+      }
+    },
+    "b5": {
+      "write": {
+        "label": "Zmiana koloru",
+        "lanes": [
+          [
+            "aplikacja (JS)",
+            "ble-app"
+          ],
+          [
+            "przeglądarka",
+            "klient GATT Chrome'a"
+          ],
+          [
+            "NimBLE",
+            "płytka, onWrite()"
+          ],
+          [
+            "loop()",
+            "LED na GPIO 48"
+          ]
+        ],
+        "steps": {
+          "0": {
+            "msg": "requestDevice()",
+            "title": "Poproś człowieka o wybór płytki",
+            "text": "Strona nie potrafi sama skanować ani się łączyć. requestDevice() otwiera wybieralnik przeglądarki, filtrowany do płytek z usługą Bench, nazwą zaczynającą się od „Bench” albo BLE-MIDI. Dostępne będą tylko wymienione tu usługi (plus optionalServices)."
+          },
+          "1": {
+            "msg": "CONNECT_IND",
+            "title": "Przeglądarka się łączy",
+            "text": "device.gatt.connect(): stos Bluetooth systemu staje się centralą. Aplikacja nigdy nie widzi pakietów radiowych, tylko obiekty GATT."
+          },
+          "2": {
+            "msg": "wykrywanie usług",
+            "title": "Wykrywanie (tak samo jak w nRF Connect)",
+            "text": "getPrimaryServices() i getCharacteristics() wykonują pod spodem wykrywanie ATT z B3. Aplikacja trzyma uchwyt dla każdej charakterystyki, którą zna po UUID."
+          },
+          "3": {
+            "msg": "writeValueWithResponse()",
+            "title": "Koło się przesunęło",
+            "text": "Zakładka Control zamienia odcień, nasycenie i jasność na czerwony, zielony, niebieski, najwyżej raz na 80 ms, i ustawia w kolejce jeden zapis. GATT pozwala na jedną operację naraz, więc każde wywołanie czeka na swoją kolej w kolejce aplikacji."
+          },
+          "4": {
+            "msg": "Write Request",
+            "title": "W eterze",
+            "text": "Kod operacji 12, uchwyt 0010, trzy bajty. Wychodzi przy następnym zdarzeniu połączenia: do jednego interwału później."
+          },
+          "5": {
+            "msg": "onWrite",
+            "title": "Zadanie NimBLE go przejmuje",
+            "text": "BenchService::onWrite sprawdza długość, kopiuje kolor pod spinlockiem i podnosi flagę. Sama nie steruje diodą: robi to tylko loop()."
+          },
+          "6": {
+            "msg": "Write Response",
+            "title": "Obietnica się spełnia",
+            "text": "Kod operacji 13 wraca w następnym zdarzeniu; przeglądarka rozwiązuje await aplikacji. Odrzucony zapis odrzuciłby go z błędem ATT."
+          },
+          "7": {
+            "msg": "takeLed()",
+            "title": "loop() zapala diodę",
+            "text": "Następna klatka widzi flagę, przejmuje diodę od statusu radia i zapisuje WS2812. Wiersz gatt mruga na niebiesko."
+          }
+        }
+      },
+      "notify": {
+        "label": "Strumień z czujnika",
+        "lanes": [
+          [
+            "aplikacja (JS)",
+            "zakładka Live"
+          ],
+          [
+            "przeglądarka",
+            "klient GATT"
+          ],
+          [
+            "NimBLE",
+            "płytka"
+          ],
+          [
+            "loop()",
+            "tick() co 200 ms"
+          ]
+        ],
+        "steps": {
+          "0": {
+            "msg": "startNotifications()",
+            "title": "Subskrybuj",
+            "text": "Zakładka Live wywołuje startNotifications() na Sensors. Przeglądarka sama zapisuje 01 00 do swojego CCCD."
+          },
+          "1": {
+            "msg": "Write CCCD 01 00",
+            "title": "Zapis CCCD w eterze",
+            "text": "Kod operacji 12 do deskryptora zaraz za wartością (uchwyt + 1). NimBLE wywołuje Extras::onSubscribe: od teraz tick() wysyła."
+          },
+          "2": {
+            "msg": "notify()",
+            "title": "Co 200 ms",
+            "text": "tick() odczytuje temperaturę układu, touchRead(1), wolną pamięć i RSSI łącza, pakuje 12 bajtów i powiadamia."
+          },
+          "3": {
+            "msg": "Handle Value Notification",
+            "title": "W eterze, bez odpowiedzi",
+            "text": "Kod operacji 1B, uchwyt, 12 bajtów. Powiadomienia nigdy nie są potwierdzane na poziomie GATT: pięć na sekundę prawie nic nie kosztuje telefonu."
+          },
+          "4": {
+            "msg": "characteristicvaluechanged",
+            "title": "Zdarzenie na stronie",
+            "text": "Przeglądarka wywołuje zdarzenie z wartością jako DataView. decodeSensors() odczytuje ją little-endian; numer sekwencji pokazuje każdą lukę."
+          },
+          "5": {
+            "msg": "wykres",
+            "title": "React rysuje linię",
+            "text": "Próbka dołącza do ostatnich 150 (30 s) i cztery wykresy rysują się od nowa. Dotknij przewodu: następny pakiet już niesie skok."
+          }
+        }
+      }
+    },
+    "b8": {
+      "first": {
+        "label": "Pierwsze parowanie",
+        "lanes": [
+          [
+            "ESP32-S3",
+            "centrala (ta płytka)"
+          ],
+          [
+            "klawiatura",
+            "peryferium"
+          ],
+          [
+            "ty",
+            "przy klawiaturze"
+          ]
+        ],
+        "steps": {
+          "0": {
+            "msg": "ADV_IND (ch 37, 38, 39)",
+            "title": "Klawiatura się ogłasza",
+            "text": "W trybie parowania klawiatura krzyczy na trzech kanałach ogłoszeniowych co 20–30 ms. Jej usługa HID (1812) i wygląd (03C1 = klawiatura) mówią, czym jest: skaner płytki oznacza ją jako HID."
+          },
+          "1": {
+            "msg": "CONNECT_IND",
+            "title": "Płytka się łączy: TERAZ to ona ustawia takt",
+            "text": "150 µs po ogłoszeniu płytka odpowiada na tym samym kanale. Od tej chwili oba radia przeskakują razem po 37 kanałach danych. Jako centrala płytka wybrała interwał, latencję i timeout."
+          },
+          "2": {
+            "msg": "Exchange MTU: 255",
+            "title": "Jak duży może być pakiet?",
+            "text": "Domyślny pakiet ATT ma 23 bajty. Płytka proponuje 255; klawiatura odpowiada tym, co potrafi."
+          },
+          "3": {
+            "msg": "MTU 65",
+            "title": "Zgadzają się na mniejszą wartość",
+            "text": "65 bajtów: 62 danych w pakiecie. Aż nadto: naciśnięcie klawisza to 8 bajtów."
+          },
+          "4": {
+            "msg": "Read By Group Type (services)",
+            "title": "Wykrywanie: co oferujesz?",
+            "text": "Płytka pyta o każdą główną usługę, potem o charakterystyki każdej z nich i ich deskryptory. Szyfrowanie jeszcze niepotrzebne: spis treści jest publiczny."
+          },
+          "5": {
+            "msg": "1800 1801 180A 180F 1812",
+            "title": "Pięć usług",
+            "text": "Generic Access i Attribute (każde urządzenie), Device Information, Battery oraz HID z charakterystykami Report Map i Report. Widok explore pokazuje to drzewo. Wartości HID są zablokowane: potrzebują zaszyfrowanego łącza."
+          },
+          "6": {
+            "msg": "Pairing Request",
+            "title": "host: poproś o zabezpieczenie",
+            "text": "Płytka mówi, co potrafi: pokazać cyfry, ale ich nie wpisywać. Chce się powiązać (zapamiętać klucze), ochrony MITM i LE Secure Connections."
+          },
+          "7": {
+            "msg": "Pairing Response",
+            "title": "Klawiatura potrafi tylko pisać",
+            "text": "Tylko wyświetlacz (płytka) + tylko klawiatura (klawiatura) = wpisywanie passkey: strona z ekranem pokazuje sześć cyfr, strona z klawiszami je wpisuje. Potem obie wymieniają klucze publiczne (ECDH P-256)."
+          },
+          "8": {
+            "msg": "pokazuje 482915",
+            "title": "Sześć cyfr na TFT",
+            "text": "Sam passkey nigdy nie leci w eter. Płytka rysuje go dużymi cyframi nad bieżącym widokiem i czeka do 30 s."
+          },
+          "9": {
+            "msg": "wpisujesz 4 8 2 9 1 5 ⏎",
+            "title": "Wpisujesz je na klawiaturze",
+            "text": "Klawiatura nie jest podłączona do żadnego komputera, który pokazałby, co piszesz: naciśnięcia trafiają do parowania, a nie do aplikacji."
+          },
+          "10": {
+            "msg": "20 rund potwierdzenia + DHKey check",
+            "title": "Dowód, bit po bicie",
+            "text": "Dla każdego z 20 bitów passkey obie strony wymieniają zobowiązanie, a potem losową wartość za nim. Ktoś podsłuchujący nic nie zyskuje; ktoś pośrodku potrzebowałby passkey."
+          },
+          "11": {
+            "msg": "LL_ENC_REQ",
+            "title": "Szyfrowanie włączone, klucze zapisane",
+            "text": "Od teraz każdy pakiet jest szyfrowany (AES-CCM). Długoterminowy klucz (LTK) i klucz tożsamości klawiatury (IRK) są zapisane w NVS płytki: to jest wiązanie."
+          },
+          "12": {
+            "msg": "Read Blob 2A4B",
+            "title": "Odczyt Report Map",
+            "text": "Własny opis raportów klawiatury. Jest dłuższy niż jeden pakiet, więc przychodzi w kilku rundach Read Blob."
+          },
+          "13": {
+            "msg": "Report Map, 72 bajty",
+            "title": "Co znaczy każdy bit",
+            "text": "Raport 1: 8 bitów modyfikatorów, bajt dopełnienia, 6 kodów klawiszy. Raport 3: jeden 16-bitowy klawisz multimediów. kit/lib/ble-kit/src/hid_report.h zamienia te bajty na pola; wypróbuj to w następnym panelu."
+          },
+          "14": {
+            "msg": "Read 2908 → 01 01",
+            "title": "Który Report to który?",
+            "text": "Każda charakterystyka Report ma deskryptor Report Reference: ID raportu i typ (1 wejście, 2 wyjście, 3 funkcja). ID raportu nigdy nie podróżuje w powiadomieniach: tylko tu jest zapisane."
+          },
+          "15": {
+            "msg": "Write CCCD 01 00",
+            "title": "Subskrybuj",
+            "text": "Zapis 01 00 do CCCD każdego raportu wejściowego (deskryptor 2902) oznacza: wysyłaj mi powiadomienia. Zrobione dla każdego raportu wejściowego."
+          },
+          "16": {
+            "msg": "naciskasz h",
+            "title": "Naciskasz h",
+            "text": "Klawiatura skanuje swoją macierz klawiszy, znajduje klawisz na pozycji 0B i ustawia raport w kolejce na następne zdarzenie połączenia."
+          },
+          "17": {
+            "msg": "Notify 00 00 0B 00 00 00 00 00",
+            "title": "Jedno naciśnięcie, 8 bajtów",
+            "text": "Bez modyfikatorów (00), bajt zarezerwowany (00) i kod klawisza 0B w pierwszym slocie. Płytka porównuje z poprzednim raportem: 0B jest nowe, więc to naciśnięcie. 0B to h zarówno na klawiaturze US, jak i niemieckiej."
+          },
+          "18": {
+            "msg": "Notify 00 00 00 00 00 00 00 00",
+            "title": "Zwolnienie",
+            "text": "Gdy puszczasz, przychodzi kolejny raport: wszystkie sloty klawiszy puste. Trzymanie klawisza nic więcej nie wysyła: płytka wie, że jest wciśnięty, z poprzedniego raportu."
+          }
+        }
+      },
+      "back": {
+        "label": "Powrót (powiązana)",
+        "lanes": [
+          [
+            "ESP32-S3",
+            "centrala (ta płytka)"
+          ],
+          [
+            "klawiatura",
+            "peryferium"
+          ],
+          [
+            "ty",
+            "przy klawiaturze"
+          ]
+        ],
+        "steps": {
+          "0": {
+            "msg": "naciśnięcie dowolnego klawisza",
+            "title": "Obudź ją",
+            "text": "Po ponownym włączeniu płytka znów skanuje. Klawiatura śpi, aż naciśniesz klawisz."
+          },
+          "1": {
+            "msg": "ADV_IND / ADV_DIRECT_IND",
+            "title": "Klawiatura wywołuje swojego hosta",
+            "text": "Powiązana klawiatura często używa ogłoszeń kierowanych: pakietu adresowanego tylko do płytki. Callback skanowania płytki porównuje adres z jej wiązaniami w NVS."
+          },
+          "2": {
+            "msg": "CONNECT_IND",
+            "title": "Połączenie",
+            "text": "Tak samo jak za pierwszym razem: płytka ustawia takt."
+          },
+          "3": {
+            "msg": "LL_ENC_REQ (zapisany LTK)",
+            "title": "Szyfrowanie zapisanym kluczem",
+            "text": "Bez parowania, bez passkey: obie strony nadal mają długoterminowy klucz z wiązania. Jeśli jedna strona go zapomniała, to się nie uda z „PIN or key missing”: zapomnij i sparuj ponownie."
+          },
+          "4": {
+            "msg": "Report Map + CCCD 01 00",
+            "title": "Host znów",
+            "text": "Płytka ponownie czyta Report Map i subskrybuje. (Powiązane urządzenie pamięta subskrypcje, ale płytka na tym nie polega.)"
+          },
+          "5": {
+            "msg": "Notify …",
+            "title": "Pisz dalej",
+            "text": "Pierwszy klawisz, którym ją obudziłeś, zwykle ginie; kolejne docierają."
+          }
+        }
+      },
+      "jbl": {
+        "label": "Badanie twojego JBL-a",
+        "lanes": [
+          [
+            "ESP32-S3",
+            "centrala (ta płytka)"
+          ],
+          [
+            "głośnik JBL",
+            "strona BLE"
+          ],
+          [
+            "telefon",
+            "odtwarza muzykę"
+          ]
+        ],
+        "steps": {
+          "0": {
+            "msg": "audio (Classic Bluetooth, A2DP)",
+            "title": "Muzyka nigdy nie dotyka BLE",
+            "text": "Telefon przesyła dźwięk do głośnika przez klasyczne Bluetooth (BR/EDR, profil A2DP). ESP32-S3 ma tylko radio Low Energy: nie może się do tego przyłączyć."
+          },
+          "1": {
+            "msg": "ADV_IND",
+            "title": "Ale głośnik też mówi przez BLE",
+            "text": "Wiele głośników ogłasza się też przez BLE, dla swojej aplikacji na telefon (ustawienia, aktualizacje firmware, łączenie głośników)."
+          },
+          "2": {
+            "msg": "CONNECT_IND + wykrywanie",
+            "title": "Badanie",
+            "text": "connect <n>: płytka się łączy i wypisuje, co oferuje."
+          },
+          "3": {
+            "msg": "Read 2A00 (nazwa urządzenia)",
+            "title": "Tylko publiczne podstawy",
+            "text": "Płytka czyta standardowe wartości, które głośnik udostępnia każdemu, a nic z usługi producenta: to własny protokół aplikacji JBL."
+          },
+          "4": {
+            "msg": "werdykt",
+            "title": "Dlaczego nie ma usługi audio",
+            "text": "Brak 1812, brak standardowej usługi audio: jest tylko własna usługa aplikacji. Płytka mówi to w widoku explore i zostawia sprawę."
+          }
+        }
+      }
+    }
+  }
+}

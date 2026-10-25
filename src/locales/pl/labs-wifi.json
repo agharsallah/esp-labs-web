@@ -1,0 +1,281 @@
+{
+  "terminal": {
+    "expected": "{{command}}   (oczekiwane wyjście)",
+    "expectedNetworks": "{{command}}   (oczekiwane wyjście, przykładowe sieci)",
+    "expectedData": "{{command}}   (oczekiwane wyjście, przykładowe dane)"
+  },
+  "views": {
+    "networks": "sieci",
+    "channels": "kanały",
+    "radar": "radar",
+    "status": "status",
+    "message": "wiadomość",
+    "now": "teraz",
+    "forecast": "prognoza",
+    "week": "tydzień",
+    "oracle": "wyrocznia"
+  },
+  "preview": {
+    "views": "Widoki",
+    "viewChoice": "{{n}} {{view}}",
+    "scannerScreen": "Symulowany ekran skanera",
+    "scannerButton": "Przycisk: kliknięcie – następny widok, podwójne kliknięcie – skan, przytrzymanie – auto-skan",
+    "join": "{{command}} (przykład)",
+    "autoOn": "auto-skan włączony · co 10 s",
+    "autoOff": "auto-skan wyłączony",
+    "scannerCaption": "Przykładowe sieci i adresy, nie twoje. Kliknięcie = następny widok, podwójne kliknięcie = skanuj teraz, przytrzymanie 0,6 s = auto-skan wł./wył. „{{join}}” pokazuje, jak wygląda dołączanie. Twoja płytka pokazuje prawdziwe sieci wokół ciebie."
+  },
+  "phone": {
+    "page": "Symulowana strona w telefonie",
+    "screen": "Symulowany ekran płytki",
+    "caption": "Płytka po lewej na tej stronie pokazuje też kolor diody LED. Twoja prawdziwa płytka robi to wszystko przez Wi-Fi."
+  },
+  "weather": {
+    "screen": "Symulowany ekran pogody i wyroczni, dane przykładowe",
+    "button": "Przycisk: kliknięcie – następny widok, podwójne kliknięcie – odśwież lub nowe haiku",
+    "umbrella": "zapytaj: parasol? (przykład)",
+    "caption": "Przykładowe miasto, pogoda i odpowiedzi wyroczni, nie na żywo. Kliknięcie = następny widok, podwójne kliknięcie = odśwież (widok wyroczni: nowe haiku). Twoja płytka pokazuje twoje miasto i prawdziwe odpowiedzi z wybranego modelu."
+  },
+  "scan": {
+    "goal": "Radio odwiedza po kolei każdy kanał 2,4 GHz, pyta „kto tu jest?” (żądanie probe) i nasłuchuje odpowiedzi oraz beaconów, które każdy router wysyła około 10 razy na sekundę. Pełne przejście trwa 2–3 sekundy.",
+    "channels": "Kanały od 1 do 13, skanowany jest podświetlony",
+    "channel": "Kanał {{channel}}",
+    "channelClean": "Kanał {{channel}} · jeden z trzech, które się nie nakładają",
+    "heard_one": "usłyszano {{count}}: {{names}}",
+    "heard_few": "usłyszano {{count}}: {{names}}",
+    "heard_many": "usłyszano {{count}}: {{names}}",
+    "heard_other": "usłyszano {{count}}: {{names}}",
+    "nothing": "tutaj nic nie słychać",
+    "hidden": "(ukryta)",
+    "example": "(przykładowe sieci)",
+    "scale": "Skala siły sygnału w dBm",
+    "scaleTitle": "Siła sygnału (RSSI)",
+    "ticks": {
+      "excellent": "znakomity",
+      "veryGood": "bardzo dobry",
+      "good": "dobry",
+      "weak": "słaby",
+      "barely": "ledwo widoczny"
+    },
+    "caption": "dBm jest logarytmiczne: każde 3 dB mniej to połowa mocy. −90 to milion razy słabiej niż −30."
+  },
+  "web": {
+    "drawing": "Rysunek architektury",
+    "drawingAlt": "Telefon łączy się bezpośrednio z płytką. Aplikacja React rozmawia z serwerem Node, który rozmawia z płytką. Płytka wysyła aktualizacje na żywo z powrotem przez WebSockets.",
+    "phone": "Telefon",
+    "phoneSub": "strona bench.local",
+    "react": "aplikacja React",
+    "reactSub": "twoja przeglądarka na Macu",
+    "node": "serwer Node",
+    "nodeSub": "przechowuje ESP_TOKEN",
+    "adminWire": "REST + WebSocket (token dodany dla admina)",
+    "api": "Webowe API płytki",
+    "rows": {
+      "status": "co robi płytka; ostatnie skanowanie",
+      "scan": "skanuj teraz",
+      "view": "widok ekranu; auto-skan, jasność",
+      "led": "kolor diody LED; tekst na ekranie",
+      "wifi": "zapisz sieć (otwarte podczas konfiguracji, <adm>admin</adm> potem)",
+      "admin": "<adm>admin</adm>: zapomnij, uruchom ponownie, aktualizacja firmware",
+      "ws": "wysyła status co sekundę, skany, naciśnięcia przycisku, postęp aktualizacji"
+    }
+  },
+  "remote": {
+    "drawing": "Rysunek zdalnego sterowania",
+    "drawingAlt": "Twój telefon łączy się z publicznym adresem tunelu przez HTTPS. Twój Mac i płytka łączą się wychodząco z tunelem, więc nic nie jest otwierane w routerze. Tunel przekazuje żądania telefonu i połączenie płytki do serwera Node na twoim Macu.",
+    "home": "twój dom · router: nic nie otwarte, nic nie przekierowane",
+    "phone": "Telefon · laptop",
+    "phoneSub": "z dowolnego miejsca",
+    "public": "Publiczny adres https",
+    "publicSub": "albo twój hostowany serwer",
+    "mac": "Twój Mac",
+    "macSub": "przechowuje klucz i token",
+    "boardOut": "łączy się wychodząco: wss /device",
+    "boardToken": "loguje się swoim tokenem",
+    "https": "HTTPS + klucz",
+    "tunnel": "tunel (Mac łączy się wychodząco)",
+    "wss": "wss (płytka łączy się wychodząco)",
+    "caption": "Hostowany serwer zamiast tunelu? Serwer Node działa tam (VPS, Fly.io, Render…) za swoim HTTPS, a płytka łączy się prosto z nim: tunel i twój Mac odpadają. Ten sam firmware, ten sam <code>relay wss://…</code>.",
+    "compare": "Porównanie wariantu 1 i wariantu 2",
+    "lan": "Wariant 1 · w twoim Wi-Fi",
+    "remote": "Wariant 2 · z dowolnego miejsca",
+    "rows": {
+      "who": { "what": "Kto się łączy", "lan": "telefon → płytka", "remote": "płytka → twój serwer (wychodząco)" },
+      "away": { "what": "Działa poza domem", "lan": "nie", "remote": "tak, przez tunel" },
+      "router": { "what": "Ustawienia routera mają znaczenie", "lan": "tak (izolacja Wi-Fi)", "remote": "nie" },
+      "signIn": { "what": "Kto się loguje", "lan": "nikt (sieć domowa)", "remote": "ty: DASHBOARD_KEY · płytka: jej token" },
+      "ota": { "what": "Aktualizacje firmware", "lan": "tak", "remote": "na razie użyj wariantu 1" }
+    }
+  },
+  "roadmap": {
+    "lessons": "Lekcje Wi-Fi",
+    "lesson": "Lekcja",
+    "capability": "Możliwość Wi-Fi",
+    "needs": "Wymaga",
+    "rows": {
+      "W1": {
+        "title": "Skanowanie i dołączanie",
+        "capability": "widoki skanera, dołączanie do twojej sieci, hasło zapisane na chipie, samo się ponownie łączy, widok statusu z zegarem, IP i wykresem sygnału, bench.local",
+        "needs": "niczego"
+      },
+      "W2": {
+        "title": "Sterowanie z telefonu",
+        "capability": "REST API + WebSocket, strona w telefonie pod bench.local, sieć do konfiguracji, aktualizacje firmware przez HTTP, panel React + Node na twoim Macu",
+        "needs": "W1"
+      },
+      "W3": {
+        "title": "Internet i AI",
+        "capability": "HTTPS + JSON z internetu (pogoda Open-Meteo); Bench Oracle: dowolny model AI przez bramkę LiteLLM, odpowiedzi jako ustrukturyzowany JSON",
+        "needs": "W1 + bramka LiteLLM i klucz dostawcy dla wyroczni"
+      },
+      "W4": {
+        "title": "Laboratorium radiowe (bonus)",
+        "capability": "aktywność kanałów z liczby pakietów; wiadomości między płytkami przez ESP-NOW",
+        "needs": "drugi ESP32 dla ESP-NOW"
+      },
+      "W5": {
+        "title": "Dziennik sprzętowy",
+        "capability": "wpisy z pomiarów i zdjęcia twoich projektów wysyłane do API tego repozytorium",
+        "needs": "W3 + działające API"
+      }
+    },
+    "caption": "Każde laboratorium ma własny firmware i polecenie (<code>wifi-lab-w1</code>, <code>wifi-lab-w2</code>, …); to, co dzielą, znajduje się w <code>kit/lib/wifi-kit</code>, więc każde laboratorium dodaje funkcje zamiast zaczynać od zera.",
+    "parts": "Części, które odblokowują więcej",
+    "part": "Część",
+    "about": "O części",
+    "adds": "Co dodaje",
+    "partRows": {
+      "bme280": {
+        "name": "BME280",
+        "about": "3–10 € · I2C, 4 przewody",
+        "adds": "Temperatura, wilgotność, ciśnienie (BME680 dodaje jakość powietrza): prawdziwe dane dla panelu w telefonie i wpisów dziennika"
+      },
+      "esp32": {
+        "name": "drugi ESP32",
+        "about": "3–8 € · dowolny C3 lub S3",
+        "adds": "ESP-NOW bez routera, bezprzewodowy pilot, jedna płytka jako punkt dostępu, a druga się do niego łączy"
+      },
+      "powerBank": {
+        "name": "Power bank",
+        "about": "pewnie masz jeden",
+        "adds": "Przenośny skaner: chodź i mapuj sygnał pokój po pokoju"
+      },
+      "encoder": {
+        "name": "Enkoder obrotowy",
+        "about": "1–2 € · KY-040",
+        "adds": "Przewijanie i wybór w menu: wybór sieci, ustawienia"
+      },
+      "ring": {
+        "name": "Pierścień WS2812",
+        "about": "2–5 € · 1 przewód danych",
+        "adds": "Miernik sygnału w kolorze; wybieraj kolory z telefonu"
+      },
+      "ina219": {
+        "name": "INA219",
+        "about": "2–4 € · I2C",
+        "adds": "Pomiar poboru mocy Wi-Fi (szczyty ok. 300 mA) i tego, ile oszczędzają tryby uśpienia"
+      },
+      "buzzer": {
+        "name": "Brzęczyk pasywny",
+        "about": "1 €",
+        "adds": "Alarmy dźwiękowe: utrata sieci, wartość powyżej limitu"
+      }
+    }
+  },
+  "https": {
+    "legend": {
+      "msg": "wiadomość (pomarańczowy: bieżący krok)",
+      "wait": "pracownik czeka na sieć",
+      "loop": "loop() wciąż rysuje klatki"
+    },
+    "weather": {
+      "label": "Pogoda · Open-Meteo",
+      "lanes": {
+        "loop": { "sub": "rysuje ekran" },
+        "worker": { "name": "zadanie pracownika", "sub": "obsługuje sieć" },
+        "server": { "sub": "usługa pogodowa" }
+      },
+      "steps": {
+        "job": {
+          "title": "loop() przekazuje zadanie",
+          "text": "Co 15 minut (albo przy podwójnym kliknięciu) loop() wkłada jedno zadanie do skrzynki pracownika, po czym wraca od razu do rysowania. Nigdy nie czeka na sieć."
+        },
+        "connect": {
+          "title": "Znajdź serwer i połącz się",
+          "text": "DNS zamienia nazwę na adres IP, potem płytka otwiera połączenie TCP na port 443, port HTTPS."
+        },
+        "tls": {
+          "title": "TLS: czy to na pewno Open-Meteo?",
+          "text": "Serwer wysyła swój certyfikat. Płytka sprawdza, czy prowadzi on do jednego z certyfikatów głównych wbudowanych w firmware i czy wystawiono go dla tej nazwy. Potem obie strony uzgadniają klucze szyfrujące: od tej chwili nikt po drodze nie odczyta ani nie zmieni danych."
+        },
+        "get": {
+          "title": "Poproś o prognozę",
+          "text": "Jedno żądanie GET ze współrzędnymi i listą wartości, których chcemy: teraz, następne 24 godziny, 7 dni."
+        },
+        "json": {
+          "title": "Odpowiedź: JSON",
+          "text": "Około 1,7 KB tekstu w JSON. Prawie jedna trzecia to znaczniki czasu, których ekran nigdy nie pokazuje."
+        },
+        "filter": {
+          "title": "Zostaw tylko to, co rysujemy",
+          "text": "Filtr ArduinoJson to szablon: pola, których nie ma w filtrze, są pomijane przy czytaniu, więc nigdy nie zajmują pamięci."
+        },
+        "back": {
+          "title": "Oddaj wynik",
+          "text": "Pracownik wkłada mały struct do skrzynki (pod mutexem, żeby oba zadania nigdy go nie dotykały jednocześnie) i zwiększa numer wersji."
+        },
+        "draw": {
+          "title": "Następna klatka to pokazuje",
+          "text": "loop() widzi nową wersję, kopiuje struct, a następna klatka rysuje nowe niebo. Licznik klatek po lewej nigdy się nie zatrzymał."
+        }
+      }
+    },
+    "oracle": {
+      "label": "Wyrocznia · LiteLLM",
+      "lanes": {
+        "loop": { "sub": "rysuje ekran" },
+        "worker": { "name": "zadanie pracownika", "sub": "obsługuje sieć" },
+        "gateway": { "sub": "bramka na twoim Macu" },
+        "provider": { "name": "dostawca AI", "sub": "dowolny dostawca" }
+      },
+      "steps": {
+        "job": {
+          "title": "loop() opisuje chwilę",
+          "text": "loop() zapisuje to, co wie płytka, jako mały tekst JSON i przekazuje go pracownikowi razem z adresem bramki, jej kluczem i nazwą modelu."
+        },
+        "request": {
+          "title": "Jedno standardowe żądanie",
+          "text": "Płytka zawsze wysyła to samo żądanie w stylu OpenAI, bez względu na model po drugiej stronie. Oferuje jedną funkcję, show_on_bench, i wymusza, by model ją wywołał."
+        },
+        "route": {
+          "title": "LiteLLM wybiera prawdziwy model",
+          "text": "config.yaml mapuje nazwę, o którą poprosiła płytka, na dostawcę i model, a klucz dostawcy dodaje z .env. Zmień mapowanie, a płytka użyje innego modelu, bez ponownego wgrywania firmware."
+        },
+        "translate": {
+          "title": "Przetłumaczone dla dostawcy",
+          "text": "LiteLLM przepisuje żądanie we własnym formacie dostawcy (dla Anthropic: Messages API z wymuszonym narzędziem) i wysyła je przez HTTPS."
+        },
+        "writing": {
+          "title": "Model pisze",
+          "text": "Kilka sekund. Zadanie pracownika czeka na sieć; loop() nie czeka: patrz, jak licznik klatek biegnie dalej, a ekran się animuje."
+        },
+        "call": {
+          "title": "Odpowiedź w uzgodnionym kształcie",
+          "text": "Ponieważ funkcja była wymuszona, odpowiedź nie jest dowolnym tekstem: to wywołanie show_on_bench z argumentami JSON."
+        },
+        "standard": {
+          "title": "Z powrotem w standardowym formacie",
+          "text": "LiteLLM zamienia odpowiedź dostawcy z powrotem na format OpenAI, więc płytka parsuje jeden kształt dla każdego dostawcy. Liczby tokenów przychodzą razem z nią."
+        },
+        "parse": {
+          "title": "JSON w JSON-ie",
+          "text": "Argumenty przychodzą jako string JSON wewnątrz odpowiedzi JSON, więc płytka parsuje dwa razy. Potem zamienia tekst na zwykły ASCII (czcionki ekranu nie mają é ani —) i zamienia #5fa8ff na czerwony, zielony, niebieski."
+        },
+        "show": {
+          "title": "Ekran i dioda LED",
+          "text": "loop() odbiera odpowiedź: tytuł w jej kolorze, linie wypisywane po kolei, dioda LED zapalona, czas i tokeny pod spodem."
+        }
+      }
+    }
+  }
+}

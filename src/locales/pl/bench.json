@@ -1,0 +1,35 @@
+{
+  "overview": {
+    "title": "Teraz na stanowisku",
+    "loading": "Ładowanie stanu stanowiska"
+  },
+  "specs": {
+    "label": "Dane płytki",
+    "chip": "ESP32-S3 <b>N16R8</b>",
+    "cores": "<b>2×</b> Xtensa LX7 @ 240 MHz",
+    "flash": "<b>16 MB</b> flash",
+    "psram": "<b>8 MB</b> PSRAM (octal)",
+    "radio": "<b>Wi-Fi 4</b> + BLE 5",
+    "logic": "Logika <b>3,3 V</b>"
+  },
+  "log": {
+    "title": "Dziennik stanowiska",
+    "intro": "Każde polecenie, które instalowało oprogramowanie, rozmawiało z płytką albo ją wgrywało, wraz z odpowiedzią. Claude zapowiada każde polecenie przed wykonaniem. Wszystko, co dotyka płytki lub instaluje, czeka na twoje zielone światło.",
+    "filter": "Filtruj według typu",
+    "timeline": "Oś dziennika",
+    "entryLabel": "{{n}} · {{types}} · {{title}}",
+    "key": "<flash></flash> wgrywanie <failed></failed> błąd <other></other> instalacja, budowanie, odczyt, reset",
+    "response": "Odpowiedź",
+    "result": "Wynik"
+  },
+  "types": {
+    "all": "wszystkie",
+    "install": "instalacja",
+    "build": "budowanie",
+    "read": "odczyt",
+    "reset": "reset",
+    "flash": "wgrywanie",
+    "failed": "błąd",
+    "observe": "obserwacja"
+  }
+}

@@ -1,0 +1,727 @@
+{
+  "journey": {
+    "canvasLabel": "Tor sygnału: dźwięk trafia do mikrofonu (napięcie z KY-037 do ADC albo liczby z INMP441 przez I2S), ESP32-S3 je przetwarza, a laboratorium zamienia je w coś innego, często w dźwięk z głośnika.",
+    "optional": "{{part}} (opcjonalnie)",
+    "output": "→ {{out}}",
+    "path": {
+      "noMic": "(bez mikrofonu)",
+      "adcOrI2s": "ADC albo I2S0",
+      "withSpeaker": "16 000/s · wyjście I2S1"
+    },
+    "parts": {
+      "ky": "KY-037",
+      "inmp": "INMP441",
+      "mic": "KY-037 lub INMP441",
+      "spk": "MAX98357A + głośnik",
+      "wifi": "Wi-Fi (W1)"
+    },
+    "labs": {
+      "S1": {
+        "title": "Słuchaj",
+        "what": "surowy sygnał: oscyloskop, oba mikrofony obok siebie, polaryzacja lub bity, komparator",
+        "out": "ekran"
+      },
+      "S2": {
+        "title": "Głośność",
+        "what": "miernik poziomu (dB SPL z INMP441), 10-minutowy dziennik, alarm",
+        "out": "dioda · melodia"
+      },
+      "S3": {
+        "title": "Sterowanie klaskaniem",
+        "what": "klaśnięcia (nie głosy) w wzorach po 1-4 przełączają rzeczy",
+        "out": "dioda · RGB · dźwięki"
+      },
+      "S4": {
+        "title": "Rejestrator",
+        "what": "nagrywanie uruchamiane głosem; słuchaj w telefonie albo na płytce",
+        "out": "Wi-Fi · WAV · głośnik"
+      },
+      "S5": {
+        "title": "Widmo",
+        "what": "nasza własna FFT: pasma, wodospad, strojenie z tonem odniesienia",
+        "out": "wysokość dźwięku"
+      },
+      "S6": {
+        "title": "Gry dźwiękowe",
+        "what": "zamek na pukanie, Clap Bird, impreza podążająca za rytmem",
+        "out": "gry · dźwięki"
+      },
+      "S7": {
+        "title": "Głośnik",
+        "what": "syntezator: fale, nuty, akordy, obwiednie, melodie, dźwięki gier",
+        "out": "głośnik"
+      },
+      "S8": {
+        "title": "Efekty głosu",
+        "what": "papuga, która powtarza cię jako wiewiórka albo robot; echo na żywo",
+        "out": "głośnik"
+      }
+    }
+  },
+  "controls": {
+    "play": "▶ Odtwórz",
+    "pause": "❚❚ Pauza",
+    "speed": "prędkość ×{{speed}}",
+    "restart": "↺ od nowa"
+  },
+  "sounds": {
+    "talk": "🗣 mowa",
+    "whistle": "〰 gwizd",
+    "clap": "👏 klaśnięcie",
+    "quiet": "🤫 cisza"
+  },
+  "chain": {
+    "label": "Potok ośmiu etapów od ciśnienia powietrza do decybeli, z wybranym etapem rysowanym na żywo poniżej.",
+    "previous": "Poprzedni etap",
+    "next": "Następny etap",
+    "position": "{{at}} / {{total}}",
+    "steps": {
+      "air": {
+        "box": "powietrze",
+        "title": "1 · Dźwięk to ruch powietrza",
+        "text": "Twój głos ściska i rozciąga cząsteczki powietrza setki razy na sekundę. Ciśnienie waha się o około 0,02 Pa, gdy mówisz z odległości 30 cm, na tle 101 325 Pa, które powietrze zawsze ma. Ta drobna zmiana to wszystko, co dostaje mikrofon."
+      },
+      "capsule": {
+        "box": "kapsuła",
+        "title": "2 · Kapsuła zamienia to w wolty",
+        "text": "Srebrna puszka KY-037 to kapsuła elektretowa: cienka naładowana folia (membrana) przed metalową płytką. Powietrze porusza folię, zmienia się szczelina, a ładunek daje napięcie kilku milliwoltów. Na tym module nie ma wzmacniacza: dostajesz właśnie tyle."
+      },
+      "ao": {
+        "box": "pin AO",
+        "title": "3 · Na pinie AO: mała fala na dużym stałym napięciu",
+        "text": "Kapsuła potrzebuje zasilania, więc jej wyjście leży na stałym napięciu DC, <b>polaryzacji</b> (tutaj około 1,5 V; widok polaryzacji w S1 pokazuje twoje). Dźwięk to drżenie o kilku mV nałożone na nie. W prawdziwej skali go nie widać: wstawka powiększa je 100 razy."
+      },
+      "adc": {
+        "box": "ADC",
+        "title": "4 · ADC mierzy to 16 000 razy na sekundę",
+        "text": "ADC zamienia napięcie na liczbę od 0 do 4095. Przy tłumieniu 12 dB zakres to 0-3,1 V, więc jeden krok to około 0,76 mV, a szept ma tylko kilka kroków wysokości. Mniejsze tłumienie = mniejszy zakres = drobniejsze kroki (<code>atten</code> w S1)."
+      },
+      "dma": {
+        "box": "DMA",
+        "title": "5 · DMA zbiera wyniki bez CPU",
+        "text": "W trybie ciągłym timer ADC sam uruchamia każdą konwersję, a DMA (bezpośredni dostęp do pamięci) sam zapisuje każdy wynik, po 4 bajty, do RAM. Po 256 wynikach (1 KB, 16 ms) przekazuje ramkę naszemu zadaniu próbkowania na rdzeniu 0. Pętla ekranu na rdzeniu 1 nigdy na nie nie czeka."
+      },
+      "ring": {
+        "box": "bufor",
+        "title": "6 · 4-sekundowy bufor próbek",
+        "text": "Próbkowanie zapisuje każdą próbkę w buforze 65 536 miejsc w PSRAM. Każda próbka ma bieżący numer; miejsce to numer modulo 65 536, więc bufor nadpisuje się sam co 4,1 s. Oscyloskop, FFT i rejestrator odczytują z niego odcinki po numerze, kiedy tylko chcą."
+      },
+      "bias": {
+        "box": "− polaryzacja",
+        "title": "7 · Usuń polaryzację",
+        "text": "Bardzo wolna średnia podąża za polaryzacją (ustala się przez około ćwierć sekundy). Każda próbka minus ta średnia to sam dźwięk: fala wokół zera. Potencjometr, inny moduł albo ciepły pokój mogą przesunąć polaryzację; średnia po prostu za nią podąża."
+      },
+      "db": {
+        "box": "int16 → dB",
+        "title": "8 · Liczby, które rozumie program dźwiękowy",
+        "text": "×16 zamienia kroki ADC na 16-bitowe jednostki audio (−32 768 do 32 767, jak w pliku WAV). Co 64 próbki (4 ms) próbkowanie mierzy RMS ramki, czyli średnią siłę, a miernik poziomu zamienia to na decybele: w odniesieniu do pełnej skali ADC (dBFS) i do ciszy w twoim pokoju."
+      }
+    },
+    "air": {
+      "value": "tłoczno = ciśnienie w górę, rzadko = w dół · {{db, number(minimumFractionDigits: 0; maximumFractionDigits: 0)}} dB powyżej ciszy w tej chwili"
+    },
+    "capsule": {
+      "diaphragm": "membrana",
+      "plate": "płytka",
+      "box": "wyjście kapsuły, ostatnie 40 ms (ramka ±30 mV)",
+      "value": "kapsuła teraz: {{mv, number(minimumFractionDigits: 2; maximumFractionDigits: 2; signDisplay: exceptZero)}} mV"
+    },
+    "ao": {
+      "bias": "polaryzacja {{v, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} V: fala jest w tej linii, też za mała, by ją zobaczyć",
+      "zoom": "×100 wokół polaryzacji (±30 mV)",
+      "valuePlus": "AO teraz: {{v, number(minimumFractionDigits: 4; maximumFractionDigits: 4)}} V = {{bias}} mV polaryzacji + {{mv, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} mV dźwięku",
+      "valueMinus": "AO teraz: {{v, number(minimumFractionDigits: 4; maximumFractionDigits: 4)}} V = {{bias}} mV polaryzacji − {{mv, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} mV dźwięku"
+    },
+    "adc": {
+      "dots": "40 próbek = 2,5 ms · jedna kropka co 62,5 µs · każda linia = jeden krok ADC = {{mv, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} mV",
+      "value": "surowy odczyt teraz: {{raw}} z 0-4095 · tłumienie {{atten}}"
+    },
+    "dma": {
+      "frame": "Ramka DMA: 256 wyników × 4 bajty",
+      "sampler": "próbkowanie",
+      "samplerCore": "zadanie, rdzeń 0",
+      "loopCore": "ekran, rdzeń 1",
+      "idle": "CPU nic nie robi, dopóki ramka się zapełnia",
+      "value": "62,5 ramki na sekundę, po 16 ms każda · zadanie budzi się tylko wtedy, gdy ramka jest pełna"
+    },
+    "ring": {
+      "write": "zapis",
+      "readers": {
+        "scope": "● oscyloskop: czyta ostatnie 20 ms",
+        "fft": "● FFT: czyta ostatnie 512 próbek",
+        "recorder": "● rejestrator: czyta cofnięte o pół sekundy (jego przedrejestrowanie)"
+      },
+      "size": "65 536 miejsc · 128 KB PSRAM · jedno okrążenie = 4,1 s",
+      "value": "zapisano = {{w, number}} · miejsce = zapisano & 65535 = {{slot}}"
+    },
+    "bias": {
+      "raw": "surowe (kroki ADC) i jego wolna średnia: {{dc, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}}",
+      "minus": "− średnia  ↓",
+      "alone": "sam dźwięk, wokół 0",
+      "value": "surowe {{raw}} − średnia {{dc, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} = {{diff, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} kroków"
+    },
+    "db": {
+      "frames": "8 ramek po 64 próbki (po 4 ms) · ×16 = jednostki int16",
+      "value": "szybki {{fast, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} dBFS · podłoga {{floor, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} dBFS · {{above, number(minimumFractionDigits: 0; maximumFractionDigits: 0)}} dB powyżej ciszy"
+    }
+  },
+  "mics": {
+    "label": "Góra: analogowa ścieżka KY-037 i cyfrowa ścieżka INMP441. Dół: ramka I2S na przewodach SCK, WS i SD, kursor odczytujący próbkę bit po bicie i próbka zamieniona na 16-bitową liczbę.",
+    "tickLabel": "Jeden takt zegara",
+    "tick": "takt ▶",
+    "pressure": "ciśnienie dźwięku",
+    "pressureLabel": "Wartość próbki jako udział pełnej skali",
+    "output": "{{s24}} (24-bitowo)",
+    "caption": {
+      "reading": "Przy każdym takcie SCK mikrofon kładzie jeden bit na SD; ESP32 odczytuje go na narastającym zboczu. WS mówi, czyja jest kolej: niski = lewy slot.",
+      "shift": "Dlaczego >> 6, a nie >> 8? Wzięcie 16 najwyższych bitów zostawiłoby cichy pokój blisko zera. Zachowanie 6 dodatkowych niskich bitów to 12 dB wzmocnienia: głos korzysta z prawdziwych liczb, a obsadza się tylko klaśnięcie tuż przy mikrofonie (około 114 dB SPL)."
+    },
+    "lane": {
+      "capsule": "kapsuła",
+      "fewMv": "kilka mV",
+      "plusBias": "+ polaryzacja",
+      "onAo": "~1,5 V na AO",
+      "adcBits": "12-bitowy, 0,76 mV",
+      "minusAverage": "− średnia",
+      "dmaRing": "DMA, bufor",
+      "ownAmp": "+ własny wzmacniacz",
+      "adc24": "przetwornik 24-bitowy",
+      "insideMic": "wewnątrz mikrofonu",
+      "frames": "ramki I2S",
+      "sample24": "próbka 24-bitowa"
+    },
+    "frame": {
+      "left": "lewy slot (L/R → GND: mikrofon mówi tutaj)",
+      "right": "prawy slot: nikt (zera)",
+      "firstBit": "najpierw bit 23 (znak) … bit 0",
+      "padding": "8 zer dopełnienia"
+    },
+    "read": {
+      "soFar": "odczytano dotąd: {{got}} z 24 bitów",
+      "level": "to {{dbfs, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} dBFS; ≈ {{spl, number(minimumFractionDigits: 0; maximumFractionDigits: 0)}} dB SPL dla sinusa (dBFS + 111, z karty katalogowej: −26 dBFS przy 94 dB SPL)",
+      "clock": "SCK = 16 000 próbek × 2 sloty × 32 bity = 1,024 MHz, taktowane przez ESP32 (I2S0); głośnik używa I2S1"
+    }
+  },
+  "bias": {
+    "label": "Linijka 0–3,3 V z zacienionym zakresem ADC, linią polaryzacji i falą mikrofonu; części poza zakresem są obcinane.",
+    "bias": "polaryzacja",
+    "biasLabel": "Napięcie polaryzacji w milliwoltach",
+    "sound": "dźwięk",
+    "soundLabel": "Jak głośno: wysokość fali",
+    "atten": "Tłumienie",
+    "attenOption": "tłumienie {{db}} dB",
+    "caption": "Polaryzacja {{bias}} mV, dźwięk ±{{a}} mV, tłumienie {{atten}}. Podpowiedź jest tą samą, którą widok polaryzacji w S1 wypisuje na płytce.",
+    "range": "zakres ADC 0-{{v, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} V",
+    "steps": "1 krok ADC = {{mv, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} mV · ta fala obejmuje {{steps}} z 4096 kroków",
+    "hint": {
+      "clipping": "OBCINANIE: fala uderza w krawędź zakresu. Płaskie szczyty = utracony dźwięk (pomarańczowy); czerwone = to, co zostało obcięte.",
+      "nearTop": "polaryzacja blisko góry: użyj większego tłumienia",
+      "try6": "mieści się w 0-1,75 V: spróbuj tłumienia 6 (2x drobniej)",
+      "try25": "mieści się w 0-1,25 V: spróbuj tłumienia 2,5",
+      "good": "fala mieści się w zakresie: dobrze"
+    }
+  },
+  "comparator": {
+    "label": "Fala AO z ostatnich dwóch sekund z linią progu potencjometru i wyjściem DO poniżej: wysokie wszędzie tam, gdzie fala jest powyżej linii.",
+    "potRange": "potencjometr: próg powyżej polaryzacji",
+    "potLabel": "Próg komparatora w milliwoltach powyżej polaryzacji",
+    "drag": "przeciągnij też linię przerywaną",
+    "caption": "Próg {{pot}} mV powyżej polaryzacji. Każdy grzbiet fali powyżej linii przerywanej to jedno zbocze narastające na DO (bursztynowe); klaśnięcie daje ich dziesiątki, dlatego S3 słucha AO, a nie DO.",
+    "axis": "AO minus polaryzacja, ostatnie 4 s (skala pierwiastkowa)",
+    "pot": "pot {{mv}} mV",
+    "perSecond": "{{n}}/s",
+    "hint": {
+      "alwaysOn": "DO zawsze włączone: przekręć potencjometr w drugą stronę",
+      "underLine": "nawet klaśnięcie zostaje pod linią: przekręć potencjometr z powrotem",
+      "waiting": "jeszcze nic głośnego: klaśnięcie się zbliża",
+      "tuned": "DO reaguje na głośne momenty: wyregulowane"
+    }
+  },
+  "ballistics": {
+    "label": "Odtworzenie sceny dźwiękowej: poziom chwilowy, szybkie i wolne mierniki, zatrzymanie szczytu i podłoga szumu w czasie.",
+    "scene": "Scena",
+    "scenes": {
+      "talk": "mowa, potem klaśnięcie",
+      "fan": "wentylator włącza się na 30 s"
+    },
+    "legend": {
+      "inst": "chwilowy (4 ms)",
+      "fast": "szybki 125 ms",
+      "slow": "wolny 1 s",
+      "floor": "podłoga",
+      "peak": "zatrzymanie szczytu"
+    },
+    "now": "{{s, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} s · {{db, number(minimumFractionDigits: 0; maximumFractionDigits: 0)}} dB powyżej ciszy",
+    "caption": {
+      "fan": "Wentylator dodaje równe brzęczenie. Podłoga (turkusowa) rośnie o 0,5 dB na sekundę, aż brzęczenie stanie się nową ciszą, więc S2 przestaje to uznawać za głośne. Gdy wentylator się wyłącza, podłoga opada od razu. Klaśnięcie na końcu nadal się wyróżnia.",
+      "talk": "Szybki (różowy) podąża za sylabami; wolny (bursztynowy) pokazuje średnią głośność mowy. Chwilowy poziom klaśnięcia jest znacznie wyższy niż oba: 4-milisekundowy huk ledwo rusza średnią z 1 s. Zatrzymanie szczytu (białe kreski) trzyma go przez 1,5 s, potem opada o 20 dB na sekundę."
+    }
+  },
+  "decibels": {
+    "label": "Dwie fale: cisza w pokoju i głośniejszy dźwięk, który wybierasz, z linijką decybeli pokazującą, że +6 dB podwaja wysokość, a +20 dB to dziesięciokrotność.",
+    "howLoud": "jak głośno",
+    "howLoudLabel": "Decybele powyżej ciszy, razy dziesięć",
+    "tooTall": "(za wysokie, by narysować: naprawdę {{px}} px)",
+    "legend": "szary = cisza w twoim pokoju · różowy = ten dźwięk",
+    "marks": {
+      "quiet": "cisza",
+      "rustle": "szelest",
+      "talking": "rozmowa",
+      "clap": "klaśnięcie"
+    },
+    "caption": "{{db, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} dB powyżej ciszy: fala jest {{ratio, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} razy wyższa (moc ×{{power, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}}). S2 nazywa to „{{like}}”. Każde +6 dB podwaja wysokość; +20 dB to dziesięciokrotność.",
+    "captionBig": "{{db, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} dB powyżej ciszy: fala jest {{ratio, number(minimumFractionDigits: 0; maximumFractionDigits: 0)}} razy wyższa (moc ×{{power, number(minimumFractionDigits: 0; maximumFractionDigits: 0)}}). S2 nazywa to „{{like}}”. Każde +6 dB podwaja wysokość; +20 dB to dziesięciokrotność."
+  },
+  "clapMachine": {
+    "label": "Obwiednia głośności na 1,2 sekundy z progami narastania i opadania, kursorem i trzema stanami detektora wraz ze zdarzeniami, jakie dotąd wygenerował.",
+    "which": "Który dźwięk",
+    "back": "Jedna ramka wstecz",
+    "on": "Jedna ramka do przodu",
+    "rise": "narastanie",
+    "riseLabel": "Próg narastania w dB",
+    "release": "opadanie",
+    "releaseLabel": "Próg opadania w dB",
+    "sounds": {
+      "clap": "klaśnięcie",
+      "double": "dwa klaśnięcia",
+      "soft": "delikatne klaśnięcie",
+      "word": "słowo („hello”)",
+      "whistle": "gwizd"
+    },
+    "result": {
+      "clap": "KLASNIĘCIE ({{ms}} ms, {{db, number(minimumFractionDigits: 0; maximumFractionDigits: 0)}} dB)",
+      "long": "DŁUGIE {{ms}} ms: to nie klaśnięcie"
+    },
+    "caption": {
+      "done": "{{sound}}: {{results}}. Klaśnięcie kończy się w ciągu 160 ms; głos albo gwizd dłużej pozostają głośne.",
+      "loud": "Głośno od {{ms}} ms: początek już zadziałał (gry używają go od razu). Czy jest dość krótki na klaśnięcie? Poczekaj, aż opadnie poniżej progu opadania.",
+      "soft": "{{sound}}: na razie nic — to klaśnięcie nigdy nie sięga linii narastania. Obniż narastanie (albo pozwól, by nauka S3 zrobiła to z twoich klaśnięć).",
+      "nothing": "{{sound}}: na razie nic."
+    },
+    "states": {
+      "armed": "uzbrojony",
+      "loud": "głośno",
+      "quiet": "cicho"
+    },
+    "arrows": {
+      "onset": "≥ narastanie: POCZĄTEK",
+      "end": "< opadanie: KLASNIĘCIE albo DŁUGIE",
+      "rearm": "cisza przez 40 ms: ponowne uzbrojenie"
+    }
+  },
+  "recorder": {
+    "label": "Dziewięć sekund dźwięku: trzask drzwi i zdanie, linie wyzwalania i przytrzymania oraz stan rejestratora, gdy kursor się przesuwa: uzbrojony, nagrywanie, przedrejestrowanie i klip, który zostaje albo zostaje odrzucony.",
+    "back": "Wstecz o 0,1 sekundy",
+    "on": "Do przodu o 0,1 sekundy",
+    "trigger": "wyzwalanie",
+    "triggerLabel": "Poziom wyzwalania w dB powyżej ciszy",
+    "hold": "przytrzymanie",
+    "holdLabel": "Czas przytrzymania w milisekundach",
+    "start": "start",
+    "quiet": "cisza",
+    "ring": "bufor: ostatnie 4 s są zawsze dostępne (więc przedrejestrowanie jest za darmo)",
+    "holding": "cicho {{quiet, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} z {{hold, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} s: przytrzymanie",
+    "loud": "głośno: przytrzymanie startuje od nowa",
+    "saved": "klip {{n}} zapisany: {{s, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} s",
+    "dropped": "trzask przy {{s, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} s odrzucony (za krótki)",
+    "caption": {
+      "rec": "Nagrywanie. Klip zaczął się pół sekundy przed wyzwoleniem (bursztynowo): bufor cykliczny to jeszcze miał. Pauza krótsza niż przytrzymanie zachowuje zdanie w jednym klipie.",
+      "saved": "Zapisano: klip kończy się pół sekundy po ostatnim głośnym momencie, a nie po całym przytrzymaniu. Trzask drzwi też był głośny, ale trwał poniżej 0,4 s: odrzucony.",
+      "armed": "Uzbrojony: słucha, nie trzyma niczego poza buforem. Głośniej niż linia startu rozpoczyna klip."
+    }
+  },
+  "getOut": {
+    "paths": {
+      "phone": {
+        "1": {
+          "title": "Otwórz stronę",
+          "text": "Twój telefon otwiera <code>http://bench.local/</code>. Sama strona jest otwarta, ale nie ma dźwięku. Wklej token administratora (port szeregowy <code>token</code>); zostaje tylko w sessionStorage tej karty."
+        },
+        "2": {
+          "title": "Wypisz klipy",
+          "text": "<code>GET /api/clips</code> z <code>Authorization: Bearer …</code>. Bez tokenu: 401. Każda trasa audio go sprawdza."
+        },
+        "3": {
+          "title": "Strumieniuj jeden klip",
+          "text": "<code>GET /api/clip?n=3</code>: płytka wysyła 44-bajtowy nagłówek, a potem próbki prosto z PSRAM, po kawałkach, wzmocnione (znormalizowane, do ×64) po drodze. Nigdy jeden duży ciąg w RAM."
+        },
+        "4": {
+          "title": "Narysuj i odtwórz",
+          "text": "Strona dekoduje WAV (WebAudio), rysuje jego kształt na canvasie i odtwarza go z przesuwającym się znacznikiem. Poziom na żywo i stan przychodzą przez WebSocket <code>/ws</code>."
+        }
+      },
+      "board": {
+        "1": {
+          "title": "Wybierz klip",
+          "text": "W widoku <b>clips</b> długie przytrzymanie wybiera następny klip; albo wpisz <code>play 3</code> (dowolny numer klipu), <code>play 3 0.7</code> dla wolniej i niżej."
+        },
+        "2": {
+          "title": "Głośniej, ale nie za głośno",
+          "text": "Klip jest wzmacniany jak przy pobieraniu, ale najwyżej ×16: szept z KY-037 inaczej wróciłby jako prawie sam szum, na pełnej głośności."
+        },
+        "3": {
+          "title": "Na I2S1",
+          "text": "Próbki trafiają do MAX98357A z prędkością <code>speed</code> × ich częstotliwość: 0.5 = połowa prędkości, oktawa niżej. Podczas odtwarzania detektory są głuche (strażnik echa); <code>rec</code> najpierw zatrzymuje odtwarzanie, a <code>play</code> jest odrzucane podczas nagrywania."
+        },
+        "4": {
+          "title": "Także z telefonu",
+          "text": "Strona ma przy każdym klipie <b>Odtwórz na płytce</b> i <b>Zatrzymaj na płytce</b> oraz wybór prędkości: <code>POST /api/play?n=3&speed=0.7</code> z tokenem; <code>/api/status</code> pokazuje <code>playing</code> i <code>playProgress</code>."
+        }
+      },
+      "usb": {
+        "1": {
+          "title": "Zamknij monitor",
+          "text": "Tylko jeden program może trzymać port szeregowy. Najpierw zamknij <code>pio device monitor</code>."
+        },
+        "2": {
+          "title": "Poproś o klip n",
+          "text": "<code>uv run python tools/sound_pull.py /dev/cu.usbserial-A5069RR4 3</code> otwiera port bez resetowania płytki i wpisuje <code>send 3</code>."
+        },
+        "3": {
+          "title": "Linie Base64",
+          "text": "Płytka odpowiada <code>WAV-BEGIN 3 102444 clip-3.wav</code>, potem cały WAV jako tekst base64, po 76 znaków w linii (port szeregowy to rura tekstowa), a na końcu <code>WAV-END &lt;crc32&gt;</code>. Nic innego nie jest wypisywane po drodze."
+        },
+        "4": {
+          "title": "Sprawdź i zapisz",
+          "text": "Narzędzie dekoduje dane, porównuje liczbę bajtów i CRC-32 i zapisuje <code>clip-3.wav</code>. 100 kB zajmuje około 12 s przy 115 200 bodach."
+        }
+      }
+    },
+    "label": "Płytka, telefon i Mac, z komunikatem bieżącego kroku przesuwającym się między nimi.",
+    "path": "Ścieżka",
+    "choices": {
+      "phone": "📱 telefon (Wi-Fi)",
+      "usb": "🔌 USB (port szeregowy)",
+      "board": "🔈 głośnik płytki"
+    },
+    "previous": "Poprzedni krok",
+    "next": "Następny krok",
+    "position": "{{at}} / {{total}}",
+    "caption": "<b>{{n}}. {{title}}</b> {{text}}",
+    "msg": {
+      "chunks": "WAV, kawałek po kawałku",
+      "cone": "I2S1 → klasa D → membrana"
+    },
+    "boxes": {
+      "clips": "klipy w PSRAM",
+      "you": "ty",
+      "serialOrButton": "port szeregowy lub przycisk",
+      "speaker": "+ głośnik",
+      "phone": "telefon",
+      "browser": "przeglądarka"
+    },
+    "headline": {
+      "phone": "Każda trasa audio potrzebuje tokenu · płytka pokazuje REC, bez względu na to, kto zaczął",
+      "board": "Płytka odtwarza to sama: bez telefonu, bez kabla",
+      "usb": "Nie trzeba Wi-Fi · port szeregowy USB płytki, 115 200 bodów"
+    },
+    "wavLabel": "44-bajtowy nagłówek WAV",
+    "wav": {
+      "riff": "typ pliku",
+      "size": "102 436 = wszystko po tym",
+      "wave": "plik fali",
+      "fmt": "blok formatu",
+      "fmtLen": "jego długość",
+      "pcm": "PCM: zwykłe próbki",
+      "channels": "jeden kanał (mono)",
+      "rate": "próbek na sekundę",
+      "byteRate": "bajtów na sekundę",
+      "align": "bajtów na próbkę",
+      "bits": "bitów na próbkę",
+      "data": "dalej idą próbki",
+      "dataSize": "102 400 bajtów = 3,2 s"
+    }
+  },
+  "whistle": {
+    "label": "Sześć kroków od próbek do nazwy nuty: próbki, okno, kosze FFT, kosz szczytu, parabola między koszami i nuta z centami.",
+    "previous": "Poprzedni krok",
+    "next": "Następny krok",
+    "position": "{{at}} / {{total}}",
+    "whistle": "gwizd",
+    "whistleLabel": "Częstotliwość gwizdu w Hz",
+    "title": "{{n}} · {{title}}",
+    "hump": "garb: 0 na obu końcach",
+    "allBins": "wszystkie 256 koszy, 0-8 kHz · poniżej: 25 wokół szczytu",
+    "peakBin": "kosz {{k}} = {{hz, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} Hz · czystość {{clarity, number(minimumFractionDigits: 0; maximumFractionDigits: 0)}} dB",
+    "steps": {
+      "samples": {
+        "title": "512 próbek",
+        "text": "Najnowsze 512 próbek z bufora: 32 ms gwizdu w pobliżu 1 760 Hz, około 56 fal."
+      },
+      "window": {
+        "title": "× okno",
+        "text": "Mnożone przez garb Hanninga: zero na obu końcach, więc FFT nie widzi skoku tam, gdzie blok się powtarza."
+      },
+      "fft": {
+        "title": "FFT",
+        "text": "256 koszy, co 31,25 Hz. Większość jest przy podłodze; kilka wokół 1 760 Hz wystaje wysoko."
+      },
+      "peak": {
+        "title": "kosz szczytu",
+        "text": "Najwyższy kosz między 80 Hz a 4 kHz. Jego czystość (o ile wystaje ponad średnią) jest wyraźnie powyżej 12 dB: ton, a nie szum. Mowa tego testu nie przechodzi."
+      },
+      "parabola": {
+        "title": "parabola",
+        "text": "Prawdziwa wysokość leży między koszami. Parabola przechodząca przez szczyt i jego dwóch sąsiadów umieszcza ją między nimi, znacznie dokładniej niż 31 Hz."
+      },
+      "note": {
+        "title": "Hz → nuta",
+        "text": "midi = 69 + 12 × log2(Hz / 440). Najbliższa liczba całkowita to nuta; reszta × 100 to centy. ±5 centów świeci na zielono na stroiku."
+      }
+    }
+  },
+  "knock": {
+    "label": "Tajny rytm i twoja próba narysowane jako pukania na dwóch liniach, obie rozciągnięte do tej samej długości, z porównanymi przerwami.",
+    "intro": "Wystukaj rytm z 2-12 pukań (przycisk albo spacja, gdy obraz ma fokus). Poczekaj 1,5 s: to stanie się sekretem. Potem wystukaj go ponownie, szybciej albo wolniej.",
+    "recording": "nagrywanie: sekret",
+    "trying": "próba otwarcia",
+    "knock": "👊 puknij (albo spacja)",
+    "startOver": "↺ zacznij od nowa",
+    "tolerance": "tolerancja",
+    "toleranceLabel": "Tolerancja w procentach",
+    "saved_one": "Sekret zapisany: {{count}} pukanie w {{s, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} s. Teraz wystukaj go ponownie, trochę szybciej albo wolniej.",
+    "saved_few": "Sekret zapisany: {{count}} pukania w {{s, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} s. Teraz wystukaj go ponownie, trochę szybciej albo wolniej.",
+    "saved_many": "Sekret zapisany: {{count}} pukań w {{s, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} s. Teraz wystukaj go ponownie, trochę szybciej albo wolniej.",
+    "saved_other": "Sekret zapisany: {{count}} pukania w {{s, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} s. Teraz wystukaj go ponownie, trochę szybciej albo wolniej.",
+    "needTwo": "Sekret potrzebuje co najmniej 2 pukań.",
+    "open": "OTWARTE, wynik {{score}}: każda przerwa mieści się w {{pct}}% udziału sekretu, bez względu na tempo.",
+    "locked": "Zamknięte: {{why}}.",
+    "lockedWorst": "Zamknięte: {{why}} (najgorsza przerwa oddalona o {{worst}}%).",
+    "why": {
+      "noSecret": "jeszcze brak sekretu",
+      "tooFew": "za mało pukań",
+      "tooMany": "za dużo pukań",
+      "off": "rytm się nie zgadza"
+    },
+    "long": "{{s, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} s długości",
+    "secret": "sekret",
+    "noSecret": "jeszcze brak sekretu: wystukaj jeden",
+    "newSecret": "nowy sekret…",
+    "knocking": "pukanie…",
+    "pause": "1,5 s ciszy kończy wzór",
+    "yours": "twoje pukanie"
+  },
+  "fft": {
+    "label": "Dźwięk złożony z do trzech sinusów i szumu: jego próbki u góry, a poniżej kosze FFT z ich częstotliwościami.",
+    "tone": "ton {{n}}",
+    "toneLabel": "Częstotliwość tonu {{n}} w Hz (0 = wyłączony)",
+    "off": "wyłączony",
+    "noise": "szum",
+    "noiseLabel": "Poziom szumu",
+    "size": "Rozmiar FFT",
+    "hann": "okno Hanninga",
+    "caption": {
+      "windowed": "Z oknem każdy ton jest wąskim szczytem, a podłoga pozostaje niska. Spróbuj dwóch tonów oddalonych o 40 Hz przy N = 256, potem przy 1024: drobniejsze kosze rozróżniają je, ale każda odpowiedź wymaga 64 ms dźwięku zamiast 16.",
+      "raw": "Bez okna końce próbek się nie łączą, a ten skok rozmazuje każdy ton po wszystkich koszach (przeciek). Zaznacz ponownie okno Hanninga."
+    },
+    "samples": "{{n}} próbek = {{ms}} ms dźwięku",
+    "samplesWindowed": "{{n}} próbek = {{ms}} ms dźwięku × okno Hanninga (przerywane)",
+    "bins": "kosze co {{apart, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} Hz · {{bins}} koszy do 8 kHz (Nyquist: połowa z 16 000) · najsilniejszy {{hz, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} Hz = {{note}} {{cents}} centów"
+  },
+  "speaker": {
+    "label": "Próbki idące do MAX98357A przez I2S, jego szybkie impulsy załącz-wyłącz, których szerokość podąża za każdą próbką, membrana głośnika podążająca za ich średnią; krzywa głośności i oś czasu, na której strażnik echa wycisza detektory, gdy głośnik gra.",
+    "volume": "głośność",
+    "volumeLabel": "Głośność 0 do 100",
+    "output": "{{vol}} → ×{{gain, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} ({{db, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} dB)",
+    "outputSilent": "{{vol}} → ×{{gain, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} (cisza)",
+    "hear": "🔈 usłysz 440 Hz przy tej głośności",
+    "caption": "Głośność {{vol}}: każda próbka × {{gain, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}}, zanim wyjdzie. Impulsy wzmacniacza są za szybkie dla membrany, więc ona podąża za ich średnią: falą.",
+    "samples": "próbki (16-bitowe)",
+    "classD": "MAX98357A: załącz/wyłącz ~300 000 razy na sekundę",
+    "cone": "membrana",
+    "squared": "głośność → poziom (do kwadratu: 50 = jedna czwarta)",
+    "whySquared": "Głośność jest podnoszona do kwadratu, bo uszy słyszą stosunki: 100 → 50 to −12 dB, czyli jedna czwarta mocy.",
+    "whyGuard": "Mikrofon i głośnik dzielą pokój: gdy głośnik gra (i 200 ms po tym), detektory nie dostają ramek. Sygnał dźwiękowy nigdy nie jest klaśnięciem. Efekty na żywo w S8 czytają bufor.",
+    "guard": {
+      "title": "strażnik echa: mikrofon słyszy własny sygnał płytki",
+      "speaker": "głośnik",
+      "mic": "mikrofon",
+      "lab": "do laboratorium",
+      "muted": "wyciszony: sygnał + 200 ms",
+      "clap": "✓ klaśnięcie"
+    }
+  },
+  "synth": {
+    "label": "Kształt fali, jej harmoniczne do 8 kHz, z tymi, które zawijają się przy 16 kHz, zaznaczone na czerwono, oraz obwiednia ADSR z czterema uchwytami do przeciągania.",
+    "wave": "Fala",
+    "waves": {
+      "sine": "sinus",
+      "square": "prostokąt",
+      "triangle": "trójkąt",
+      "saw": "piła"
+    },
+    "keys": "Klawisze: zagraj nutę",
+    "periods": "cztery okresy",
+    "harmonics": "harmoniczne, 0-8 kHz (limit płytki 16 kHz)",
+    "adsr": "ADSR: atak, opadanie, podtrzymanie, wybrzmienie",
+    "click": "nuta, która zaczyna lub kończy się na pełnej wysokości, sprawia, że membrana podskakuje: kliknięcie. Obwiednia wycisza ją na wejściu i wyjściu. Przeciągnij uchwyty →",
+    "what": {
+      "sine": "sinus: jedna częstotliwość, czysta",
+      "square": "prostokąt: nieparzyste harmoniczne 1, 3, 5…: pusty, jak klarnet albo stara gra",
+      "triangle": "trójkąt: nieparzyste harmoniczne, szybko opadające: miękki, jak flet",
+      "saw": "piła: wszystkie harmoniczne: jasna, brzęcząca"
+    },
+    "caption": "{{what}}.",
+    "captionAliased_one": "{{what}}. Na płytce {{count}} harmoniczna jest powyżej 8 kHz i zawija się jako błędna nuta (na czerwono): chropowatość prostego syntezatora 16 kHz.",
+    "captionAliased_few": "{{what}}. Na płytce {{count}} harmoniczne są powyżej 8 kHz i zawijają się jako błędne nuty (na czerwono): chropowatość prostego syntezatora 16 kHz.",
+    "captionAliased_many": "{{what}}. Na płytce {{count}} harmonicznych jest powyżej 8 kHz i zawijają się jako błędne nuty (na czerwono): chropowatość prostego syntezatora 16 kHz.",
+    "captionAliased_other": "{{what}}. Na płytce {{count}} harmonicznych jest powyżej 8 kHz i zawijają się jako błędne nuty (na czerwono): chropowatość prostego syntezatora 16 kHz."
+  },
+  "parrot": {
+    "label": "Nagranie u góry i to, co odtwarza papuga poniżej, z przesuwającym się znacznikiem.",
+    "voice": "Głos",
+    "fx": {
+      "normal": "zwykły",
+      "chipmunk": "wiewiórka",
+      "giant": "olbrzym",
+      "robot": "robot",
+      "echo": "echo",
+      "reverse": "odwrócony"
+    },
+    "play": "▶ papuga to mówi",
+    "record": "🎙 nagraj 3 s moim mikrofonem",
+    "useExample": "użyj przykładowego głosu",
+    "intro": "Załadowano przykładowy głos. Twój własny głos jest opcjonalny: mikrofon włącza się dopiero, gdy naciśniesz nagrywanie, zatrzymuje się po 3 s, a dźwięk nigdy nie opuszcza tej strony.",
+    "noAudio": "Ta przeglądarka nie ma Web Audio.",
+    "recording": "Nagrywanie z twojego mikrofonu przez 3 s… (czerwona kropka to pokazuje)",
+    "recorded": "Nagrano {{s, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} s, zachowane tylko na tej stronie (wzmocnione, jak robi to płytka). Wybierz głos i naciśnij ▶.",
+    "example": "Przykładowy głos: dwie sylaby z harmonicznych ukształtowanych jak samogłoski.",
+    "failed": {
+      "unsupported": "Brak dostępu do mikrofonu w tej przeglądarce: przykładowy głos działa tak samo.",
+      "denied": "Mikrofon nie został dopuszczony (przez ciebie, przeglądarkę albo gospodarza tej strony). Przykładowy głos działa tak samo.",
+      "unreadable": "Nie udało się odczytać tego nagrania: przykładowy głos nadal tu jest."
+    },
+    "heard": "co usłyszała",
+    "says": "co mówi papuga ({{fx}})",
+    "saysSpeed": "co mówi papuga ({{fx}}, prędkość ×{{speed}})"
+  },
+  "kit": {
+    "hands": {
+      "clap": "👏 klaśnij",
+      "twoClaps": "👏👏 dwa klaśnięcia",
+      "talk": "🗣 mów 3 s",
+      "whistle": "〰 gwiżdż 3 s",
+      "silence": "🤫 cisza"
+    },
+    "previewCaption": "Udawany mikrofon i głośnik, narysowane tak, jak robi to płytka. Przyciski zastępują twoje ręce, głos, przycisk i monitor portu szeregowego; kliknięcie na ekranie to klaśnięcie. Dźwięk w przeglądarce pozostaje wyłączony, dopóki go nie włączysz.",
+    "micToKy": "mikrofon: INMP441 → KY-037",
+    "micToInmp": "mikrofon: KY-037 → INMP441",
+    "browserOn": "🔈 słuchaj w przeglądarce: włączone",
+    "browserOff": "🔈 słuchaj w przeglądarce: wyłączone",
+    "tapHint": "Kliknij albo naciśnij spację, żeby klasnąć",
+    "previewSoon": "Podgląd pojawi się wraz z tym laboratorium.",
+    "screensSoon": "Pojawi się wraz z tym laboratorium."
+  },
+  "s1": {
+    "captions": {
+      "scope": "oscyloskop: ostatnie 20 ms dźwięku, wyrównane do rosnącego przejścia przez zero, żeby stały ton stał w miejscu. Skala podąża za falą i jest podana w milliwoltach na pinie AO.",
+      "mics": "mikrofony: oba mikrofony, jeden nad drugim (INMP441 na górze): cisza każdego w dBFS i o ile dźwięk jest teraz powyżej niej, oraz o ile więcej dB INMP441 słyszy go wyraźniej. Podłączony tylko jeden? Pokazuje, jak podłączyć drugi (potem naciśnij RST).",
+      "bias": "polaryzacja (KY-037): linijka 0-3,3 V. Zacieniowane = zakres ADC przy tym tłumieniu, linia = polaryzacja, pasmo = o ile fala się wychyliła w ostatnich 0,1 s. Podpowiedź mówi, czy mniejszy zakres by się zmieścił. Z INMP441 staje się drabinką jego 24 bitów: ile zajmuje dźwięk (po 6 dB każdy) i zapas, jaki zostaje.",
+      "comparator": "komparator: lampka DO (jak LED2 na module), zbocza narastające na sekundę i 6 s głośności (góra) przy DO (dół). Kręć potencjometrem, aż DO zapali się tylko przy głośnych momentach. INMP441 nie ma DO: płytka porównuje programowo (próg, 3 dB histerezy).",
+      "numbers": "liczby: źródło, rzeczywista częstotliwość próbkowania, utracone próbki, poziom w dBFS (i dB SPL z INMP441), cisza, dB powyżej niej, wolny PSRAM."
+    },
+    "actions": {
+      "attenNext": "następne tłumienie",
+      "freeze": "zamrożenie",
+      "potMoreSensitive": "pot: czulszy",
+      "potLessSensitive": "pot: mniej czuły"
+    }
+  },
+  "s2": {
+    "captions": {
+      "meter": "miernik: z INMP441 dB SPL duże (bez ważenia, ±2 dB) na skali 30-110: 30 szept, 60 rozmowa, 85 ryzyko dla słuchu, 100 głośno. Z KY-037 dB powyżej ciszy twojego pokoju, mniej więcej jak to brzmi, oraz słupek z zatrzymaniem szczytu (biała kreska) i linią alarmu (czerwona przerywana).",
+      "minute": "minuta: najgłośniejszy moment każdej ćwiartki sekundy z ostatnich 60 s, zabarwiony według głośności; przerywana linia to limit alarmu.",
+      "diary": "dziennik: dziesięć minut w 60 slotach po 10 s: cienka linia od najcichszego do najgłośniejszego momentu, blok przy średniej, czerwona czapka tam, gdzie zadziałał alarm. Przykładowa historia plus to, co robisz teraz.",
+      "alarm": "alarm: uzbrojony albo dzwoni, bezpiecznik się napełnia, gdy jest za głośno (domyślnie 1 s), ile było alarmów i najgłośniejszy. Każde naciśnięcie przycisku go wycisza."
+    },
+    "actions": {
+      "loudMusic3S": "📢 głośna muzyka 3 s",
+      "speedFastSlow": "prędkość szybko/wolno",
+      "buttonSilences": "przycisk (wycisza)"
+    }
+  },
+  "s3": {
+    "captions": {
+      "timeline": "oś czasu: ostatnie 4 s głośności z liniami narastania (biała przerywana) i opadania (szara przerywana). Klaśnięcie dostaje turkusową flagę; długi dźwięk (słowo, gwizd) bursztynowy pasek oznaczony długie. Lewy górny róg: wzór, gdy się tworzy, potem to, co zrobił.",
+      "lamp": "lampka: dioda LED na GPIO 4 jako żarówka i dioda RGB jako kula w jej kolorze. Klaśnij 4 razy na imprezę.",
+      "patterns": "wzory: 1 do 4 klaśnięć jako pary dłoni i akcja, jaką każde uruchamia; ostatnie dopasowanie świeci przez 3 s.",
+      "tune": "strojenie: dwuklik, potem klaśnij 5 razy jak zwykle. Każdy słupek to jedno klaśnięcie (dB powyżej ciszy, jak długo brzmiało); czułość staje się 60 % najcichszego."
+    },
+    "actions": {
+      "threeClaps": "👏👏👏 trzy klaśnięcia",
+      "n4Party": "👏×4 impreza",
+      "learn2xOnTune": "naucz (2x na strojeniu)"
+    }
+  },
+  "s4": {
+    "captions": {
+      "recorder": "rejestrator: WYŁ., UZBROJONY albo REC z sekundami, duże. Ostatnie 3 s głośności z linią startu: bursztynowo = przedrejestrowanie, które klip wziął z bufora, czerwono = to, co weszło do klipu.",
+      "clips": "klipy: do czterech wierszy z kształtem, długością i rodzajem każdego klipu (głos albo dłonie); po prawej najgłośniejszy moment wybranego klipu, o ile jest głośniejszy, wysłany, i kiedy się zaczął. Dwuklik odtwarza wybrany klip na głośniku płytki; długie przytrzymanie tutaj wybiera następny.",
+      "web": "sieć: gdzie jest strona (http://bench.local), adres IP, sygnał, ile stron jest otwartych i jak zdobyć token. Bez zapisanego Wi-Fi wskazuje na W1 albo sound_pull.py."
+    },
+    "actions": {
+      "armOnOff": "uzbrój wł./wył.",
+      "recStopLongPress": "rec / stop (długie przytrzymanie)",
+      "playPicked2xOn": "▶ odtwórz wybrany (2x na klipach)",
+      "talk2S": "🗣 mów 2 s"
+    }
+  },
+  "s5": {
+    "captions": {
+      "bars": "słupki: 24 pasma od 100 Hz do 8 kHz w skali logarytmicznej (jak fortepian), w dB powyżej ciszy każdego pasma, z opadającymi czapkami szczytów. U góry: najgłośniejsza częstotliwość i jej nuta; po prawej: N, Hz na kosz, czas FFT.",
+      "waterfall": "wodospad: około 6 s widma przesuwającego się w lewo, niskie nuty na dole; czerń → róż → biel = 0 → 40 dB powyżej ciszy. Gwizd, który się przesuwa, rysuje linię.",
+      "tuner": "stroik: gwizdnij albo nuć: nuta duża (turkus w granicach ±5 centów), częstotliwość, wskazówka od bemola do krzyżyka i 5-sekundowy ślad twojej wysokości wokół nuty.",
+      "steer": "sterowanie: gwiżdż wyżej, żeby podnieść świecącą kropkę, niżej, żeby ją opuścić (600-2500 Hz, skala logarytmiczna). Przytrzymaj ją w pierścieniu przez sekundę, żeby zdobyć punkt. Dioda RGB przyjmuje kolor kropki, gdy gwiżdżesz."
+    },
+    "actions": {
+      "slideWhistle4S": "〰 gwizd ślizgowy 4 s",
+      "music3S": "🎵 muzyka 3 s",
+      "hold": "przytrzymaj",
+      "ref2xOnTuner": "wzorzec (2x na stroiku)",
+      "sweep": "przemiatanie"
+    }
+  },
+  "s6": {
+    "captions": {
+      "knock": "pukanie: kłódka, rytm sekretu na górze, twoje ostatnie pukanie pod spodem z każdą przerwą w kolorze (turkus blisko, bursztyn prawie, koral poza). Dwuklik, wystukaj rytm, czekaj 1,5 s: to jest sekret. Otwórz podnosi zaczep, zapala diodę na GPIO 4 i diodę RGB na zielono na 5 s.",
+      "bird": "ptak: Clap Bird. Każde klaśnięcie to machnięcie skrzydłem; przelatuj przez przerwy. W tym podglądzie naciśnij spację albo kliknij ekran, żeby klasnąć.",
+      "party": "impreza: włącz muzykę przy mikrofonie (przycisk 🎵 tutaj). Każde uderzenie rozbłyska nowym kolorem, wysyła pierścień i zapala diodę RGB; tempo to mediana przerw z ostatnich 8 uderzeń."
+    },
+    "actions": {
+      "music6S": "🎵 muzyka 6 s",
+      "knockSet": "ustaw pukanie",
+      "knockTheSecret": "wystukaj sekret (✊ ✊ ✊ … ✊ ✊)",
+      "knockPlay": "odtwórz pukanie"
+    }
+  },
+  "s7": {
+    "captions": {
+      "wave": "fala: przebieg jednej nuty (cztery okresy) i jej widmo 0-8 kHz. Ta sama nuta, inna fala = inna barwa; linia pod spodem mówi dlaczego.",
+      "keys": "klawisze: dwie oktawy, C4 do B5. Nuty świecą, gdy brzmią. Dwuklik = następna nuta skali, długie przytrzymanie = następny akord.",
+      "envelope": "obwiednia: krzywa ADSR (atak, opadanie, podtrzymanie, wybrzmienie); kropka jedzie po niej, gdy gra pojedyncza nuta.",
+      "tunes": "melodie: lista po lewej, zwój nut po prawej przesuwający się obok bursztynowego znacznika. Dwuklik odtwarza wybraną melodię, długie przytrzymanie wybiera następną.",
+      "fx": "efekty: dźwięki gier zbudowane z przepisów (zamiatania, szum, filtry); pełen przebieg ostatniego z znacznikiem."
+    },
+    "actions": {
+      "waveNext": "następna fala",
+      "tunePicked": "▶ wybrana melodia",
+      "fxPicked": "▶ wybrany efekt",
+      "longPressNext": "długie przytrzymanie (następny)"
+    }
+  },
+  "s8": {
+    "captions": {
+      "parrot": "papuga: powiedz coś, a odpowie tym samym w wybranym głosie. Słuchanie (wchodzą łuki), nagrywanie (szeroko otwarte oko, REC), mówienie (dziób rusza się z głośnikiem). Poniżej: twój poziom względem linii startu.",
+      "echo": "echo: na żywo, mikrofon → linia opóźniająca → głośnik. Słupki pokazują, w co zamienia się jedno klaśnięcie: każde powtórzenie to sprzężenie zwrotne × cichsze, w odstępie opóźnienia. Na dole: poziomy wejścia i wyjścia oraz opóźnienie.",
+      "robot": "robot: na żywo, twój głos razy wolny sinus (nośna) plus 8-bitowe chrupanie; usta świecą tym, co wychodzi.",
+      "scope": "oscyloskop: łańcuch mikrofon → efekt → głośnik, z tym, co wchodzi (turkus), i tym, co wychodzi (róż)."
+    },
+    "actions": {
+      "saySomething2S": "🗣 powiedz coś (2 s)",
+      "fxNext": "następny efekt",
+      "again": "jeszcze raz",
+      "echoOnOff": "echo wł./wył.",
+      "robotOnOff": "robot wł./wył."
+    }
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "sections": {
+    "goal": {
+      "title": "Cel",
+      "short": "Cel"
+    },
+    "explain": {
+      "short": "Jak to działa",
+      "shortNumbered": "Jak {{number}}"
+    },
+    "wiring": {
+      "title": "Połączenia",
+      "short": "Połącz"
+    },
+    "commands": {
+      "title": "Polecenia, po kolei",
+      "short": "Polecenia"
+    },
+    "steps": {
+      "title": "Kroki",
+      "short": "Kroki"
+    },
+    "preview": {
+      "title": "Podgląd: co powinieneś zobaczyć",
+      "short": "Podgląd"
+    },
+    "board": {
+      "short": "Układ pinów"
+    }
+  },
+  "nav": {
+    "label": "Na tej stronie"
+  },
+  "header": {
+    "lessonId": "Lekcja {{id}}",
+    "eyebrow": "{{track}} · lekcja {{index}} z {{total}}",
+    "goal": "Cel",
+    "doneWhen": "Skończysz, gdy",
+    "onBoard": "Na płytce",
+    "learn": "Czego się nauczysz",
+    "allTicked": "Wszystkie kroki odhaczone",
+    "ticked_one": "{{ticked}} z {{count}} kroku odhaczony",
+    "ticked_few": "{{ticked}} z {{count}} kroków odhaczonych",
+    "ticked_many": "{{ticked}} z {{count}} kroków odhaczonych",
+    "ticked_other": "{{ticked}} z {{count}} kroku odhaczonego"
+  },
+  "pins": {
+    "label": "Na płytce",
+    "usb": "Port COM"
+  },
+  "commands": {
+    "intro": "Wpisz to w monitorze portu szeregowego (<code>uv run pio device monitor</code>), chyba że szara etykieta mówi inaczej. Kolorowa etykieta mówi, co powinno być przy płytce, gdy działa.",
+    "does": "Robi",
+    "see": "Powinieneś zobaczyć",
+    "fix": "Jeśli nie",
+    "place": {
+      "mac": "terminal Mac",
+      "button": "przycisk / BOOT",
+      "hands": "rękami",
+      "app": "w aplikacji",
+      "phone": "w telefonie",
+      "serial": "monitor portu szeregowego"
+    },
+    "state": {
+      "off": "karta odsunięta",
+      "any": "karta: bez znaczenia",
+      "on": "karta na czytniku",
+      "both": "karta + znacznik razem",
+      "still": "karta na czytniku, trzymana nieruchomo",
+      "move": "karta na czytniku, potem ją przesuń",
+      "bnone": "telefon niepotrzebny",
+      "bscan": "telefon: aplikacja skanera otwarta",
+      "bconn": "telefon połączony",
+      "bpair": "telefon sparowany",
+      "bhost": "sparowana jako klawiatura/MIDI",
+      "bperiph": "twoja klawiatura/mysz włączona",
+      "squiet": "w pokoju cicho",
+      "ssound": "zrób trochę hałasu",
+      "sany": "dźwięk: bez znaczenia",
+      "smusic": "muzyka przy mikrofonie"
+    }
+  },
+  "steps": {
+    "complete": "Wszystkie kroki odhaczone: ta lekcja jest zrobiona. Teraz liczy się jako działająca na twojej płytce.",
+    "status_one": "{{ticked}} z {{count}} kroku odhaczony. Odhaczenia zapisują się w tej przeglądarce.",
+    "status_few": "{{ticked}} z {{count}} kroków odhaczonych. Odhaczenia zapisują się w tej przeglądarce.",
+    "status_many": "{{ticked}} z {{count}} kroków odhaczonych. Odhaczenia zapisują się w tej przeglądarce.",
+    "status_other": "{{ticked}} z {{count}} kroku odhaczonego. Odhaczenia zapisują się w tej przeglądarce."
+  },
+  "wiring": {
+    "from": "Od",
+    "to": "Do",
+    "notes": "Uwagi"
+  },
+  "variants": {
+    "label": "Warianty"
+  },
+  "source": {
+    "title": "Otwórz kod tego ćwiczenia na GitHubie",
+    "newTab": " (otwiera się w nowej karcie)"
+  },
+  "tabs": {
+    "label": "Widoki lekcji",
+    "lab": "Zrób ćwiczenie",
+    "labSub": "połącz · wgraj · sprawdź",
+    "code": "Przeczytaj kod",
+    "stopsRead_one": "{{count}} przystanek przeczytany",
+    "stopsRead_few": "{{count}} przystanki przeczytane",
+    "stopsRead_many": "{{count}} przystanków przeczytanych",
+    "stopsRead_other": "{{count}} przystanku przeczytanego",
+    "codeSub_one": "{{count}} plik · wiersze: {{lines}} · przewodnik po kodzie",
+    "codeSub_few": "{{count}} pliki · wiersze: {{lines}} · przewodnik po kodzie",
+    "codeSub_many": "{{count}} plików · wiersze: {{lines}} · przewodnik po kodzie",
+    "codeSub_other": "{{count}} pliku · wiersze: {{lines}} · przewodnik po kodzie",
+    "codeSubEmpty": "przewodnik po kodzie · dotknij dowolnego wiersza"
+  },
+  "next": {
+    "label": "Dalej",
+    "lesson": "Następna lekcja",
+    "theme": "Koniec tego działu · następny dział",
+    "last": "To była ostatnia lekcja",
+    "map": "Wróć do mapy ćwiczeń",
+    "allLabs": "Wszystkie ćwiczenia",
+    "top": "Wróć na górę"
+  },
+  "widget": {
+    "loading": "Ładowanie…"
+  }
+}

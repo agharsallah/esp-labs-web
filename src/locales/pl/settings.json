@@ -1,0 +1,111 @@
+{
+  "page": {
+    "eyebrow": "Ustawienia",
+    "heading": "Ustaw przewodnik po swojemu",
+    "lead": "Zapisane tylko w tej przeglądarce. Każda zmiana działa od razu."
+  },
+  "language": {
+    "heading": "Język",
+    "hint": "Lekcje, wyjaśnienia i interfejs. Kod, polecenia i to, co wypisuje płytka, zostają po angielsku."
+  },
+  "levels": {
+    "heading": "Jak głęboko iść",
+    "beginner": {
+      "label": "Początkujący",
+      "blurb": "Krótkie zwiedzanie plików ćwiczenia, prostymi słowami, nowe słowa C++ wprowadzane po jednym."
+    },
+    "explorer": {
+      "label": "Odkrywca",
+      "blurb": "Każdy przystanek każdego pliku ćwiczenia, a wspólny kod biblioteki o jedno dotknięcie."
+    },
+    "deep": {
+      "label": "Dogłębnie",
+      "blurb": "Wszystko, łącznie z dokładną historią każdego przystanku i słowa: typy, czasy, pamięć."
+    }
+  },
+  "views": {
+    "heading": "Jak wygląda czytnik kodu",
+    "simple": {
+      "label": "Prosty",
+      "blurb": "Jedna karta, jeden przycisk. Kod, jego wyjaśnienie i Dalej: nic więcej na ekranie."
+    },
+    "full": {
+      "label": "Pełny",
+      "blurb": "Wszystkie narzędzia pod ręką: pliki, mapa, słowniczek, pierścień postępu, karty słów, tryb skupienia."
+    }
+  },
+  "learning": {
+    "heading": "Nauka",
+    "guessFirst": "Najpierw zgaduj",
+    "guessFirstHint": "Każdy przystanek zwiedzania pyta, co według ciebie robi kod, zanim ci powie. Zgadywanie pomaga zapamiętać.",
+    "hints": "Podpowiedzi C++",
+    "hintsHint": "Nowe słowa dostają małą kartę przy pierwszym spotkaniu; znane słowa zostają podkreślone.",
+    "hintChoices": {
+      "pop": "Wprowadzaj każde nowe słowo",
+      "underline": "Tylko podkreślaj",
+      "off": "Wyłączone"
+    },
+    "pace": "Tempo wiersz po wierszu",
+    "paceHint": "Jak długo „Odtwórz” zostaje na każdym wierszu.",
+    "paces": {
+      "slow": "Wolne",
+      "normal": "Normalne",
+      "fast": "Szybkie"
+    }
+  },
+  "code": {
+    "heading": "Wyświetlanie kodu",
+    "size": "Rozmiar tekstu",
+    "sizeLabel": "Rozmiar tekstu kodu",
+    "sizes": {
+      "s": "Mały",
+      "m": "Średni",
+      "l": "Duży"
+    },
+    "lineNumbers": "Numery wierszy",
+    "wrap": "Zawijaj długie wiersze",
+    "wrapHint": "Wygodne na telefonie: bez przewijania w bok.",
+    "comments": "Przytłum komentarze",
+    "commentsHint": "Wycisza notatki programisty, żeby sam kod się wyróżniał.",
+    "fold": "Zwijaj długie dane",
+    "foldHint": "Długie tabele i wbudowane strony WWW zwijają się do jednego wiersza, dopóki ich nie otworzysz."
+  },
+  "look": {
+    "heading": "Wygląd i ruch",
+    "theme": "Motyw kolorystyczny",
+    "motion": "Ruch",
+    "motionHint": "Spokojny tryb wycisza przesuwanie i pulsowanie wszędzie, także w symulatorach.",
+    "motions": {
+      "system": "Zgodnie z urządzeniem",
+      "calm": "Spokojnie"
+    }
+  },
+  "preview": {
+    "label": "Podgląd",
+    "code": "Podgląd widoku kodu"
+  },
+  "progress": {
+    "heading": "Twój postęp",
+    "words_one": "<b>{{met}}</b> z {{count}} słowa C++ poznane",
+    "words_few": "<b>{{met}}</b> z {{count}} słów C++ poznanych",
+    "words_many": "<b>{{met}}</b> z {{count}} słów C++ poznanych",
+    "words_other": "<b>{{met}}</b> z {{count}} słowa C++ poznane",
+    "labs_one": "<b>{{count}}</b> ćwiczenie z przeczytanym kodem",
+    "labs_few": "<b>{{count}}</b> ćwiczenia z przeczytanym kodem",
+    "labs_many": "<b>{{count}}</b> ćwiczeń z przeczytanym kodem",
+    "labs_other": "<b>{{count}}</b> ćwiczenia z przeczytanym kodem",
+    "forgetReading": {
+      "label": "Zapomnij przeczytany kod",
+      "confirm": "Tak, zapomnij przeczytany kod"
+    },
+    "forgetWords": {
+      "label": "Zapomnij poznane słowa",
+      "confirm": "Tak, zapomnij poznane słowa"
+    },
+    "reset": {
+      "label": "Przywróć te ustawienia",
+      "confirm": "Tak, przywróć te ustawienia"
+    },
+    "keep": "Zachowaj"
+  }
+}

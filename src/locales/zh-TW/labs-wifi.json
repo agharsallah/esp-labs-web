@@ -1,0 +1,278 @@
+{
+  "terminal": {
+    "expected": "{{command}}   （預期輸出）",
+    "expectedNetworks": "{{command}}   （預期輸出，範例網路）",
+    "expectedData": "{{command}}   （預期輸出，範例資料）"
+  },
+  "views": {
+    "networks": "網路",
+    "channels": "通道",
+    "radar": "雷達",
+    "status": "狀態",
+    "message": "訊息",
+    "now": "現在",
+    "forecast": "預報",
+    "week": "本週",
+    "oracle": "神諭"
+  },
+  "preview": {
+    "views": "檢視",
+    "viewChoice": "{{n}} {{view}}",
+    "scannerScreen": "模擬的掃描器螢幕",
+    "scannerButton": "按鍵：按一下切換檢視，按兩下掃描，長按自動掃描",
+    "join": "{{command}}（範例）",
+    "autoOn": "自動掃描已開 · 每 10 秒",
+    "autoOff": "自動掃描已關",
+    "scannerCaption": "範例網路和位址，不是你的。按一下 = 下一個檢視，按兩下 = 立即掃描，長按 0.6 秒 = 開關自動掃描。「{{join}}」展示連線時的樣子。你的開發板會顯示你周圍真實的網路。"
+  },
+  "phone": {
+    "page": "模擬的手機頁面",
+    "screen": "模擬的開發板螢幕",
+    "caption": "這個頁面左邊的開發板也會顯示 LED 的顏色。你的真實開發板透過 Wi-Fi 完成這一切。"
+  },
+  "weather": {
+    "screen": "模擬的天氣與神諭螢幕，範例資料",
+    "button": "按鍵：按一下切換檢視，按兩下重新整理或換一首新俳句",
+    "umbrella": "問：要帶傘嗎？（範例）",
+    "caption": "範例城市、天氣和神諭回答，不是即時的。按一下 = 下一個檢視，按兩下 = 重新整理（神諭檢視：換一首新俳句）。你的開發板會顯示你所在的城市，以及你所選模型給出的真實回答。"
+  },
+  "scan": {
+    "goal": "無線電依次存取每個 2.4 GHz 通道，問一聲「有誰在嗎？」（探測請求），然後監聽回覆，以及每個路由器每秒大約傳送 10 次的信標。完整掃描一遍需要 2 到 3 秒。",
+    "channels": "通道 1 到 13，正在掃描的那個會醒目標示",
+    "channel": "通道 {{channel}}",
+    "channelClean": "通道 {{channel}} · 三個互不重疊的通道之一",
+    "heard_other": "收到 {{count}} 個：{{names}}",
+    "nothing": "這裡沒有收到訊號",
+    "hidden": "（隱藏）",
+    "example": "（範例網路）",
+    "scale": "以 dBm 為單位的訊號強度刻度",
+    "scaleTitle": "訊號強度 (RSSI)",
+    "ticks": {
+      "excellent": "極佳",
+      "veryGood": "很好",
+      "good": "良好",
+      "weak": "較弱",
+      "barely": "幾乎沒有"
+    },
+    "caption": "dBm 是對數單位：每降低 3 dB，功率就減半。−90 比 −30 弱十億倍。"
+  },
+  "web": {
+    "drawing": "架構圖",
+    "drawingAlt": "手機直接和開發板通訊。React 應用程式與 Node 伺服器通訊，Node 伺服器再與開發板通訊。開發板透過 WebSocket 把即時更新推送回來。",
+    "phone": "手機",
+    "phoneSub": "bench.local 頁面",
+    "react": "React 應用程式",
+    "reactSub": "Mac 上的瀏覽器",
+    "node": "Node 伺服器",
+    "nodeSub": "保管 ESP_TOKEN",
+    "adminWire": "REST + WebSocket（管理操作會附加令牌）",
+    "api": "開發板的 Web API",
+    "rows": {
+      "status": "開發板正在做什麼；上一次掃描",
+      "scan": "立即掃描",
+      "view": "螢幕檢視；自動掃描、亮度",
+      "led": "LED 顏色；螢幕上的文字",
+      "wifi": "儲存一個網路（設定期間開放，之後需要<adm>管理員</adm>許可權）",
+      "admin": "<adm>管理員</adm>：忘記網路、重啟、韌體更新",
+      "ws": "每秒推送狀態、掃描結果、按鍵事件和更新進度"
+    }
+  },
+  "remote": {
+    "drawing": "遠端控制圖",
+    "drawingAlt": "你的手機透過 HTTPS 存取隧道的公網位址。你的 Mac 和開發板都主動連到隧道，所以路由器上不用開放任何埠。隧道把手機的請求和開發板的連線轉交給你 Mac 上的 Node 伺服器。",
+    "home": "你的家 · 路由器：不開放任何埠，不轉發任何東西",
+    "phone": "手機 · 筆記本",
+    "phoneSub": "隨時隨地",
+    "public": "公網 https 位址",
+    "publicSub": "或你託管的伺服器",
+    "mac": "你的 Mac",
+    "macSub": "保管金鑰和令牌",
+    "boardOut": "主動連出：wss /device",
+    "boardToken": "用它的令牌登入",
+    "https": "HTTPS + 金鑰",
+    "tunnel": "隧道（Mac 主動連出）",
+    "wss": "wss（開發板主動連出）",
+    "caption": "用託管伺服器代替隧道？Node 伺服器就執行在那裡（VPS、Fly.io、Render…），套上它的 HTTPS，開發板直接連它：隧道和你的 Mac 都不再需要。韌體相同，<code>relay wss://…</code> 也相同。",
+    "compare": "變體 1 與變體 2 的對比",
+    "lan": "變體 1 · 在你的 Wi-Fi 上",
+    "remote": "變體 2 · 隨時隨地",
+    "rows": {
+      "who": { "what": "誰連線誰", "lan": "手機 → 開發板", "remote": "開發板 → 你的伺服器（向外連線）" },
+      "away": { "what": "離開家也能用", "lan": "不能", "remote": "能，透過隧道" },
+      "router": { "what": "路由器設定有影響", "lan": "有（Wi-Fi 隔離）", "remote": "沒有" },
+      "signIn": { "what": "誰需要登入", "lan": "沒有人（家庭網路）", "remote": "你：DASHBOARD_KEY · 開發板：它的令牌" },
+      "ota": { "what": "韌體更新", "lan": "可以", "remote": "暫時請用變體 1" }
+    }
+  },
+  "roadmap": {
+    "lessons": "Wi-Fi 課程",
+    "lesson": "課程",
+    "capability": "Wi-Fi 能力",
+    "needs": "前提",
+    "rows": {
+      "W1": {
+        "title": "掃描與連線",
+        "capability": "掃描器檢視、連線你的網路、密碼存在晶片裡、自動重連、帶時鐘 / IP / 訊號圖的狀態檢視、bench.local",
+        "needs": "無"
+      },
+      "W2": {
+        "title": "手機控制",
+        "capability": "REST API + WebSocket、bench.local 上的手機頁面、設定用網路、透過 HTTP 更新韌體、Mac 上的 React + Node 儀表盤",
+        "needs": "W1"
+      },
+      "W3": {
+        "title": "網際網路與 AI",
+        "capability": "從網際網路獲取 HTTPS + JSON（Open-Meteo 天氣）；工作臺神諭：透過 LiteLLM 閘道器接入任意 AI 模型，以結構化 JSON 回答",
+        "needs": "W1，以及神諭所需的 LiteLLM 閘道器和服務商金鑰"
+      },
+      "W4": {
+        "title": "無線電實驗（加餐）",
+        "capability": "根據封包計數看通道活動；用 ESP-NOW 在開發板之間傳訊息",
+        "needs": "第二塊 ESP32（用於 ESP-NOW）"
+      },
+      "W5": {
+        "title": "硬體日記",
+        "capability": "把工作臺記錄和你的作品照片釋出到這個倉庫的 API",
+        "needs": "W3，以及執行中的 API"
+      }
+    },
+    "caption": "每個實驗都有自己的韌體和指令（<code>wifi-lab-w1</code>、<code>wifi-lab-w2</code>…）；它們共用的部分放在 <code>kit/lib/wifi-kit</code> 裡，所以每個實驗都是在原有基礎上新增功能，而不是從頭再來。",
+    "parts": "能解鎖更多玩法的元件",
+    "part": "元件",
+    "about": "簡介",
+    "adds": "帶來什麼",
+    "partRows": {
+      "bme280": {
+        "name": "BME280",
+        "about": "€3–10 · I2C，4 根線",
+        "adds": "溫度、溼度、氣壓（BME680 還能測空氣品質）：為手機儀表盤和硬體日記提供真實資料"
+      },
+      "esp32": {
+        "name": "第二塊 ESP32",
+        "about": "€3–8 · 任意 C3 或 S3",
+        "adds": "無需路由器的 ESP-NOW、無線遙控器、一塊當接入點另一塊去連線它"
+      },
+      "powerBank": {
+        "name": "充電寶",
+        "about": "你多半已經有一個",
+        "adds": "便攜掃描器：邊走邊逐個房間繪製訊號圖"
+      },
+      "encoder": {
+        "name": "旋轉編碼器",
+        "about": "€1–2 · KY-040",
+        "adds": "在選單裡滾動和選擇：網路選擇器、設定"
+      },
+      "ring": {
+        "name": "WS2812 燈環",
+        "about": "€2–5 · 1 根資料線",
+        "adds": "彩色訊號儀表；用手機選顏色"
+      },
+      "ina219": {
+        "name": "INA219",
+        "about": "€2–4 · I2C",
+        "adds": "測量 Wi-Fi 的耗電（峰值約 300 mA）以及睡眠模式能省多少電"
+      },
+      "buzzer": {
+        "name": "無源蜂鳴器",
+        "about": "€1",
+        "adds": "聲音提醒：網路斷開、數值超限"
+      }
+    }
+  },
+  "https": {
+    "legend": {
+      "msg": "訊息（橙色：目前這一步）",
+      "wait": "工作任務正在等待網路",
+      "loop": "loop() 持續繪製畫面"
+    },
+    "weather": {
+      "label": "天氣 · Open-Meteo",
+      "lanes": {
+        "loop": { "sub": "繪製螢幕" },
+        "worker": { "name": "工作任務", "sub": "負責網路" },
+        "server": { "sub": "天氣服務" }
+      },
+      "steps": {
+        "job": {
+          "title": "loop() 交出一個任務",
+          "text": "每 15 分鐘（或按兩下時），loop() 往工作任務的信箱裡放一個任務，然後立刻回去繼續繪製。它從不等網路。"
+        },
+        "connect": {
+          "title": "找到伺服器並連線",
+          "text": "DNS 把名字變成 IP 位址，然後開發板向 443 埠（HTTPS 埠）開啟一個 TCP 連線。"
+        },
+        "tls": {
+          "title": "TLS：它真的是 Open-Meteo 嗎？",
+          "text": "伺服器發來它的證書。開發板檢查它能否追溯到韌體內建的某個根證書，以及它是不是簽發給這個名字的。然後雙方商定加密金鑰：從這裡開始，中間的任何人都讀不到也改不了資料。"
+        },
+        "get": {
+          "title": "請求天氣預報",
+          "text": "一個 GET 請求，帶上座標和我們想要的數值列表：現在、未來 24 小時、7 天。"
+        },
+        "json": {
+          "title": "回答：JSON",
+          "text": "大約 1.7 KB 的 JSON 文字。其中將近三分之一是螢幕根本不顯示的時間戳。"
+        },
+        "filter": {
+          "title": "只留下要畫的部分",
+          "text": "ArduinoJson 過濾器就像一塊鏤空範本：不在裡面的欄位在讀取時就被跳過，所以根本不佔記憶體。"
+        },
+        "back": {
+          "title": "把結果交回去",
+          "text": "工作任務把一個小結構放進信箱（加了互斥鎖，兩個任務永遠不會同時碰它），並把版本號加一。"
+        },
+        "draw": {
+          "title": "下一個訊框就顯示出來",
+          "text": "loop() 看到新版本，複製結構，下一個訊框就畫出新的天空。左邊的訊框計數器從未停過。"
+        }
+      }
+    },
+    "oracle": {
+      "label": "神諭 · LiteLLM",
+      "lanes": {
+        "loop": { "sub": "繪製螢幕" },
+        "worker": { "name": "工作任務", "sub": "負責網路" },
+        "gateway": { "sub": "你 Mac 上的閘道器" },
+        "provider": { "name": "AI 服務商", "sub": "任意服務商" }
+      },
+      "steps": {
+        "job": {
+          "title": "loop() 描述當下的情況",
+          "text": "loop() 把開發板所知道的寫成一小段 JSON 文字，連同閘道器位址、金鑰和模型名一起交給工作任務。"
+        },
+        "request": {
+          "title": "一個標準請求",
+          "text": "不管背後是哪個模型，開發板發出的永遠是同一種 OpenAI 風格的請求。它只提供一個函式 show_on_bench，並強制模型呼叫它。"
+        },
+        "route": {
+          "title": "LiteLLM 選出真正的模型",
+          "text": "config.yaml 把開發板請求的名字對映到某個服務商和模型，並從 .env 里加上該服務商的金鑰。改一下對映，開發板就會用另一個模型，不用重新燒錄。"
+        },
+        "translate": {
+          "title": "為服務商做翻譯",
+          "text": "LiteLLM 把請求改寫成服務商自己的格式（對 Anthropic 來說：帶強制工具的 Messages API），再透過 HTTPS 發出。"
+        },
+        "writing": {
+          "title": "模型開始寫",
+          "text": "要幾秒鐘。工作任務在等網路；loop() 不等：看訊框計數器一直在走，螢幕動畫也一直在播。"
+        },
+        "call": {
+          "title": "約定格式的回答",
+          "text": "因為函式是被強制呼叫的，回答不是自由文字：而是一次帶 JSON 參數的 show_on_bench 呼叫。"
+        },
+        "standard": {
+          "title": "換回標準格式",
+          "text": "LiteLLM 把服務商的回答轉換回 OpenAI 格式，所以開發板對所有服務商只需解析一種結構。token 數也一併帶回來。"
+        },
+        "parse": {
+          "title": "JSON 裡的 JSON",
+          "text": "參數是以 JSON 字串的形式放在 JSON 回答裡的，所以開發板要解析兩次。然後它把文字摺疊成純 ASCII（螢幕字型沒有 é 或 —），並把 #5fa8ff 轉成紅、綠、藍。"
+        },
+        "show": {
+          "title": "螢幕和 LED",
+          "text": "loop() 取走回答：標題帶上它的顏色，幾行文字逐字打出，LED 亮起，下方是時間和 token 數。"
+        }
+      }
+    }
+  }
+}

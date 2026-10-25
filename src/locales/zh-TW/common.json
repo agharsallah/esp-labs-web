@@ -1,0 +1,194 @@
+{
+  "app": {
+    "title": "ESP32-S3 工作臺指南",
+    "loading": "正在載入工作臺指南…",
+    "loadingSettings": "正在載入設定…"
+  },
+  "language": {
+    "label": "語言",
+    "auto": "自動",
+    "autoHint": "跟隨瀏覽器：{{name}}",
+    "button": "語言：{{name}}。切換語言"
+  },
+  "layout": {
+    "skip": "跳到正文",
+    "loading": "載入中",
+    "brand": "ESP32-S3 <part>工作臺指南</part>",
+    "sections": "章節",
+    "nav": {
+      "labs": "實驗",
+      "chip": "晶片",
+      "bench": "工作臺",
+      "settings": "設定"
+    },
+    "footnote": "腳位配置遵循樂鑫 DevKitC-1 v1.0。相容板幾乎一樣，但以你開發板上印的標註為準。你的勾選只儲存在這個瀏覽器裡。",
+    "partsLink": "元件函式庫",
+    "new": "新"
+  },
+  "titles": {
+    "labs": "實驗 · ESP32-S3 工作臺指南",
+    "lesson": "{{id}} · {{title}} · ESP32-S3 工作臺指南",
+    "code": "{{id}} 程式碼 · {{title}} · ESP32-S3 工作臺指南",
+    "log": "工作臺日誌 · ESP32-S3 工作臺指南",
+    "parts": "元件函式庫 · ESP32-S3 工作臺指南",
+    "settings": "設定 · ESP32-S3 工作臺指南",
+    "chip": "{{page}} · 晶片 · ESP32-S3 工作臺指南"
+  },
+  "routeError": {
+    "code": "錯誤",
+    "notFound": "這個腳位上什麼也沒有。",
+    "failed": "這個頁面停止運作了。",
+    "unknown": "出錯了。",
+    "back": "回到你的課程",
+    "reasons": {
+      "noPage": "沒有這個頁面",
+      "noTheme": "沒有名為「{{id}}」的路線",
+      "noLesson": "沒有名為「{{id}}」的課程",
+      "plannedLesson": "第 {{id}} 課已列入計畫，還沒寫好",
+      "noBlock": "沒有名為「{{id}}」的模組"
+    }
+  },
+  "codeRoute": {
+    "none": "這節課用來準備工具：還沒有給開發板的程式。第一段要讀的程式碼在第 01 課。"
+  },
+  "tracks": {
+    "intro": {
+      "title": "入門",
+      "blurb": "工具、第一個程式、第一個電路"
+    },
+    "display": {
+      "title": "顯示與輸入",
+      "blurb": "1.9 英寸螢幕和按鍵"
+    },
+    "wifi": {
+      "title": "Wi-Fi",
+      "blurb": "掃描、連線、提供網頁、無線更新"
+    },
+    "rfid": {
+      "title": "RFID 與 NFC",
+      "blurb": "卡片、標籤和 13.56 MHz 場"
+    },
+    "sensors": {
+      "title": "感測器",
+      "blurb": "透過 I2C 讀取溫度、空氣和運動"
+    },
+    "ble": {
+      "title": "低功耗藍牙",
+      "blurb": "監聽、配對、控制：手機、鍵盤、音樂"
+    },
+    "sound": {
+      "title": "聲音",
+      "blurb": "聆聽、測量、拍手、錄音、看音高、播放"
+    }
+  },
+  "states": {
+    "legend": "標記的意思",
+    "done": {
+      "label": "你已完成",
+      "hint": "每一步都已勾選"
+    },
+    "works": {
+      "label": "已在開發板上執行",
+      "hint": "已在真實開發板上確認"
+    },
+    "built": {
+      "label": "已建置，未燒錄",
+      "hint": "韌體能編譯；在你的開發板上試試"
+    },
+    "planned": {
+      "label": "計畫中",
+      "hint": "在路線圖上，還沒寫好"
+    }
+  },
+  "stepper": {
+    "label": "本路線的課程",
+    "state": "，{{state}}"
+  },
+  "trackNav": {
+    "label": "路線",
+    "soon": "即將推出",
+    "count": "{{working}}/{{total}}",
+    "plannedTitle": "{{title}}：{{blurb}}（計畫中）",
+    "working": "{{title}}：{{total}} 個中有 {{working}} 個可用",
+    "loading": "{{title}}：載入中"
+  },
+  "theme": {
+    "label": "顏色主題",
+    "system": "自動",
+    "light": "淺色",
+    "dark": "深色"
+  },
+  "board": {
+    "label": "開發板腳位圖",
+    "legend": {
+      "label": "圖例",
+      "used": "本課用到",
+      "safe": "可放心使用的 GPIO",
+      "avoid": "避免使用",
+      "power": "電源",
+      "ground": "地",
+      "button": "按鍵輸入",
+      "rfid": "RC522"
+    },
+    "between": {
+      "title": "課與課之間",
+      "close": "<code>Ctrl+C</code> 只在 Mac 上關閉監視器，開發板會繼續執行。",
+      "unplug": "拔掉 USB：這樣才會停止程式和螢幕",
+      "rewire": "斷電後再改接線",
+      "check": "檢查 VCC 接在 3V3 上，沒有鬆動的線頭",
+      "flash": "插上，燒錄下一課",
+      "warning": "<code>Writing at 0x…</code> 期間千萬別拔線。腳位要從輸出改成輸入？先燒錄，再接線。"
+    },
+    "pinout": {
+      "title": "ESP32-S3 DevKitC 腳位圖",
+      "use": "{{pin}} 用作{{role}}",
+      "uses": "本課用到：{{uses}}。",
+      "none": "本課不使用排針上的腳位。"
+    }
+  },
+  "ui": {
+    "backToTop": "回到頂部",
+    "copy": {
+      "label": "複製指令：{{command}}",
+      "idle": "複製",
+      "copied": "已複製",
+      "selected": "已選中"
+    },
+    "errorBoundary": {
+      "message": "<b>{{name}}</b> 停止運作了：{{message}}",
+      "retry": "重試"
+    },
+    "terminal": {
+      "label": "模擬序列埠監視器",
+      "placeholder": "輸入指令，按Enter 鍵",
+      "command": "指令"
+    },
+    "stage": {
+      "toolbar": "旋轉和縮放 3D 檢視",
+      "turnLeft": "向左轉",
+      "turnRight": "向右轉",
+      "zoomOut": "縮小",
+      "zoomIn": "放大",
+      "recenter": "回到初始檢視",
+      "hint": "拖動旋轉 · 雙指縮放",
+      "loading": "正在載入 3D 檢視…",
+      "failed": "這個瀏覽器無法啟動 3D 檢視（需要 WebGL）。{{fallback}}"
+    },
+    "sequence": {
+      "flow": "選擇流程",
+      "playback": "播放",
+      "back": "◀ 上一步",
+      "play": "▶ 播放",
+      "pause": "❚❚ 暫停",
+      "next": "下一步 ▶",
+      "frame": "第 {{frame}} 影格",
+      "label_other": "時序圖：{{lanes}}。共 {{count}} 步；下方文字解釋目前這一步。",
+      "step": {
+        "self": "第 {{step}} / {{total}} 步 · {{from}}",
+        "call": "第 {{step}} / {{total}} 步 · {{from}} → {{to}}",
+        "selfTimed": "第 {{step}} / {{total}} 步 · {{from}} · 約 {{duration}}",
+        "callTimed": "第 {{step}} / {{total}} 步 · {{from}} → {{to}} · 約 {{duration}}"
+      }
+    }
+  }
+}

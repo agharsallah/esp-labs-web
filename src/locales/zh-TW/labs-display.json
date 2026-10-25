@@ -1,0 +1,208 @@
+{
+  "press": {
+    "label": "按下",
+    "aria": "按下畫出的按鍵"
+  },
+  "preview": {
+    "aria": "模擬的 320×170 顯示器：先是顏色檢查，然後是移動的正弦波",
+    "captions": {
+      "check": "第 1 步：顏色檢查（2.5 秒）。從左到右必須依次是紅、綠、藍。",
+      "scope": "第 2 步：工作臺示波器。你的真實螢幕以 22 fps 執行它。"
+    }
+  },
+  "wiring": {
+    "prev": "◀ 上一步",
+    "play": "播放",
+    "pause": "暫停",
+    "next": "下一步 ▶",
+    "showAll": "顯示全部",
+    "signals": "訊號",
+    "count_other": "{{step}} / {{count}} 根線",
+    "aria": "接線圖：從顯示器排針到 ESP32 左側排針的 8 根跳線",
+    "displayModule": "1.9″ 顯示模組",
+    "leftHeader": "ESP32-S3 · 左側排針",
+    "start": {
+      "title": "先拔掉 USB",
+      "text": "然後點「播放」，或點「下一步」一次放一根線。"
+    },
+    "done": {
+      "title_other": "{{count}} 根線都已接好",
+      "text": "再檢查一遍 VCC 接在 3V3 上。點「訊號」看看每根線上傳的是什麼。"
+    },
+    "wire": "第 {{step}} 根線：顯示器 {{disp}} → {{esp}}"
+  },
+  "wires": {
+    "GND": "先接地。兩塊板需要同一個 0 V 參考，否則任何訊號都沒有意義。",
+    "VCC": "螢幕的電源。用 3V3，不要用 5V：ESP32 的腳位使用 3.3 V 準位。",
+    "SCL": "SPI 時鐘。ESP 每傳一位就讓這根線跳動一次，每秒 4000 萬次。",
+    "SDA": "SPI 資料 (MOSI)。就是資料位本身：螢幕在每個時鐘節拍讀取一位。",
+    "RES": "重設。啟動時拉低一次，讓螢幕的控制晶片重新啟動。",
+    "DC": "資料/指令。低準位表示這個位元組是指令，高準位表示是像素資料。",
+    "CS": "片選。低準位表示「我在和你說話」。讓多個裝置共用一條 SPI 匯流排。",
+    "BLK": "背光。高準位點亮背光。沒有它，螢幕即使在繪製也像是壞了。"
+  },
+  "analyzer": {
+    "aria": "一次 SPI 傳輸的邏輯分析儀檢視",
+    "data": "資料",
+    "cmd": "指令",
+    "bitCommand": "CS 低 · DC 低 · 第 {{bit}} 位 =",
+    "bitData": "CS 低 · DC 高 · 第 {{bit}} 位 =",
+    "notes": {
+      "command": "指令：「寫入螢幕記憶體」",
+      "high": "像素資料，高位元組",
+      "low": "像素資料，低位元組 → 0xF800 = 一個紅色像素"
+    },
+    "csHigh": "CS 高：",
+    "ignored": "螢幕忽略匯流排",
+    "still": "SCL 保持不動，什麼也沒傳送",
+    "csLow": "CS 低：",
+    "listening": "螢幕在監聽",
+    "switching": "DC 在指令和資料之間切換"
+  },
+  "full": {
+    "show": "顯示",
+    "modes": {
+      "both": "兩者",
+      "screen": "螢幕 · 8 根線",
+      "button": "按鍵 · 2 根線"
+    },
+    "captions": {
+      "both": {
+        "title": "一排排針上的 10 根線",
+        "text": "8 根接螢幕（輸出），2 根接按鍵（輸入）。兩者都需要 GND，任何 GND 腳位都行。腳位 5 緊挨著 4，所以要看清標註。"
+      },
+      "screen": {
+        "title": "螢幕：8 根線的輸出",
+        "text": "電源（VCC、GND）、SPI 匯流排（SCL、SDA）和控制線（CS、DC、RES、BLK）。資料從 ESP32 流向螢幕，每秒數百萬位。"
+      },
+      "button": {
+        "title": "按鍵：2 根線的輸入",
+        "text": "GPIO 5 和 GND。沒有電源線：晶片內部的上拉讓 GPIO 5 保持高準位 (HIGH)，按下就把它接到 GND（低準位 LOW）。按一下按鍵，看訊號怎麼傳進來。"
+      }
+    },
+    "aria": "ESP32 左側排針：顯示器接在 8 個腳位上，按鍵接在 GPIO 5 和 GND 上",
+    "screen": "螢幕",
+    "output": "輸出",
+    "display": "1.9″ 顯示器 · 輸出",
+    "button": "按鍵 · 輸入",
+    "out": "輸出 → ESP32 對螢幕說話",
+    "in": "輸入 ← ESP32 聽按鍵的訊號",
+    "gnd": "螢幕和按鍵的 GND：任何 GND 腳位都行",
+    "pinLow": "GPIO 5 = LOW（已按下）",
+    "pinHigh": "GPIO 5 = HIGH"
+  },
+  "button": {
+    "aria": "四腳按鍵的內部結構，以及它在麵包板上接到 GPIO 5 和 GND 的樣子",
+    "inside": "按鍵內部（俯視）",
+    "joined": "A–C 和 B–D 始終相連。",
+    "pressing": "按下時兩側接通。",
+    "breadboard": "在麵包板上",
+    "gap": "中間的溝槽",
+    "toPin": "接 ESP32 的腳位 5",
+    "toGnd": "接 ESP32 的 GND",
+    "diagonal": "用對角的兩隻腳",
+    "orientation1": "A 和 D：",
+    "orientation2": "任何方向都能用",
+    "readsLow": "GPIO 5 讀到 LOW (0 V)",
+    "readsHigh": "GPIO 5 讀到 HIGH (3.3 V)",
+    "pressed": {
+      "title": "按下：GPIO 5 接到 GND",
+      "text": "腳位被拉到 0 V，所以讀到 LOW。內部上拉只會漏過極小的電流。"
+    },
+    "released": {
+      "title": "鬆開：上拉讓腳位保持 HIGH",
+      "text": "晶片內部有一個電阻把 GPIO 5 接到 3.3 V，所以斷開的按鍵讀到 HIGH。按住上面的按鍵試試。"
+    },
+    "scopeAria": "GPIO 5 上的訊號：帶抖動的原始訊號，和消抖後的訊號",
+    "canvas": {
+      "raw": "原始腳位",
+      "debounced": "消抖後",
+      "window": "最近 1.2 秒",
+      "zoom": "放大：按下後的前 7 ms",
+      "spike": "每個尖峰 = 一次抖動",
+      "capture": "按下以捕捉"
+    },
+    "scope": {
+      "press": "按一下上面的按鍵。",
+      "traces": "黃線是腳位實際的變化；綠線是程式信任的訊號。",
+      "try": "試試按一下、按兩下和長按。",
+      "gesture": "手勢：",
+      "debounce": "消抖會等 {{ms}} ms 的平靜期，才信任一次變化"
+    },
+    "gestures": {
+      "click_other": "按一下 → 下一個場景（濾掉 {{count}} 次抖動）",
+      "double": "按兩下 → 上一個場景",
+      "long": "長按 → 自動迴圈開/關"
+    }
+  },
+  "compare": {
+    "aria": "螢幕與按鍵的對比",
+    "aspect": "方面",
+    "output": "輸出",
+    "input": "輸入",
+    "screen": "螢幕",
+    "button": "按鍵",
+    "rows": {
+      "direction": {
+        "label": "方向",
+        "screen": "<b>輸出。</b>ESP32 傳送；螢幕只聽。",
+        "button": "<b>輸入。</b>ESP32 監聽；按鍵只負責報告。"
+      },
+      "wires": {
+        "label": "接線",
+        "screen": "8 根：VCC + GND 供電，SCL + SDA 傳資料，CS、DC、RES、BLK 做控制",
+        "button": "2 根：GPIO 5 和 GND"
+      },
+      "power": {
+        "label": "電源",
+        "screen": "需要開發板的 3V3 才會亮",
+        "button": "不需要。按鍵只是一個開關"
+      },
+      "signal": {
+        "label": "訊號",
+        "screen": "SPI 匯流排：一個時鐘 (SCL) 和資料 (SDA)，每秒 4000 萬位",
+        "button": "單一準位：HIGH（鬆開）或 LOW（按下），每秒只變化幾次"
+      },
+      "pins": {
+        "label": "用哪些腳位",
+        "screen": "SCL/SDA 用 S3 的高速 SPI 腳位 12/11；其餘 4 個用任意可放心使用的 GPIO",
+        "button": "任意可放心使用的 GPIO。我們選了 5"
+      },
+      "helper": {
+        "label": "晶片內的幫手",
+        "screen": "SPI 周邊替我們把資料位一位位送出去",
+        "button": "內部上拉電阻讓腳位保持 HIGH，直到被按下"
+      },
+      "code": {
+        "label": "程式碼"
+      },
+      "wrong": {
+        "label": "出問題時",
+        "screen": "螢幕全黑或全白：檢查 VCC、BLK、RES",
+        "button": "一直按下或從不按下：用對角的兩隻腳"
+      }
+    }
+  },
+  "showcase": {
+    "scenes": {
+      "torus": "3D 圓環",
+      "plasma": "等離子",
+      "fireworks": "煙花",
+      "dashboard": "即時儀表盤"
+    },
+    "choice": "{{n}} {{name}}",
+    "scenesLabel": "場景",
+    "aria": "模擬的顯示器，正在顯示場景 {{n}}：{{name}}",
+    "autoOn": "自動迴圈已開 · 每個場景 12 秒",
+    "autoOff": "自動迴圈已關",
+    "terminal": "$ uv run pio device monitor   （預期輸出）",
+    "boot": {
+      "aria": "BOOT 按鍵：按一下切換下一個場景，長按切換自動迴圈",
+      "caption": "按一下 BOOT 切換到下一個場景，長按 0.6 秒開關自動迴圈，和真實的 BOOT 按鍵一樣。這裡的儀表盤用的是佔位數字；你的開發板會顯示真實的溫度、記憶體和影格時間。"
+    },
+    "button": {
+      "aria": "按鍵：按一下切換下一個場景，按兩下回到上一個，長按切換自動迴圈",
+      "caption": "按一下按鍵切換到下一個場景，按兩下回到上一個，長按 0.6 秒開關自動迴圈，和你的按鍵一樣。這裡的儀表盤用的是佔位數字；你的開發板會顯示真實的溫度、記憶體和影格時間。"
+    }
+  }
+}

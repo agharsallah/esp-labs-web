@@ -4,7 +4,9 @@ import { isLocaleChoice, LOCALE_INFO, LOCALES, matchLocale, resolveLocale } from
 describe("matchLocale", () => {
   it("takes the first supported language, ignoring region and case", () => {
     expect(matchLocale(["pt-BR", "fr-CA", "de"])).toBe("fr");
-    expect(matchLocale(["ZH-tw"])).toBe("zh");
+    expect(matchLocale(["zh-CN"])).toBe("zh");
+    expect(matchLocale(["ZH-tw"])).toBe("zh-TW");
+    expect(matchLocale(["zh-Hant-HK"])).toBe("zh-TW");
     expect(matchLocale(["ja_JP"])).toBe("ja");
   });
 

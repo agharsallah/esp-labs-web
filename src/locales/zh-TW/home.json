@@ -1,0 +1,70 @@
+{
+  "hero": {
+    "kicker": "ESP32-S3 · N16R8 · 工作臺指南",
+    "title": "ESP32 <part>實驗室</part>",
+    "motto": {
+      "wire": "接線",
+      "flash": "燒錄",
+      "watch": "觀察",
+      "read": "讀程式碼"
+    }
+  },
+  "hud": {
+    "title": "可用的實驗",
+    "strip": "按路線排列的所有實驗",
+    "works": "已在開發板上執行",
+    "done": "你已完成",
+    "built": "可以試試"
+  },
+  "continue": {
+    "resumed": "從上次停下的地方繼續",
+    "start": "從這裡開始",
+    "continue": "繼續實驗",
+    "open": "開啟實驗",
+    "code": "讀它的程式碼"
+  },
+  "board": {
+    "title": "認識開發板",
+    "intro": "六個你會在一個又一個實驗裡用到的部件。拖動開發板可以旋轉；選一個部件，它會亮起來，並顯示哪些實驗用到它。",
+    "model": "ESP32-S3 DevKitC-1 的 3D 模型：帶天線的模組、兩個 USB-C 口、BOOT 和 RST 按鍵、RGB LED 和兩排排針。拖動可旋轉。",
+    "fallback": "每個部件都在卡片裡有說明。",
+    "usedIn": "用於 ",
+    "more_other": "+{{count}} 個實驗",
+    "parts": {
+      "usb": {
+        "title": "USB-C 口",
+        "text": "COM 口用來燒錄開發板並傳輸序列埠監視器資料。USB 是 S3 內建的介面。"
+      },
+      "buttons": {
+        "title": "BOOT 和 RST",
+        "text": "RST 重啟你的程式。BOOT 是 GPIO 0：開發板執行後就是一個可自由使用的按鍵。"
+      },
+      "rgb": {
+        "title": "RGB LED",
+        "text": "GPIO 48 上的一顆 WS2812：只用一根資料腳位就能顯示 1600 萬種顏色。"
+      },
+      "module": {
+        "title": "ESP32-S3 模組",
+        "text": "金屬罩下是兩個 240 MHz 核心、16 MB flash 和 8 MB PSRAM。"
+      },
+      "antenna": {
+        "title": "PCB 天線",
+        "text": "Wi-Fi 4 和藍牙 5 都從這道銅走線發出：別讓金屬靠近它。"
+      },
+      "headers": {
+        "title": "排針",
+        "text": "44 個腳位：3V3、5V、GND，以及用來接螢幕、讀卡機和麥克風的 GPIO。"
+      }
+    },
+    "goInside": "走進晶片內部"
+  },
+  "map": {
+    "title": "所有實驗"
+  },
+  "track": {
+    "planned": "計畫中",
+    "working": "<b>{{working}}</b>/{{total}}<span> 可用</span>",
+    "state": "，{{state}}",
+    "loading": "載入中…"
+  }
+}

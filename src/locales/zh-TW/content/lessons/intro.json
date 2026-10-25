@@ -1,0 +1,89 @@
+{
+  "00": {
+    "title": "準備",
+    "heading": "接上電腦，找到開發板",
+    "goal": "讓工具鏈和晶片「說上話」：一根資料線、正確的 USB 介面，以及你 Mac 上的序列埠名稱。",
+    "learn": [
+      "USB-C 資料線與純充電線",
+      "COM 口與原生 USB 口",
+      "序列埠",
+      "啟動模式"
+    ],
+    "steps": [
+      "把一根<b>資料</b> USB-C 線插入標有 <code>COM</code>（或 <code>UART</code>）的介面。",
+      "檢查紅色電源 LED 是否亮起。",
+      "執行上面的指令。應該會出現一個新的 <code>/dev/cu.usbmodem…</code> 或 <code>/dev/cu.wchusbserial…</code>。",
+      "告訴 Claude 序列埠名稱，以及你的開發板有一個還是兩個 USB 口。"
+    ],
+    "note": "燒錄時提示 「Failed to connect」（連線失敗）？按住 BOOT，點按 RST，再鬆開 BOOT，然後重新燒錄。"
+  },
+  "01": {
+    "title": "你好",
+    "heading": "認識開發板",
+    "goal": "燒錄你的第一個程式。它會列印晶片的「身份證」，並讓板載 RGB LED 循環顯示彩虹色。",
+    "learn": [
+      "setup() 和 loop()",
+      "序列埠日誌",
+      "millis()",
+      "WS2812 RGB LED"
+    ],
+    "pins": {
+      "0": {
+        "role": "RGB"
+      }
+    },
+    "steps": [
+      "無需接線。讓纜線一直插在 <code>COM</code> 口上。",
+      "執行指令。等待出現 <code>Hard resetting via RTS pin…</code>。",
+      "讀一讀「身份證」：flash 應顯示 <b>16 MB</b>，PSRAM 約 <b>8 MB</b>。",
+      "觀察晶片旁邊的 RGB LED 循環變色。",
+      "按 <code>Ctrl+C</code> 退出監視器。"
+    ],
+    "note": "LED 沒有顏色？有些開發板把它接在 GPIO 38 上。修改 kit/include/pins.h 中的 PIN_RGB。"
+  },
+  "02": {
+    "title": "第一個電路",
+    "heading": "麵包板上的 LED",
+    "goal": "搭建你的第一個電路，並透過輸入指令來控制它。開發板在監聽指令的同時，LED 會繼續閃爍變化。",
+    "learn": [
+      "麵包板的行",
+      "電阻",
+      "PWM 亮度",
+      "狀態機"
+    ],
+    "pins": {
+      "0": {
+        "role": "LED +"
+      },
+      "1": {
+        "role": "LED −"
+      }
+    },
+    "wiring": {
+      "rows": [
+        [
+          "GPIO 4",
+          "電阻 220–330 Ω",
+          "第一隻腳"
+        ],
+        [
+          "電阻",
+          "LED 長腳 (+)",
+          "另一隻腳，同一行"
+        ],
+        [
+          "LED 短腳 (−)",
+          "GND",
+          "藍色電源軌或 GND 腳位"
+        ]
+      ]
+    },
+    "steps": [
+      "接線前先拔掉 USB。把開發板橫跨在麵包板的中間槽上。",
+      "把 GPIO 4 → 電阻 → LED 長腳連起來。LED 短腳 → GND。",
+      "重新插上 USB，執行指令。LED 開始「呼吸」。",
+      "輸入 <code>blink 200</code>、<code>sos</code>、<code>level 30</code>、<code>on</code>、<code>off</code>。"
+    ],
+    "note": "還沒有電阻？程式碼把腳位驅動電流設為最小（約 5 mA）作為安全保護。不過還是儘快加上一個。"
+  }
+}

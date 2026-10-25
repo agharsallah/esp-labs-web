@@ -1,0 +1,229 @@
+{
+  "W1": {
+    "title": "掃描並連線",
+    "heading": "掃描空中的訊號，然後連上你的網路",
+    "goal": "第一個 Wi-Fi 實驗，使用它自己的韌體 (wifi-lab-w1)；所有實驗共用的程式碼放在 kit/lib/wifi-kit 中。ESP32 會列出附近所有 2.4 GHz 網路，然後連上你的網路：你在掃描表中選中它，輸入一次密碼即可。密碼儲存在晶片裡，絕不寫進程式碼。狀態頁面會顯示時鐘（網際網路時間）、IP 位址、bench.local 和即時訊號圖。",
+    "learn": [
+      "Station 模式",
+      "通道與 dBm",
+      "加密型別",
+      "NVS 儲存",
+      "Wi-Fi 事件",
+      "網際網路時間 (NTP)",
+      "mDNS"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "BLK"
+      },
+      "2": {
+        "role": "RES"
+      },
+      "3": {
+        "role": "DC"
+      },
+      "4": {
+        "role": "CS"
+      },
+      "5": {
+        "role": "SDA"
+      },
+      "6": {
+        "role": "SCL"
+      },
+      "7": {
+        "role": "GND"
+      },
+      "8": {
+        "role": "BTN"
+      },
+      "9": {
+        "role": "BOOT"
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "掃描是怎麼進行的"
+      },
+      "1": {
+        "title": "Wi-Fi 課程路線"
+      }
+    },
+    "steps": [
+      "螢幕接線與第 03 課相同。按鈕（腳位 5 + GND）是選用的：它的作用和 BOOT 完全一樣。",
+      "用上面的指令燒錄（或者對 Claude 說「go」）。",
+      "看第一次掃描。<b>按一下</b>切換各個檢視：網路、通道、雷達、狀態。",
+      "開啟 <code>uv run pio device monitor</code>。在掃描表中找到你的網路編號。",
+      "輸入 <code>join 3</code>（換成你的編號），然後在下一行輸入密碼。密碼會儲存在晶片上；日誌裡只顯示它的長度。",
+      "狀態檢視會自動開啟：時鐘、IP 位址、<code>bench.local</code>、訊號圖。試試在 Mac 上執行 <code>ping bench.local</code>，並在監視器裡輸入 <code>ping</code>，從開發板這一側測試路由器。",
+      "拔掉再插上：它會自動重新連線。<code>forget</code> 會清除已儲存的網路。"
+    ],
+    "note": "5 GHz 網路永遠不會出現：S3 的無線電只支援 2.4 GHz。監視器會顯示鄰居的網路名稱，以及你輸入的內容，包括密碼。不要把這部分貼到任何會分享出去的地方。"
+  },
+  "W2": {
+    "title": "手機控制",
+    "heading": "用手機和 Mac 控制工作臺",
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "BLK"
+      },
+      "2": {
+        "role": "RES"
+      },
+      "3": {
+        "role": "DC"
+      },
+      "4": {
+        "role": "CS"
+      },
+      "5": {
+        "role": "SDA"
+      },
+      "6": {
+        "role": "SCL"
+      },
+      "7": {
+        "role": "GND"
+      },
+      "8": {
+        "role": "BTN"
+      },
+      "9": {
+        "role": "BOOT"
+      }
+    },
+    "variants": {
+      "lan": {
+        "label": "變體 1 · 在你的 Wi-Fi 上",
+        "short": "手機 → 開發板，在家中",
+        "goal": "它有自己的韌體 (wifi-lab-w2)：包含 W1 的全部功能，外加一個小型 Web 伺服器：REST API、即時 WebSocket、位於 bench.local 的手機頁面，以及一個無需纜線就能連線 Wi-Fi 的配置網路。esp-labs/apps/dashboard 中的 React + Node 儀表盤在你的 Mac 上提供同樣的控制，還有即時圖表和韌體更新。",
+        "learn": [
+          "REST API",
+          "WebSocket",
+          "非同步 Web 伺服器",
+          "強制門戶 (captive portal)",
+          "OTA 更新",
+          "管理員令牌",
+          "React + Node"
+        ],
+        "panels": {
+          "0": {
+            "title": "各部分如何通訊"
+          }
+        },
+        "steps": [
+          "接線與 W1 相同（按鈕選用）。用上面的指令燒錄（或者對 Claude 說「go」）。",
+          "還沒連上網？狀態檢視會顯示配置網路 <code>bench-setup</code> 及其密碼。用手機連上它，在開啟的頁面裡選擇你的 Wi-Fi，輸入密碼。",
+          "連上之後：在手機上開啟 <code>http://bench.local</code>。切換檢視、傳送訊息、選一種 LED 顏色、調暗螢幕。",
+          "在序列埠監視器中輸入 <code>token</code>，並複製得到的值。",
+          "在 Mac 上：執行 <code>cd esp-labs/apps/dashboard</code>、<code>cp .env.example .env</code>，把令牌貼上為 <code>ESP_TOKEN=</code>，然後執行 <code>pnpm install</code> 和 <code>pnpm dev</code>。開啟 <code>http://localhost:5173</code>。",
+          "按下按鈕或 BOOT：這次點選會即時出現在手機頁面和儀表盤上。",
+          "試試無線更新：執行 <code>uv run pio run -d labs/wifi-lab-w2 -e wifi-lab-w2</code>，然後在儀表盤的 Admin 面板中上傳 <code>.pio/build/wifi-lab-w2/firmware.bin</code>。螢幕會顯示進度。"
+        ],
+        "note": "日常控制對你家庭網路裡的任何人開放：這只是個工作臺玩具。重啟、忘記 Wi-Fi 和韌體更新需要令牌，令牌儲存在晶片和儀表盤的 .env（已被 git 忽略）中，絕不會出現在瀏覽器裡。頁面打不開？輸入完整的 <code>http://</code>；在 FRITZ!Box 上請勾選 「WLAN devices may communicate with each other」；在 Mac 上，請到「隱私與安全性 → 本地網路」中允許該瀏覽器。"
+      },
+      "remote": {
+        "label": "變體 2 · 隨時隨地",
+        "short": "開發板主動連線你的伺服器",
+        "goal": "同樣的開發板和手機頁面，再加一條遠端鏈路：開發板<b>主動</b>連出去，連到你的儀表盤伺服器，並保持一條安全的 WebSocket 連線。伺服器需要一個公網 https 位址：現在用你的 Mac 加一條隧道（cloudflared 或 ngrok），以後可以把同一個應用放到託管伺服器上。開發板分不出區別。你可以用手機流量、在辦公室、在任何地方控制工作臺。路由器上什麼都不用開放，Wi-Fi 隔離也不再有影響。",
+        "learn": [
+          "出站連線與 NAT",
+          "隧道",
+          "TLS 與根證書",
+          "WebSocket 客戶端",
+          "FreeRTOS 任務",
+          "登入與 Cookie"
+        ],
+        "panels": {
+          "0": {
+            "title": "遠端控制如何工作"
+          }
+        },
+        "steps": [
+          "接線相同（按鈕選用）。用上面的指令燒錄（或者對 Claude 說「go」）。首次會下載一個函式庫：links2004/WebSockets 2.7.3。",
+          "在 Mac 上，編輯 <code>esp-labs/apps/dashboard/.env</code>：<code>ESP_MODE=relay</code>，<code>ESP_TOKEN=</code> 填序列埠裡 <code>token</code> 指令輸出的值，<code>DASHBOARD_KEY=</code> 填 <code>openssl rand -hex 16</code> 的輸出。",
+          "啟動伺服器：<code>cd esp-labs/apps/dashboard && pnpm remote</code>（建置應用，並在 8787 埠提供服務）。",
+          "在第二個終端裡開啟隧道：<code>pnpm tunnel:cloudflare</code>（無需賬號；會列印 <code>https://…trycloudflare.com</code>，每次都不同）或 <code>pnpm tunnel:ngrok</code>（使用你的 ngrok 賬號；加上 <code>--url=&lt;your free static domain&gt;</code>，位址就永遠不變）。",
+          "在序列埠監視器裡告訴開發板：<code>relay wss://&lt;tunnel host&gt;</code>。它會儲存位址並連線；之後 <code>relay</code> 會顯示 <code>online</code>，螢幕上鍊路圓點周圍會出現一個青色圓環。",
+          "在手機上關掉 Wi-Fi（用移動資料），開啟隧道位址，用金鑰登入，然後切換檢視或 LED。你正在從家門外控制工作臺。",
+          "拔掉開發板再插上：它會重新連上 Wi-Fi，並自動再次連入。<code>relay off</code> 會停止這條鏈路。"
+        ],
+        "note": "每次重啟 cloudflared，快速隧道的位址都會變：用 <code>relay</code> 輸入新位址，或者一次性設定好 ngrok 的免費靜態域名。韌體更新目前仍只能在你的 Wi-Fi 內進行（變體 1）。用完後停止隧道（Ctrl+C），公網位址就會失效。如果改用託管伺服器：在那裡執行同一個應用（<code>pnpm build && pnpm start</code>、<code>ESP_MODE=relay</code>、<code>HOST=0.0.0.0</code>、<code>TRUST_PROXY=true</code>），並讓 <code>relay</code> 指向它的位址。想先不用隧道測試？在 .env 中設定 <code>HOST=0.0.0.0</code>，然後輸入 <code>relay ws://&lt;your Mac's IP&gt;:8787</code>。"
+      }
+    }
+  },
+  "W3": {
+    "title": "網際網路與 AI",
+    "heading": "來自網際網路的天氣，來自雲端的詩人",
+    "goal": "開發板變成了網際網路客戶端。它透過 HTTPS 以 JSON 格式獲取你所在城市的天氣（Open-Meteo，無需賬號或金鑰），並把它畫出來：動態天空、未來 24 小時、一週預報。然後是 Bench Oracle：開發板把它對此刻所知道的資訊（地點、時間、天氣、自身溫度）發給一個 AI 模型，得到一首俳句，或對你問題的回答，外加一種 LED 顏色和一個場景，都以結構化 JSON 傳回。請求會經過你 Mac 上的 LiteLLM，所以任何服務商和模型都能用，而且服務商的金鑰永遠不會接觸到晶片。",
+    "learn": [
+      "HTTPS 客戶端",
+      "TLS 證書",
+      "JSON 與過濾器",
+      "REST API",
+      "AI 函式呼叫",
+      "LLM 閘道器 (LiteLLM)",
+      "工作任務"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "BLK"
+      },
+      "2": {
+        "role": "RES"
+      },
+      "3": {
+        "role": "DC"
+      },
+      "4": {
+        "role": "CS"
+      },
+      "5": {
+        "role": "SDA"
+      },
+      "6": {
+        "role": "SCL"
+      },
+      "7": {
+        "role": "GND"
+      },
+      "8": {
+        "role": "BTN"
+      },
+      "9": {
+        "role": "BOOT"
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "跟著一次請求，一步步走一遍"
+      }
+    },
+    "steps": [
+      "接線相同（按鈕選用）。用上面的指令燒錄（或者對 Claude 說「go」）。它會使用 W1/W2 儲存的 Wi-Fi 網路。",
+      "開啟 <code>uv run pio device monitor</code>，輸入 <code>city Hamburg</code>（換成你的城市）。開發板會查詢該城市、儲存它，並獲取天氣。",
+      "<b>按一下</b>切換檢視：現在（動態天空）、預報（未來 24 小時）、一週。頁尾會顯示每次請求：花了多長時間，以及傳回內容有多大。",
+      "在 Mac 上啟動 AI 閘道器：<code>cd esp-labs/apps/ai-gateway</code>、<code>cp .env.example .env</code>（填入 <code>LITELLM_MASTER_KEY</code> 和你的服務商金鑰，例如 <code>ANTHROPIC_API_KEY</code>）、<code>uv sync</code>，然後執行 <code>uv run --env-file .env litellm --config config.yaml --port 4000</code>。",
+      "在監視器裡告訴開發板閘道器在哪裡：<code>ai url http://&lt;your Mac's IP&gt;:4000</code> 和 <code>ai key &lt;LITELLM_MASTER_KEY&gt;</code>。金鑰只在這裡輸入，絕不要發到聊天裡。",
+      "進入 oracle 檢視並<b>按兩下</b>：模型會寫一首關於此刻的俳句，並選定 LED 顏色。在任何檢視中按住按鈕也能得到同樣的效果。",
+      "問它點什麼：<code>ask should I bike to work?</code> 或 <code>ask what should I build next?</code>。它知道你那裡的天氣和開發板的狀態。",
+      "無需重新燒錄就能切換模型：<code>ai model oracle-fast</code>，或者在 <code>config.yaml</code> 中新增任意服務商（OpenAI、Gemini、本地 Ollama 模型），然後選它的名字。比較每個回答下方顯示的耗時和 token 數。"
+    ],
+    "note": "服務商的金鑰儲存在你 Mac 上閘道器的 .env 裡。開發板只儲存閘道器自己的金鑰（存放在 NVS，絕不列印：日誌只顯示它的最後 4 個字元），<code>ai key forget</code> 會清除它。在你的 Wi-Fi 裡，開發板與閘道器之間用的是明文 http；要在外面使用，請把閘道器放到 https 後面（隧道或伺服器，參見 W2 變體 2）。在每個服務商那裡設定消費上限；開發板最多每 10 秒請求一次，也絕不會自己主動請求。"
+  },
+  "W4": {
+    "title": "無線電實驗（加餐）"
+  },
+  "W5": {
+    "title": "硬體日記"
+  }
+}

@@ -2,7 +2,7 @@
   "S1": {
     "title": "聆聽",
     "heading": "聽聽麥克風到底發來了什麼",
-    "goal": "<span class=\"snd-parts\"><span class=\"need\">KY-037 or INMP441</span></span>兩個麥克風，兩種接入方式。<b>INMP441</b> 是數字的：自帶放大器和 24 位轉換器，透過 I2S 傳數字。KY-037 有兩個輸出。<b>AO</b> 是麥克風自身的電壓：一個疊在穩定的<i>偏置</i>上的微小波形。<b>DO</b> 是 LM393 比較器給出的「是/否」，由藍色微調電位器設定。S1 用 ADC 的 DMA 每秒對 AO 取樣 16 000 次（不在迴圈裡呼叫 <code>analogRead()</code>），把它畫成示波器，顯示它在 ADC 量程中所處的位置，並讓你調節電位器。<b>mics</b> 檢視把兩者並排顯示。其他所有聲音實驗都以它為基礎：取樣器、4 秒環形緩衝區和準位表都在 <code>kit/lib/sound-kit</code> 中。",
+    "goal": "<span class=\"snd-parts\"><span class=\"need\">KY-037 or INMP441</span></span>兩個麥克風，兩種接入方式。<b>INMP441</b> 是數位的：內建放大器和 24 位轉換器，透過 I2S 傳數位訊號。KY-037 有兩個輸出。<b>AO</b> 是麥克風自身的電壓：一個疊在穩定的<i>偏置</i>上的微小波形。<b>DO</b> 是 LM393 比較器給出的「是/否」，由藍色微調電位器設定。S1 用 ADC 的 DMA 每秒對 AO 取樣 16 000 次（不在迴圈裡呼叫 <code>analogRead()</code>），把它畫成示波器，顯示它在 ADC 量程中所處的位置，並讓你調節電位器。<b>mics</b> 檢視把兩者並排顯示。其他所有聲音實驗都以它為基礎：取樣器、4 秒環形緩衝區和準位表都在 <code>kit/lib/sound-kit</code> 中。",
     "goalLine": "把你的聲音和拍手聲看成波形，比較兩個麥克風，讀出偏置（或位數），並調節比較器，讓它只在大聲時觸發。",
     "goalCheck": [
       "安靜時 <b>scope</b> 顯示一條平線，說話時出現波形；吹口哨時波形靜止不動（觸發已開啟）。",
@@ -12,7 +12,7 @@
       "兩個麥克風都接上時，<b>mics</b> 檢視會告訴你 INMP441 聽一個詞要清楚多少 dB。"
     ],
     "learn": [
-      "模擬麥克風與數字麥克風",
+      "類比麥克風與數位麥克風",
       "I2S",
       "偏置電壓",
       "ADC 衰減",
@@ -101,22 +101,22 @@
         [
           "KY-037 + · G",
           "3V3",
-          "模擬麥克風。+ 接第二個 3V3 腳位（螢幕用了第一個），G 接 GND。<b>絕不能接 5 V</b>：AO 和 DO 的電壓會擺動到模組的供電電壓，而 ESP32-S3 的腳位最高只能承受 3.3 V。"
+          "類比麥克風。+ 接第二個 3V3 腳位（螢幕用了第一個），G 接 GND。<b>絕不能接 5 V</b>：AO 和 DO 的電壓會擺動到模組的供電電壓，而 ESP32-S3 的腳位最高只能承受 3.3 V。"
         ],
         [
           "KY-037 AO",
           "GPIO 6",
-          "模擬輸出：麥克風的電壓。GPIO 6 是 ADC1 通道 5：開啟 Wi-Fi 時 ADC1 仍能工作，ADC2 不行。"
+          "類比輸出：麥克風的電壓。GPIO 6 是 ADC1 通道 5：開啟 Wi-Fi 時 ADC1 仍能工作，ADC2 不行。"
         ],
         [
           "KY-037 DO",
           "GPIO 21",
-          "數字輸出：當聲音比藍色微調電位器的設定值更響時，LM393 比較器輸出高準位。"
+          "數位輸出：當聲音比藍色微調電位器的設定值更響時，LM393 比較器輸出高準位。"
         ],
         [
           "INMP441 VDD · GND",
           "3V3",
-          "數字麥克風 (I2S)。VDD 接 3V3（與 KY-037 共用麵包板電源軌），GND 接 GND。只能接 3.3 V。"
+          "數位麥克風 (I2S)。VDD 接 3V3（與 KY-037 共用麵包板電源軌），GND 接 GND。只能接 3.3 V。"
         ],
         [
           "INMP441 L/R",
@@ -141,7 +141,7 @@
         [
           "MAX98357A VIN · GND",
           "5V",
-          "喇叭功放。5V 功率最大（4 Ω 負載約 3 W）；3V3 也能工作，聲音小一些。"
+          "喇叭功率放大器。5V 功率最大（4 Ω 負載約 3 W）；3V3 也能工作，聲音小一些。"
         ],
         [
           "MAX98357A BCLK",
@@ -165,13 +165,13 @@
         ],
         [
           "喇叭 (4 Ω, 3 W)",
-          "功放 + / −",
-          "接在功放的螺絲端子上：JST-PH2.0 連線線的兩根線，紅線接 +。"
+          "功率放大器 + / −",
+          "接在功率放大器的螺絲端子上：JST-PH2.0 連線線的兩根線，紅線接 +。"
         ],
         [
           "螢幕（8 根線）",
           "同第 03 課",
-          "保持不變。GPIO 5 上的按鈕是可選的：它的作用和 BOOT 一樣。"
+          "保持不變。GPIO 5 上的按鈕是選用的：它的作用和 BOOT 一樣。"
         ]
       ]
     },
@@ -179,7 +179,7 @@
       "0": {
         "does": "建置 S1 實驗並寫入開發板，然後用 <code>uv run pio device monitor</code> 開啟監視器。",
         "see": "<code>Listening for an INMP441 on the I2S pins...</code>、<code>Microphone: INMP441 (I2S, digital) (mic setting: auto)</code>（或 KY-037），然後是 <code>Sound lab S1 …</code>、指令列表，以及喇叭發出的三音問候。安靜半秒鐘：<code>- learning the quiet...</code>",
-        "fix": "選錯了麥克風：<code>mic inmp441</code> 或 <code>mic ky037</code>（會儲存並重啟）。沒有問候音：喇叭是可選的；檢查 VIN 和 DIN。「Failed to connect」：按住 BOOT，點按 RST，鬆開 BOOT，再執行一次。"
+        "fix": "選錯了麥克風：<code>mic inmp441</code> 或 <code>mic ky037</code>（會儲存並重啟）。沒有問候音：喇叭是選用的；檢查 VIN 和 DIN。「Failed to connect」：按住 BOOT，點按 RST，鬆開 BOOT，再執行一次。"
       },
       "1": {
         "does": "shell 使用哪個麥克風。<code>auto</code>（預設）會在啟動時用 0.3 秒檢測有沒有 INMP441。儲存在 NVS 中（命名空間 <code>sound</code>）；開發板會重啟。",
@@ -212,7 +212,7 @@
         "fix": "偏置接近 0 或 3.3 V：模組接在了 5 V 上，或者有導線鬆了。請使用 3V3。"
       },
       "7": {
-        "does": "把 ADC 的量程縮小到 0-1.75 V：每一步從 0.76 mV 變成 0.43 mV。（在 bias 上雙擊會依次切換 12 → 6 → 2.5 → 0。）",
+        "does": "把 ADC 的量程縮小到 0-1.75 V：每一步從 0.76 mV 變成 0.43 mV。（在 bias 上按兩下會依次切換 12 → 6 → 2.5 → 0。）",
         "see": "<code>- attenuation 6 dB (0-1.75 V)</code>；在標尺上陰影範圍縮小，波形在 scope 上看起來更高。",
         "fix": "<code>CLIPPING</code>：偏置或波形已經放不下了。用 <code>atten 12</code> 回到原來。"
       },
@@ -233,11 +233,11 @@
       },
       "11": {
         "does": "把最新的 64 個取樣列印成數字（去掉偏置後的 int16；一個 ADC 步長 = 16）。",
-        "see": "四行，每行 16 個用逗號分隔的數字，例如 <code>-32,16,48,…</code>。貼上到電子表格裡並畫成折線圖。",
+        "see": "四行，每行 16 個用逗號分隔的數字，例如 <code>-32,16,48,…</code>。貼上到試算表裡並畫成折線圖。",
         "fix": ""
       },
       "12": {
-        "does": "Freeze 保持畫面不動（在 scope 上雙擊，或長按）；span 設定螢幕上顯示的時間跨度。",
+        "does": "Freeze 保持畫面不動（在 scope 上按兩下，或長按）；span 設定螢幕上顯示的時間跨度。",
         "see": "<code>scope frozen (freeze again to go on)</code>；設定 <code>span 5</code> 後，口哨的單一波形會變得清晰。",
         "fix": ""
       }
@@ -249,11 +249,11 @@
       },
       "1": {
         "title": "從空氣到數字",
-        "intro": "從你的聲音到程式碼能用的數字之間有八個階段。逐步檢視（或者讓它自動播放）；右邊的按鈕會發出聲音，圖下方的每個數值都是實時的。"
+        "intro": "從你的聲音到程式碼能用的數字之間有八個階段。逐步檢視（或者讓它自動播放）；右邊的按鈕會發出聲音，圖下方的每個數值都是即時的。"
       },
       "2": {
-        "title": "模擬麥克風與數字麥克風：I2S 如何傳送一個取樣",
-        "intro": "KY-037 把一個電壓交給 ESP32 去測量；INMP441 自己測量併傳送數字。下面是三根線上的一個 I2S 訊框。一個時鐘週期一個時鐘週期地步進，看一個 24 位取樣到來，然後變成每個實驗都使用的 16 位數字。"
+        "title": "類比麥克風與數位麥克風：I2S 如何傳送一個取樣",
+        "intro": "KY-037 把一個電壓交給 ESP32 去測量；INMP441 自己測量並傳送數字。下面是三根線上的一個 I2S 訊框。一個時鐘週期一個時鐘週期地步進，看一個 24 位取樣到來，然後變成每個實驗都使用的 16 位數字。"
       },
       "3": {
         "title": "波形在 ADC 量程中的位置 (KY-037)",
@@ -261,11 +261,11 @@
       },
       "4": {
         "title": "比較器和它的電位器",
-        "intro": "LM393 把 AO 與電位器設定的電壓做比較。線上之上，DO 為高準位（模組上的 LED2 亮起）。拖動虛線（或滑塊）並觀察 DO：太低它會一直抖動，太高連拍手聲都會漏掉。"
+        "intro": "LM393 把 AO 與電位器設定的電壓做比較。線上之上，DO 為高準位（模組上的 LED2 亮起）。拖動虛線（或滑桿）並觀察 DO：太低它會一直抖動，太高連拍手聲都會漏掉。"
       },
       "5": {
         "title": "螢幕上顯示什麼",
-        "intro": "五個檢視。單擊 = 下一個檢視，雙擊 = 左下角的操作，長按 = 凍結。右上角：準位條、DO 指示燈（使用 INMP441 時是 <b>D</b>）、喇叭播放時的波紋，以及任何錄音進行時的紅點（S4、S8）。"
+        "intro": "五個檢視。按一下 = 下一個檢視，按兩下 = 左下角的操作，長按 = 凍結。右上角：準位條、DO 指示燈（使用 INMP441 時是 <b>D</b>）、喇叭播放時的波紋，以及任何錄音進行時的紅點（S4、S8）。"
       }
     },
     "steps": [
@@ -276,13 +276,13 @@
       "輸入 <code>pot</code> 並調節比較器。<b>檢查點 4：</b>comparator 檢視上顯示 「tuned」。",
       "輸入 <code>status</code>。<b>檢查點 5：</b>16000 Hz measured，0 overruns。"
     ],
-    "note": "使用 INMP441 時，scope 的刻度以滿量程的百分比表示，bias 檢視變成它 24 位的階梯（每一位 = 6 dB；聲音用了多少位，還剩多少餘量），比較器是軟體實現的，<b>numbers</b> 還會增加 dB SPL。對 KY-037 的實事求是的預期：它沒有放大器。它的 AO 是話筒芯的原始電壓，說話只有幾毫伏，所以語音只用到 ADC 4096 個臺階中的寥寥幾個。這使它成為很好的<b>響度</b>感測器（拍手、敲擊、噪聲、節拍），但只是一個粗糙的麥克風。DO 只是一個比較器：拍一下手時，波形穿過這條線會在它上面產生幾十個邊沿，所以各實驗監聽 AO，把 DO 用於硬體指示燈和作為第二參考。ADC 透過 ADC1 取樣，開啟 Wi-Fi 時它仍能工作（ADC2 不行）。"
+    "note": "使用 INMP441 時，scope 的刻度以滿量程的百分比表示，bias 檢視變成它 24 位的階梯（每一位 = 6 dB；聲音用了多少位，還剩多少餘量），比較器是軟體實作的，<b>numbers</b> 還會增加 dB SPL。對 KY-037 的務實的預期：它沒有放大器。它的 AO 是麥克風本體的原始電壓，說話只有幾毫伏，所以語音只用到 ADC 4096 個臺階中的寥寥幾個。這使它成為很好的<b>響度</b>感測器（拍手、敲擊、噪聲、節拍），但只是一個粗糙的麥克風。DO 只是一個比較器：拍一下手時，波形穿過這條線會在它上面產生幾十個邊沿，所以各實驗監聽 AO，把 DO 用於硬體指示燈和作為第二參考。ADC 透過 ADC1 取樣，開啟 Wi-Fi 時它仍能工作（ADC2 不行）。"
   },
   "S2": {
     "title": "響度",
-    "heading": "你房間的聲級計",
-    "goal": "<span class=\"snd-parts\"><span class=\"need\">KY-037 or INMP441</span><span class=\"opt\">MAX98357A + 喇叭（可選）</span></span>有多響？使用 <b>INMP441</b> 時，S2 顯示真實的 <b>dB SPL</b>（它的資料手冊寫著在 94 dB SPL 時為 −26 dBFS，所以 RMS dBFS + 111）：30 是耳語，60 是交談，85 是聽力受損風險線。使用 KY-037 時，它顯示高於你房間安靜準位的 dB 數。S2 像聲級計一樣把取樣變成分貝：<b>fast</b>（125 ms）或 <b>slow</b>（1 秒）平滑、峰值保持，以及一個會學習你房間的本底噪聲。然後它保留一分鐘的圖表、一份十分鐘的噪聲日記，以及一個報警器：當聲音持續太響時，會點亮第 02 課接在 GPIO 4 上的 LED。",
-    "goalLine": "讀出你房間的聲級（使用 INMP441 時單位為 dB SPL），看看 fast 和 slow 的區別，記一份日記，並觸發（然後消除）報警。",
+    "heading": "你房間的噪音計",
+    "goal": "<span class=\"snd-parts\"><span class=\"need\">KY-037 or INMP441</span><span class=\"opt\">MAX98357A + 喇叭（選用）</span></span>有多響？使用 <b>INMP441</b> 時，S2 顯示真實的 <b>dB SPL</b>（它的資料手冊寫著在 94 dB SPL 時為 −26 dBFS，所以 RMS dBFS + 111）：30 是耳語，60 是交談，85 是聽力受損風險線。使用 KY-037 時，它顯示高於你房間安靜準位的 dB 數。S2 像噪音計一樣把取樣變成分貝：<b>fast</b>（125 ms）或 <b>slow</b>（1 秒）平滑、峰值保持，以及一個會學習你房間的底噪。然後它保留一分鐘的圖表、一份十分鐘的噪聲日記，以及一個報警器：當聲音持續太響時，會點亮第 02 課接在 GPIO 4 上的 LED。",
+    "goalLine": "讀出你房間的音量級（使用 INMP441 時單位為 dB SPL），看看 fast 和 slow 的區別，記一份日記，並觸發（然後消除）報警。",
     "goalCheck": [
       "<b>meter</b> 在安靜時讀數約為 0，說話時為 15-25，拍手為 40+，並大致說明這相當於什麼。",
       "使用 <code>speed slow</code> 時，數字會平靜下來；峰值刻度線仍然能捕捉到拍手聲。",
@@ -296,7 +296,7 @@
       "未加權與 dBA",
       "85 dB 風險線",
       "快 / 慢平滑",
-      "本底噪聲",
+      "底噪",
       "回聲防護"
     ],
     "pins": {
@@ -378,22 +378,22 @@
         [
           "KY-037 + · G",
           "3V3",
-          "模擬麥克風。+ 接第二個 3V3 腳位（螢幕用了第一個），G 接 GND。<b>絕不能接 5 V</b>：AO 和 DO 的電壓會擺動到模組的供電電壓，而 ESP32-S3 的腳位最高只能承受 3.3 V。"
+          "類比麥克風。+ 接第二個 3V3 腳位（螢幕用了第一個），G 接 GND。<b>絕不能接 5 V</b>：AO 和 DO 的電壓會擺動到模組的供電電壓，而 ESP32-S3 的腳位最高只能承受 3.3 V。"
         ],
         [
           "KY-037 AO",
           "GPIO 6",
-          "模擬輸出：麥克風的電壓。GPIO 6 是 ADC1 通道 5：開啟 Wi-Fi 時 ADC1 仍能工作，ADC2 不行。"
+          "類比輸出：麥克風的電壓。GPIO 6 是 ADC1 通道 5：開啟 Wi-Fi 時 ADC1 仍能工作，ADC2 不行。"
         ],
         [
           "KY-037 DO",
           "GPIO 21",
-          "數字輸出：當聲音比藍色微調電位器的設定值更響時，LM393 比較器輸出高準位。"
+          "數位輸出：當聲音比藍色微調電位器的設定值更響時，LM393 比較器輸出高準位。"
         ],
         [
           "INMP441 VDD · GND",
           "3V3",
-          "數字麥克風 (I2S)。VDD 接 3V3（與 KY-037 共用麵包板電源軌），GND 接 GND。只能接 3.3 V。"
+          "數位麥克風 (I2S)。VDD 接 3V3（與 KY-037 共用麵包板電源軌），GND 接 GND。只能接 3.3 V。"
         ],
         [
           "INMP441 L/R",
@@ -418,7 +418,7 @@
         [
           "MAX98357A VIN · GND",
           "5V",
-          "喇叭功放。5V 功率最大（4 Ω 負載約 3 W）；3V3 也能工作，聲音小一些。"
+          "喇叭功率放大器。5V 功率最大（4 Ω 負載約 3 W）；3V3 也能工作，聲音小一些。"
         ],
         [
           "MAX98357A BCLK",
@@ -442,13 +442,13 @@
         ],
         [
           "喇叭 (4 Ω, 3 W)",
-          "功放 + / −",
-          "接在功放的螺絲端子上：JST-PH2.0 連線線的兩根線，紅線接 +。"
+          "功率放大器 + / −",
+          "接在功率放大器的螺絲端子上：JST-PH2.0 連線線的兩根線，紅線接 +。"
         ],
         [
           "螢幕（8 根線）",
           "同第 03 課",
-          "保持不變。GPIO 5 上的按鈕是可選的：它的作用和 BOOT 一樣。"
+          "保持不變。GPIO 5 上的按鈕是選用的：它的作用和 BOOT 一樣。"
         ]
       ]
     },
@@ -456,7 +456,7 @@
       "0": {
         "does": "建置 S2 實驗並寫入開發板，然後用 <code>uv run pio device monitor</code> 開啟監視器。",
         "see": "<code>Listening for an INMP441 on the I2S pins...</code>、<code>Microphone: INMP441 (I2S, digital) (mic setting: auto)</code>（或 KY-037），然後是 <code>Sound lab S2 …</code>、指令列表，以及喇叭發出的三音問候。安靜半秒鐘：<code>- learning the quiet...</code>",
-        "fix": "選錯了麥克風：<code>mic inmp441</code> 或 <code>mic ky037</code>（會儲存並重啟）。沒有問候音：喇叭是可選的；檢查 VIN 和 DIN。「Failed to connect」：按住 BOOT，點按 RST，鬆開 BOOT，再執行一次。"
+        "fix": "選錯了麥克風：<code>mic inmp441</code> 或 <code>mic ky037</code>（會儲存並重啟）。沒有問候音：喇叭是選用的；檢查 VIN 和 DIN。「Failed to connect」：按住 BOOT，點按 RST，鬆開 BOOT，再執行一次。"
       },
       "1": {
         "does": "<b>meter</b> 檢視：大數字是高於你房間安靜準位的 dB 數。",
@@ -464,7 +464,7 @@
         "fix": "總是 0：安靜準位是在你說話時學到的。輸入 <code>quiet</code> 並安靜半秒鐘。"
       },
       "2": {
-        "does": "把準位表、圖表和報警切換為 1 秒平滑（在 meter 上雙擊可切換）。",
+        "does": "把準位表、圖表和報警切換為 1 秒平滑（在 meter 上按兩下可切換）。",
         "see": "<code>- slow: 1 s smoothing</code>；數字變化平緩，拍一下手幾乎抬不起它。",
         "fix": ""
       },
@@ -510,23 +510,23 @@
       },
       "2": {
         "title": "螢幕上顯示什麼",
-        "intro": "四個檢視。單擊 = 下一個，雙擊 = 左下角的操作（speed、quiet、diary、alarm），長按 = 重新學習安靜準位。報警響起時，任何按鍵都能消音。"
+        "intro": "四個檢視。按一下 = 下一個，按兩下 = 左下角的操作（speed、quiet、diary、alarm），長按 = 重新學習安靜準位。報警響起時，任何按鍵都能消音。"
       }
     },
     "steps": [
-      "接線與 S1 相同。可選：第 02 課的 LED 透過它的電阻接在 GPIO 4 上（報警燈）。",
+      "接線與 S1 相同。選用：第 02 課的 LED 透過它的電阻接在 GPIO 4 上（報警燈）。",
       "燒錄 <code>sound-lab-s2</code> 並安靜一秒鐘。<b>檢查點 1：</b>準位表讀數為 0-3 dB，「quiet」。",
       "在 30 cm 外用正常音量說話。<b>檢查點 2：</b>15-25 dB，「talking」。",
       "<code>speed slow</code>，然後 <code>speed fast</code>。<b>檢查點 3：</b>你能描述兩者的差別。",
       "在麥克風附近大聲播放音樂。<b>檢查點 4：</b>alarm 檢視顯示 TOO LOUD，然後用按鈕消音。",
       "放著不管十分鐘，然後執行 <code>diary</code>。<b>檢查點 5：</b>一張記錄你房間這十分鐘的表。"
     ],
-    "note": "dB SPL 需要一個靈敏度已知的麥克風：INMP441 的靈敏度寫在它的資料手冊裡，所以 S2 能顯示它（未加權，誤差約 ±2 dB；真正的聲級計常顯示 dBA，它像耳朵一樣對頻率加權，對低沉的嗡嗡聲讀數更低）。KY-037 的數字是高於<i>你</i>房間安靜準位的 dB 數，而不是 dB SPL（校準過的聲級計顯示的數字）：那需要一個參考麥克風和話筒芯的靈敏度。本底是在開機後或 <code>quiet</code> 之後的前半秒學到的，然後跟隨安靜準位（立刻下降，每秒上升 0.5 dB）。設定（speed、limit、hold、alarm）在重設後儲存在 NVS 中；日記則不會。"
+    "note": "dB SPL 需要一個靈敏度已知的麥克風：INMP441 的靈敏度寫在它的資料手冊裡，所以 S2 能顯示它（未加權，誤差約 ±2 dB；真正的噪音計常顯示 dBA，它像耳朵一樣對頻率加權，對低沉的嗡嗡聲讀數更低）。KY-037 的數字是高於<i>你</i>房間安靜準位的 dB 數，而不是 dB SPL（校準過的噪音計顯示的數字）：那需要一個參考麥克風和麥克風本體的靈敏度。本底是在開機後或 <code>quiet</code> 之後的前半秒學到的，然後跟隨安靜準位（立刻下降，每秒上升 0.5 dB）。設定（speed、limit、hold、alarm）在重設後儲存在 NVS 中；日記則不會。"
   },
   "S3": {
     "title": "拍手控制",
     "heading": "用你的雙手來切換裝置",
-    "goal": "<span class=\"snd-parts\"><span class=\"need\">KY-037 or INMP441</span><span class=\"opt\">MAX98357A + 喇叭（可選）</span></span>拍一下手切換 LED，拍兩下改變 RGB 顏色，拍三下讓螢幕休眠，拍四下開派對。說話、口哨或音樂都不算：拍手不只是響，它還有一個<b>形狀</b>（4 ms 內的跳變，160 ms 內結束）。靠得很近的拍手組成一個模式；停頓 0.65 秒結束這個模式。每個模式做什麼，是一份儲存在 NVS 裡、你可以修改的對映表，每個動作還會用喇叭上自己的小聲音來回應。",
+    "goal": "<span class=\"snd-parts\"><span class=\"need\">KY-037 or INMP441</span><span class=\"opt\">MAX98357A + 喇叭（選用）</span></span>拍一下手切換 LED，拍兩下改變 RGB 顏色，拍三下讓螢幕休眠，拍四下開派對。說話、口哨或音樂都不算：拍手不只是響，它還有一個<b>形狀</b>（4 ms 內的跳變，160 ms 內結束）。靠得很近的拍手組成一個模式；停頓 0.65 秒結束這個模式。每個模式做什麼，是一份儲存在 NVS 裡、你可以修改的對映表，每個動作還會用喇叭上自己的小聲音來回應。",
     "goalLine": "讓拍 1、2、3、4 下分別做四件不同的事，證明說話不會觸發它們，並根據你自己的拍手來調節檢測器。",
     "goalCheck": [
       "拍一下手切換 GPIO 4 上的 LED（或者列印 <code>LED on</code>），拍兩下改變 RGB 顏色。",
@@ -623,22 +623,22 @@
         [
           "KY-037 + · G",
           "3V3",
-          "模擬麥克風。+ 接第二個 3V3 腳位（螢幕用了第一個），G 接 GND。<b>絕不能接 5 V</b>：AO 和 DO 的電壓會擺動到模組的供電電壓，而 ESP32-S3 的腳位最高只能承受 3.3 V。"
+          "類比麥克風。+ 接第二個 3V3 腳位（螢幕用了第一個），G 接 GND。<b>絕不能接 5 V</b>：AO 和 DO 的電壓會擺動到模組的供電電壓，而 ESP32-S3 的腳位最高只能承受 3.3 V。"
         ],
         [
           "KY-037 AO",
           "GPIO 6",
-          "模擬輸出：麥克風的電壓。GPIO 6 是 ADC1 通道 5：開啟 Wi-Fi 時 ADC1 仍能工作，ADC2 不行。"
+          "類比輸出：麥克風的電壓。GPIO 6 是 ADC1 通道 5：開啟 Wi-Fi 時 ADC1 仍能工作，ADC2 不行。"
         ],
         [
           "KY-037 DO",
           "GPIO 21",
-          "數字輸出：當聲音比藍色微調電位器的設定值更響時，LM393 比較器輸出高準位。"
+          "數位輸出：當聲音比藍色微調電位器的設定值更響時，LM393 比較器輸出高準位。"
         ],
         [
           "INMP441 VDD · GND",
           "3V3",
-          "數字麥克風 (I2S)。VDD 接 3V3（與 KY-037 共用麵包板電源軌），GND 接 GND。只能接 3.3 V。"
+          "數位麥克風 (I2S)。VDD 接 3V3（與 KY-037 共用麵包板電源軌），GND 接 GND。只能接 3.3 V。"
         ],
         [
           "INMP441 L/R",
@@ -663,7 +663,7 @@
         [
           "MAX98357A VIN · GND",
           "5V",
-          "喇叭功放。5V 功率最大（4 Ω 負載約 3 W）；3V3 也能工作，聲音小一些。"
+          "喇叭功率放大器。5V 功率最大（4 Ω 負載約 3 W）；3V3 也能工作，聲音小一些。"
         ],
         [
           "MAX98357A BCLK",
@@ -687,13 +687,13 @@
         ],
         [
           "喇叭 (4 Ω, 3 W)",
-          "功放 + / −",
-          "接在功放的螺絲端子上：JST-PH2.0 連線線的兩根線，紅線接 +。"
+          "功率放大器 + / −",
+          "接在功率放大器的螺絲端子上：JST-PH2.0 連線線的兩根線，紅線接 +。"
         ],
         [
           "螢幕（8 根線）",
           "同第 03 課",
-          "保持不變。GPIO 5 上的按鈕是可選的：它的作用和 BOOT 一樣。"
+          "保持不變。GPIO 5 上的按鈕是選用的：它的作用和 BOOT 一樣。"
         ]
       ]
     },
@@ -701,7 +701,7 @@
       "0": {
         "does": "建置 S3 實驗並寫入開發板，然後用 <code>uv run pio device monitor</code> 開啟監視器。",
         "see": "<code>Listening for an INMP441 on the I2S pins...</code>、<code>Microphone: INMP441 (I2S, digital) (mic setting: auto)</code>（或 KY-037），然後是 <code>Sound lab S3 …</code>、指令列表，以及喇叭發出的三音問候。安靜半秒鐘：<code>- learning the quiet...</code>",
-        "fix": "選錯了麥克風：<code>mic inmp441</code> 或 <code>mic ky037</code>（會儲存並重啟）。沒有問候音：喇叭是可選的；檢查 VIN 和 DIN。「Failed to connect」：按住 BOOT，點按 RST，鬆開 BOOT，再執行一次。"
+        "fix": "選錯了麥克風：<code>mic inmp441</code> 或 <code>mic ky037</code>（會儲存並重啟）。沒有問候音：喇叭是選用的；檢查 VIN 和 DIN。「Failed to connect」：按住 BOOT，點按 RST，鬆開 BOOT，再執行一次。"
       },
       "1": {
         "does": "拍一下 = <code>led</code>，兩下 = <code>colour</code>（預設設定；三下 = <code>screen</code>，四下 = <code>party</code>）。",
@@ -709,7 +709,7 @@
         "fix": "沒反應：拍得太輕，達不到 <code>sens</code> 18 dB。試試 <code>learn</code>。"
       },
       "2": {
-        "does": "實時列印每一次拍手、長聲音和分組。",
+        "does": "即時列印每一次拍手、長聲音和分組。",
         "see": "<code>  clap at 5120 ms: 31.0 dB, 48 ms long</code>、<code>  LONG (not a clap) at …: 22.0 dB, 380 ms long</code>、<code>  group of 2: gaps 290 ms</code>。",
         "fix": "用 <code>test off</code> 停止。"
       },
@@ -746,11 +746,11 @@
       },
       "1": {
         "title": "螢幕上顯示什麼",
-        "intro": "四個檢視。單擊 = 下一個，雙擊 = 左下角的操作（test、colour、maps、learn），長按 = learn。"
+        "intro": "四個檢視。按一下 = 下一個，按兩下 = 左下角的操作（test、colour、maps、learn），長按 = learn。"
       }
     },
     "steps": [
-      "接線與 S1 相同。可選：第 02 課的 LED 接在 GPIO 4 上。",
+      "接線與 S1 相同。選用：第 02 課的 LED 接在 GPIO 4 上。",
       "燒錄 <code>sound-lab-s3</code>，安靜一秒鐘。<b>檢查點 1：</b><b>timeline</b> 顯示一條帶有上升線和釋放線的平線。",
       "拍一下，再拍兩下。<b>檢查點 2：</b>LED 切換，RGB 變色。",
       "在麥克風旁邊正常說話。<b>檢查點 3：</b>琥珀色的 <i>long</i> 條，沒有動作。",
@@ -762,14 +762,14 @@
   "S4": {
     "title": "錄音機",
     "heading": "一臺聲控錄音機",
-    "goal": "<span class=\"snd-parts\"><span class=\"need\">KY-037 or INMP441</span><span class=\"opt\">Wi-Fi (W1)（可選）</span><span class=\"opt\">MAX98357A + 喇叭（可選）</span></span>處於待命狀態時，開發板等待比觸發準位更響的聲音，然後錄入 PSRAM，從觸發<i>之前</i>半秒開始（環形緩衝區裡還有它），直到出現 1.2 秒的安靜。最多 12 段錄音，共 6 MB，重設後消失。你可以在手機上透過 <code>http://bench.local</code> 收聽（需要 W1 儲存的 Wi-Fi 網路，再加管理員令牌），也可以用 <code>tools/sound_pull.py</code> 透過 USB 拉取 WAV，或者在開發板自己的喇叭上播放（<code>play 3 0.7</code>：更慢更低沉）。錄音時，不管是誰啟動的，開發板總會顯示 REC 並亮起紅色 LED。",
+    "goal": "<span class=\"snd-parts\"><span class=\"need\">KY-037 or INMP441</span><span class=\"opt\">Wi-Fi (W1)（選用）</span><span class=\"opt\">MAX98357A + 喇叭（選用）</span></span>處於待命狀態時，開發板等待比觸發準位更響的聲音，然後錄入 PSRAM，從觸發<i>之前</i>半秒開始（環形緩衝區裡還有它），直到出現 1.2 秒的安靜。最多 12 段錄音，共 6 MB，重設後消失。你可以在手機上透過 <code>http://bench.local</code> 收聽（需要 W1 儲存的 Wi-Fi 網路，再加管理員令牌），也可以用 <code>tools/sound_pull.py</code> 透過 USB 拉取 WAV，或者在開發板自己的喇叭上播放（<code>play 3 0.7</code>：更慢更低沉）。錄音時，不管是誰啟動的，開發板總會顯示 REC 並亮起紅色 LED。",
     "goalLine": "擴音錄下一句話，看看預錄音，在手機上播放，並把一段錄音作為 WAV 檔案拉取到你的 Mac。",
     "goalCheck": [
       "<code>arm</code>，然後說話：<b>recorder</b> 檢視從 ARMED → REC → ARMED，<code>clips</code> 列出一段語音錄音。",
       "摔門聲或一下拍手會啟動錄音，但會被丟棄（太短）。",
       "<code>http://bench.local</code> 上的手機頁面用令牌解鎖，畫出錄音波形並播放它。",
       "<code>tools/sound_pull.py</code> 寫出了一個能在 Mac 上播放的 .wav。",
-      "<code>play</code>（或在 <b>clips</b> 上雙擊）會在開發板的喇叭上播放選中的錄音；<code>play 1 2</code> 是花栗鼠的聲音。"
+      "<code>play</code>（或在 <b>clips</b> 上按兩下）會在開發板的喇叭上播放選中的錄音；<code>play 1 2</code> 是花栗鼠的聲音。"
     ],
     "learn": [
       "來自環形緩衝區的預錄音",
@@ -860,22 +860,22 @@
         [
           "KY-037 + · G",
           "3V3",
-          "模擬麥克風。+ 接第二個 3V3 腳位（螢幕用了第一個），G 接 GND。<b>絕不能接 5 V</b>：AO 和 DO 的電壓會擺動到模組的供電電壓，而 ESP32-S3 的腳位最高只能承受 3.3 V。"
+          "類比麥克風。+ 接第二個 3V3 腳位（螢幕用了第一個），G 接 GND。<b>絕不能接 5 V</b>：AO 和 DO 的電壓會擺動到模組的供電電壓，而 ESP32-S3 的腳位最高只能承受 3.3 V。"
         ],
         [
           "KY-037 AO",
           "GPIO 6",
-          "模擬輸出：麥克風的電壓。GPIO 6 是 ADC1 通道 5：開啟 Wi-Fi 時 ADC1 仍能工作，ADC2 不行。"
+          "類比輸出：麥克風的電壓。GPIO 6 是 ADC1 通道 5：開啟 Wi-Fi 時 ADC1 仍能工作，ADC2 不行。"
         ],
         [
           "KY-037 DO",
           "GPIO 21",
-          "數字輸出：當聲音比藍色微調電位器的設定值更響時，LM393 比較器輸出高準位。"
+          "數位輸出：當聲音比藍色微調電位器的設定值更響時，LM393 比較器輸出高準位。"
         ],
         [
           "INMP441 VDD · GND",
           "3V3",
-          "數字麥克風 (I2S)。VDD 接 3V3（與 KY-037 共用麵包板電源軌），GND 接 GND。只能接 3.3 V。"
+          "數位麥克風 (I2S)。VDD 接 3V3（與 KY-037 共用麵包板電源軌），GND 接 GND。只能接 3.3 V。"
         ],
         [
           "INMP441 L/R",
@@ -900,7 +900,7 @@
         [
           "MAX98357A VIN · GND",
           "5V",
-          "喇叭功放。5V 功率最大（4 Ω 負載約 3 W）；3V3 也能工作，聲音小一些。"
+          "喇叭功率放大器。5V 功率最大（4 Ω 負載約 3 W）；3V3 也能工作，聲音小一些。"
         ],
         [
           "MAX98357A BCLK",
@@ -924,13 +924,13 @@
         ],
         [
           "喇叭 (4 Ω, 3 W)",
-          "功放 + / −",
-          "接在功放的螺絲端子上：JST-PH2.0 連線線的兩根線，紅線接 +。"
+          "功率放大器 + / −",
+          "接在功率放大器的螺絲端子上：JST-PH2.0 連線線的兩根線，紅線接 +。"
         ],
         [
           "螢幕（8 根線）",
           "同第 03 課",
-          "保持不變。GPIO 5 上的按鈕是可選的：它的作用和 BOOT 一樣。"
+          "保持不變。GPIO 5 上的按鈕是選用的：它的作用和 BOOT 一樣。"
         ]
       ]
     },
@@ -938,7 +938,7 @@
       "0": {
         "does": "建置 S4 實驗並寫入開發板，然後用 <code>uv run pio device monitor</code> 開啟監視器。",
         "see": "<code>Listening for an INMP441 on the I2S pins...</code>、<code>Microphone: INMP441 (I2S, digital) (mic setting: auto)</code>（或 KY-037），然後是 <code>Sound lab S4 …</code>、指令列表，以及喇叭發出的三音問候。安靜半秒鐘：<code>- learning the quiet...</code>",
-        "fix": "選錯了麥克風：<code>mic inmp441</code> 或 <code>mic ky037</code>（會儲存並重啟）。沒有問候音：喇叭是可選的；檢查 VIN 和 DIN。「Failed to connect」：按住 BOOT，點按 RST，鬆開 BOOT，再執行一次。"
+        "fix": "選錯了麥克風：<code>mic inmp441</code> 或 <code>mic ky037</code>（會儲存並重啟）。沒有問候音：喇叭是選用的；檢查 VIN 和 DIN。「Failed to connect」：按住 BOOT，點按 RST，鬆開 BOOT，再執行一次。"
       },
       "1": {
         "does": "聲控：比 <code>trigger</code>（高於安靜準位 15 dB）更響就會開始一段錄音。",
@@ -966,7 +966,7 @@
         "fix": "不要把它發到聊天裡，也不要提交到 git；<code>token new</code> 會替換它。"
       },
       "6": {
-        "does": "開發板自己的頁面：實時準位、arm / rec / stop、帶有每段波形的錄音列表、播放和下載、速度選項，以及每段錄音的 <b>Play on board</b> / <b>Stop on board</b>。令牌只保留在那個分頁裡。",
+        "does": "開發板自己的頁面：即時準位、arm / rec / stop、帶有每段波形的錄音列表、播放和下載、速度選項，以及每段錄音的 <b>Play on board</b> / <b>Stop on board</b>。令牌只保留在那個分頁裡。",
         "see": "一張帶有波形的錄音卡片；播放時播放頭會移動。",
         "fix": "「no Wi-Fi saved」：先燒錄 wifi-lab-w1 並連線一次。頁面打不開？是同一個網路嗎？試試 <code>wifi</code> 顯示的 IP。"
       },
@@ -987,7 +987,7 @@
       },
       "2": {
         "title": "螢幕上顯示什麼",
-        "intro": "三個檢視。單擊 = 下一個，雙擊 = 左下角的操作（arm、next、wifi），長按 = rec / stop。"
+        "intro": "三個檢視。按一下 = 下一個，按兩下 = 左下角的操作（arm、next、wifi），長按 = rec / stop。"
       }
     },
     "steps": [
@@ -998,12 +998,12 @@
       "在手機上開啟頁面，貼上 <code>token</code>。<b>檢查點 4：</b>你的錄音播放出來了。",
       "關掉監視器，執行 <code>tools/sound_pull.py</code>。<b>檢查點 5：</b>你的 Mac 上有了一個 .wav。"
     ],
-    "note": "隱私是內建的，不是可選的：不管是誰啟動的，錄音時開發板上總會顯示（REC、紅點、紅色 LED）；頁面上的每一條音訊途徑都需要管理員令牌；錄音只存在 RAM 裡，重設後就消失。聲音會比較單薄、帶嘶嘶聲：錄音在輸出時會被歸一化（放大最多 64 倍），這會把嘶嘶聲和人聲一起抬高。這個模組首先是一個響度感測器，其次才是麥克風。"
+    "note": "隱私是內建的，不是選用的：不管是誰啟動的，錄音時開發板上總會顯示（REC、紅點、紅色 LED）；頁面上的每一條音訊途徑都需要管理員令牌；錄音只存在 RAM 裡，重設後就消失。聲音會比較單薄、帶嘶嘶聲：錄音在輸出時會被歸一化（放大最多 64 倍），這會把嘶嘶聲和人聲一起抬高。這個模組首先是一個響度感測器，其次才是麥克風。"
   },
   "S5": {
     "title": "頻譜",
     "heading": "看看一個聲音裡有哪些頻率",
-    "goal": "<span class=\"snd-parts\"><span class=\"need\">KY-037 or INMP441</span><span class=\"opt\">MAX98357A + 喇叭（可選）</span></span>我們自己寫的 FFT（不用函式庫）每秒約 25 次對最新的 512 個取樣做運算：從 100 Hz 到 8 kHz 的柱狀圖、一個滾動的瀑布圖、一個能說出你吹口哨或哼唱的音名的調音器，以及一個用口哨音高來操控的遊戲。有了喇叭，開發板還能自檢：<code>ref</code> 為調音器播放一個參考音，<code>sweep</code> 讓音調從 100 Hz 爬升到 8 kHz，掠過各根柱子。",
+    "goal": "<span class=\"snd-parts\"><span class=\"need\">KY-037 or INMP441</span><span class=\"opt\">MAX98357A + 喇叭（選用）</span></span>我們自己寫的 FFT（不用函式庫）每秒約 25 次對最新的 512 個取樣做運算：從 100 Hz 到 8 kHz 的柱狀圖、一個滾動的瀑布圖、一個能說出你吹口哨或哼唱的音名的調音器，以及一個用口哨音高來操控的遊戲。有了喇叭，開發板還能自檢：<code>ref</code> 為調音器播放一個參考音，<code>sweep</code> 讓音調從 100 Hz 爬升到 8 kHz，掠過各根柱子。",
     "goalLine": "找出你的口哨的頻率，看看為什麼更細的頻率格更慢，並在 steer 遊戲中得分。",
     "goalCheck": [
       "吹口哨時 <b>bars</b> 檢視顯示一根高高的柱子，說話時則是許多矮柱子。",
@@ -1100,22 +1100,22 @@
         [
           "KY-037 + · G",
           "3V3",
-          "模擬麥克風。+ 接第二個 3V3 腳位（螢幕用了第一個），G 接 GND。<b>絕不能接 5 V</b>：AO 和 DO 的電壓會擺動到模組的供電電壓，而 ESP32-S3 的腳位最高只能承受 3.3 V。"
+          "類比麥克風。+ 接第二個 3V3 腳位（螢幕用了第一個），G 接 GND。<b>絕不能接 5 V</b>：AO 和 DO 的電壓會擺動到模組的供電電壓，而 ESP32-S3 的腳位最高只能承受 3.3 V。"
         ],
         [
           "KY-037 AO",
           "GPIO 6",
-          "模擬輸出：麥克風的電壓。GPIO 6 是 ADC1 通道 5：開啟 Wi-Fi 時 ADC1 仍能工作，ADC2 不行。"
+          "類比輸出：麥克風的電壓。GPIO 6 是 ADC1 通道 5：開啟 Wi-Fi 時 ADC1 仍能工作，ADC2 不行。"
         ],
         [
           "KY-037 DO",
           "GPIO 21",
-          "數字輸出：當聲音比藍色微調電位器的設定值更響時，LM393 比較器輸出高準位。"
+          "數位輸出：當聲音比藍色微調電位器的設定值更響時，LM393 比較器輸出高準位。"
         ],
         [
           "INMP441 VDD · GND",
           "3V3",
-          "數字麥克風 (I2S)。VDD 接 3V3（與 KY-037 共用麵包板電源軌），GND 接 GND。只能接 3.3 V。"
+          "數位麥克風 (I2S)。VDD 接 3V3（與 KY-037 共用麵包板電源軌），GND 接 GND。只能接 3.3 V。"
         ],
         [
           "INMP441 L/R",
@@ -1140,7 +1140,7 @@
         [
           "MAX98357A VIN · GND",
           "5V",
-          "喇叭功放。5V 功率最大（4 Ω 負載約 3 W）；3V3 也能工作，聲音小一些。"
+          "喇叭功率放大器。5V 功率最大（4 Ω 負載約 3 W）；3V3 也能工作，聲音小一些。"
         ],
         [
           "MAX98357A BCLK",
@@ -1164,13 +1164,13 @@
         ],
         [
           "喇叭 (4 Ω, 3 W)",
-          "功放 + / −",
-          "接在功放的螺絲端子上：JST-PH2.0 連線線的兩根線，紅線接 +。"
+          "功率放大器 + / −",
+          "接在功率放大器的螺絲端子上：JST-PH2.0 連線線的兩根線，紅線接 +。"
         ],
         [
           "螢幕（8 根線）",
           "同第 03 課",
-          "保持不變。GPIO 5 上的按鈕是可選的：它的作用和 BOOT 一樣。"
+          "保持不變。GPIO 5 上的按鈕是選用的：它的作用和 BOOT 一樣。"
         ]
       ]
     },
@@ -1178,7 +1178,7 @@
       "0": {
         "does": "建置 S5 實驗並寫入開發板，然後用 <code>uv run pio device monitor</code> 開啟監視器。",
         "see": "<code>Listening for an INMP441 on the I2S pins...</code>、<code>Microphone: INMP441 (I2S, digital) (mic setting: auto)</code>（或 KY-037），然後是 <code>Sound lab S5 …</code>、指令列表，以及喇叭發出的三音問候。安靜半秒鐘：<code>- learning the quiet...</code>",
-        "fix": "選錯了麥克風：<code>mic inmp441</code> 或 <code>mic ky037</code>（會儲存並重啟）。沒有問候音：喇叭是可選的；檢查 VIN 和 DIN。「Failed to connect」：按住 BOOT，點按 RST，鬆開 BOOT，再執行一次。"
+        "fix": "選錯了麥克風：<code>mic inmp441</code> 或 <code>mic ky037</code>（會儲存並重啟）。沒有問候音：喇叭是選用的；檢查 VIN 和 DIN。「Failed to connect」：按住 BOOT，點按 RST，鬆開 BOOT，再執行一次。"
       },
       "1": {
         "does": "<b>bars</b> 檢視：口哨是一根高柱子（1-3 kHz），哼唱則更低更寬。",
@@ -1196,7 +1196,7 @@
         "fix": ""
       },
       "4": {
-        "does": "喇叭播放 1 秒的正弦波：取你最近 2 秒內吹出的音最接近的音名，否則是 A4。S5 直接讀取環形緩衝區，所以它是有意聽到自己的音。在 <b>tuner</b> 上雙擊效果相同。",
+        "does": "喇叭播放 1 秒的正弦波：取你最近 2 秒內吹出的音最接近的音名，否則是 A4。S5 直接讀取環形緩衝區，所以它是有意聽到自己的音。在 <b>tuner</b> 上按兩下效果相同。",
         "see": "<code>- reference A4 = 440.0 Hz, 1 s</code>；調音器顯示 A4，指標接近 0。",
         "fix": "偏差很多音分：喇叭和麥克風沒問題；檢查 <code>a4</code>。"
       },
@@ -1228,11 +1228,11 @@
       },
       "1": {
         "title": "從一聲口哨到一個音名",
-        "intro": "六個步驟，和 tuner 檢視每秒做 25 次的一樣。移動口哨滑塊，看拋物線如何在兩個頻率格之間找到音高。"
+        "intro": "六個步驟，和 tuner 檢視每秒做 25 次的一樣。移動口哨滑桿，看拋物線如何在兩個頻率格之間找到音高。"
       },
       "2": {
         "title": "螢幕上顯示什麼",
-        "intro": "四個檢視。單擊 = 下一個，雙擊 = 左下角的操作（hold、hold、peaks、target），長按 = hold。"
+        "intro": "四個檢視。按一下 = 下一個，按兩下 = 左下角的操作（hold、hold、peaks、target），長按 = hold。"
       }
     },
     "steps": [
@@ -1248,7 +1248,7 @@
   "S6": {
     "title": "聲音遊戲",
     "heading": "玩玩麥克風聽到的聲音",
-    "goal": "<span class=\"snd-parts\"><span class=\"need\">KY-037 or INMP441</span><span class=\"opt\">MAX98357A + 喇叭（可選）</span></span>一個麥克風上的三個遊戲，每個遊戲只在它的檢視顯示在螢幕上時才監聽。<b>knock</b>：一把敲擊鎖，用你的秘密節奏開啟，快慢皆可。<b>bird</b>：Clap Bird，每拍一下手就是扇一下翅膀。<b>party</b>：開發板在音樂中找到節拍，並向它丟擲燈光。有了喇叭：Clap Bird 裡有嗶聲、叮聲和撞擊聲，還能回放秘密敲擊，以及一段解鎖曲。",
+    "goal": "<span class=\"snd-parts\"><span class=\"need\">KY-037 or INMP441</span><span class=\"opt\">MAX98357A + 喇叭（選用）</span></span>一個麥克風上的三個遊戲，每個遊戲只在它的檢視顯示在螢幕上時才監聽。<b>knock</b>：一把敲擊鎖，用你的秘密節奏開啟，快慢皆可。<b>bird</b>：Clap Bird，每拍一下手就是扇一下翅膀。<b>party</b>：開發板在音樂中找到節拍，並向它拋出燈光。有了喇叭：Clap Bird 裡有嗶聲、叮聲和撞擊聲，還能回放秘密敲擊，以及一段解鎖曲。",
     "goalLine": "用你的秘密敲擊開啟鎖（並用錯誤的節奏失敗一次），在 Clap Bird 裡透過 5 根管子，並讓 party 跟上一首歌的節奏。",
     "goalCheck": [
       "<code>knock set</code> + 一段節奏就儲存了一個秘密；同樣的節奏慢一點仍然能開啟（GPIO 4 上的 LED，RGB 綠色 5 秒）。",
@@ -1344,22 +1344,22 @@
         [
           "KY-037 + · G",
           "3V3",
-          "模擬麥克風。+ 接第二個 3V3 腳位（螢幕用了第一個），G 接 GND。<b>絕不能接 5 V</b>：AO 和 DO 的電壓會擺動到模組的供電電壓，而 ESP32-S3 的腳位最高只能承受 3.3 V。"
+          "類比麥克風。+ 接第二個 3V3 腳位（螢幕用了第一個），G 接 GND。<b>絕不能接 5 V</b>：AO 和 DO 的電壓會擺動到模組的供電電壓，而 ESP32-S3 的腳位最高只能承受 3.3 V。"
         ],
         [
           "KY-037 AO",
           "GPIO 6",
-          "模擬輸出：麥克風的電壓。GPIO 6 是 ADC1 通道 5：開啟 Wi-Fi 時 ADC1 仍能工作，ADC2 不行。"
+          "類比輸出：麥克風的電壓。GPIO 6 是 ADC1 通道 5：開啟 Wi-Fi 時 ADC1 仍能工作，ADC2 不行。"
         ],
         [
           "KY-037 DO",
           "GPIO 21",
-          "數字輸出：當聲音比藍色微調電位器的設定值更響時，LM393 比較器輸出高準位。"
+          "數位輸出：當聲音比藍色微調電位器的設定值更響時，LM393 比較器輸出高準位。"
         ],
         [
           "INMP441 VDD · GND",
           "3V3",
-          "數字麥克風 (I2S)。VDD 接 3V3（與 KY-037 共用麵包板電源軌），GND 接 GND。只能接 3.3 V。"
+          "數位麥克風 (I2S)。VDD 接 3V3（與 KY-037 共用麵包板電源軌），GND 接 GND。只能接 3.3 V。"
         ],
         [
           "INMP441 L/R",
@@ -1384,7 +1384,7 @@
         [
           "MAX98357A VIN · GND",
           "5V",
-          "喇叭功放。5V 功率最大（4 Ω 負載約 3 W）；3V3 也能工作，聲音小一些。"
+          "喇叭功率放大器。5V 功率最大（4 Ω 負載約 3 W）；3V3 也能工作，聲音小一些。"
         ],
         [
           "MAX98357A BCLK",
@@ -1408,13 +1408,13 @@
         ],
         [
           "喇叭 (4 Ω, 3 W)",
-          "功放 + / −",
-          "接在功放的螺絲端子上：JST-PH2.0 連線線的兩根線，紅線接 +。"
+          "功率放大器 + / −",
+          "接在功率放大器的螺絲端子上：JST-PH2.0 連線線的兩根線，紅線接 +。"
         ],
         [
           "螢幕（8 根線）",
           "同第 03 課",
-          "保持不變。GPIO 5 上的按鈕是可選的：它的作用和 BOOT 一樣。"
+          "保持不變。GPIO 5 上的按鈕是選用的：它的作用和 BOOT 一樣。"
         ]
       ]
     },
@@ -1422,7 +1422,7 @@
       "0": {
         "does": "建置 S6 實驗並寫入開發板，然後用 <code>uv run pio device monitor</code> 開啟監視器。",
         "see": "<code>Listening for an INMP441 on the I2S pins...</code>、<code>Microphone: INMP441 (I2S, digital) (mic setting: auto)</code>（或 KY-037），然後是 <code>Sound lab S6 …</code>、指令列表，以及喇叭發出的三音問候。安靜半秒鐘：<code>- learning the quiet...</code>",
-        "fix": "選錯了麥克風：<code>mic inmp441</code> 或 <code>mic ky037</code>（會儲存並重啟）。沒有問候音：喇叭是可選的；檢查 VIN 和 DIN。「Failed to connect」：按住 BOOT，點按 RST，鬆開 BOOT，再執行一次。"
+        "fix": "選錯了麥克風：<code>mic inmp441</code> 或 <code>mic ky037</code>（會儲存並重啟）。沒有問候音：喇叭是選用的；檢查 VIN 和 DIN。「Failed to connect」：按住 BOOT，點按 RST，鬆開 BOOT，再執行一次。"
       },
       "1": {
         "does": "接下來的模式會成為秘密（2-12 次敲擊；安靜 1.5 秒結束）。儲存在 NVS 中。",
@@ -1472,11 +1472,11 @@
       },
       "1": {
         "title": "螢幕上顯示什麼",
-        "intro": "三個檢視。單擊 = 下一個，雙擊 = 左下角的操作（knock set、bird、party reset），長按 = knock show。在這個預覽裡，點選螢幕（或按空格鍵）就是一次拍手：可以玩 Clap Bird。"
+        "intro": "三個檢視。按一下 = 下一個，按兩下 = 左下角的操作（knock set、bird、party reset），長按 = knock show。在這個預覽裡，點選螢幕（或按空格鍵）就是一次拍手：可以玩 Clap Bird。"
       }
     },
     "steps": [
-      "接線與 S1 相同。可選：第 02 課的 LED 接在 GPIO 4 上，作為鎖的鎖舌。",
+      "接線與 S1 相同。選用：第 02 課的 LED 接在 GPIO 4 上，作為鎖的鎖舌。",
       "燒錄 <code>sound-lab-s6</code>。在 <b>knock</b> 上：<code>knock set</code> 並敲一段節奏。<b>檢查點 1：</b>秘密已儲存。",
       "再敲一次，稍微慢一點。<b>檢查點 2：</b>OPEN。然後敲一個錯的：locked。",
       "點按切換到 <b>bird</b> 並拍手。<b>檢查點 3：</b>透過 5 根管子。",
@@ -1487,7 +1487,7 @@
   "S7": {
     "title": "喇叭",
     "heading": "讓開發板發聲：一個用單一喇叭的合成器",
-    "goal": "<span class=\"snd-parts\"><span class=\"need\">MAX98357A + speaker</span></span>數字透過 I2S 送到 <b>MAX98357A</b>，一個 D 類功放：它讓喇叭每秒完全接通和斷開約 300 000 次，每個脈衝持續多久取決於那個數字。紙盆太慢，跟不上這些脈衝，所以它隨平均值運動：也就是波形。S7 能產生五種音色、和絃、包絡、曲子和遊戲音效，並畫出你聽到的聲音。",
+    "goal": "<span class=\"snd-parts\"><span class=\"need\">MAX98357A + speaker</span></span>數字透過 I2S 送到 <b>MAX98357A</b>，一個 D 類功率放大器：它讓喇叭每秒完全接通和斷開約 300 000 次，每個脈衝持續多久取決於那個數字。紙盆太慢，跟不上這些脈衝，所以它隨平均值運動：也就是波形。S7 能產生五種音色、和絃、包絡、曲子和遊戲音效，並畫出你聽到的聲音。",
     "goalLine": "聽出五種波形的區別，彈一個和絃和一段曲子，改變包絡直到一個音聽起來像撥絃，並觸發每一種遊戲音效。",
     "goalCheck": [
       "<code>beep</code> 和開機問候鈴聲在 <code>vol 20</code> 下從喇叭發出。",
@@ -1497,7 +1497,7 @@
     ],
     "learn": [
       "I2S 輸出",
-      "D 類功放",
+      "D 類功率放大器",
       "音色 = 諧波",
       "16 kHz 下的混疊",
       "ADSR 與爆音",
@@ -1585,22 +1585,22 @@
         [
           "KY-037 + · G",
           "3V3",
-          "模擬麥克風。+ 接第二個 3V3 腳位（螢幕用了第一個），G 接 GND。<b>絕不能接 5 V</b>：AO 和 DO 的電壓會擺動到模組的供電電壓，而 ESP32-S3 的腳位最高只能承受 3.3 V。"
+          "類比麥克風。+ 接第二個 3V3 腳位（螢幕用了第一個），G 接 GND。<b>絕不能接 5 V</b>：AO 和 DO 的電壓會擺動到模組的供電電壓，而 ESP32-S3 的腳位最高只能承受 3.3 V。"
         ],
         [
           "KY-037 AO",
           "GPIO 6",
-          "模擬輸出：麥克風的電壓。GPIO 6 是 ADC1 通道 5：開啟 Wi-Fi 時 ADC1 仍能工作，ADC2 不行。"
+          "類比輸出：麥克風的電壓。GPIO 6 是 ADC1 通道 5：開啟 Wi-Fi 時 ADC1 仍能工作，ADC2 不行。"
         ],
         [
           "KY-037 DO",
           "GPIO 21",
-          "數字輸出：當聲音比藍色微調電位器的設定值更響時，LM393 比較器輸出高準位。"
+          "數位輸出：當聲音比藍色微調電位器的設定值更響時，LM393 比較器輸出高準位。"
         ],
         [
           "INMP441 VDD · GND",
           "3V3",
-          "數字麥克風 (I2S)。VDD 接 3V3（與 KY-037 共用麵包板電源軌），GND 接 GND。只能接 3.3 V。"
+          "數位麥克風 (I2S)。VDD 接 3V3（與 KY-037 共用麵包板電源軌），GND 接 GND。只能接 3.3 V。"
         ],
         [
           "INMP441 L/R",
@@ -1625,7 +1625,7 @@
         [
           "MAX98357A VIN · GND",
           "5V",
-          "喇叭功放。5V 功率最大（4 Ω 負載約 3 W）；3V3 也能工作，聲音小一些。"
+          "喇叭功率放大器。5V 功率最大（4 Ω 負載約 3 W）；3V3 也能工作，聲音小一些。"
         ],
         [
           "MAX98357A BCLK",
@@ -1649,13 +1649,13 @@
         ],
         [
           "喇叭 (4 Ω, 3 W)",
-          "功放 + / −",
-          "接在功放的螺絲端子上：JST-PH2.0 連線線的兩根線，紅線接 +。"
+          "功率放大器 + / −",
+          "接在功率放大器的螺絲端子上：JST-PH2.0 連線線的兩根線，紅線接 +。"
         ],
         [
           "螢幕（8 根線）",
           "同第 03 課",
-          "保持不變。GPIO 5 上的按鈕是可選的：它的作用和 BOOT 一樣。"
+          "保持不變。GPIO 5 上的按鈕是選用的：它的作用和 BOOT 一樣。"
         ]
       ]
     },
@@ -1663,7 +1663,7 @@
       "0": {
         "does": "建置 S7 實驗並寫入開發板，然後用 <code>uv run pio device monitor</code> 開啟監視器。",
         "see": "<code>Listening for an INMP441 on the I2S pins...</code>、<code>Microphone: INMP441 (I2S, digital) (mic setting: auto)</code>（或 KY-037），然後是 <code>Sound lab S7 …</code>、指令列表，以及喇叭發出的三音問候。安靜半秒鐘：<code>- learning the quiet...</code>",
-        "fix": "選錯了麥克風：<code>mic inmp441</code> 或 <code>mic ky037</code>（會儲存並重啟）。沒有問候音：喇叭是可選的；檢查 VIN 和 DIN。「Failed to connect」：按住 BOOT，點按 RST，鬆開 BOOT，再執行一次。"
+        "fix": "選錯了麥克風：<code>mic inmp441</code> 或 <code>mic ky037</code>（會儲存並重啟）。沒有問候音：喇叭是選用的；檢查 VIN 和 DIN。「Failed to connect」：按住 BOOT，點按 RST，鬆開 BOOT，再執行一次。"
       },
       "1": {
         "does": "從小聲開始：音量是平方關係，20 = 滿功率的 4 %。儲存在 NVS 中（預設 40）。",
@@ -1671,12 +1671,12 @@
         "fix": "沒有聲音：VIN 接 5V，DIN 接 47，BCLK 39，LRC 38；喇叭接在端子上。"
       },
       "2": {
-        "does": "音色：sine、square、triangle、saw、noise（<code>wave next</code>，或在 <b>wave</b> 上雙擊）。",
+        "does": "音色：sine、square、triangle、saw、noise（<code>wave next</code>，或在 <b>wave</b> 上按兩下）。",
         "see": "<code>- wave square</code>；頻譜中的譜線位於音高的 1、3、5…… 倍處。",
         "fix": ""
       },
       "3": {
-        "does": "播放一個音（音名或 Hz）600 ms。在 <b>envelope</b> 上雙擊效果相同。",
+        "does": "播放一個音（音名或 Hz）600 ms。在 <b>envelope</b> 上按兩下效果相同。",
         "see": "圓點沿著 ADSR 曲線移動。",
         "fix": "高於 7 kHz 時顯示 <code>close to 8 kHz: the limit at 16 kHz</code>。"
       },
@@ -1696,7 +1696,7 @@
         "fix": ""
       },
       "7": {
-        "does": "twinkle ode happy korobeiniki scale arpeggio。在 <b>tunes</b> 上雙擊播放選中的那首；長按選擇下一首。",
+        "does": "twinkle ode happy korobeiniki scale arpeggio。在 <b>tunes</b> 上按兩下播放選中的那首；長按選擇下一首。",
         "see": "鋼琴捲簾從琥珀色的播放頭旁滾過。",
         "fix": ""
       },
@@ -1722,7 +1722,7 @@
       },
       "2": {
         "title": "螢幕上顯示什麼",
-        "intro": "五個檢視。單擊 = 下一個，雙擊 = 左下角的操作。keys：長按 = 下一個和絃。tunes 和 fx：長按選擇下一個。在其他檢視上，長按會停止聲音。"
+        "intro": "五個檢視。按一下 = 下一個，按兩下 = 左下角的操作。keys：長按 = 下一個和絃。tunes 和 fx：長按選擇下一個。在其他檢視上，長按會停止聲音。"
       }
     },
     "steps": [
@@ -1736,9 +1736,9 @@
   },
   "S8": {
     "title": "語音特效",
-    "heading": "一隻會複述你的話的鸚鵡，和一個實時機器人聲音",
-    "goal": "<span class=\"snd-parts\"><span class=\"need\">INMP441</span><span class=\"need\">MAX98357A + speaker</span></span>麥克風輸入，喇叭輸出。你說點什麼，鸚鵡就會學給你聽：正常、<b>花栗鼠</b>（快 1.5 倍）、<b>巨人</b>（0.7 倍）、<b>機器人</b>（環形調製 + 6 位粗糙化）、帶<b>回聲</b>，或者<b>倒放</b>。然後是實時特效：一個你對著說話的回聲，一個機器人聲音。鸚鵡像 S4 一樣由聲音觸發（12 dB，0.3 秒預錄音，0.7 秒保持，最長 6 秒），並且永遠聽不到自己。",
-    "goalLine": "讓鸚鵡用三種聲音複述你的話，透過實時回聲說話而不嘯叫，並解釋為什麼花栗鼠說話很快。",
+    "heading": "一隻會複述你的話的鸚鵡，和一個即時機器人聲音",
+    "goal": "<span class=\"snd-parts\"><span class=\"need\">INMP441</span><span class=\"need\">MAX98357A + speaker</span></span>麥克風輸入，喇叭輸出。你說點什麼，鸚鵡就會學給你聽：正常、<b>花栗鼠</b>（快 1.5 倍）、<b>巨人</b>（0.7 倍）、<b>機器人</b>（環形調製 + 6 位粗糙化）、帶<b>回聲</b>，或者<b>倒放</b>。然後是即時特效：一個你對著說話的回聲，一個機器人聲音。鸚鵡像 S4 一樣由聲音觸發（12 dB，0.3 秒預錄音，0.7 秒保持，最長 6 秒），並且永遠聽不到自己。",
+    "goalLine": "讓鸚鵡用三種聲音複述你的話，透過即時回聲說話而不嘯叫，並解釋為什麼花栗鼠說話很快。",
     "goalCheck": [
       "你說了一個詞，鸚鵡用花栗鼠的聲音回答；<code>fx giant</code> + <code>again</code> 則用低沉緩慢的聲音回答。",
       "<b>echo</b> 檢視：<code>echo on</code>，一下拍手會以逐漸減弱的重複聲回來，延遲約 60-80 ms。",
@@ -1833,22 +1833,22 @@
         [
           "KY-037 + · G",
           "3V3",
-          "模擬麥克風。+ 接第二個 3V3 腳位（螢幕用了第一個），G 接 GND。<b>絕不能接 5 V</b>：AO 和 DO 的電壓會擺動到模組的供電電壓，而 ESP32-S3 的腳位最高只能承受 3.3 V。"
+          "類比麥克風。+ 接第二個 3V3 腳位（螢幕用了第一個），G 接 GND。<b>絕不能接 5 V</b>：AO 和 DO 的電壓會擺動到模組的供電電壓，而 ESP32-S3 的腳位最高只能承受 3.3 V。"
         ],
         [
           "KY-037 AO",
           "GPIO 6",
-          "模擬輸出：麥克風的電壓。GPIO 6 是 ADC1 通道 5：開啟 Wi-Fi 時 ADC1 仍能工作，ADC2 不行。"
+          "類比輸出：麥克風的電壓。GPIO 6 是 ADC1 通道 5：開啟 Wi-Fi 時 ADC1 仍能工作，ADC2 不行。"
         ],
         [
           "KY-037 DO",
           "GPIO 21",
-          "數字輸出：當聲音比藍色微調電位器的設定值更響時，LM393 比較器輸出高準位。"
+          "數位輸出：當聲音比藍色微調電位器的設定值更響時，LM393 比較器輸出高準位。"
         ],
         [
           "INMP441 VDD · GND",
           "3V3",
-          "數字麥克風 (I2S)。VDD 接 3V3（與 KY-037 共用麵包板電源軌），GND 接 GND。只能接 3.3 V。"
+          "數位麥克風 (I2S)。VDD 接 3V3（與 KY-037 共用麵包板電源軌），GND 接 GND。只能接 3.3 V。"
         ],
         [
           "INMP441 L/R",
@@ -1873,7 +1873,7 @@
         [
           "MAX98357A VIN · GND",
           "5V",
-          "喇叭功放。5V 功率最大（4 Ω 負載約 3 W）；3V3 也能工作，聲音小一些。"
+          "喇叭功率放大器。5V 功率最大（4 Ω 負載約 3 W）；3V3 也能工作，聲音小一些。"
         ],
         [
           "MAX98357A BCLK",
@@ -1897,13 +1897,13 @@
         ],
         [
           "喇叭 (4 Ω, 3 W)",
-          "功放 + / −",
-          "接在功放的螺絲端子上：JST-PH2.0 連線線的兩根線，紅線接 +。"
+          "功率放大器 + / −",
+          "接在功率放大器的螺絲端子上：JST-PH2.0 連線線的兩根線，紅線接 +。"
         ],
         [
           "螢幕（8 根線）",
           "同第 03 課",
-          "保持不變。GPIO 5 上的按鈕是可選的：它的作用和 BOOT 一樣。"
+          "保持不變。GPIO 5 上的按鈕是選用的：它的作用和 BOOT 一樣。"
         ]
       ]
     },
@@ -1911,7 +1911,7 @@
       "0": {
         "does": "建置 S8 實驗並寫入開發板，然後用 <code>uv run pio device monitor</code> 開啟監視器。",
         "see": "<code>Listening for an INMP441 on the I2S pins...</code>、<code>Microphone: INMP441 (I2S, digital) (mic setting: auto)</code>（或 KY-037），然後是 <code>Sound lab S8 …</code>、指令列表，以及喇叭發出的三音問候。安靜半秒鐘：<code>- learning the quiet...</code>",
-        "fix": "選錯了麥克風：<code>mic inmp441</code> 或 <code>mic ky037</code>（會儲存並重啟）。沒有問候音：喇叭是可選的；檢查 VIN 和 DIN。「Failed to connect」：按住 BOOT，點按 RST，鬆開 BOOT，再執行一次。"
+        "fix": "選錯了麥克風：<code>mic inmp441</code> 或 <code>mic ky037</code>（會儲存並重啟）。沒有問候音：喇叭是選用的；檢查 VIN 和 DIN。「Failed to connect」：按住 BOOT，點按 RST，鬆開 BOOT，再執行一次。"
       },
       "1": {
         "does": "保持低音量：麥克風會聽到喇叭。",
@@ -1924,22 +1924,22 @@
         "fix": "<code>too short: a bang, not a word</code>：多說一會兒。一直不啟動：<code>trigger 8</code>。"
       },
       "3": {
-        "does": "鸚鵡的聲音：normal chipmunk giant robot echo reverse。在 <b>parrot</b> 上雙擊。",
+        "does": "鸚鵡的聲音：normal chipmunk giant robot echo reverse。在 <b>parrot</b> 上按兩下。",
         "see": "<code>- voice: robot (ring modulator + bitcrush)</code>。",
         "fix": ""
       },
       "4": {
-        "does": "用目前的聲音再說一遍最後一段錄音（在 <b>scope</b> 上雙擊）。",
+        "does": "用目前的聲音再說一遍最後一段錄音（在 <b>scope</b> 上按兩下）。",
         "see": "同樣的話，另一種聲音。",
         "fix": "<code>nothing recorded yet: say something first</code>。"
       },
       "5": {
-        "does": "實時：麥克風 → 延遲線 → 喇叭。<code>delay 120</code>（20-500 ms），<code>feedback 60</code>（0-70 %）。需要麥克風工作在 16 000 Hz。",
+        "does": "即時：麥克風 → 延遲線 → 喇叭。<code>delay 120</code>（20-500 ms），<code>feedback 60</code>（0-70 %）。需要麥克風工作在 16 000 Hz。",
         "see": "<code>! live echo: speaker away from the mic, volume low</code>；<b>echo</b> 檢視上一下拍手的各次回聲，延遲約 60-80 ms。",
         "fix": "嘯叫：防護會用低沉的 No 把它制止。把喇叭轉開，調低 <code>vol</code> 或 <code>feedback</code>。"
       },
       "6": {
-        "does": "實時：你的聲音 × 一個緩慢的正弦波（<code>carrier 50</code>，10-300 Hz）+ 粗糙化。每個頻率 f 變成 f − c 和 f + c。",
+        "does": "即時：你的聲音 × 一個緩慢的正弦波（<code>carrier 50</code>，10-300 Hz）+ 粗糙化。每個頻率 f 變成 f − c 和 f + c。",
         "see": "機器人的嘴隨著輸出的聲音亮起。<code>carrier 200</code> 聽起來像鈴聲。",
         "fix": ""
       }
@@ -1947,11 +1947,11 @@
     "panels": {
       "0": {
         "title": "瀏覽器裡的鸚鵡",
-        "intro": "與 fx.h 相同的特效，在這個頁面裡。已載入一個範例聲音；錄製你自己的聲音是可選的，只有在你按下按鈕時才會開始（3 秒，錄音時有紅色指示，沒有任何內容會離開這個頁面）。"
+        "intro": "與 fx.h 相同的特效，在這個頁面裡。已載入一個範例聲音；錄製你自己的聲音是選用的，只有在你按下按鈕時才會開始（3 秒，錄音時有紅色指示，沒有任何內容會離開這個頁面）。"
       },
       "1": {
         "title": "螢幕上顯示什麼",
-        "intro": "四個檢視。單擊 = 下一個，雙擊 = 左下角的操作（fx next、echo、robot、again），長按 = 手動錄音 / 停止。"
+        "intro": "四個檢視。按一下 = 下一個，按兩下 = 左下角的操作（fx next、echo、robot、again），長按 = 手動錄音 / 停止。"
       }
     },
     "steps": [
@@ -1962,6 +1962,6 @@
       "<code>echo on</code>，拍手。<b>檢查點 4：</b>逐漸減弱的重複聲；<code>echo off</code>。",
       "<code>robot on</code>，說話。<b>檢查點 5：</b>機器人聲音；<code>robot off</code>。"
     ],
-    "note": "改變錄音的速度會同時改變它的音高和長度：這就是花栗鼠說話快的原因。要在保持速度的同時改變音高，需要複雜得多的 DSP（顆粒或相位聲碼器）。回饋：如果麥克風聽到的聲音回來時比出去時更響（環路增益大於 1），它就會一圈圈地迴圈：這就是嘯叫。當準位持續上升（300 ms 內上升 9 dB）或保持在 −12 dBFS 以上時，防護會切斷實時特效。延遲 = 一個影格螢幕處理時間 + 喇叭的佇列 + 它 16 ms 的 DMA 塊。"
+    "note": "改變錄音的速度會同時改變它的音高和長度：這就是花栗鼠說話快的原因。要在保持速度的同時改變音高，需要複雜得多的 DSP（顆粒或相位聲碼器）。回饋：如果麥克風聽到的聲音回來時比出去時更響（環路增益大於 1），它就會一圈圈地迴圈：這就是嘯叫。當準位持續上升（300 ms 內上升 9 dB）或保持在 −12 dBFS 以上時，防護會切斷即時特效。延遲 = 一個影格螢幕處理時間 + 喇叭的佇列 + 它 16 ms 的 DMA 塊。"
   }
 }

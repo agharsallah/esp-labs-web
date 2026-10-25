@@ -33,7 +33,7 @@
     "parts": {
       "usb": {
         "title": "USB-C 口",
-        "text": "COM 口用來燒錄開發板並傳輸序列埠監視器資料。USB 是 S3 自帶的介面。"
+        "text": "COM 口用來燒錄開發板並傳輸序列埠監視器資料。USB 是 S3 內建的介面。"
       },
       "buttons": {
         "title": "BOOT 和 RST",

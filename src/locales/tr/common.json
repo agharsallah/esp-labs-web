@@ -1,0 +1,221 @@
+{
+  "app": {
+    "title": "ESP32-S3 Tezgâh Rehberi",
+    "loading": "Tezgâh rehberi yükleniyor…",
+    "loadingSettings": "Ayarlar yükleniyor…"
+  },
+  "language": {
+    "label": "Dil",
+    "auto": "Otomatik",
+    "autoHint": "Tarayıcını izler: {{name}}",
+    "button": "Dil: {{name}}. Dili değiştir"
+  },
+  "layout": {
+    "skip": "İçeriğe geç",
+    "loading": "Yükleniyor",
+    "brand": "ESP32-S3 <part>tezgâh rehberi</part>",
+    "sections": "Bölümler",
+    "nav": {
+      "labs": "Deneyler",
+      "chip": "Veri sayfası",
+      "bench": "Tezgâh",
+      "settings": "Ayarlar"
+    },
+    "footnote": "Pin düzeni Espressif DevKitC-1 v1.0'a göre. Klonlar neredeyse aynıdır, ama kartının üstündeki yazılar her zaman geçerlidir. İşaretlerin yalnızca bu tarayıcıda kaydedilir.",
+    "partsLink": "Parça kütüphanesi",
+    "new": "Yeni"
+  },
+  "titles": {
+    "labs": "Deneyler · ESP32-S3 Tezgâh Rehberi",
+    "lesson": "{{id}} · {{title}} · ESP32-S3 Tezgâh Rehberi",
+    "code": "{{id}} kodu · {{title}} · ESP32-S3 Tezgâh Rehberi",
+    "log": "Tezgâh günlüğü · ESP32-S3 Tezgâh Rehberi",
+    "parts": "Parça kütüphanesi · ESP32-S3 Tezgâh Rehberi",
+    "settings": "Ayarlar · ESP32-S3 Tezgâh Rehberi",
+    "chip": "{{page}} · Veri sayfası · ESP32-S3 Tezgâh Rehberi"
+  },
+  "routeError": {
+    "code": "Hata",
+    "notFound": "Bu pinde hiçbir şey yok.",
+    "failed": "Bu sayfa çalışmayı durdurdu.",
+    "unknown": "Bir şeyler ters gitti.",
+    "back": "Derse dön",
+    "reasons": {
+      "noPage": "Böyle bir sayfa yok",
+      "noTheme": "“{{id}}” adlı konu yok",
+      "noLesson": "“{{id}}” adlı ders yok",
+      "plannedLesson": "{{id}} numaralı ders planlandı, henüz yazılmadı",
+      "noBlock": "“{{id}}” adlı blok yok"
+    }
+  },
+  "codeRoute": {
+    "none": "Bu ders araçlarını kurar: kart için henüz bir program yok. Okuyacağın ilk kod 01 numaralı derste."
+  },
+  "tracks": {
+    "intro": {
+      "title": "Giriş",
+      "blurb": "Araçlar, ilk program, ilk devre"
+    },
+    "display": {
+      "title": "Ekran ve giriş",
+      "blurb": "1,9″ ekran ve düğmeler"
+    },
+    "wifi": {
+      "title": "Wi-Fi",
+      "blurb": "Tara, bağlan, sayfa sun, kablosuz güncelle"
+    },
+    "rfid": {
+      "title": "RFID ve NFC",
+      "blurb": "Kartlar, etiketler ve 13,56 MHz alan"
+    },
+    "sensors": {
+      "title": "Sensörler",
+      "blurb": "I2C üzerinden sıcaklık, hava, hareket"
+    },
+    "ble": {
+      "title": "Bluetooth LE",
+      "blurb": "Dinle, eşleştir, kontrol et: telefonlar, klavyeler, müzik"
+    },
+    "sound": {
+      "title": "Ses",
+      "blurb": "Duy, ölç, alkışla, kaydet, perdeyi gör, çal"
+    }
+  },
+  "states": {
+    "legend": "İşaretlerin anlamı",
+    "done": {
+      "label": "sen tamamladın",
+      "hint": "her adım işaretlendi"
+    },
+    "works": {
+      "label": "kartta çalışıyor",
+      "hint": "gerçek kartta doğrulandı"
+    },
+    "built": {
+      "label": "derlendi, yüklenmedi",
+      "hint": "yazılım derleniyor; kartında dene"
+    },
+    "planned": {
+      "label": "planlandı",
+      "hint": "yol haritasında, henüz yazılmadı"
+    }
+  },
+  "stepper": {
+    "label": "Bu konudaki dersler",
+    "state": ", {{state}}"
+  },
+  "trackNav": {
+    "label": "Konular",
+    "soon": "yakında",
+    "count": "{{working}}/{{total}}",
+    "plannedTitle": "{{title}}: {{blurb}} (planlandı)",
+    "working": "{{title}}: {{total}} dersten {{working}} tanesi çalışıyor",
+    "loading": "{{title}}: yükleniyor"
+  },
+  "theme": {
+    "label": "Renk teması",
+    "system": "Otomatik",
+    "light": "Açık",
+    "dark": "Koyu"
+  },
+  "board": {
+    "label": "Kart pin düzeni",
+    "legend": {
+      "label": "Açıklama",
+      "used": "bu derste kullanılıyor",
+      "safe": "güvenli GPIO",
+      "avoid": "kaçın",
+      "power": "güç",
+      "ground": "toprak",
+      "button": "düğme girişi",
+      "rfid": "RC522"
+    },
+    "between": {
+      "title": "Dersler arasında",
+      "close": "<code>Ctrl+C</code> yalnızca Mac'te monitörü kapatır. Kart çalışmaya devam eder.",
+      "unplug": "USB'yi çek: programı ve ekranı durduran budur",
+      "rewire": "Kapalıyken yeniden bağla",
+      "check": "VCC'nin 3V3'te olduğunu, boş uç kalmadığını kontrol et",
+      "flash": "Tak, sonraki dersi karta yükle",
+      "warning": "<code>Writing at 0x…</code> yazarken asla çekme. Pin çıkıştan girişe mi geçiyor? Önce yükle, sonra bağla."
+    },
+    "pinout": {
+      "title": "ESP32-S3 DevKitC pin düzeni",
+      "use": "{{role}}, {{pin}} pininde",
+      "uses": "Bu derste kullanılanlar: {{uses}}.",
+      "none": "Bu ders kart pinlerinden hiçbirini kullanmaz."
+    }
+  },
+  "ui": {
+    "backToTop": "Başa dön",
+    "copy": {
+      "label": "Komutu kopyala: {{command}}",
+      "idle": "Kopyala",
+      "copied": "Kopyalandı",
+      "selected": "Seçildi"
+    },
+    "errorBoundary": {
+      "message": "<b>{{name}}</b> çalışmayı durdurdu: {{message}}",
+      "retry": "Yeniden dene"
+    },
+    "terminal": {
+      "label": "Simüle edilmiş seri monitör",
+      "placeholder": "bir komut yaz, Enter'a bas",
+      "command": "Komut"
+    },
+    "stage": {
+      "toolbar": "3B görünümü çevir ve yakınlaştır",
+      "turnLeft": "Sola çevir",
+      "turnRight": "Sağa çevir",
+      "zoomOut": "Uzaklaştır",
+      "zoomIn": "Yakınlaştır",
+      "recenter": "Başlangıç görünümüne dön",
+      "hint": "çevirmek için sürükle · yakınlaştırmak için parmaklarını aç-kapa",
+      "loading": "3B görünüm yükleniyor…",
+      "failed": "3B görünüm bu tarayıcıda başlayamadı (WebGL gerekiyor). {{fallback}}"
+    },
+    "sequence": {
+      "flow": "Hangi akış",
+      "playback": "Oynatma",
+      "back": "◀ Geri",
+      "play": "▶ Oynat",
+      "pause": "❚❚ Duraklat",
+      "next": "İleri ▶",
+      "frame": "kare {{frame}}",
+      "label_one": "Sıra diyagramı: {{lanes}}. {{count}} adım var; aşağıdaki metin şu anki adımı açıklar.",
+      "label_other": "Sıra diyagramı: {{lanes}}. {{count}} adım var; aşağıdaki metin şu anki adımı açıklar.",
+      "step": {
+        "self": "Adım {{step}} / {{total}} · {{from}}",
+        "call": "Adım {{step}} / {{total}} · {{from}} → {{to}}",
+        "selfTimed": "Adım {{step}} / {{total}} · {{from}} · yaklaşık {{duration}}",
+        "callTimed": "Adım {{step}} / {{total}} · {{from}} → {{to}} · yaklaşık {{duration}}"
+      }
+    }
+  },
+  "charts": {
+    "showTable": "Tablo olarak göster",
+    "hideTable": "Tabloyu gizle",
+    "item": "Öğe",
+    "value": "Değer",
+    "valueIn": "Değer ({{unit}})",
+    "min": "Min",
+    "typical": "Tipik",
+    "max": "Maks",
+    "start": "Başlangıç",
+    "end": "Bitiş",
+    "size": "Boyut",
+    "region": "Bölge",
+    "from": "Nereden",
+    "to": "Nereye",
+    "via": "Üzerinden",
+    "state": "Durum",
+    "count": "Sayı",
+    "keeps": "Açık kalır",
+    "gain": "{{ratio}} kat az",
+    "none": "Henüz kullanılmadı",
+    "highlight": "Vurgulu",
+    "warn": "Dikkat",
+    "yes": "Evet",
+    "outOf": "{{max}} içinden {{value}}"
+  }
+}

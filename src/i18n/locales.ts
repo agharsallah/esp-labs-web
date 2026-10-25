@@ -1,7 +1,7 @@
 // The languages the guide speaks. Pure data and rules, no i18next: the rest of i18n builds on it.
 // Adding a language = an entry here + a folder in src/locales/<code>/ (see docs/I18N.md).
 
-export const LOCALES = ["en", "fr", "es", "it", "de", "pl", "zh", "zh-TW", "ja", "ar"] as const;
+export const LOCALES = ["en", "fr", "es", "it", "de", "pl", "tr", "zh", "zh-TW", "ja", "ar"] as const;
 export type Locale = (typeof LOCALES)[number];
 
 export const SOURCE_LOCALE: Locale = "en";
@@ -27,6 +27,7 @@ export const LOCALE_INFO: Readonly<Record<Locale, LocaleInfo>> = {
   it: { nativeName: "Italiano", englishName: "Italian", short: "IT", tag: "it", dir: "ltr" },
   de: { nativeName: "Deutsch", englishName: "German", short: "DE", tag: "de", dir: "ltr" },
   pl: { nativeName: "Polski", englishName: "Polish", short: "PL", tag: "pl", dir: "ltr" },
+  tr: { nativeName: "Türkçe", englishName: "Turkish", short: "TR", tag: "tr", dir: "ltr" },
   zh: { nativeName: "简体中文", englishName: "Chinese (Simplified)", short: "中文", tag: "zh-Hans", dir: "ltr" },
   "zh-TW": { nativeName: "繁體中文", englishName: "Chinese (Traditional)", short: "繁中", tag: "zh-Hant", dir: "ltr" },
   ja: { nativeName: "日本語", englishName: "Japanese", short: "日本語", tag: "ja", dir: "ltr" },

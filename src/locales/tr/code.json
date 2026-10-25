@@ -1,0 +1,435 @@
+{
+  "reader": {
+    "label": "{{env}} kodu",
+    "loading": "Kod okunuyor…",
+    "noFiles": "dosya yok",
+    "codeLabel_one": "{{name}}, {{count}} satır",
+    "codeLabel_other": "{{name}}, {{count}} satır"
+  },
+  "modes": {
+    "tour": {
+      "label": "Tur",
+      "hint": "Dosya dosya, her seferinde birkaç satır"
+    },
+    "story": {
+      "label": "Hikâye",
+      "hint": "Programı çalışırken, dosyalar arasında takip et"
+    },
+    "explore": {
+      "label": "Keşfet",
+      "hint": "Herhangi bir satıra ya da kelimeye dokun"
+    }
+  },
+  "toolbar": {
+    "back": "<wide>Deneye </wide>dön",
+    "howToRead": "Nasıl okunur",
+    "progress": "Bu deneyin okuduğun kodu",
+    "levelTitle": "Seviyeyi Ayarlar'dan değiştir",
+    "moreTools": "Diğer araçlar",
+    "moreToolsTitle": "Tüm araçları göster: dosyalar, harita, sözcükler, ilerleme",
+    "simpleView": "Basit görünüm",
+    "simpleViewTitle": "Daha az denetim: bir kart, bir düğme",
+    "focus": "Odak",
+    "focusLabel": "Odak: kod ekranı doldurur",
+    "focusTitle": "Odak: kod ekranı doldurur (çıkmak için Esc)",
+    "exitFocus": "Odaktan çık"
+  },
+  "ring": {
+    "label": "{{label}}: {{value, percent}}",
+    "value": "{{value, percent}}"
+  },
+  "files": {
+    "toggle": "Dosyalar",
+    "position": "{{index}}/{{count}}",
+    "lines_one": "{{count}} satır",
+    "lines_other": "{{count}} satır",
+    "linesAndStops_one": "{{lines}} satır · {{done}}/{{count}} durak",
+    "linesAndStops_other": "{{lines}} satır · {{done}}/{{count}} durak",
+    "thisLab": "Bu deney",
+    "shared_one": "Perde arkası · {{count}} ortak dosya",
+    "shared_other": "Perde arkası · {{count}} ortak dosya",
+    "sharedNote": "Birden çok deneyin paylaştığı kod: ekran, düğmeler, sürücüler. Merak edersen oku."
+  },
+  "side": {
+    "label": "Açıklama",
+    "title": "Açıklama",
+    "tabs": "Yan panel",
+    "tab": {
+      "guide": "Rehber",
+      "map": "Harita",
+      "words": "Sözcükler"
+    },
+    "hide": "Açıklamayı gizle",
+    "show": "Açıklamayı göster"
+  },
+  "steps": {
+    "stop": {
+      "nav": "Duraklar",
+      "mark": "Durak {{index}}: {{label}}",
+      "count": "Durak {{index}} / {{count}}"
+    },
+    "scene": {
+      "nav": "Sahneler",
+      "mark": "Sahne {{index}}: {{label}}",
+      "count": "Sahne {{index}} / {{count}}"
+    },
+    "back": "← Geri",
+    "next": "İleri →",
+    "finish": "Bitir",
+    "allDone": "Hepsi tamam"
+  },
+  "player": {
+    "start": "Satır satır",
+    "startCount": "Satır satır ({{lines}})",
+    "label": "Satır satır",
+    "previous": "Önceki satır",
+    "next": "Sonraki satır",
+    "pause": "❚❚ Duraklat",
+    "play": "▶ Oynat",
+    "line": "satır {{line}}"
+  },
+  "lens": {
+    "label": "Satır {{line}}",
+    "eyebrow": "Satır {{line}}",
+    "back": "← durağa dön",
+    "empty": "Boş bir satır: yalnızca kodun nefes almasını sağlar.",
+    "readFrom": "{{line}}. satırdan oku, orada başlıyor →",
+    "definedAt": "<code>{{name}}</code> nerede tanımlı, gör ({{file}}, {{line}}. satır) →",
+    "words": "Bu satırdaki sözcükler"
+  },
+  "term": {
+    "label": "Sözcük: {{term}}",
+    "library": "kütüphane",
+    "close": "Sözcüğü kapat",
+    "precise": "Kesin hikâye"
+  },
+  "book": {
+    "met_one": "<b>{{met}}</b> / {{count}} sözcük tanındı",
+    "met_other": "<b>{{met}}</b> / {{count}} sözcük tanındı",
+    "find": "Sözcük ara",
+    "scope": "Hangi sözcükler",
+    "here": "Bu dosyada",
+    "all": "Hepsi",
+    "none": "Hiçbir sözcük eşleşmiyor."
+  },
+  "map": {
+    "howItRuns": "Nasıl çalışır",
+    "once": "bir kez, açılışta",
+    "forever": "sonsuza kadar, saniyede binlerce kez",
+    "shared": "İş ortak kodda yapılır: <code>setup()</code> ve <code>loop()</code>, hazır bir deney kabuğuna devreder. Bunu görmek için “Perde arkası” altındaki dosyaları aç.",
+    "inFile": "{{name}} içinde",
+    "empty": "Burada fonksiyon ya da tür yok: yalnızca ayarlar ve include satırları var.",
+    "kind": {
+      "function": "fonksiyon",
+      "struct": "struct",
+      "class": "class",
+      "enum": "enum"
+    },
+    "lines_one": "{{count}} satır",
+    "lines_other": "{{count}} satır",
+    "calls": "Çağırır"
+  },
+  "fold": {
+    "text_one": "⋯ {{count}} metin satırı (bir web sayfası ya da mesaj) katlanarak gizlendi.",
+    "text_other": "⋯ {{count}} metin satırı (bir web sayfası ya da mesaj) katlanarak gizlendi.",
+    "data_one": "⋯ {{count}} veri satırı katlanarak gizlendi.",
+    "data_other": "⋯ {{count}} veri satırı katlanarak gizlendi.",
+    "show": "Göster"
+  },
+  "stop": {
+    "eyebrow": "Durak {{index}} / {{count}}",
+    "line": "satır {{line}}",
+    "lines": "satır {{start}}–{{end}}",
+    "guessFirst": "Önce tahmin et",
+    "yourGuess": "Tahminin",
+    "right": "Evet, iyi fark ettin.",
+    "wrong": "Tam değil.",
+    "readExplanation": "Açıklamayı oku",
+    "skip": "Tahmini atla",
+    "yourTurn": "Sıra sende",
+    "readLit_one": "Önce yanan satırı oku. Sence ne yapıyor?",
+    "readLit_other": "Önce yanan satırları oku. Sence ne yapıyorlar?",
+    "showMe": "Bana göster",
+    "note": "Programcının notu",
+    "precise": "Kesin hikâye",
+    "newWords": "Burada yeni sözcükler",
+    "newWordsLabel": "Bu duraktaki yeni sözcükler"
+  },
+  "explore": {
+    "eyebrow": "Keşfet",
+    "title": "Bir satıra dokun",
+    "intro": "Her satır kendini açıklar: ne yaptığını görmek için dokun. Altı çizili sözcükler kod sözlüğünde: birine dokunup öğren. Harita programın şeklini gösterir.",
+    "hint": "Herhangi bir satıra ya da altı çizili sözcüğe dokun.",
+    "takeTour_one": "Turu başlat ({{count}} durak)",
+    "takeTour_other": "Turu başlat ({{count}} durak)"
+  },
+  "tour": {
+    "doneEyebrow": "Tur bitti",
+    "doneTitle": "{{name}} dosyasını okudun",
+    "doneRead": "Bu deneyin kendi kodundaki <b>{{total}}</b> satırdan <b>{{read}}</b> tanesinde gezindin.",
+    "nextFile": "Sonraki dosya: {{name}} →",
+    "followStory": "Şimdi hikâyeyi takip et →",
+    "behind": "Perde arkası: {{name}}",
+    "seeAll": "Tüm {{count}} durağa bak",
+    "backToLab": "Deneye dön",
+    "emptyEyebrow": "Gezilecek bir şey yok",
+    "emptyTitle": "Bir satıra dokun",
+    "newWord": "Yeni sözcük",
+    "gotIt": "Anladım",
+    "tellMore": "Daha fazla anlat"
+  },
+  "story": {
+    "eyebrow": "Hikâye",
+    "emptyTitle": "Burada takip edilecek bir hikâye yok",
+    "empty": "Bu kodun başlayacağı bir <code>setup()</code> ve <code>loop()</code> yok. Bunun yerine turu yap.",
+    "storyline": "Olay örgüsü",
+    "end_one": "Hikâyenin tamamı bu: programı {{count}} dosya boyunca takip ettin.",
+    "end_other": "Hikâyenin tamamı bu: programı {{count}} dosya boyunca takip ettin.",
+    "endAtLevel_one": "Bu seviyedeki hikâyenin tamamı bu: programı {{count}} dosya boyunca takip ettin.",
+    "endAtLevel_other": "Bu seviyedeki hikâyenin tamamı bu: programı {{count}} dosya boyunca takip ettin.",
+    "backToLab": "Deneye dön",
+    "explore": "Kendi başına keşfet",
+    "acts": {
+      "start": {
+        "title": "Açılış",
+        "blurb": "Kart açıldığında bir kez çalışan şey."
+      },
+      "forever": {
+        "title": "Tekrar tekrar",
+        "blurb": "loop()'un saniyede binlerce kez tekrarladığı şey."
+      },
+      "more": {
+        "title": "İstendiğinde",
+        "blurb": "Bir şey onu çağırdığında çalışan kod: bir görünüm, bir komut, bir işleyici."
+      }
+    },
+    "scene": {
+      "eyebrow": "Sahne {{index}} / {{count}}",
+      "trail": "Program buraya nasıl geldi",
+      "shared": "ortak kod",
+      "thisLab": "bu deney",
+      "lines": "{{where}} · satır {{start}}–{{end}} ({{size}})",
+      "note": "Programcının notu",
+      "precise": "Kesin hikâye",
+      "next": "İşi şuna devreder",
+      "seen": "Ayrıca çağırır, daha önce gördük:",
+      "helpers": "Kullandığı küçük yardımcılar:",
+      "helpersMore_one": "ve {{count}} tane daha",
+      "helpersMore_other": "ve {{count}} tane daha"
+    },
+    "title": {
+      "setup": "Açılış: setup()",
+      "loop": "Sonsuza kadar: loop()"
+    },
+    "lead": {
+      "setup": "Kart yeni açıldı. Çalıştırdığı ilk kod <code>setup()</code>, bir kez.",
+      "loop": "Hazırlık bitti. Bundan sonra kart <code>loop()</code> fonksiyonunu mümkün olduğunca hızlı, tekrar tekrar çalıştırır.",
+      "indirect_one": "<code>setup()</code> ya da <code>loop()</code>'tan doğrudan ulaşılmıyor: {{callers}} kullanır.",
+      "indirect_other": "<code>setup()</code> ya da <code>loop()</code>'tan doğrudan ulaşılmıyor: {{callers}} kullanır.",
+      "handedOver": "Kimse {{name}} fonksiyonunu adıyla çağırmaz: değer olarak aktarılır (çizilecek bir görünüm, çalıştırılacak bir komut, bir işleyici). Bu an geldiğinde çalışır.",
+      "calls": "{{caller}}, {{callee}} fonksiyonunu çağırır.",
+      "callsAt": "{{caller}}, {{callee}} fonksiyonunu {{file}} içindeki {{line}}. satırda çağırır.",
+      "moved": "{{lead}} Bu kod başka bir dosyada: {{file}}.",
+      "movedShared": "{{lead}} Bu kod başka bir dosyada, yani birkaç deney tarafından paylaşılan {{file}} içinde."
+    }
+  },
+  "autoTour": {
+    "setup": "setup(): hazırlanıyor",
+    "loop": "loop(): tekrar tekrar",
+    "destructor": "Toparlanma: ~{{name}}()",
+    "privatePart": "Dosyanın özel kısmı",
+    "libraries": "Kullandığı kütüphaneler",
+    "setupLines": "Kurulum satırları",
+    "fixedSettings": "Sabit ayarlar",
+    "moreCode": "Daha fazla kod",
+    "aboutFile": "Bu dosya hakkında",
+    "aboutSay": "Bu dosyanın ne işe yaradığı, programcının kendi sözleriyle.",
+    "includes_one": "Hazır koddan {{count}} dosya getirir: {{names}}.",
+    "includes_other": "Hazır koddan {{count}} dosya getirir: {{names}}.",
+    "constants_one": "Aşağıdaki kodun çıplak sayılar yerine kelimelerle okunması için {{count}} sabit değere ad verir: {{names}}.",
+    "constants_other": "Aşağıdaki kodun çıplak sayılar yerine kelimelerle okunması için {{count}} sabit değere ad verir: {{names}}.",
+    "alongTheWay": "{{said}} Bu sırada şunları da kullanır: {{names}}."
+  },
+  "explain": {
+    "special": {
+      "setup": "<code>setup()</code> başlatır: kart açıldıktan ya da sıfırlandıktan hemen sonra <b>bir kez</b> çalışır. Hazırlıklar buraya yazılır.",
+      "loop": "<code>loop()</code> başlatır: setup'tan sonra kart bunu <b>sonsuza kadar, tekrar tekrar</b> çalıştırır. Programın sürekli yaptığı her şey burada.",
+      "main": "<code>main()</code> başlatır: programın başladığı yer."
+    },
+    "close": {
+      "setup": "<code>setup()</code> sonu: sıradaki olarak kart <code>loop()</code> çalıştırmaya başlar.",
+      "loop": "<code>loop()</code> sonu: kart hemen <code>loop()</code> fonksiyonunun başına döner ve bunu yeniden çalıştırır.",
+      "function": "{{name}} fonksiyonunun sonu: kart buraya geldiğinde, onu çağıran yere geri döner.",
+      "namespace": "{{name}} ad grubunun sonu.",
+      "privateNamespace": "Bu dosyanın özel bölümünün sonu.",
+      "class": "{{name}} sınıfının sonu.",
+      "struct": "{{name}} tanımının sonu.",
+      "enum": "{{name}} değerleri listesinin sonu.",
+      "if": "Yalnızca yukarıdaki kontrol doğruysa çalışan satırların sonu.",
+      "else": "<code>else</code> bölümünün sonu.",
+      "for": "Döngünün sonu: bir sonraki tur için yukarı dön.",
+      "while": "Döngünün sonu: yukarı dön ve koşulu yeniden kontrol et.",
+      "do": "Döngü gövdesinin sonu.",
+      "switch": "<code>switch</code> bloğunun sonu.",
+      "case": "Bu case bölümünün sonu.",
+      "lambda": "Küçük satır içi fonksiyonun sonu.",
+      "try": "Korumalı bloğun sonu.",
+      "block": "Yukarıda açılan bloğu kapatır.",
+      "andVariable": "{{close}} Ayrıca bu yeni türde bir değişken olan {{name}} burada oluşturulur.",
+      "doWhile": "Döngü gövdesinin sonu: {{cond}} doğru olduğu sürece tekrarla."
+    },
+    "params": {
+      "none": "hiçbir şey almaz.",
+      "one": "{{param}} alır.",
+      "many_one": "{{count}} şey alır: {{list}}.",
+      "many_other": "{{count}} şey alır: {{list}}."
+    },
+    "type": {
+      "nothing": "hiçbir şey",
+      "text": "bir metin parçası",
+      "bool": "doğru ya da yanlış bir değer",
+      "int": "bir tam sayı",
+      "float": "ondalıklı bir sayı",
+      "char": "tek bir karakter",
+      "string": "bir metin",
+      "auto": "derleyicinin türünü kendisinin bulduğu bir değer"
+    },
+    "types": {
+      "nothing": "boş değerler",
+      "text": "metin parçaları",
+      "bool": "doğru-yanlış değerler",
+      "int": "tam sayılar",
+      "float": "ondalıklı sayılar",
+      "char": "tek karakterler",
+      "string": "metinler",
+      "auto": "türünü derleyicinin bulduğu değerler"
+    },
+    "fn": {
+      "note": {
+        "const": "yalnızca nesneyi okur, asla değiştirmez",
+        "static": "türün kendisine aittir, tek bir nesneye değil",
+        "iram": "hızlı iç RAM'de tutulur, böylece bir kesme onu anında çalıştırabilir",
+        "override": "ana sınıfın bildirdiği bir fonksiyonun yerine geçer"
+      },
+      "noteSeparator": ", ",
+      "destructor": "{{name}} yıkıcısı: bir {{name}} atıldığında, arkasını toplamak için kendiliğinden çalışır.",
+      "constructor": "{{name}} kurucusu: yeni bir {{name}} oluşturulduğunda çalışır. Kurucu {{params}}",
+      "constructorInit": "{{name}} kurucusu: yeni bir {{name}} oluşturulduğunda çalışır. Kurucu {{params}} Üyelerini, iki nokta işaretinden sonra gelen değerlerle doldurur.",
+      "define": "{{name}} fonksiyonunu tanımlar. Fonksiyon {{params}} Döndürdüğü değer: {{returns}}.",
+      "defineNotes": "{{name}} fonksiyonunu tanımlar. Fonksiyon {{params}} Döndürdüğü değer: {{returns}} ({{notes}})."
+    },
+    "block": {
+      "if": "{{cond}} koşulunu kontrol eder: içindeki satırlar yalnızca koşul doğruysa çalışır.",
+      "elseIf": "Aksi halde {{cond}} koşulunu kontrol eder: içindeki satırlar yalnızca koşul doğruysa çalışır.",
+      "else": "Aksi halde (yukarıdaki kontrol yanlışsa) bunun yerine bu satırları çalıştırır.",
+      "forever": "İçindeki satırları sonsuza kadar tekrarlar (bir şey döngüyü kırana kadar).",
+      "forEach": "İçindeki satırları {{list}} içindeki her öğe için bir kez tekrarlar. Şu anki öğeye {{name}} adını verir.",
+      "counting": "Sayan bir döngü: {{init}} ile başlar, {{test}} sürdükçe devam eder ve her turdan sonra {{step}} yapar.",
+      "while": "İçindeki satırları {{cond}} doğru kaldığı sürece tekrarlar.",
+      "do": "İçindeki satırları önce bir kez çalıştırır, sonra sondaki kontrol doğru olduğu sürece tekrarlar.",
+      "switch": "{{cond}} değerine göre aşağıdaki <code>case</code> bölümlerinden hangisinin çalışacağını seçer.",
+      "namespace": "Aşağıdaki adları, diğerleriyle çakışmasın diye {{name}} altında gruplar.",
+      "privateNamespace": "Özel bir bölüm açar: kapanış parantezine kadar tanımlananlar yalnızca bu dosyanın içinde kullanılabilir.",
+      "structMembers": "{{name}} türünü tanımlar. Değerlerden oluşan bir paket: {{members}}.",
+      "struct": "Yeni bir değer türü tanımlar: {{name}}. Birlikte tutulan değişkenlerden (üyelerinden) oluşan bir paket.",
+      "classBase": "{{name}} sınıfını tanımlar: {{base}} sınıfından türetilir, yani {{base}} sınıfındaki her şeyi alır ve buraya eklenenleri de içerir.",
+      "class": "{{name}} sınıfını tanımlar: bazı veriler ve bu verilerle çalışan fonksiyonlar bir arada.",
+      "enumList": "Olası her {{name}} değerini listeler: {{list}}. Bir {{name}} yalnızca bunlardan biri olabilir.",
+      "enum": "Olası tüm {{name}} değerlerinin listesini başlatır.",
+      "union": "{{name}} union türünü tanımlar: bellekteki aynı baytların birden çok görünümü.",
+      "try": "İçindeki satırları çalıştırır ve bu satırların fırlattığı hataları yakalar.",
+      "other": "Bir blok açar: eşleşen kapanış parantezine kadar olan satırlar birlikte aittir.",
+      "default": "Hiçbir case eşleşmezse buradan devam et.",
+      "case": "Değer {{value}} ise buradan başla."
+    },
+    "pre": {
+      "includeOwn": "Kendi dosyamız {{file}} dosyasını buraya ekler. Böylece bu dosya, onun tanımladıklarını kullanabilir.",
+      "includeOwnKnown": "Kendi dosyamız {{file}} dosyasını buraya ekler. Böylece bu dosya, onun tanımladıklarını kullanabilir. {{known}}",
+      "include": "Araçlarla birlikte gelen bir kütüphane olan {{file}} dosyasını içeri alır. Böylece bu dosya onun bildirdiklerini kullanabilir.",
+      "includeKnown": "{{file}} dosyasını içeri alır: {{known}}",
+      "pragmaOnce": "Birden çok dosya bunu içerse bile, bu dosyanın her derlemede yalnızca bir kez eklenmesini sağlar.",
+      "macro": "{{name}} makrosunu tanımlar: derlemeden önce her kullanım {{value}} ile değiştirilir.",
+      "define": "Bir ad tanımlar: {{name}}. Derlemeden önce her {{name}} yerine {{value}} yazılır.",
+      "ifdef": "Bir sonraki <code>#else</code> / <code>#endif</code> satırına kadar olan satırlar yalnızca {{name}} tanımlıysa derlenir.",
+      "ifndef": "Bir sonraki <code>#else</code> / <code>#endif</code> satırına kadar olan satırlar yalnızca {{name}} tanımlı değilse derlenir.",
+      "if": "Bir sonraki <code>#else</code> / <code>#endif</code> satırına kadar olan satırlar yalnızca {{cond}} doğruysa derlenir.",
+      "elif": "Aksi halde, bir sonraki <code>#else</code> / <code>#endif</code> satırına kadar olan satırlar yalnızca {{cond}} doğruysa derlenir.",
+      "else": "Aksi halde bunun yerine bu satırlar derlenir.",
+      "endif": "Yukarıdaki <code>#if</code> bölümünü bitirir.",
+      "error": "Bu satıra gelinirse derlemeyi bu mesajla durdurur (yanlış bir ayara karşı koruma).",
+      "other": "Ön işlemciye verilen bir komut. Ön işlemci, kod derlenmeden önce kodu düzenler."
+    },
+    "short": {
+      "if": "{{cond}} doğruysa, {{then}}",
+      "while": "{{cond}} doğru olduğu sürece tekrar eder: {{then}}",
+      "for": "Tekrarlar ({{cond}}): her turda {{then}}",
+      "elseIf": "Aksi halde {{then}}",
+      "else": "Aksi halde {{then}}"
+    },
+    "jump": {
+      "break": "Şu anki döngüden ya da <code>switch</code> bloğundan hemen çıkar.",
+      "continue": "Bu turun kalanını atlar ve sonrakine geçer.",
+      "return": "Bu fonksiyonu burada durdurur ve onu çağırana geri döner.",
+      "returnChoice": "<code>?</code> işaretinden önceki kontrole bağlı olarak iki değerden birini geri verir: {{value}}.",
+      "returnValue": "Burada durur ve {{value}} değerini geri verir."
+    },
+    "misc": {
+      "public": "Aşağıdakilerin hepsi sınıfın dışından kullanılabilir.",
+      "private": "Aşağıdakilerin hepsi iç kullanım içindir: yalnızca sınıfın kendi fonksiyonları ona dokunabilir.",
+      "usingNamespace": "Bu dosyanın {{name}} içindeki adları her seferinde {{prefix}} yazmadan kullanmasını sağlar.",
+      "using": "{{type}} türüne daha kısa bir ad verir: {{name}}.",
+      "typedef": "Var olan bir türe yeni bir ad verir.",
+      "template": "Bir şablon başlatır: bundan sonraki kod, daha sonra verilecek her tür için çalışır.",
+      "staticAssert": "Derleme sırasında yapılan bir kontrol: yanlışsa derleme bu mesajla başarısız olur.",
+      "forward": "{{name}} adının var olduğunu bildirir. Tam tanımı başka yerdedir.",
+      "delete": "Daha önce <code>new</code> ile alınmış belleği serbest bırakır."
+    },
+    "decl": {
+      "enumValues": "Olası {{name}} değerleri: {{values}}. Her ad, derleyicinin seçtiği bir sayıyı temsil eder.",
+      "several_one": "{{count}} değişken oluşturur: {{names}}. Her biri {{what}}.",
+      "several_other": "{{count}} değişken oluşturur: {{names}}. Her biri {{what}}.",
+      "severalArrays_one": "{{count}} değişken oluşturur: {{names}}. Her biri {{type}} türünde değerlerden oluşan bir liste.",
+      "severalArrays_other": "{{count}} değişken oluşturur: {{names}}. Her biri {{type}} türünde değerlerden oluşan bir liste.",
+      "arrayOf": "{{items}} içeren bir liste (dizi)",
+      "memberConstant": "{{owner}} için sabit bir ayar: {{name}} = {{value}}. Derleme sırasında hesaplanır.",
+      "constant": "Sabit bir değer: {{name}} = {{value}}. Derleme sırasında hesaplanır ve kart çalışırken asla değişmez.",
+      "member": "Her {{owner}} kendi {{name}} değerini taşır: {{what}}.",
+      "const": "{{name}}: bu satırdan sonra asla değişmeyen {{what}}.",
+      "constValue": "{{name}}: bu satırdan sonra asla değişmeyen {{what}}. Değeri {{value}}.",
+      "make": "{{name}} değişkenini oluşturur: {{what}}.",
+      "makeFrom": "{{name}} değişkenini oluşturur: {{what}}. Başlangıç değeri: {{value}}.",
+      "makeSet": "{{name}} adında bir değişken oluşturur ({{what}}) ve içine {{value}} koyar.",
+      "staticNote": "{{text}} <code>static</code> olduğu için çağrılar arasında değerini korur (program çalıştığı sürece yaşar)."
+    },
+    "assign": {
+      "plus": "{{target}} değerine {{value}} ekler.",
+      "minus": "{{target}} değerinden {{value}} çıkarır.",
+      "times": "{{target}} değerini {{value}} ile çarpar.",
+      "divide": "{{target}} değerini {{value}} ile böler.",
+      "mod": "{{target}} sayısını {{value}} ile bölünce kalan değeri tutar.",
+      "or": "{{value}} içinde açık olan bitleri {{target}} içinde de açar.",
+      "and": "{{target}} içinde yalnızca {{value}} içinde de açık olan bitleri tutar.",
+      "xor": "{{value}} içinde açık olan bitlerin durumunu {{target}} içinde tersine çevirir.",
+      "shiftLeft": "{{target}} değerinin bitlerini {{value}} kadar sola kaydırır.",
+      "shiftRight": "{{target}} değerinin bitlerini {{value}} kadar sağa kaydırır.",
+      "update": "{{target}} değerini günceller.",
+      "store": "{{target}} içine {{value}} yazar.",
+      "increment": "{{target}} değerini 1 artırır.",
+      "decrement": "{{target}} değerini 1 azaltır."
+    },
+    "call": {
+      "knownArgs": "{{known}} Burada verilen: {{args}}.",
+      "ask": "{{object}} nesnesinden {{method}} işlemini yapmasını ister.",
+      "askWith": "{{object}} nesnesinden {{method}} işlemini {{args}} ile yapmasını ister.",
+      "own": "Kendi yazdığımız {{name}} fonksiyonunu çalıştırır.",
+      "ownWith": "Kendi yazdığımız {{name}} fonksiyonunu {{args}} ile çalıştırır.",
+      "other": "{{name}} fonksiyonunu çağırır.",
+      "otherWith": "{{name}} fonksiyonunu {{args}} ile çağırır."
+    },
+    "fallback": "Burada yazılan işi yapar: {{code}}. Öğrenmek için vurgulanan sözcüklere dokun.",
+    "then": "{{first}} Sonra {{next}}",
+    "chapter": "Dosyanın sonraki bölümü için bir başlık: <b>{{chapter}}</b>.",
+    "comment": "Kodu okuyan insanlar için bir not. Derleyici onu atlar, bu yüzden kartta hiçbir şeyi değiştirmez.",
+    "continues": "{{line}}. satırda başlayan komutun devamı."
+  }
+}

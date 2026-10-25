@@ -1,0 +1,316 @@
+{
+  "terminal": {
+    "expected": "{{command}}   (beklenen çıktı)",
+    "expectedNetworks": "{{command}}   (beklenen çıktı, örnek ağlar)",
+    "expectedData": "{{command}}   (beklenen çıktı, örnek veri)"
+  },
+  "views": {
+    "networks": "ağlar",
+    "channels": "kanallar",
+    "radar": "radar",
+    "status": "durum",
+    "message": "mesaj",
+    "now": "şimdi",
+    "forecast": "tahmin",
+    "week": "hafta",
+    "oracle": "kahin"
+  },
+  "preview": {
+    "views": "Görünümler",
+    "viewChoice": "{{n}} {{view}}",
+    "scannerScreen": "Simüle edilmiş tarayıcı ekranı",
+    "scannerButton": "Basmalı düğme: tek tıklama sonraki görünüm, çift tıklama tara, basılı tutma otomatik tarama",
+    "join": "{{command}} (örnek)",
+    "autoOn": "otomatik tarama açık · her 10 sn",
+    "autoOff": "otomatik tarama kapalı",
+    "scannerCaption": "Örnek ağlar ve adresler, senin değil. Tek tıklama: sonraki görünüm. Çift tıklama: şimdi tara. 0,6 sn basılı tutma: otomatik taramayı aç ya da kapat. “{{join}}” bir ağa katılmanın nasıl göründüğünü gösterir. Kendi kartın, etrafındaki gerçek ağları gösterir."
+  },
+  "phone": {
+    "page": "Simüle edilmiş telefon sayfası",
+    "screen": "Simüle edilmiş kart ekranı",
+    "caption": "Bu sayfanın solundaki kart LED rengini de gösterir. Gerçek kartın bütün bunları Wi-Fi üzerinden yapar."
+  },
+  "weather": {
+    "screen": "Simüle edilmiş hava durumu ve kahin ekranı, örnek veri",
+    "button": "Basmalı düğme: tek tıklama sonraki görünüm, çift tıklama yenile ya da yeni haiku",
+    "umbrella": "sor: şemsiye lazım mı? (örnek)",
+    "caption": "Örnek şehir, hava durumu ve kahin cevapları, canlı değil. Tek tıklama: sonraki görünüm. Çift tıklama: yenile (kahin görünümünde yeni haiku). Kendi kartın kendi şehrini ve seçtiğin modelden gelen gerçek cevapları gösterir."
+  },
+  "scan": {
+    "goal": "Radyo, 2,4 GHz kanallarını sırayla dolaşır, “kim var?” diye sorar (bir probe isteği) ve cevapları dinler. Ayrıca her yönlendiricinin saniyede yaklaşık 10 kez gönderdiği beacon'ları da dinler. Tam bir tur 2–3 saniye sürer.",
+    "channels": "1'den 13'e kanallar, taranan kanal vurgulanır",
+    "channel": "Kanal {{channel}}",
+    "channelClean": "Kanal {{channel}} · birbiriyle çakışmayan üç kanaldan biri",
+    "heard_one": "{{count}} duyuldu: {{names}}",
+    "heard_other": "{{count}} duyuldu: {{names}}",
+    "nothing": "burada hiçbir şey duyulmadı",
+    "hidden": "(gizli)",
+    "example": "(örnek ağlar)",
+    "scale": "dBm cinsinden sinyal gücü ölçeği",
+    "scaleTitle": "Sinyal gücü (RSSI)",
+    "ticks": {
+      "excellent": "mükemmel",
+      "veryGood": "çok iyi",
+      "good": "iyi",
+      "weak": "zayıf",
+      "barely": "neredeyse yok"
+    },
+    "caption": "dBm logaritmiktir: her 3 dB azalma, gücün yarıya inmesi demektir. −90, −30'dan bir milyon kat zayıftır."
+  },
+  "web": {
+    "drawing": "Mimari çizim",
+    "drawingAlt": "Telefon kartla doğrudan konuşur. React uygulaması Node sunucusuyla, Node sunucusu da kartla konuşur. Kart, canlı güncellemeleri WebSocket'ler üzerinden geri gönderir.",
+    "phone": "Telefon",
+    "phoneSub": "bench.local sayfası",
+    "react": "React uygulaması",
+    "reactSub": "Mac'indeki tarayıcın",
+    "node": "Node sunucusu",
+    "nodeSub": "ESP_TOKEN'ı tutar",
+    "adminWire": "REST + WebSocket (yönetici için token eklenir)",
+    "api": "Kartın web API'si",
+    "rows": {
+      "status": "kartın ne yaptığı, son tarama",
+      "scan": "şimdi tara",
+      "view": "ekran görünümü, otomatik tarama, parlaklık",
+      "led": "LED rengi, ekrandaki yazı",
+      "wifi": "bir ağı kaydet (kurulum sırasında açık, sonrasında <adm>yönetici</adm>)",
+      "admin": "<adm>yönetici</adm>: unutma, yeniden başlatma, yazılım güncelleme",
+      "ws": "her saniye durum gönderir, taramalar, düğme basışları, güncelleme ilerlemesi"
+    }
+  },
+  "remote": {
+    "drawing": "Uzaktan kumanda çizimi",
+    "drawingAlt": "Telefonun, tünelin herkese açık adresine HTTPS üzerinden ulaşır. Hem Mac'in hem kart tünele dışarı doğru bağlanır, bu yüzden routerında hiçbir şey açılmaz. Tünel, telefonun isteklerini ve kartın bağlantısını Mac'indeki Node sunucusuna aktarır.",
+    "home": "evin · router: hiçbir şey açılmaz, hiçbir şey yönlendirilmez",
+    "phone": "Telefon · dizüstü",
+    "phoneSub": "nereden olursan ol",
+    "public": "Herkese açık https adresi",
+    "publicSub": "ya da barındırılan sunucun",
+    "mac": "Mac'in",
+    "macSub": "anahtarı ve token'ı tutar",
+    "boardOut": "dışarı bağlanır: wss /device",
+    "boardToken": "token'ıyla giriş yapar",
+    "https": "HTTPS + anahtar",
+    "tunnel": "tünel (Mac dışarı bağlanır)",
+    "wss": "wss (kart dışarı bağlanır)",
+    "caption": "Tünel yerine barındırılan bir sunucu mu? Node sunucusu orada çalışır (VPS, Fly.io, Render…), HTTPS'in arkasında. Kart doğrudan ona bağlanır. Tünel ve Mac'in devreden çıkar. Aynı yazılım, aynı <code>relay wss://…</code>.",
+    "compare": "Varyasyon 1 ve varyasyon 2 karşılaştırması",
+    "lan": "Varyasyon 1 · Wi-Fi'nde",
+    "remote": "Varyasyon 2 · her yerden",
+    "rows": {
+      "who": {
+        "what": "Kim bağlanır",
+        "lan": "telefon → kart",
+        "remote": "kart → sunucun (dışarı doğru)"
+      },
+      "away": {
+        "what": "Evin dışında çalışır mı",
+        "lan": "hayır",
+        "remote": "evet, tünel üzerinden"
+      },
+      "router": {
+        "what": "Router ayarları önemli mi",
+        "lan": "evet (Wi-Fi izolasyonu)",
+        "remote": "hayır"
+      },
+      "signIn": {
+        "what": "Kim giriş yapar",
+        "lan": "kimse (ev ağı)",
+        "remote": "sen: DASHBOARD_KEY · kart: token'ı"
+      },
+      "ota": {
+        "what": "Yazılım güncellemeleri",
+        "lan": "evet",
+        "remote": "şimdilik varyasyon 1'i kullan"
+      }
+    }
+  },
+  "roadmap": {
+    "lessons": "Wi-Fi dersleri",
+    "lesson": "Ders",
+    "capability": "Wi-Fi yeteneği",
+    "needs": "Gerekenler",
+    "rows": {
+      "W1": {
+        "title": "Tara ve bağlan",
+        "capability": "tarayıcı görünümleri, kendi ağına katılma, çipte saklanan parola, kendiliğinden yeniden bağlanma, saat, IP ve sinyal grafiği içeren durum görünümü, bench.local",
+        "needs": "hiçbir şey"
+      },
+      "W2": {
+        "title": "Telefondan kontrol",
+        "capability": "REST API + WebSocket, bench.local'de telefon sayfası, kurulum ağı, HTTP üzerinden yazılım güncellemeleri, Mac'te React + Node paneli",
+        "needs": "W1"
+      },
+      "W3": {
+        "title": "İnternet ve yapay zekâ",
+        "capability": "İnternetten HTTPS + JSON (Open-Meteo hava durumu). Tezgâh Kahini: LiteLLM geçidi üzerinden herhangi bir yapay zekâ modeli, cevaplar yapılandırılmış JSON olarak",
+        "needs": "W1 + LiteLLM geçidi ve kahin için bir sağlayıcı anahtarı"
+      },
+      "W4": {
+        "title": "Radyo deneyi (bonus)",
+        "capability": "paket sayımından kanal etkinliği. ESP-NOW ile kartlar arası mesajlar",
+        "needs": "ESP-NOW için 2. bir ESP32"
+      },
+      "W5": {
+        "title": "Donanım günlüğü",
+        "capability": "tezgâh notlarını ve yaptığın projelerin fotoğraflarını bu deponun API'sine gönder",
+        "needs": "W3 + çalışan API"
+      }
+    },
+    "caption": "Her deneyin kendi yazılımı ve komutu var (<code>wifi-lab-w1</code>, <code>wifi-lab-w2</code>, …). Ortak olanlar <code>kit/lib/wifi-kit</code> içinde durur. Böylece her deney sıfırdan başlamaz, üstüne yeni özellik ekler.",
+    "parts": "Daha fazlasını açan parçalar",
+    "part": "Parça",
+    "about": "Hakkında",
+    "adds": "Ne ekler",
+    "partRows": {
+      "bme280": {
+        "name": "BME280",
+        "about": "3–10 € · I2C, 4 kablo",
+        "adds": "Sıcaklık, nem, basınç (BME680 hava kalitesini de ekler). Telefon panosu ve Donanım günlüğü gönderileri için gerçek veri"
+      },
+      "esp32": {
+        "name": "2. ESP32",
+        "about": "3–8 € · herhangi bir C3 ya da S3",
+        "adds": "Router olmadan ESP-NOW, kablosuz kumanda, bir kartın erişim noktası olması ve diğerinin ona katılması"
+      },
+      "powerBank": {
+        "name": "Powerbank",
+        "about": "muhtemelen zaten var",
+        "adds": "Taşınabilir bir tarayıcı: dolaş ve sinyal haritasını oda oda çıkar"
+      },
+      "encoder": {
+        "name": "Döner kodlayıcı",
+        "about": "1–2 € · KY-040",
+        "adds": "Menülerde kaydır ve seç: ağ seçici, ayarlar"
+      },
+      "ring": {
+        "name": "WS2812 halkası",
+        "about": "2–5 € · 1 veri kablosu",
+        "adds": "Renkli bir sinyal göstergesi. Renkleri telefonundan seç"
+      },
+      "ina219": {
+        "name": "INA219",
+        "about": "2–4 € · I2C",
+        "adds": "Wi-Fi'nin güç çekişini ölç (yaklaşık 300 mA zirveler) ve uyku modlarının ne kazandırdığını gör"
+      },
+      "buzzer": {
+        "name": "Pasif buzzer",
+        "about": "1 €",
+        "adds": "Sesli uyarılar: ağ koptu, değer sınırı aştı"
+      }
+    }
+  },
+  "https": {
+    "legend": {
+      "msg": "mesaj (turuncu: şu anki adım)",
+      "wait": "ağı bekleyen arka plan görevi",
+      "loop": "loop() kareler çizmeye devam ediyor"
+    },
+    "weather": {
+      "label": "Hava durumu · Open-Meteo",
+      "lanes": {
+        "loop": {
+          "sub": "ekranı çizer"
+        },
+        "worker": {
+          "name": "arka plan görevi",
+          "sub": "ağ işini yapar"
+        },
+        "server": {
+          "sub": "hava durumu servisi"
+        }
+      },
+      "steps": {
+        "job": {
+          "title": "loop() bir iş devreder",
+          "text": "Her 15 dakikada bir (ya da çift tıklamada) loop(), arka plan görevinin kutusuna bir iş koyar ve hemen çizime döner. Ağı asla beklemez."
+        },
+        "connect": {
+          "title": "Sunucuyu bul ve bağlan",
+          "text": "DNS, adı bir IP adresine çevirir. Sonra kart, HTTPS portu olan 443'e bir TCP bağlantısı açar."
+        },
+        "tls": {
+          "title": "TLS: gerçekten Open-Meteo mu?",
+          "text": "Sunucu sertifikasını gönderir. Kart, sertifikanın yazılıma gömülü kök sertifikalardan birine bağlanıp bağlanmadığına ve bu ad için verilip verilmediğine bakar. Sonra iki taraf şifreleme anahtarları üzerinde anlaşır. Bundan sonra aradaki hiç kimse veriyi okuyamaz ya da değiştiremez."
+        },
+        "get": {
+          "title": "Tahmini iste",
+          "text": "Koordinatlar ve istediğimiz değerlerin listesiyle tek bir GET isteği: şimdi, sonraki 24 saat, 7 gün."
+        },
+        "json": {
+          "title": "Cevap: JSON",
+          "text": "JSON biçiminde yaklaşık 1,7 KB metin. Bunun neredeyse üçte biri, ekranın hiç göstermediği zaman damgaları."
+        },
+        "filter": {
+          "title": "Yalnızca çizdiklerimizi tut",
+          "text": "ArduinoJson filtresi bir şablondur. İçinde olmayan alanlar okunurken atlanır, bu yüzden hiç bellek yemezler."
+        },
+        "back": {
+          "title": "Sonucu geri ver",
+          "text": "Arka plan görevi küçük bir yapıyı (struct) kutuya koyar. İki görev aynı anda dokunmasın diye mutex kullanır ve bir sürüm numarasını artırır."
+        },
+        "draw": {
+          "title": "Sonraki kare bunu gösterir",
+          "text": "loop() yeni sürümü görür, yapıyı kopyalar ve sonraki kare yeni gökyüzünü çizer. Soldaki kare sayacı hiç durmadı."
+        }
+      }
+    },
+    "oracle": {
+      "label": "Kahin · LiteLLM",
+      "lanes": {
+        "loop": {
+          "sub": "ekranı çizer"
+        },
+        "worker": {
+          "name": "arka plan görevi",
+          "sub": "ağ işini yapar"
+        },
+        "gateway": {
+          "sub": "Mac'indeki geçit"
+        },
+        "provider": {
+          "name": "yapay zekâ sağlayıcısı",
+          "sub": "herhangi bir sağlayıcı"
+        }
+      },
+      "steps": {
+        "job": {
+          "title": "loop() anı tarif eder",
+          "text": "loop(), kartın bildiklerini küçük bir JSON metne yazar. Bunu geçidin adresi, anahtarı ve model adıyla birlikte arka plan görevine verir."
+        },
+        "request": {
+          "title": "Tek bir standart istek",
+          "text": "Kart, arkasında hangi model olursa olsun her zaman aynı OpenAI tarzı isteği gönderir. Tek bir fonksiyon sunar, show_on_bench, ve modeli onu çağırmaya zorlar."
+        },
+        "route": {
+          "title": "LiteLLM gerçek modeli seçer",
+          "text": "config.yaml, kartın istediği adı bir sağlayıcıya ve modele eşler. Sağlayıcının anahtarını .env dosyasından ekler. Eşlemeyi değiştir, kart yeniden yüklenmeden başka bir model kullanır."
+        },
+        "translate": {
+          "title": "Sağlayıcı için çevrilir",
+          "text": "LiteLLM isteği sağlayıcının kendi biçimine yeniden yazar (Anthropic için zorlanmış bir araçla Messages API) ve HTTPS üzerinden gönderir."
+        },
+        "writing": {
+          "title": "Model yazar",
+          "text": "Birkaç saniye. Arka plan görevi ağı bekler, loop() beklemez. Ekran animasyona devam ederken kare sayacının çalışmaya devam ettiğini izle."
+        },
+        "call": {
+          "title": "Anlaşılan biçimde cevap",
+          "text": "Fonksiyon zorlandığı için cevap serbest metin değildir. JSON argümanlarıyla bir show_on_bench çağrısıdır."
+        },
+        "standard": {
+          "title": "Standart biçime geri dön",
+          "text": "LiteLLM, sağlayıcının cevabını yeniden OpenAI biçimine çevirir. Böylece kart her sağlayıcı için tek bir biçim ayrıştırır. Token sayıları da cevapla birlikte gelir."
+        },
+        "parse": {
+          "title": "JSON'un içinde JSON",
+          "text": "Argümanlar, JSON cevabın içinde bir JSON metni olarak gelir, bu yüzden kart iki kez ayrıştırır. Sonra metni düz ASCII'ye indirir (ekran yazı tiplerinde é ya da — yoktur) ve #5fa8ff rengini kırmızı, yeşil, mavi değerlerine çevirir."
+        },
+        "show": {
+          "title": "Ekran ve LED",
+          "text": "loop() cevabı alır: başlık kendi renginde, satırlar yazılır gibi çıkar, LED yanar, saat ve token sayısı altta görünür."
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,1967 @@
+{
+  "S1": {
+    "title": "Dinle",
+    "heading": "Mikrofonların gerçekte ne gönderdiğini dinle",
+    "goal": "<span class=\"snd-parts\"><span class=\"need\">KY-037 veya INMP441</span></span>İki mikrofon, iki giriş yolu. <b>INMP441</b> dijitaldir: kendi yükselticisi ve 24 bitlik dönüştürücüsü vardır, sayıları I2S üzerinden gönderir. KY-037'nin iki çıkışı vardır. <b>AO</b>, mikrofonun kendi gerilimidir: sabit bir <i>bias</i> üzerinde duran küçük bir dalga. <b>DO</b>, LM393 karşılaştırıcısından gelen evet/hayır sinyalidir ve mavi trimpot ile ayarlanır. S1, AO'yu ADC'nin DMA'sı ile saniyede 16 000 kez örnekler (döngüde <code>analogRead()</code> kullanmadan). Bunu osiloskop gibi çizer, ADC aralığında nerede durduğunu gösterir ve trimpotu ayarlamana izin verir. <b>mics</b> görünümü iki mikrofonu yan yana koyar. Diğer tüm ses deneyleri bunun üzerine kuruludur. Örnekleyici, 4 saniyelik halka tampon ve ses düzeyi ölçer <code>kit/lib/sound-kit</code> içinde durur.",
+    "goalLine": "Sesini ve alkışı bir dalga olarak gör, iki mikrofonu karşılaştır, bias'ı (ya da bitleri) oku ve karşılaştırıcıyı yalnızca yüksek seslerde tetiklenecek şekilde ayarla.",
+    "goalCheck": [
+      "<b>scope</b> görünümü sessizken düz bir çizgi, konuşurken dalga gösterir. Islık sesi yerinde durur (tetik açık).",
+      "<b>bias</b> görünümü modülünün bias'ını mV olarak gösterir. Mikrofona yakın alkışlarsan CLIPPING görünmez. <code>atten 6</code> komutunu denedin ve adım boyutunun yarıya indiğini gördün.",
+      "<b>comparator</b> görünümünde DO, alkışta yanar ve normal konuşurken söner: “tuned”.",
+      "<code>status</code> <code>16000 Hz measured</code> ve <code>DMA overruns 0</code> yazar.",
+      "İki mikrofon da bağlıyken <b>mics</b> görünümü, INMP441'in bir kelimeyi kaç dB daha net duyduğunu söyler."
+    ],
+    "learn": [
+      "analog ve dijital mikrofon",
+      "I2S",
+      "bias gerilimi",
+      "ADC zayıflatma",
+      "sürekli ADC + DMA",
+      "halka tampon",
+      "bit başına 6 dB, boşluk",
+      "karşılaştırıcı ve histerezis",
+      "dBFS"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "MICS +"
+      },
+      "2": {
+        "role": "AO"
+      },
+      "3": {
+        "role": "BLK"
+      },
+      "4": {
+        "role": "RES"
+      },
+      "5": {
+        "role": "DC"
+      },
+      "6": {
+        "role": "CS"
+      },
+      "7": {
+        "role": "SDA"
+      },
+      "8": {
+        "role": "SCL"
+      },
+      "9": {
+        "role": "AMP VIN"
+      },
+      "10": {
+        "role": "GND"
+      },
+      "11": {
+        "role": "BTN"
+      },
+      "12": {
+        "role": "MICS G"
+      },
+      "13": {
+        "role": "SD"
+      },
+      "14": {
+        "role": "WS"
+      },
+      "15": {
+        "role": "SCK"
+      },
+      "16": {
+        "role": "BCLK"
+      },
+      "17": {
+        "role": "LRC"
+      },
+      "18": {
+        "role": "BOOT"
+      },
+      "19": {
+        "role": "DIN"
+      },
+      "20": {
+        "role": "DO"
+      },
+      "21": {
+        "role": "AMP G"
+      }
+    },
+    "wiring": {
+      "title": "Bağlantılar: mikrofonlar ve hoparlör (deneyin ihtiyacı olanı bağla, ekran 03 numaralı dersteki gibi kalır)",
+      "head": [
+        "Modül pini",
+        "ESP32-S3",
+        "Notlar"
+      ],
+      "rows": [
+        [
+          "KY-037 + · G",
+          "3V3",
+          "Analog mikrofon. + ikinci 3V3 pinine, G GND'ye. <b>Asla 5 V değil</b>: AO ve DO modülün besleme gerilimine kadar çıkar, ESP32-S3'ün pinleri en fazla 3,3 V kaldırır."
+        ],
+        [
+          "KY-037 AO",
+          "GPIO 6",
+          "Analog çıkış: mikrofonun gerilimi. GPIO 6, ADC1 kanal 5'tir. Wi-Fi açıkken ADC1 çalışmaya devam eder, ADC2 çalışmaz."
+        ],
+        [
+          "KY-037 DO",
+          "GPIO 21",
+          "Dijital çıkış: LM393 karşılaştırıcısı, ses mavi trimpotun ayarından yüksek olduğunda yüksek sinyal verir."
+        ],
+        [
+          "INMP441 VDD · GND",
+          "3V3",
+          "Dijital mikrofon (I2S). VDD 3V3'e (KY-037 ile breadboard rayını paylaşır), GND GND'ye. Yalnızca 3,3 V."
+        ],
+        [
+          "INMP441 L/R",
+          "GND",
+          "Düşük = sol kanalda konuşur. Kart sol kanalı okur."
+        ],
+        [
+          "INMP441 SCK",
+          "GPIO 40",
+          "Bit saati. ESP32 bunu sürer: 16 000 × 64 = 1,024 MHz."
+        ],
+        [
+          "INMP441 WS",
+          "GPIO 41",
+          "Kelime seçimi: sol kanal / sağ kanal. Her 32 saat darbesinde değişir."
+        ],
+        [
+          "INMP441 SD",
+          "GPIO 42",
+          "Veri, en anlamlı bit önce. Aşağı çekilmiş, bu yüzden bağlı olmayan bir mikrofon sıfır okur."
+        ],
+        [
+          "MAX98357A VIN · GND",
+          "5V",
+          "Hoparlör yükselticisi. 5V en çok gücü verir (4 Ω'da yaklaşık 3 W). 3V3 de çalışır, ama daha sessiz."
+        ],
+        [
+          "MAX98357A BCLK",
+          "GPIO 39",
+          "İkinci I2S portunun bit saati (I2S1). Mikrofon I2S0 kullanır, ikisi aynı anda çalışır."
+        ],
+        [
+          "MAX98357A LRC",
+          "GPIO 38",
+          "Kelime seçimi (sol/sağ)."
+        ],
+        [
+          "MAX98357A DIN",
+          "GPIO 47",
+          "Örnekler, 16 bit."
+        ],
+        [
+          "MAX98357A GAIN · SD",
+          "hiçbiri",
+          "İkisini de bağlama: 9 dB kazanç var ve (sol + sağ) / 2 çalar."
+        ],
+        [
+          "hoparlör (4 Ω, 3 W)",
+          "amp + / −",
+          "Yükselticinin vida terminalinde: JST-PH2.0 kablosunun iki teli, kırmızı +'ya."
+        ],
+        [
+          "ekran (8 kablo)",
+          "03 numaralı dersteki gibi",
+          "Değişmez. GPIO 5'teki basmalı düğme isteğe bağlıdır: BOOT'un yaptığını yapar."
+        ]
+      ]
+    },
+    "commands": {
+      "0": {
+        "does": "S1 deneyini derleyip karta yazar, sonra monitörü <code>uv run pio device monitor</code> ile açar.",
+        "see": "<code>Listening for an INMP441 on the I2S pins...</code>, <code>Microphone: INMP441 (I2S, digital) (mic setting: auto)</code> (ya da KY-037), sonra <code>Sound lab S1 …</code>, komut listesi ve hoparlörden üç notalık bir merhaba. Yarım saniye sessiz kal: <code>- learning the quiet...</code>",
+        "fix": "Yanlış mikrofon seçildi: <code>mic inmp441</code> ya da <code>mic ky037</code> (kaydedilir, kart yeniden başlar). Merhaba yok: hoparlör isteğe bağlıdır. VIN ve DIN'i kontrol et. “Failed to connect”: BOOT'a basılı tut, RST'ye dokun, BOOT'u bırak, yeniden çalıştır."
+      },
+      "1": {
+        "does": "Komut satırının kullandığı mikrofon. <code>auto</code> (varsayılan) başlangıçta 0,3 s boyunca INMP441 arar. NVS'te kaydedilir (ad alanı <code>sound</code>). Kart yeniden başlar.",
+        "see": "<code>Microphone: INMP441 (I2S, digital) (mic setting: inmp441)</code>. Ekranın sağ üstünde DO lambası yerine küçük bir <b>D</b>.",
+        "fix": "KY-037'de kalıyorsa: SCK 40, WS 41, SD 42 bağlantılarını kontrol et. L/R'nin GND'ye bağlı olduğundan emin ol."
+      },
+      "2": {
+        "does": "Diğer mikrofonu da açar ve iki şeridi gösterir, INMP441 üstte. Her birinin sessizlik seviyesini dBFS olarak ve senin bu seviyenin ne kadar üstünde olduğunu gösterir.",
+        "see": "<code>INMP441 hears it 12 dB more clearly</code> (sayı odana göre değişir). KY-037 şeridi daha parazitli.",
+        "fix": "Tek şerit var: öbür mikrofon bağlı değil. Bağla, sonra RST'ye bas. S1 onu başlangıçta arar."
+      },
+      "3": {
+        "does": "INMP441'de DO pini yoktur. Kart karşılaştırmayı yazılımda yapar. thresh, sessizliğin üstündeki eşiği dB olarak belirler (varsayılan 15). 3 dB histerezis vardır.",
+        "see": "<code>- software comparator at 20 dB</code>. comparator görünümünde yalnızca alkışlar eşiği geçer.",
+        "fix": ""
+      },
+      "4": {
+        "does": "<b>scope</b> görünümü son 20 ms'yi çizer. Konuşma küçük, titreşimli bir dalga yapar. Alkış kutuyu doldurur.",
+        "see": "Pembe bir dalga. Soldaki ölçek, bir ses için ±1-5 mV'a, alkış için ±100 mV ve üstüne kadar büyür.",
+        "fix": "Ne yaparsan yap düz çizgi kalıyor: AO GPIO 6'da değil ya da + 3V3'e bağlı değil. Modülün güç LED'i yanmalı."
+      },
+      "5": {
+        "does": "Örnekleyiciyi, ADC'yi ve seviyeyi sayılarla gösterir.",
+        "see": "<code>sampler: 16000 Hz asked, 16000 Hz measured · frames dropped 0 · DMA overruns 0</code>, sonra <code>ADC: attenuation 12 dB (0-3.1 V) · bias … mV</code>.",
+        "fix": "Overruns artıyor: bir şey çekirdek 0'ı uzun süre bloke ediyor. Claude'a başka neyin çalıştığını söyle."
+      },
+      "6": {
+        "does": "0-3,3 V cetveli, bias'ın ve son 0,1 s'lik salınımın gösterimi.",
+        "see": "Bias çizgisi 1-2 V civarında bir yerde. Bir ipucu da görünür, ör. <code>fits in 0-1.75 V: try atten 6 (2x finer)</code>.",
+        "fix": "Bias 0 ya da 3,3 V'a yakınsa modül 5 V'ta ya da bir kablo gevşektir. 3V3 kullan."
+      },
+      "7": {
+        "does": "ADC aralığını 0-1,75 V'a daraltır: her adım 0,76 yerine 0,43 mV olur. (Bias üzerinde çift tıklama 12 → 6 → 2,5 → 0 adımlarından geçirir.)",
+        "see": "<code>- attenuation 6 dB (0-1.75 V)</code>. Cetvelde gölgeli alan küçülür, dalga scope'ta daha uzun görünür.",
+        "fix": "<code>CLIPPING</code>: bias ya da dalga artık sığmıyor. <code>atten 12</code> ile geri dön."
+      },
+      "8": {
+        "does": "Karşılaştırıcının nasıl ayarlanacağını yazar ve comparator görünümüne geçer.",
+        "see": "Üç adım. Sessizken LED2 tam sönene kadar çevir. Alkışta yanıp sönmeli. Gerekirse ince ayar yap.",
+        "fix": ""
+      },
+      "9": {
+        "does": "Karşılaştırıcının eşiğini taşır. DO lambasına (sağ üst) ve şeride bak: üstte ses düzeyi, altta DO.",
+        "see": "Ayarlandı: <code>DO follows the loud moments: tuned</code>. Alkışta LED2 yanıp söner, konuşurken söner.",
+        "fix": "<code>DO always on</code>: tersine çevir. Hangi yönün daha hassas olduğu üreticiye göre değişir."
+      },
+      "10": {
+        "does": "Ses düzeyini her 50 ms'de metin çubuğu olarak yazar (her ses deneyinde var). <code>plot off</code> durdurur.",
+        "see": "Akan satırlar: <code> 23.4 dB |#########          |   | DO 0</code>.",
+        "fix": ""
+      },
+      "11": {
+        "does": "En yeni 64 örneği sayı olarak yazar (bias arındırılmış int16, bir ADC adımı = 16).",
+        "see": "Virgülle ayrılmış 16 sayıdan oluşan dört satır, ör. <code>-32,16,48,…</code>. Bunları bir elektronik tabloya yapıştır ve çizgi grafiği çiz.",
+        "fix": ""
+      },
+      "12": {
+        "does": "Freeze resmi tutar: scope üzerinde çift tıkla ya da uzun bas. span ekranın kapladığı süreyi ayarlar.",
+        "see": "<code>scope frozen (freeze again to go on)</code>. <code>span 5</code> ile bir düdüğün tek dalgaları belirginleşir.",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Ses hattı, deney deney",
+        "intro": "Altı deney, her biri kendi yazılımıyla. Hepsi aynı mikrofonu okur. Birini seç ve sesi neye dönüştürdüğünü gör."
+      },
+      "1": {
+        "title": "Havadan sayıya",
+        "intro": "Sesin ile kodun kullanabileceği bir sayı arasında sekiz aşama var. Adım adım ilerle (ya da kendi kendine oynasın). Sağdaki düğmeler ses çıkarır. Resmin altındaki her değer canlıdır."
+      },
+      "2": {
+        "title": "Analog mikrofon, dijital mikrofon: I2S bir örneği nasıl taşır",
+        "intro": "KY-037 ESP32'ye ölçülecek bir gerilim verir. INMP441 ölçümü kendisi yapar ve sayıyı gönderir. Aşağıda üç telinde tek bir I2S çerçevesi var. Tık tık ilerle ve 24 bitlik bir örneğin gelişini izle. Sonra her deneyin kullandığı 16 bitlik sayıya dönüştüğünü gör."
+      },
+      "3": {
+        "title": "Dalga, ADC aralığında nerede (KY-037)",
+        "intro": "Bias'ı ve ses düzeyini değiştir, zayıflatmayı ayarla. ADC yalnızca gölgeli aralıkta ölçebilir. Dışarıda dalga düz kesilir (kırpılma, clipping). Daha küçük aralık, dalga hâlâ sığdığı sürece daha ince adımlar verir."
+      },
+      "4": {
+        "title": "Karşılaştırıcı ve trimpot",
+        "intro": "LM393, AO'yu trimpotun ayarladığı gerilimle karşılaştırır. Çizginin üstündeyken DO yüksek olur ve modüldeki LED2 yanar. Kesikli çizgiyi (ya da kaydırıcıyı) sürükle ve DO'ya bak. Çok düşükse durmadan titrer. Çok yüksekse alkış bile kaçar."
+      },
+      "5": {
+        "title": "Ekranda ne görünür",
+        "intro": "Beş görünüm var. Tıklama = sonraki görünüm, çift tıklama = sol alttaki eylem, uzun basış = dondurma. Sağ üstte seviye çubuğu, DO lambası (ya da INMP441 ile <b>D</b>), hoparlör çalarken dalgalar ve bir şey kaydettiğinde kırmızı bir nokta görünür (S4, S8)."
+      }
+    },
+    "steps": [
+      "KY-037'yi bağla: + → 3V3 (ikinci pin), G → GND, AO → GPIO 6, DO → GPIO 21. Ekran 03 numaralı dersteki gibi kalır. Modülün güç LED'i yanar.",
+      "<code>sound-lab-s1</code>'i karta yükle, monitörü aç ve bir saniye sessiz kal. <b>Kontrol noktası 1:</b> <code>Mic: AO on GPIO 6 …</code> satırı ve scope'ta düz bir çizgi.",
+      "Mikrofonun yanında konuş, ıslık çal ve alkışla. <b>Kontrol noktası 2:</b> üç farklı dalga. Islık yerinde durur.",
+      "<b>bias</b> görünümüne tıkla, bias'ını mV olarak oku, ipucunun önerdiği zayıflatmayı dene. <b>Kontrol noktası 3:</b> 20 cm uzaktan alkışladığında CLIPPING yok.",
+      "<code>pot</code> yaz ve karşılaştırıcıyı ayarla. <b>Kontrol noktası 4:</b> comparator görünümünde “tuned”.",
+      "<code>status</code> yaz. <b>Kontrol noktası 5:</b> 16000 Hz measured, overruns 0."
+    ],
+    "note": "INMP441 ile osiloskobun ölçeği tam ölçeğin yüzdesi olur. Bias görünümü, 24 bitlik bir merdivene döner. Her bit 6 dB eder. Sesin kaçını kullandığı ve geriye ne kadar boşluk kaldığı görünür. Karşılaştırıcı yazılımdır, <b>numbers</b> ise dB SPL ekler. KY-037 için dürüst beklenti şöyle: yükselticisi yok. AO, kapsülün ham gerilimidir. Konuşma için birkaç milivolt üretir. Bu yüzden konuşma, ADC'nin 4096 adımından yalnızca birkaçını kullanır. Bu onu iyi bir <b>ses düzeyi</b> sensörü yapar (alkış, vuruş, gürültü, ritim). Ama kaba bir mikrofondur. DO tek bir karşılaştırıcıdır. Dalga çizgiyi kestikçe bir alkış ona düzinelerce kenar üretir. Bu yüzden deneyler AO'yu dinler, DO'yu ise donanım lambası ve ikinci bir görüş olarak kullanır. ADC, ADC1 üzerinden örnekler. Bu, Wi-Fi açıkken de çalışmaya devam eder (ADC2 çalışmaz)."
+  },
+  "S2": {
+    "title": "Ses düzeyi",
+    "heading": "Odan için bir ses düzeyi ölçer",
+    "goal": "<span class=\"snd-parts\"><span class=\"need\">KY-037 veya INMP441</span><span class=\"opt\">MAX98357A + hoparlör (isteğe bağlı)</span></span>Ses ne kadar yüksek? <b>INMP441</b> ile S2 gerçek <b>dB SPL</b> gösterir. Veri sayfası 94 dB SPL'de −26 dBFS verir, yani RMS dBFS + 111. Fısıltı 30, konuşma 60, 85 ise işitme riski çizgisidir. KY-037 ile odanın sessizliğinin üstünde kaç dB olduğunu gösterir. S2, örnekleri bir ses düzeyi ölçer gibi desibele çevirir: <b>hızlı</b> (125 ms) ya da <b>yavaş</b> (1 sn) yumuşatma, bir tepe tutma ve odanı öğrenen bir gürültü tabanı. Sonra bir dakikalık grafiği, on dakikalık bir gürültü günlüğünü ve uzun süre çok yüksek kaldığında GPIO 4'teki 02 numaralı ders LED'ini yakan bir alarmı tutar.",
+    "goalLine": "Odanın seviyesini oku (INMP441 ile dB SPL olarak), hızlı ile yavaş arasındaki farkı gör, günlük tut ve alarmı çaldır (ve sustur).",
+    "goalCheck": [
+      "<b>meter</b> sessizken yaklaşık 0, konuşurken 15-25, alkışta 40 ve üzerini okur. Bunun kabaca ne olduğunu da söyler.",
+      "<code>speed slow</code> ile sayı sakinleşir. Tepe işareti yine de alkışı yakalar.",
+      "Birkaç dakika sonra <code>diary</code> satırları low / avg / high olarak yazar.",
+      "Bir saniye boyunca yüksek müzik çalınca <b>alarm</b> görünümü kırmızıya döner, LED yanar ve bir düğmeye basınca susar."
+    ],
+    "learn": [
+      "desibel (+6 = ×2)",
+      "RMS",
+      "dB SPL için bilinen hassasiyet gerekir",
+      "ağırlıksız ve dBA",
+      "85 dB risk çizgisi",
+      "hızlı / yavaş yumuşatma",
+      "gürültü tabanı",
+      "yankı koruması"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "MICS +"
+      },
+      "2": {
+        "role": "AO"
+      },
+      "3": {
+        "role": "BLK"
+      },
+      "4": {
+        "role": "RES"
+      },
+      "5": {
+        "role": "DC"
+      },
+      "6": {
+        "role": "CS"
+      },
+      "7": {
+        "role": "SDA"
+      },
+      "8": {
+        "role": "SCL"
+      },
+      "9": {
+        "role": "AMP VIN"
+      },
+      "10": {
+        "role": "GND"
+      },
+      "11": {
+        "role": "BTN"
+      },
+      "12": {
+        "role": "MICS G"
+      },
+      "13": {
+        "role": "SD"
+      },
+      "14": {
+        "role": "WS"
+      },
+      "15": {
+        "role": "SCK"
+      },
+      "16": {
+        "role": "BCLK"
+      },
+      "17": {
+        "role": "LRC"
+      },
+      "18": {
+        "role": "BOOT"
+      },
+      "19": {
+        "role": "DIN"
+      },
+      "20": {
+        "role": "DO"
+      },
+      "21": {
+        "role": "AMP G"
+      }
+    },
+    "wiring": {
+      "title": "Bağlantılar: mikrofonlar ve hoparlör (deneyin ihtiyacı olanı bağla, ekran 03 numaralı dersteki gibi kalır)",
+      "head": [
+        "Modül pini",
+        "ESP32-S3",
+        "Notlar"
+      ],
+      "rows": [
+        [
+          "KY-037 + · G",
+          "3V3",
+          "Analog mikrofon. + ikinci 3V3 pinine, G GND'ye. <b>Asla 5 V değil</b>: AO ve DO modülün besleme gerilimine kadar çıkar, ESP32-S3'ün pinleri en fazla 3,3 V kaldırır."
+        ],
+        [
+          "KY-037 AO",
+          "GPIO 6",
+          "Analog çıkış: mikrofonun gerilimi. GPIO 6, ADC1 kanal 5'tir. Wi-Fi açıkken ADC1 çalışmaya devam eder, ADC2 çalışmaz."
+        ],
+        [
+          "KY-037 DO",
+          "GPIO 21",
+          "Dijital çıkış: LM393 karşılaştırıcısı, ses mavi trimpotun ayarından yüksek olduğunda yüksek sinyal verir."
+        ],
+        [
+          "INMP441 VDD · GND",
+          "3V3",
+          "Dijital mikrofon (I2S). VDD 3V3'e (KY-037 ile breadboard rayını paylaşır), GND GND'ye. Yalnızca 3,3 V."
+        ],
+        [
+          "INMP441 L/R",
+          "GND",
+          "Düşük = sol kanalda konuşur. Kart sol kanalı okur."
+        ],
+        [
+          "INMP441 SCK",
+          "GPIO 40",
+          "Bit saati. ESP32 bunu sürer: 16 000 × 64 = 1,024 MHz."
+        ],
+        [
+          "INMP441 WS",
+          "GPIO 41",
+          "Kelime seçimi: sol kanal / sağ kanal. Her 32 saat darbesinde değişir."
+        ],
+        [
+          "INMP441 SD",
+          "GPIO 42",
+          "Veri, en anlamlı bit önce. Aşağı çekilmiş, bu yüzden bağlı olmayan bir mikrofon sıfır okur."
+        ],
+        [
+          "MAX98357A VIN · GND",
+          "5V",
+          "Hoparlör yükselticisi. 5V en çok gücü verir (4 Ω'da yaklaşık 3 W). 3V3 de çalışır, ama daha sessiz."
+        ],
+        [
+          "MAX98357A BCLK",
+          "GPIO 39",
+          "İkinci I2S portunun bit saati (I2S1). Mikrofon I2S0 kullanır, ikisi aynı anda çalışır."
+        ],
+        [
+          "MAX98357A LRC",
+          "GPIO 38",
+          "Kelime seçimi (sol/sağ)."
+        ],
+        [
+          "MAX98357A DIN",
+          "GPIO 47",
+          "Örnekler, 16 bit."
+        ],
+        [
+          "MAX98357A GAIN · SD",
+          "hiçbiri",
+          "İkisini de bağlama: 9 dB kazanç var ve (sol + sağ) / 2 çalar."
+        ],
+        [
+          "hoparlör (4 Ω, 3 W)",
+          "amp + / −",
+          "Yükselticinin vida terminalinde: JST-PH2.0 kablosunun iki teli, kırmızı +'ya."
+        ],
+        [
+          "ekran (8 kablo)",
+          "03 numaralı dersteki gibi",
+          "Değişmez. GPIO 5'teki basmalı düğme isteğe bağlıdır: BOOT'un yaptığını yapar."
+        ]
+      ]
+    },
+    "commands": {
+      "0": {
+        "does": "S2 deneyini derleyip karta yazar, sonra monitörü <code>uv run pio device monitor</code> ile açar.",
+        "see": "<code>Listening for an INMP441 on the I2S pins...</code>, <code>Microphone: INMP441 (I2S, digital) (mic setting: auto)</code> (ya da KY-037), sonra <code>Sound lab S2 …</code>, komut listesi ve hoparlörden üç notalık bir merhaba. Yarım saniye sessiz kal: <code>- learning the quiet...</code>",
+        "fix": "Yanlış mikrofon seçildi: <code>mic inmp441</code> ya da <code>mic ky037</code> (kaydedilir, kart yeniden başlar). Merhaba yok: hoparlör isteğe bağlıdır. VIN ve DIN'i kontrol et. “Failed to connect”: BOOT'a basılı tut, RST'ye dokun, BOOT'u bırak, yeniden çalıştır."
+      },
+      "1": {
+        "does": "<b>meter</b> görünümü: büyük sayı, odanın sessizliğinin üstündeki dB'dir.",
+        "see": "Konuşurken yaklaşık 15-25 (“talking”), alkışta 40 ve üzeri (“shout, clap, bang”). Beyaz işaret tepe tutmadır.",
+        "fix": "Hep 0: sessizlik sen konuşurken öğrenilmiş. <code>quiet</code> yaz ve yarım saniye sessiz kal."
+      },
+      "2": {
+        "does": "Meter'ı, grafikleri ve alarmı 1 sn'lik yumuşatmaya geçirir (meter'da çift tıklama değiştirir).",
+        "see": "<code>- slow: 1 s smoothing</code>. Sayı sakin hareket eder, alkış onu zor kaldırır.",
+        "fix": ""
+      },
+      "3": {
+        "does": "dB SPL (yalnız INMP441) ile sessizliğin üstündeki dB arasında geçiş yapar.",
+        "see": "<code>- units: dB above the quiet</code>. KY-037'de <code>units spl</code> yazarsan: <code>dB SPL needs the INMP441 (its sensitivity is known)</code>.",
+        "fix": ""
+      },
+      "4": {
+        "does": "Alarm çizgisi: 30-120 dB SPL (varsayılan 80) ya da sessizliğin üstünde 3-60 dB (varsayılan 35). NVS'te kaydedilir (ad alanı <code>loud</code>).",
+        "see": "<code>- limit 75 dB SPL</code>. Noktalı kırmızı çizgi taşınır.",
+        "fix": ""
+      },
+      "5": {
+        "does": "Alarm melodisi her alarm için hoparlörde bir kez çalar (düğme de susturur). Yankı koruması, S2'nin kendi melodisini ölçmesini engeller.",
+        "see": "<code>- alarm sound off</code>.",
+        "fix": ""
+      },
+      "6": {
+        "does": "<code>hold</code> (1 sn) boyunca sınırın üstünde kalınca alarm çalar.",
+        "see": "<code>x too loud: 38 dB</code>. <b>alarm</b> görünümü kırmızı yanıp söner, GPIO 4'teki LED yanar (bağlıysa).",
+        "fix": "Alarm yok: <code>alarm on</code> yaz ya da <code>limit</code> değerini düşür."
+      },
+      "7": {
+        "does": "Alarm çalarken her basış onu susturur. Oda sakinleşince (çizginin 3 dB altında) yeniden hazır olur.",
+        "see": "<code>- alarm silenced</code>, sonra <code>+ calm again</code>.",
+        "fix": ""
+      },
+      "8": {
+        "does": "Son on dakikayı yazar, her 10 sn'de bir satır: en sessiz, ortalama, en yüksek ve ALARM.",
+        "see": "<code>  60s     2   11   34  |=====      |</code> satırları.",
+        "fix": "Boşsa: diary her 10 sn'de bir satır ekler. Birkaç dakika sonra dön."
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Desibel nedir",
+        "intro": "Kulaklarımız farkları değil oranları duyar. Bu yüzden ses düzeyi desibelle ölçülür: 20 × log10(bu ÷ sessizlik). Ses düzeyini kaydır ve dalgayı izle. Her +6 dB yüksekliği iki katına çıkarır, +20 dB ise on katına."
+      },
+      "1": {
+        "title": "Hızlı, yavaş ve gürültü tabanı",
+        "intro": "Aynı ses, meter'ın üç merceğinden tekrar oynatılır. Bir sahne seç. Gürültü tabanı sessizliği izler: hemen düşer, saniyede 0,5 dB yavaşça yükselir. Böylece sürekli çalışan bir fan yeni sessizlik olur."
+      },
+      "2": {
+        "title": "Ekranda ne görünür",
+        "intro": "Dört görünüm. Tıklama = sonraki, çift tıklama = sol alttaki eylem (hız, sessizlik, diary, alarm), uzun basış = sessizliği yeniden öğren. Alarm çalarken her basış onu susturur."
+      }
+    },
+    "steps": [
+      "S1 ile aynı bağlantı. İsteğe bağlı: 02 numaralı dersteki GPIO 4 LED'ini direnciyle birlikte bağla (alarm ışığı).",
+      "<code>sound-lab-s2</code>'yi karta yükle ve bir saniye sessiz kal. <b>Kontrol noktası 1:</b> meter 0-3 dB gösterir ve “quiet” yazar.",
+      "Mikrofondan 30 cm uzakta normal sesle konuş. <b>Kontrol noktası 2:</b> 15-25 dB ve “talking”.",
+      "<code>speed slow</code>, sonra <code>speed fast</code> yaz. <b>Kontrol noktası 3:</b> farkı kendi cümlelerinle anlatabilirsin.",
+      "Mikrofonun yanında müziği yüksek sesle çal. <b>Kontrol noktası 4:</b> alarm görünümünde TOO LOUD, sonra düğmeyle sustur.",
+      "On dakika bekle, sonra <code>diary</code> yaz. <b>Kontrol noktası 5:</b> odanın on dakikasını gösteren bir tablo."
+    ],
+    "note": "dB SPL için hassasiyeti bilinen bir mikrofon gerekir. INMP441'in hassasiyeti veri sayfasında yazar, bu yüzden S2 onu gösterebilir (ağırlıksız, yaklaşık ±2 dB). Gerçek ölçerler çoğu zaman dBA gösterir. dBA, frekansları kulağa benzer biçimde ağırlıklandırır ve derin bir uğultuyu daha düşük okur. KY-037'nin sayıları ise kalibre bir ölçerin gösterdiği dB SPL değil, <i>senin</i> odanın sessizliğinin üstündeki dB'dir. Bunun için bir referans mikrofonu ve kapsülün hassasiyeti gerekir. Gürültü tabanı, açılıştan sonraki ilk yarım saniyede ya da <code>quiet</code> komutuyla öğrenilir. Sonra sessizliği izler: hemen aşağı iner, saniyede 0,5 dB yukarı çıkar. Ayarlar (hız, sınır, tutma, alarm) sıfırlamadan sonra NVS'te kalır. Diary kalmaz."
+  },
+  "S3": {
+    "title": "Alkış kontrolü",
+    "heading": "Şeyleri ellerinle değiştir",
+    "goal": "<span class=\"snd-parts\"><span class=\"need\">KY-037 veya INMP441</span><span class=\"opt\">MAX98357A + hoparlör (isteğe bağlı)</span></span>Bir alkış LED'i açıp kapatır, iki alkış RGB rengini değiştirir, üç alkış ekranı uyutur, dört alkış party başlatır. Konuşma, ıslık ya da müzik asla sayılmaz. Alkış yalnızca yüksek değildir, bir <b>şekli</b> vardır: 4 ms içinde ani bir yükseliş, 160 ms içinde bir bitiş. Birbirine yakın alkışlar tek bir örüntü oluşturur. 0,65 sn'lik bir duraklama onu bitirir. Her örüntünün ne yaptığı NVS'te değiştirebileceğin bir haritadır ve her eylem hoparlörden kendi küçük sesiyle yanıt verir.",
+    "goalLine": "1, 2, 3 ve 4 alkışın dört farklı şey yapmasını sağla, konuşmanın onları tetiklemediğini kanıtla ve dedektörü kendi alkışlarına göre ayarla.",
+    "goalCheck": [
+      "Bir alkış GPIO 4'teki LED'i açıp kapatır (ya da <code>LED on</code> yazar), iki alkış RGB rengini değiştirir.",
+      "<b>timeline</b> görünümünde alkış turkuaz bir bayrak alır. Konuşulan kelime kehribar renkli bir <i>uzun</i> çubuk olur ve hiçbir şey olmaz.",
+      "<code>learn</code> ve 5 alkış, <code>sens</code> değerini en yumuşak alkışına göre ayarlar.",
+      "Bir örüntüyü <code>map</code> ile yeniden eşledin ve kart sıfırlansa da kaldı."
+    ],
+    "learn": [
+      "başlangıç algılama (onset)",
+      "alkışın şekli",
+      "histerezis",
+      "zamana göre gruplama",
+      "veriden kalibrasyon",
+      "NVS haritası",
+      "geri bildirim olarak ses",
+      "yankı koruması"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "MICS +"
+      },
+      "2": {
+        "role": "AO"
+      },
+      "3": {
+        "role": "BLK"
+      },
+      "4": {
+        "role": "RES"
+      },
+      "5": {
+        "role": "DC"
+      },
+      "6": {
+        "role": "CS"
+      },
+      "7": {
+        "role": "SDA"
+      },
+      "8": {
+        "role": "SCL"
+      },
+      "9": {
+        "role": "AMP VIN"
+      },
+      "10": {
+        "role": "GND"
+      },
+      "11": {
+        "role": "BTN"
+      },
+      "12": {
+        "role": "MICS G"
+      },
+      "13": {
+        "role": "SD"
+      },
+      "14": {
+        "role": "WS"
+      },
+      "15": {
+        "role": "SCK"
+      },
+      "16": {
+        "role": "BCLK"
+      },
+      "17": {
+        "role": "LRC"
+      },
+      "18": {
+        "role": "BOOT"
+      },
+      "19": {
+        "role": "DIN"
+      },
+      "20": {
+        "role": "DO"
+      },
+      "21": {
+        "role": "AMP G"
+      }
+    },
+    "wiring": {
+      "title": "Bağlantılar: mikrofonlar ve hoparlör (deneyin ihtiyacı olanı bağla, ekran 03 numaralı dersteki gibi kalır)",
+      "head": [
+        "Modül pini",
+        "ESP32-S3",
+        "Notlar"
+      ],
+      "rows": [
+        [
+          "KY-037 + · G",
+          "3V3",
+          "Analog mikrofon. + ikinci 3V3 pinine, G GND'ye. <b>Asla 5 V değil</b>: AO ve DO modülün besleme gerilimine kadar çıkar, ESP32-S3'ün pinleri en fazla 3,3 V kaldırır."
+        ],
+        [
+          "KY-037 AO",
+          "GPIO 6",
+          "Analog çıkış: mikrofonun gerilimi. GPIO 6, ADC1 kanal 5'tir. Wi-Fi açıkken ADC1 çalışmaya devam eder, ADC2 çalışmaz."
+        ],
+        [
+          "KY-037 DO",
+          "GPIO 21",
+          "Dijital çıkış: LM393 karşılaştırıcısı, ses mavi trimpotun ayarından yüksek olduğunda yüksek sinyal verir."
+        ],
+        [
+          "INMP441 VDD · GND",
+          "3V3",
+          "Dijital mikrofon (I2S). VDD 3V3'e (KY-037 ile breadboard rayını paylaşır), GND GND'ye. Yalnızca 3,3 V."
+        ],
+        [
+          "INMP441 L/R",
+          "GND",
+          "Düşük = sol kanalda konuşur. Kart sol kanalı okur."
+        ],
+        [
+          "INMP441 SCK",
+          "GPIO 40",
+          "Bit saati. ESP32 bunu sürer: 16 000 × 64 = 1,024 MHz."
+        ],
+        [
+          "INMP441 WS",
+          "GPIO 41",
+          "Kelime seçimi: sol kanal / sağ kanal. Her 32 saat darbesinde değişir."
+        ],
+        [
+          "INMP441 SD",
+          "GPIO 42",
+          "Veri, en anlamlı bit önce. Aşağı çekilmiş, bu yüzden bağlı olmayan bir mikrofon sıfır okur."
+        ],
+        [
+          "MAX98357A VIN · GND",
+          "5V",
+          "Hoparlör yükselticisi. 5V en çok gücü verir (4 Ω'da yaklaşık 3 W). 3V3 de çalışır, ama daha sessiz."
+        ],
+        [
+          "MAX98357A BCLK",
+          "GPIO 39",
+          "İkinci I2S portunun bit saati (I2S1). Mikrofon I2S0 kullanır, ikisi aynı anda çalışır."
+        ],
+        [
+          "MAX98357A LRC",
+          "GPIO 38",
+          "Kelime seçimi (sol/sağ)."
+        ],
+        [
+          "MAX98357A DIN",
+          "GPIO 47",
+          "Örnekler, 16 bit."
+        ],
+        [
+          "MAX98357A GAIN · SD",
+          "hiçbiri",
+          "İkisini de bağlama: 9 dB kazanç var ve (sol + sağ) / 2 çalar."
+        ],
+        [
+          "hoparlör (4 Ω, 3 W)",
+          "amp + / −",
+          "Yükselticinin vida terminalinde: JST-PH2.0 kablosunun iki teli, kırmızı +'ya."
+        ],
+        [
+          "ekran (8 kablo)",
+          "03 numaralı dersteki gibi",
+          "Değişmez. GPIO 5'teki basmalı düğme isteğe bağlıdır: BOOT'un yaptığını yapar."
+        ]
+      ]
+    },
+    "commands": {
+      "0": {
+        "does": "S3 deneyini derleyip karta yazar, sonra monitörü <code>uv run pio device monitor</code> ile açar.",
+        "see": "<code>Listening for an INMP441 on the I2S pins...</code>, <code>Microphone: INMP441 (I2S, digital) (mic setting: auto)</code> (ya da KY-037), sonra <code>Sound lab S3 …</code>, komut listesi ve hoparlörden üç notalık bir merhaba. Yarım saniye sessiz kal: <code>- learning the quiet...</code>",
+        "fix": "Yanlış mikrofon seçildi: <code>mic inmp441</code> ya da <code>mic ky037</code> (kaydedilir, kart yeniden başlar). Merhaba yok: hoparlör isteğe bağlıdır. VIN ve DIN'i kontrol et. “Failed to connect”: BOOT'a basılı tut, RST'ye dokun, BOOT'u bırak, yeniden çalıştır."
+      },
+      "1": {
+        "does": "Bir alkış = <code>led</code>, iki alkış = <code>colour</code> (varsayılanlar). Üç alkış = <code>screen</code>, dört = <code>party</code>.",
+        "see": "<code>- 1 clap -> led</code>, <code>+ LED on</code>. Sonra <code>- 2 claps -> colour</code>, <code>+ colour: warm white</code>. <b>lamp</b> görünümü ikisini de gösterir.",
+        "fix": "Hiçbir şey olmuyorsa: alkışlar <code>sens</code> 18 dB için çok yumuşaktır. <code>learn</code> dene."
+      },
+      "2": {
+        "does": "Her alkışı, uzun sesi ve grubu olduğu anda yazar.",
+        "see": "<code>  clap at 5120 ms: 31.0 dB, 48 ms long</code>, <code>  LONG (not a clap) at …: 22.0 dB, 380 ms long</code>, <code>  group of 2: gaps 290 ms</code>.",
+        "fix": "Durdurmak için <code>test off</code>."
+      },
+      "3": {
+        "does": "<b>tune</b> görünümüne geçer: her zamanki gibi 5 kez alkışla. sens, en yumuşak alkışın %60'ı olur (8 ile 40 dB arasında) ve kaydedilir.",
+        "see": "<code>- clap 1 of 5: 29 dB</code> … <code>+ learnt: sens 17 dB (saved)</code>. dB ve ms değerleriyle beş çubuk.",
+        "fix": "Öğrenme sırasında konuşma <i>long (voice?)</i> altında sayılır, alkış olarak değil."
+      },
+      "4": {
+        "does": "Üç alkış artık hoparlörde twinkle çalar. Eylemler: led colour dark screen view party tune none.",
+        "see": "<code>+ 3 claps -> tune (saved)</code>. <code>maps</code> dört eşlemeyi de yazar.",
+        "fix": ""
+      },
+      "5": {
+        "does": "Her eylem bir sesle yanıt verir: LED yukarı/aşağı, renk arpejisi, ekran ve görünüm için bir tık, party için bir fanfar, eşlenmemiş bir örüntüde alçak bir No sesi. <code>sound off</code> hepsini susturur (kaydedilir).",
+        "see": "<code>+ pattern sounds off (saved)</code>.",
+        "fix": ""
+      },
+      "6": {
+        "does": "Daha kısa bir duraklama örüntüyü bitirir: daha hızlı tepki verir, ama yavaş alkışlayanlar iki örüntüye bölünür.",
+        "see": "<code>+ pause 400 ms ends a pattern (saved)</code>.",
+        "fix": ""
+      },
+      "7": {
+        "does": "Alkış yapmadan bir eylemi çalıştırır (bağlantıyı test etmek için).",
+        "see": "<code>+ party!</code>, RGB LED'de 2 sn gökkuşağı.",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Alkış mı? Dedektör, 4 ms'lik adımlarla",
+        "intro": "kit/lib/sound-kit/src/onsets.h içindeki kurallarla aynı, senin seçtiğin bir ses üzerinde çalışır. Her seferinde bir kare ilerle ya da oynat. Yükseliş ve bırakma çizgilerini taşı. Armed → loud (ONSET) → quiet (kısaysa CLAP, uzunsa LONG) → 40 ms sessizlikten sonra yeniden Armed."
+      },
+      "1": {
+        "title": "Ekranda ne görünür",
+        "intro": "Dört görünüm. Tıklama = sonraki, çift tıklama = sol alttaki eylem (test, colour, maps, learn), uzun basış = learn."
+      }
+    },
+    "steps": [
+      "S1 ile aynı bağlantı. İsteğe bağlı: GPIO 4'teki 02 numaralı ders LED'i.",
+      "<code>sound-lab-s3</code>'ü karta yükle, bir saniye sessiz kal. <b>Kontrol noktası 1:</b> <b>timeline</b> görünümü, yükseliş ve bırakma çizgileriyle düz bir çizgi gösterir.",
+      "Bir kez, sonra iki kez alkışla. <b>Kontrol noktası 2:</b> LED açılıp kapanır, RGB rengi değişir.",
+      "Mikrofonun yanında normal konuş. <b>Kontrol noktası 3:</b> kehribar renkli <i>uzun</i> çubuklar, hiçbir eylem yok.",
+      "<code>learn</code> yaz, 5 kez alkışla. <b>Kontrol noktası 4:</b> yeni bir <code>sens</code> değeri, kaydedilmiş.",
+      "<code>map 1 party</code> yaz, bir kez alkışla, kartı sıfırla, bir kez daha alkışla. <b>Kontrol noktası 5:</b> hâlâ party."
+    ],
+    "note": "Kartın kendi sesleri asla alkış sayılmaz. Hoparlör çalarken (ve 200 ms sonrasına kadar) dedektör kare almaz. Buna yankı koruması denir. Art arda beş ya da daha fazla alkış, alkış sayılır ve hiçbir şey yapmaz. Üç alkış arka ışığı söndürür. Arka ışık 30 sn sonra ya da herhangi bir düğme basışıyla geri gelir, böylece ekran kaybolmaz. Dedektör DO'yu değil, seviye ölçer üzerinden AO'yu dinler. Çünkü tek bir alkış DO üzerinde düzinelerce kenar üretir."
+  },
+  "S4": {
+    "title": "Ses kaydedici",
+    "heading": "Sesle çalışan bir ses kaydedici",
+    "goal": "<span class=\"snd-parts\"><span class=\"need\">KY-037 veya INMP441</span><span class=\"opt\">Wi-Fi (W1) (isteğe bağlı)</span><span class=\"opt\">MAX98357A + hoparlör (isteğe bağlı)</span></span>Hazır (armed) olduğunda kart, tetikten yüksek bir ses bekler. Sonra PSRAM'e kaydeder. Kayda tetikten yarım saniye <i>önce</i> başlar (halka tampon bunu hâlâ tutar) ve 1,2 sn sessizlik olana kadar sürer. En fazla 12 klip, 6 MB, sıfırlamada kaybolur. Telefonunda <code>http://bench.local</code> adresinden dinle (kayıtlı W1 Wi-Fi ağı ve yönetici token'ı ile), ya da <code>tools/sound_pull.py</code> ile USB üzerinden bir WAV çek, ya da kartın kendi hoparlöründen çaldır (<code>play 3 0.7</code>: daha yavaş ve daha kalın). Kart, kim başlatırsa başlatsın kayıt yaparken her zaman REC ve kırmızı LED gösterir.",
+    "goalLine": "Elleri kullanmadan bir cümle kaydet, ön kaydı gör, telefonunda çal ve bir klibi WAV dosyası olarak Mac'ine çek.",
+    "goalCheck": [
+      "<code>arm</code> yaz, sonra konuş: <b>recorder</b> görünümü ARMED → REC → ARMED geçişi yapar ve <code>clips</code> bir ses klibi listeler.",
+      "Kapı çarpması ya da tek bir alkış kayıt başlatır ama atılır (çok kısa).",
+      "<code>http://bench.local</code> telefon sayfası token ile açılır, klibi çizer ve çalar.",
+      "<code>tools/sound_pull.py</code> Mac'te çalan bir .wav yazdı.",
+      "<code>play</code> (ya da <b>clips</b> üzerinde çift tıklama) seçili klibi kartın hoparlöründen çalar. <code>play 1 2</code> bir sincap sesi verir."
+    ],
+    "learn": [
+      "halkadan ön kayıt",
+      "tetik ve tutma",
+      "PSRAM klip deposu",
+      "WAV biçimi",
+      "akan yanıtlar",
+      "base64 + CRC-32",
+      "oynatma hızı = perde",
+      "token'lar ve görünür kayıt"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "MICS +"
+      },
+      "2": {
+        "role": "AO"
+      },
+      "3": {
+        "role": "BLK"
+      },
+      "4": {
+        "role": "RES"
+      },
+      "5": {
+        "role": "DC"
+      },
+      "6": {
+        "role": "CS"
+      },
+      "7": {
+        "role": "SDA"
+      },
+      "8": {
+        "role": "SCL"
+      },
+      "9": {
+        "role": "AMP VIN"
+      },
+      "10": {
+        "role": "GND"
+      },
+      "11": {
+        "role": "BTN"
+      },
+      "12": {
+        "role": "MICS G"
+      },
+      "13": {
+        "role": "SD"
+      },
+      "14": {
+        "role": "WS"
+      },
+      "15": {
+        "role": "SCK"
+      },
+      "16": {
+        "role": "BCLK"
+      },
+      "17": {
+        "role": "LRC"
+      },
+      "18": {
+        "role": "BOOT"
+      },
+      "19": {
+        "role": "DIN"
+      },
+      "20": {
+        "role": "DO"
+      },
+      "21": {
+        "role": "AMP G"
+      }
+    },
+    "wiring": {
+      "title": "Bağlantılar: mikrofonlar ve hoparlör (deneyin ihtiyacı olanı bağla, ekran 03 numaralı dersteki gibi kalır)",
+      "head": [
+        "Modül pini",
+        "ESP32-S3",
+        "Notlar"
+      ],
+      "rows": [
+        [
+          "KY-037 + · G",
+          "3V3",
+          "Analog mikrofon. + ikinci 3V3 pinine, G GND'ye. <b>Asla 5 V değil</b>: AO ve DO modülün besleme gerilimine kadar çıkar, ESP32-S3'ün pinleri en fazla 3,3 V kaldırır."
+        ],
+        [
+          "KY-037 AO",
+          "GPIO 6",
+          "Analog çıkış: mikrofonun gerilimi. GPIO 6, ADC1 kanal 5'tir. Wi-Fi açıkken ADC1 çalışmaya devam eder, ADC2 çalışmaz."
+        ],
+        [
+          "KY-037 DO",
+          "GPIO 21",
+          "Dijital çıkış: LM393 karşılaştırıcısı, ses mavi trimpotun ayarından yüksek olduğunda yüksek sinyal verir."
+        ],
+        [
+          "INMP441 VDD · GND",
+          "3V3",
+          "Dijital mikrofon (I2S). VDD 3V3'e (KY-037 ile breadboard rayını paylaşır), GND GND'ye. Yalnızca 3,3 V."
+        ],
+        [
+          "INMP441 L/R",
+          "GND",
+          "Düşük = sol kanalda konuşur. Kart sol kanalı okur."
+        ],
+        [
+          "INMP441 SCK",
+          "GPIO 40",
+          "Bit saati. ESP32 bunu sürer: 16 000 × 64 = 1,024 MHz."
+        ],
+        [
+          "INMP441 WS",
+          "GPIO 41",
+          "Kelime seçimi: sol kanal / sağ kanal. Her 32 saat darbesinde değişir."
+        ],
+        [
+          "INMP441 SD",
+          "GPIO 42",
+          "Veri, en anlamlı bit önce. Aşağı çekilmiş, bu yüzden bağlı olmayan bir mikrofon sıfır okur."
+        ],
+        [
+          "MAX98357A VIN · GND",
+          "5V",
+          "Hoparlör yükselticisi. 5V en çok gücü verir (4 Ω'da yaklaşık 3 W). 3V3 de çalışır, ama daha sessiz."
+        ],
+        [
+          "MAX98357A BCLK",
+          "GPIO 39",
+          "İkinci I2S portunun bit saati (I2S1). Mikrofon I2S0 kullanır, ikisi aynı anda çalışır."
+        ],
+        [
+          "MAX98357A LRC",
+          "GPIO 38",
+          "Kelime seçimi (sol/sağ)."
+        ],
+        [
+          "MAX98357A DIN",
+          "GPIO 47",
+          "Örnekler, 16 bit."
+        ],
+        [
+          "MAX98357A GAIN · SD",
+          "hiçbiri",
+          "İkisini de bağlama: 9 dB kazanç var ve (sol + sağ) / 2 çalar."
+        ],
+        [
+          "hoparlör (4 Ω, 3 W)",
+          "amp + / −",
+          "Yükselticinin vida terminalinde: JST-PH2.0 kablosunun iki teli, kırmızı +'ya."
+        ],
+        [
+          "ekran (8 kablo)",
+          "03 numaralı dersteki gibi",
+          "Değişmez. GPIO 5'teki basmalı düğme isteğe bağlıdır: BOOT'un yaptığını yapar."
+        ]
+      ]
+    },
+    "commands": {
+      "0": {
+        "does": "S4 deneyini derleyip karta yazar, sonra monitörü <code>uv run pio device monitor</code> ile açar.",
+        "see": "<code>Listening for an INMP441 on the I2S pins...</code>, <code>Microphone: INMP441 (I2S, digital) (mic setting: auto)</code> (ya da KY-037), sonra <code>Sound lab S4 …</code>, komut listesi ve hoparlörden üç notalık bir merhaba. Yarım saniye sessiz kal: <code>- learning the quiet...</code>",
+        "fix": "Yanlış mikrofon seçildi: <code>mic inmp441</code> ya da <code>mic ky037</code> (kaydedilir, kart yeniden başlar). Merhaba yok: hoparlör isteğe bağlıdır. VIN ve DIN'i kontrol et. “Failed to connect”: BOOT'a basılı tut, RST'ye dokun, BOOT'u bırak, yeniden çalıştır."
+      },
+      "1": {
+        "does": "Sesle tetiklenen: <code>trigger</code> değerinden (sessizliğin üstünde 15 dB) yüksek bir ses klip başlatır.",
+        "see": "<code>- armed: talk and it records</code>. <b>recorder</b> görünümü ARMED yazar (turkuaz halka).",
+        "fix": ""
+      },
+      "2": {
+        "does": "İlk kelimenden yarım saniye önce kaydetmeye başlar ve son yüksek andan 1,2 sn sonra durur.",
+        "see": "<code>x REC clip 1 (voice)</code>. REC 2.4 s kırmızı yazar, başlıktaki kırmızı nokta ve RGB LED kırmızı yanar. Sonra <code>+ clip 1: 3.1 s</code>.",
+        "fix": "Hiç başlamıyor: daha yakından konuş ya da <code>trigger 10</code> yaz."
+      },
+      "3": {
+        "does": "Klip 1'i hoparlörden 0,7 kat hızla çalar (daha kalın ve yavaş). Numara yoksa <b>clips</b> görünümünde seçili klip çalınır. İndirmedeki gibi yükseltilir, ama en fazla ×16. <code>stop</code> durdurur. <code>rec</code> kayıttan önce durdurur. Kayıt sırasında reddedilir.",
+        "see": "<code>+ playing clip 1 (4.4 s) at x0.70</code>, sonra <code>- clip 1 played</code>. Başlıkta dalgalar.",
+        "fix": "<code>recording: stop first (the microphone would hear the speaker)</code>."
+      },
+      "4": {
+        "does": "Klipleri listeler: numara, uzunluk, ses mi el mi, en yüksek değer, gönderilirken ne kadar yükseltildiği ve zaman.",
+        "see": "<code>    1    3.1s  voice  -38.2 dBFS  x23.4  2026-10-14 14:02:31</code>",
+        "fix": ""
+      },
+      "5": {
+        "does": "Telefon sayfasının istediği yönetici token'ını yazar (W2/R7/R8 ile paylaşılır).",
+        "see": "<code>Admin token: 3f…</code> ve nereye yapıştırılacağı.",
+        "fix": "Sohbetlere ve git'e koyma. <code>token new</code> onu yeniler."
+      },
+      "6": {
+        "does": "Kartın kendi sayfası: canlı seviye, arm / rec / stop, her dalgasıyla klip listesi, çal ve indir, bir hız seçimi ve klip başına <b>Play on board</b> / <b>Stop on board</b>. Token yalnızca o sekmede kalır.",
+        "see": "Dalga şekliyle bir klip kartı. Çal, bir oynatma çizgisini ilerletir.",
+        "fix": "“no Wi-Fi saved”: wifi-lab-w1'i bir kez karta yükle ve ağa katıl. Sayfa açılmıyor: aynı ağda mısın? <code>wifi</code> komutunun verdiği IP'yi dene."
+      },
+      "7": {
+        "does": "Seri monitörü önce kapat. <code>send 1</code> yazar, base64 WAV'ı okur, CRC-32'yi ve boyutu denetler, dosyayı yazar.",
+        "see": "<code>Receiving clip 1: 99244 bytes as …</code>, sonra <code>Saved … (3.1 s at 16000 Hz, 99244 bytes, CRC ok)</code>.",
+        "fix": "<code>Could not open … (is the serial monitor still open?)</code>: monitörü kapat."
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Sesle kayıt, adım adım",
+        "intro": "Dokuz saniye: bir kapı çarpması, ardından araya duraklama girmiş bir cümle. Adım adım ilerle ya da oynat. Tetiği ve tutmayı taşı. Kehribar = halkadan alınan ön kayıt, kırmızı = kaydedildi, gri = atıldı."
+      },
+      "1": {
+        "title": "Sesi dışarı çıkarmak",
+        "intro": "Üç yol var: Wi-Fi üzerinden telefon, USB seri portu üzerinden Mac ya da kartın kendi hoparlörü. Aşağıda her WAV dosyasının başladığı 44 bayt var (16 000 Hz'de 3,2 sn'lik bir klip için)."
+      },
+      "2": {
+        "title": "Ekranda ne görünür",
+        "intro": "Üç görünüm. Tıklama = sonraki, çift tıklama = sol alttaki eylem (arm, next, wifi), uzun basış = rec / stop."
+      }
+    },
+    "steps": [
+      "S1 ile aynı bağlantı. Kartın W1 Wi-Fi ağı kayıtlı olmalı (yalnızca telefon sayfası için).",
+      "<code>sound-lab-s4</code>'ü karta yükle. <b>Kontrol noktası 1:</b> Wi-Fi bağlanınca kayıt görünümü OFF yazar ve <code>page: http://bench.local</code> görünür.",
+      "<code>arm</code> yaz, bir cümle söyle. <b>Kontrol noktası 2:</b> bir klip. İlk kelimenden önce kehribar renkli bir ön kayıt var.",
+      "Bir kez alkışla. <b>Kontrol noktası 3:</b> <code>a bang, not a voice: clip 2 dropped</code>.",
+      "Sayfayı telefonunda aç, <code>token</code>'ı yapıştır. <b>Kontrol noktası 4:</b> klibin çalar.",
+      "Monitörü kapat, <code>tools/sound_pull.py</code> çalıştır. <b>Kontrol noktası 5:</b> Mac'inde bir .wav dosyası."
+    ],
+    "note": "Gizlilik isteğe bağlı değil, baştan gelir. Kayıt, kim başlatırsa başlatsın kartta her zaman görünür (REC, kırmızı nokta, kırmızı LED). Sayfadaki her ses yolu yönetici token'ı ister. Klipler yalnızca RAM'de durur ve sıfırlamada kaybolur. Ses ince ve tıslamalı olur. Klipler çıkarken normalleştirilir (64 kata kadar yükseltilir) ve bu, tıslamayı sesle birlikte öne çıkarır. Bu modül önce bir ses düzeyi sensörü, sonra bir mikrofondur."
+  },
+  "S5": {
+    "title": "Spektrum",
+    "heading": "Bir sesin hangi frekansları içerdiğini gör",
+    "goal": "<span class=\"snd-parts\"><span class=\"need\">KY-037 veya INMP441</span><span class=\"opt\">MAX98357A + hoparlör (isteğe bağlı)</span></span>Kendi FFT'miz (kütüphane yok) en yeni 512 örnek üzerinde saniyede yaklaşık 25 kez çalışır. 100 Hz ile 8 kHz arasında çubuklar, kayan bir waterfall görünümü, ıslık çaldığın ya da mırıldandığın notayı adlandıran bir tuner ve ıslığının perdesiyle yönettiğin bir oyun var. Hoparlörle kart kendini de denetler: <code>ref</code> tuner için bir referans nota çalar, <code>sweep</code> ise 100 Hz'den 8 kHz'e çubuklar boyunca tırmanır.",
+    "goalLine": "Islığının frekansını bul, neden daha ince aralıkların daha yavaş olduğunu gör ve yönlendirme oyununda puan topla.",
+    "goalCheck": [
+      "<b>bars</b> görünümünde ıslık çalınca tek bir uzun çubuk, konuşunca birçok alçak çubuk görünür.",
+      "<b>tuner</b> notanı adlandırır ve iğne ±5 cent içinde olduğunda turkuaz olur.",
+      "<code>fft 1024</code> ve <code>fft 256</code> ile neyin değiştiğini söyleyebilirsin (aralık başına Hz, ne kadar hızlı tepki verdiği).",
+      "<b>steer</b>: en az 3 hedefe puan verdin."
+    ],
+    "learn": [
+      "FFT aralıkları (bins)",
+      "Hann penceresi ve sızıntı",
+      "Nyquist (8 kHz)",
+      "çözünürlük ve hız",
+      "logaritmik frekans",
+      "notalar ve cent",
+      "referans tonlar",
+      "logaritmik süpürme"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "MICS +"
+      },
+      "2": {
+        "role": "AO"
+      },
+      "3": {
+        "role": "BLK"
+      },
+      "4": {
+        "role": "RES"
+      },
+      "5": {
+        "role": "DC"
+      },
+      "6": {
+        "role": "CS"
+      },
+      "7": {
+        "role": "SDA"
+      },
+      "8": {
+        "role": "SCL"
+      },
+      "9": {
+        "role": "AMP VIN"
+      },
+      "10": {
+        "role": "GND"
+      },
+      "11": {
+        "role": "BTN"
+      },
+      "12": {
+        "role": "MICS G"
+      },
+      "13": {
+        "role": "SD"
+      },
+      "14": {
+        "role": "WS"
+      },
+      "15": {
+        "role": "SCK"
+      },
+      "16": {
+        "role": "BCLK"
+      },
+      "17": {
+        "role": "LRC"
+      },
+      "18": {
+        "role": "BOOT"
+      },
+      "19": {
+        "role": "DIN"
+      },
+      "20": {
+        "role": "DO"
+      },
+      "21": {
+        "role": "AMP G"
+      }
+    },
+    "wiring": {
+      "title": "Bağlantılar: mikrofonlar ve hoparlör (deneyin ihtiyacı olanı bağla, ekran 03 numaralı dersteki gibi kalır)",
+      "head": [
+        "Modül pini",
+        "ESP32-S3",
+        "Notlar"
+      ],
+      "rows": [
+        [
+          "KY-037 + · G",
+          "3V3",
+          "Analog mikrofon. + ikinci 3V3 pinine, G GND'ye. <b>Asla 5 V değil</b>: AO ve DO modülün besleme gerilimine kadar çıkar, ESP32-S3'ün pinleri en fazla 3,3 V kaldırır."
+        ],
+        [
+          "KY-037 AO",
+          "GPIO 6",
+          "Analog çıkış: mikrofonun gerilimi. GPIO 6, ADC1 kanal 5'tir. Wi-Fi açıkken ADC1 çalışmaya devam eder, ADC2 çalışmaz."
+        ],
+        [
+          "KY-037 DO",
+          "GPIO 21",
+          "Dijital çıkış: LM393 karşılaştırıcısı, ses mavi trimpotun ayarından yüksek olduğunda yüksek sinyal verir."
+        ],
+        [
+          "INMP441 VDD · GND",
+          "3V3",
+          "Dijital mikrofon (I2S). VDD 3V3'e (KY-037 ile breadboard rayını paylaşır), GND GND'ye. Yalnızca 3,3 V."
+        ],
+        [
+          "INMP441 L/R",
+          "GND",
+          "Düşük = sol kanalda konuşur. Kart sol kanalı okur."
+        ],
+        [
+          "INMP441 SCK",
+          "GPIO 40",
+          "Bit saati. ESP32 bunu sürer: 16 000 × 64 = 1,024 MHz."
+        ],
+        [
+          "INMP441 WS",
+          "GPIO 41",
+          "Kelime seçimi: sol kanal / sağ kanal. Her 32 saat darbesinde değişir."
+        ],
+        [
+          "INMP441 SD",
+          "GPIO 42",
+          "Veri, en anlamlı bit önce. Aşağı çekilmiş, bu yüzden bağlı olmayan bir mikrofon sıfır okur."
+        ],
+        [
+          "MAX98357A VIN · GND",
+          "5V",
+          "Hoparlör yükselticisi. 5V en çok gücü verir (4 Ω'da yaklaşık 3 W). 3V3 de çalışır, ama daha sessiz."
+        ],
+        [
+          "MAX98357A BCLK",
+          "GPIO 39",
+          "İkinci I2S portunun bit saati (I2S1). Mikrofon I2S0 kullanır, ikisi aynı anda çalışır."
+        ],
+        [
+          "MAX98357A LRC",
+          "GPIO 38",
+          "Kelime seçimi (sol/sağ)."
+        ],
+        [
+          "MAX98357A DIN",
+          "GPIO 47",
+          "Örnekler, 16 bit."
+        ],
+        [
+          "MAX98357A GAIN · SD",
+          "hiçbiri",
+          "İkisini de bağlama: 9 dB kazanç var ve (sol + sağ) / 2 çalar."
+        ],
+        [
+          "hoparlör (4 Ω, 3 W)",
+          "amp + / −",
+          "Yükselticinin vida terminalinde: JST-PH2.0 kablosunun iki teli, kırmızı +'ya."
+        ],
+        [
+          "ekran (8 kablo)",
+          "03 numaralı dersteki gibi",
+          "Değişmez. GPIO 5'teki basmalı düğme isteğe bağlıdır: BOOT'un yaptığını yapar."
+        ]
+      ]
+    },
+    "commands": {
+      "0": {
+        "does": "S5 deneyini derleyip karta yazar, sonra monitörü <code>uv run pio device monitor</code> ile açar.",
+        "see": "<code>Listening for an INMP441 on the I2S pins...</code>, <code>Microphone: INMP441 (I2S, digital) (mic setting: auto)</code> (ya da KY-037), sonra <code>Sound lab S5 …</code>, komut listesi ve hoparlörden üç notalık bir merhaba. Yarım saniye sessiz kal: <code>- learning the quiet...</code>",
+        "fix": "Yanlış mikrofon seçildi: <code>mic inmp441</code> ya da <code>mic ky037</code> (kaydedilir, kart yeniden başlar). Merhaba yok: hoparlör isteğe bağlıdır. VIN ve DIN'i kontrol et. “Failed to connect”: BOOT'a basılı tut, RST'ye dokun, BOOT'u bırak, yeniden çalıştır."
+      },
+      "1": {
+        "does": "<b>bars</b> görünümü: ıslık için tek bir uzun çubuk (1-3 kHz), uğultu için daha alçak ve geniş.",
+        "see": "Üstte <code>loudest 1.76 kHz (A6)</code>. Sağda <code>N 512 - 31 Hz/bin - … us</code>.",
+        "fix": "Hiçbir şey hareket etmiyor: ıslığı bir el genişliği yakınında çal (modülde yükselteç yok)."
+      },
+      "2": {
+        "does": "En güçlü 5 frekansı notalarıyla yazar.",
+        "see": "<code>   1765.6 Hz   -31.2 dBFS  A6   +2 cents</code> …",
+        "fix": ""
+      },
+      "3": {
+        "does": "İki kat fazla örnek: aralıklar 15,6 Hz arayla, ama her yanıt 64 ms'ye bakar. <code>fft 256</code>: 62,5 Hz aralıklar, 16 ms.",
+        "see": "<code>- FFT 1024: 15.6 Hz per bin, 64 ms window</code>.",
+        "fix": ""
+      },
+      "4": {
+        "does": "Hoparlörde 1 sn'lik bir sinüs: son 2 sn'de ıslık çaldığına en yakın nota, yoksa A4. S5 halkayı doğrudan okur, bu yüzden kendi tonunu kasıtlı olarak duyar. <b>tuner</b> üzerinde çift tıklama aynı şeyi yapar.",
+        "see": "<code>- reference A4 = 440.0 Hz, 1 s</code>. Tuner, iğne 0 yakınındayken A4'ü gösterir.",
+        "fix": "Birçok cent kaymış: hoparlör ve mikrofon sorun değil. <code>a4</code> komutunu kontrol et."
+      },
+      "5": {
+        "does": "100 Hz ile 8 kHz arasında logaritmik ölçekte 4 sn'lik bir ton. Ekran waterfall görünümüne geçer.",
+        "see": "Waterfall'da eşit eğimle tırmanan çapraz bir çizgi: bars gibi logaritmik frekans.",
+        "fix": ""
+      },
+      "6": {
+        "does": "Nota adlarını A4 = 442 Hz'e göre ayarlar (bazı orkestralar böyle yapar).",
+        "see": "<code>- A4 = 442.0 Hz</code>. Tuner'ın cent değeri yaklaşık 8 kayar.",
+        "fix": ""
+      },
+      "7": {
+        "does": "Nokta, perdeni logaritmik ölçekte (600-2500 Hz) izler. Halkada 1 sn tut, puan kazan. RGB LED noktanın rengini alır.",
+        "see": "<code>+ target 1!</code>, başka bir yerde yeni bir halka.",
+        "fix": "Üste ulaşamıyor: <code>range 500 2000</code> yaz."
+      },
+      "8": {
+        "does": "Bu FFT neyi görebilir, neyi göremez.",
+        "see": "8000 Hz'e kadar (Nyquist), 31,2 Hz arayla aralıklar, yanıt başına 32 ms ve yükselteç olmadığına dair uyarı.",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Bir ses yap, spektrumunu gör",
+        "intro": "En fazla üç ton ve gürültü. Örnekler üstte, FFT aralıkları altta. Sızıntıyı görmek için pencereyi kapat. N'yi değiştir, keskin aralıklar ile daha yavaş yanıt arasındaki dengeyi gör."
+      },
+      "1": {
+        "title": "Islıktan notaya",
+        "intro": "Altı adım. Tuner görünümü bunları saniyede 25 kez yapar. Islık kaydırıcısını taşı ve parabolün iki aralık arasındaki perdeyi nasıl bulduğunu izle."
+      },
+      "2": {
+        "title": "Ekranda ne görünür",
+        "intro": "Dört görünüm. Tıklama = sonraki, çift tıklama = sol alttaki eylem (hold, hold, peaks, target), uzun basış = hold."
+      }
+    },
+    "steps": [
+      "S1 ile aynı bağlantı.",
+      "<code>sound-lab-s5</code>'i karta yükle. <b>Kontrol noktası 1:</b> açılışta yazdırılan sınırlar.",
+      "<b>bars</b> üzerinde sabit bir nota ıslıkla, sonra <b>waterfall</b>. <b>Kontrol noktası 2:</b> waterfall'da tek parlak bir çizgi.",
+      "<b>tuner</b>: iğne turkuaz olana kadar ıslık çal. <b>Kontrol noktası 3:</b> tekrar edebileceğin bir nota adı.",
+      "<code>fft 256</code>, <code>fft 1024</code>, sonra <code>fft 512</code>'ye dön. <b>Kontrol noktası 4:</b> takası gördün.",
+      "<b>steer</b>: 3 puan topla. <b>Kontrol noktası 5:</b> <code>target 3!</code>."
+    ],
+    "note": "Bilinmesi gereken sınırlar: Saniyede 16 000 örnekte 8 kHz'in üstündeki hiçbir şey görülemez (Nyquist). Daha yüksek sesler sahte olarak geri katlanır. Her bant kendi sessizliğini öğrenir. Fan alçak uğular, dizüstü bilgisayar tiz vınlar. Bu yüzden görünümler her bandın tabanının üstündeki dB'yi gösterir. Konuşmada çok sayıda harmonik vardır ve tek bir net tepe yoktur. Tuner bu yüzden clarity ≥ 12 dB ister, yani net bir tepe. Islık çal ya da mırıldan."
+  },
+  "S6": {
+    "title": "Ses oyunları",
+    "heading": "Mikrofonun duyduğuyla oyna",
+    "goal": "<span class=\"snd-parts\"><span class=\"need\">KY-037 veya INMP441</span><span class=\"opt\">MAX98357A + hoparlör (isteğe bağlı)</span></span>Tek bir mikrofonla üç oyun. Her biri yalnızca kendi görünümü ekrandayken dinler. <b>knock</b>: hızlı ya da yavaş, senin gizli ritmine açılan bir vuruş kilidi. <b>bird</b>: Clap Bird, her alkış bir kanat çırpışı. <b>party</b>: kart müzikteki ritmi bulur ve ona ışık fırlatır. Hoparlörle birlikte: Clap Bird'nda bip sesleri, çınlamalar ve bir çarpışma sesi, gizli vuruşun geri çalınması ve bir açılış melodisi.",
+    "goalLine": "Gizli vuruşunla kilidi aç (yanlış bir vuruşta başarısız ol), Clap Bird'nda 5 borudan geç ve party görünümünün bir şarkının temposunu izlemesini sağla.",
+    "goalCheck": [
+      "<code>knock set</code> ve bir ritim, gizli bir vuruşu kaydeder. Aynı ritim daha yavaş yapıldığında yine açılır (GPIO 4'te LED yanar, RGB 5 sn yeşil olur).",
+      "Farklı bir ritim kilidi sallar: <code>locked: the rhythm is off</code>.",
+      "Clap Bird'nda 5 ya da üzeri puan. <code>best</code> sıfırlamadan sonra da kalır.",
+      "<b>party</b> şarkının temposuna yakın bir BPM gösterir."
+    ],
+    "learn": [
+      "temposuz ritim",
+      "tolerans",
+      "sabit adımlı oyun fiziği",
+      "gecikme (onset ve alkış)",
+      "vuruş algılama",
+      "medyan tempo",
+      "bir sensör, birçok kullanım"
+    ],
+    "commands": {
+      "0": {
+        "does": "S6 deneyini derleyip karta yazar, sonra monitörü <code>uv run pio device monitor</code> ile açar.",
+        "see": "<code>Listening for an INMP441 on the I2S pins...</code>, <code>Microphone: INMP441 (I2S, digital) (mic setting: auto)</code> (ya da KY-037), sonra <code>Sound lab S6 …</code>, komut listesi ve hoparlörden üç notalık bir merhaba. Yarım saniye sessiz kal: <code>- learning the quiet...</code>",
+        "fix": "Yanlış mikrofon seçildi: <code>mic inmp441</code> ya da <code>mic ky037</code> (kaydedilir, kart yeniden başlar). Merhaba yok: hoparlör isteğe bağlıdır. VIN ve DIN'i kontrol et. “Failed to connect”: BOOT'a basılı tut, RST'ye dokun, BOOT'u bırak, yeniden çalıştır."
+      },
+      "1": {
+        "does": "Sıradaki örüntü gizli ritim olur (2-12 vuruş, 1,5 sn sessizlik bitirir). NVS'te kaydedilir.",
+        "see": "<code>- knock your new secret, then wait 1.5 s</code>, sonra <code>+ secret saved: 5 knocks, 1.2 s</code>.",
+        "fix": "<code>a secret needs 2 knocks or more</code>."
+      },
+      "2": {
+        "does": "Biten her örüntü gizli ritimle karşılaştırılır.",
+        "see": "<code>+ OPEN (score 92)</code>: kilit açılır, GPIO 4'teki LED ve RGB LED 5 sn yeşil yanar. Yanlışta: <code>x locked: the rhythm is off</code>.",
+        "fix": "Vuruşlar kaçtı: sert vur, mikrofonun yakınında ol. <code>knock show</code> iki ritmi de yazar."
+      },
+      "3": {
+        "does": "Gizli ritmi vuruşların tam zamanlarında tıklamalar olarak geri çalar (bir esp_timer her 2 ms'de denetler).",
+        "see": "<code>- playing the secret: 5 knocks</code>, sonra hoparlörden senin ritmin.",
+        "fix": "<code>sound is off: sound on</code>."
+      },
+      "4": {
+        "does": "Her aralık, örüntünün %20'si kadar sapabilir (varsayılan 12).",
+        "see": "<code>- tolerance 20%</code>.",
+        "fix": ""
+      },
+      "5": {
+        "does": "Clap Bird: yeni bir tur. Bir alkış başlatır, her alkış kanat çırptırır.",
+        "see": "<code>clap to fly!</code>, sonra <code>+ new best: 6</code>.",
+        "fix": "Kanat geç çırpıyor: vuruş gibi alkışlar (kısa ve sert) başlangıcı en hızlı tetikler."
+      },
+      "6": {
+        "does": "Oyun seslerini hoparlörde kapatır (NVS'te kaydedilir, ad alanı <code>games</code>).",
+        "see": "<code>- game sounds off</code>.",
+        "fix": ""
+      },
+      "7": {
+        "does": "Her vuruşta bir tık. Kart her tıktan sonra yaklaşık 200 ms duyamaz (yankı koruması), bu yüzden o aralıktaki vuruşlar atlanır. Varsayılan olarak kapalıdır.",
+        "see": "<code>- a tick on every beat (the board can't hear for ~200 ms after it)</code>.",
+        "fix": ""
+      },
+      "8": {
+        "does": "<b>party</b> görünümünde her vuruş bir renk yakar, bir halka gönderir ve RGB LED'i yakar.",
+        "see": "Birkaç vuruştan sonra bir BPM sayısı, ör. 120.",
+        "fix": "Çok fazla vuruş: <code>party sens 2.0</code>. Çok az: <code>party sens 1.3</code>."
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Vuruş kilidinin eşleştiricisi",
+        "intro": "Düğmeyle (ya da Boşluk tuşuyla) vur. İlk örüntü gizli ritim olur. Sonrakiler aralık aralık karşılaştırılır. Her aralık, tüm örüntünün bir payı olarak alınır, bu yüzden hız önemli değildir. Toleransı taşı."
+      },
+      "1": {
+        "title": "Ekranda ne görünür",
+        "intro": "Üç görünüm. Tıklama = sonraki, çift tıklama = sol alttaki eylem (knock set, bird, party reset), uzun basış = knock show. Bu önizlemede ekrana tıklamak (ya da Boşluk) bir alkıştır: Clap Bird oynanabilir."
+      }
+    },
+    "steps": [
+      "S1 ile aynı bağlantı. İsteğe bağlı: 02 numaralı dersteki GPIO 4 LED'i, kilidin sürgüsü olarak.",
+      "<code>sound-lab-s6</code>'yı karta yükle. <b>knock</b> görünümünde <code>knock set</code> yaz ve bir ritim vur. <b>Kontrol noktası 1:</b> gizli ritim kaydedildi.",
+      "Aynı ritmi biraz daha yavaş vur. <b>Kontrol noktası 2:</b> OPEN. Sonra yanlış bir ritim: locked.",
+      "<b>bird</b> görünümüne tıkla ve alkışla. <b>Kontrol noktası 3:</b> 5 boruyu geçtin.",
+      "<b>party</b> görünümüne tıkla, bir şarkı çal. <b>Kontrol noktası 4:</b> BPM yerleşir."
+    ],
+    "note": "Vuruşlar, dedektör için kısa ve sert alkışlardır (burada 200 ms'ye kadar). Kilit ritmi karşılaştırır, ses düzeyini ya da hızı değil. Bu yüzden bir oyuncak, güvenlik sistemi değildir: vuruşunu duyan biri onu kopyalayabilir. Clap Bird fiziğini, ekranda ne olursa olsun, sabit 1/60 sn adımlarla çalıştırır. Bu yüzden oyun her kare hızında aynı hisseder. Kanat, bitmiş alkışta (160 ms sonra) değil, başlangıçta (hemen) çırpılır.",
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "MICS +"
+      },
+      "2": {
+        "role": "AO"
+      },
+      "3": {
+        "role": "BLK"
+      },
+      "4": {
+        "role": "RES"
+      },
+      "5": {
+        "role": "DC"
+      },
+      "6": {
+        "role": "CS"
+      },
+      "7": {
+        "role": "SDA"
+      },
+      "8": {
+        "role": "SCL"
+      },
+      "9": {
+        "role": "AMP VIN"
+      },
+      "10": {
+        "role": "GND"
+      },
+      "11": {
+        "role": "BTN"
+      },
+      "12": {
+        "role": "MICS G"
+      },
+      "13": {
+        "role": "SD"
+      },
+      "14": {
+        "role": "WS"
+      },
+      "15": {
+        "role": "SCK"
+      },
+      "16": {
+        "role": "BCLK"
+      },
+      "17": {
+        "role": "LRC"
+      },
+      "18": {
+        "role": "BOOT"
+      },
+      "19": {
+        "role": "DIN"
+      },
+      "20": {
+        "role": "DO"
+      },
+      "21": {
+        "role": "AMP G"
+      }
+    },
+    "wiring": {
+      "title": "Bağlantılar: mikrofonlar ve hoparlör (deneyin ihtiyacı olanı bağla, ekran 03 numaralı dersteki gibi kalır)",
+      "head": [
+        "Modül pini",
+        "ESP32-S3",
+        "Notlar"
+      ],
+      "rows": [
+        [
+          "KY-037 + · G",
+          "3V3",
+          "Analog mikrofon. + ikinci 3V3 pinine, G GND'ye. <b>Asla 5 V değil</b>: AO ve DO modülün besleme gerilimine kadar çıkar, ESP32-S3'ün pinleri en fazla 3,3 V kaldırır."
+        ],
+        [
+          "KY-037 AO",
+          "GPIO 6",
+          "Analog çıkış: mikrofonun gerilimi. GPIO 6, ADC1 kanal 5'tir. Wi-Fi açıkken ADC1 çalışmaya devam eder, ADC2 çalışmaz."
+        ],
+        [
+          "KY-037 DO",
+          "GPIO 21",
+          "Dijital çıkış: LM393 karşılaştırıcısı, ses mavi trimpotun ayarından yüksek olduğunda yüksek sinyal verir."
+        ],
+        [
+          "INMP441 VDD · GND",
+          "3V3",
+          "Dijital mikrofon (I2S). VDD 3V3'e (KY-037 ile breadboard rayını paylaşır), GND GND'ye. Yalnızca 3,3 V."
+        ],
+        [
+          "INMP441 L/R",
+          "GND",
+          "Düşük = sol kanalda konuşur. Kart sol kanalı okur."
+        ],
+        [
+          "INMP441 SCK",
+          "GPIO 40",
+          "Bit saati. ESP32 bunu sürer: 16 000 × 64 = 1,024 MHz."
+        ],
+        [
+          "INMP441 WS",
+          "GPIO 41",
+          "Kelime seçimi: sol kanal / sağ kanal. Her 32 saat darbesinde değişir."
+        ],
+        [
+          "INMP441 SD",
+          "GPIO 42",
+          "Veri, en anlamlı bit önce. Aşağı çekilmiş, bu yüzden bağlı olmayan bir mikrofon sıfır okur."
+        ],
+        [
+          "MAX98357A VIN · GND",
+          "5V",
+          "Hoparlör yükselticisi. 5V en çok gücü verir (4 Ω'da yaklaşık 3 W). 3V3 de çalışır, ama daha sessiz."
+        ],
+        [
+          "MAX98357A BCLK",
+          "GPIO 39",
+          "İkinci I2S portunun bit saati (I2S1). Mikrofon I2S0 kullanır, ikisi aynı anda çalışır."
+        ],
+        [
+          "MAX98357A LRC",
+          "GPIO 38",
+          "Kelime seçimi (sol/sağ)."
+        ],
+        [
+          "MAX98357A DIN",
+          "GPIO 47",
+          "Örnekler, 16 bit."
+        ],
+        [
+          "MAX98357A GAIN · SD",
+          "hiçbiri",
+          "İkisini de bağlama: 9 dB kazanç var ve (sol + sağ) / 2 çalar."
+        ],
+        [
+          "hoparlör (4 Ω, 3 W)",
+          "amp + / −",
+          "Yükselticinin vida terminalinde: JST-PH2.0 kablosunun iki teli, kırmızı +'ya."
+        ],
+        [
+          "ekran (8 kablo)",
+          "03 numaralı dersteki gibi",
+          "Değişmez. GPIO 5'teki basmalı düğme isteğe bağlıdır: BOOT'un yaptığını yapar."
+        ]
+      ]
+    }
+  },
+  "S7": {
+    "title": "Hoparlör",
+    "heading": "Kartı çaldır: tek hoparlörde bir sentezleyici",
+    "goal": "<span class=\"snd-parts\"><span class=\"need\">MAX98357A + hoparlör</span></span>Sayılar I2S üzerinden <b>MAX98357A</b>'ya gider. Bu bir D sınıfı yükselticidir: hoparlörü saniyede yaklaşık 300 000 kez tamamen açıp kapatır. Her darbenin ne kadar sürdüğü sayıya bağlıdır. Koni bu kadar hızlı hareket edemez, bu yüzden ortalamayla hareket eder: dalga. S7, beş tınıda notalar, akorlar, zarflar, melodiler ve oyun sesleri üretir ve duyduğunu çizer.",
+    "goalLine": "Beş dalga arasındaki farkı duy, bir akor ve bir melodi çal, bir nota tıngırdayana kadar zarfı değiştir ve her oyun sesini çalıştır.",
+    "goalCheck": [
+      "<code>beep</code> ve açılış çınlaması <code>vol 20</code> ile hoparlörden çıkar.",
+      "<b>wave</b> görünümünde spektrum, sinüs için tek bir çizgi, kare için tek sayılı harmonikler, testere için hepsini gösterir.",
+      "<code>adsr 1 300 0 50</code> ile <code>note A4 600</code> tıngır gibi duyulur. <code>adsr 300 80 65 300</code> ise yumuşaktır.",
+      "<code>tune korobeiniki</code> çalar ve piyano rulosu kayar. <code>fx explosion</code> gürler."
+    ],
+    "learn": [
+      "I2S çıkışı",
+      "D sınıfı yükselteç",
+      "tını = harmonikler",
+      "16 kHz'de takma (aliasing)",
+      "ADSR ve tıklamalar",
+      "yarım tonlar ve akorlar",
+      "tempo",
+      "prosedürel ses",
+      "karesel ses düzeyi"
+    ],
+    "commands": {
+      "0": {
+        "does": "S7 deneyini derleyip karta yazar, sonra monitörü <code>uv run pio device monitor</code> ile açar.",
+        "see": "<code>Listening for an INMP441 on the I2S pins...</code>, <code>Microphone: INMP441 (I2S, digital) (mic setting: auto)</code> (ya da KY-037), sonra <code>Sound lab S7 …</code>, komut listesi ve hoparlörden üç notalık bir merhaba. Yarım saniye sessiz kal: <code>- learning the quiet...</code>",
+        "fix": "Yanlış mikrofon seçildi: <code>mic inmp441</code> ya da <code>mic ky037</code> (kaydedilir, kart yeniden başlar). Merhaba yok: hoparlör isteğe bağlıdır. VIN ve DIN'i kontrol et. “Failed to connect”: BOOT'a basılı tut, RST'ye dokun, BOOT'u bırak, yeniden çalıştır."
+      },
+      "1": {
+        "does": "Sessiz başlar: ses düzeyi karesel alınır, 20 = tam gücün %4'ü. NVS'te kaydedilir (varsayılan 40).",
+        "see": "<code>- volume 20</code>, sonra <code>beep</code> 440 Hz çalar.",
+        "fix": "Sessiz: VIN'i 5V'a, DIN'i 47'ye, BCLK'yi 39'a, LRC'yi 38'e bağla. Hoparlör terminalde olsun."
+      },
+      "2": {
+        "does": "Tını: sinüs, kare, üçgen, testere, gürültü (<code>wave next</code> ya da <b>wave</b> üzerinde çift tıklama).",
+        "see": "<code>- wave square</code>. Spektrumdaki çizgiler notanın 1, 3, 5… katlarında durur.",
+        "fix": ""
+      },
+      "3": {
+        "does": "Bir nota (ad ya da Hz) 600 ms çalar. <b>envelope</b> üzerinde çift tıklama da aynısını yapar.",
+        "see": "Nokta ADSR eğrisinde ilerler.",
+        "fix": "7 kHz'in üstünde <code>close to 8 kHz: the limit at 16 kHz</code> uyarısı çıkar."
+      },
+      "4": {
+        "does": "Zarf: atak ms, düşüş ms, sürdürme %, bırakma ms (varsayılan 6 80 65 90). Atak 0 bir tıklama yapar.",
+        "see": "<code>- adsr 1 300 0 50</code>: tıngırdayan bir tel.",
+        "fix": ""
+      },
+      "5": {
+        "does": "Tek sesli bir hoparlörde notaları birlikte çalar: kart hepsini tek bir tamponda toplar (PSRAM'de 30 sn).",
+        "see": "<code>- Am = A4 C5 E5</code>. <b>keys</b> görünümünde üç tuş yanar.",
+        "fix": ""
+      },
+      "6": {
+        "does": "Notaları <code>bpm</code> hızında (varsayılan 120) art arda çalar: /4 çeyrek, /8 sekizlik, r sessizlik, . noktalı.",
+        "see": "Tuşlar sırayla yanar.",
+        "fix": ""
+      },
+      "7": {
+        "does": "twinkle, ode, happy, korobeiniki, scale, arpeggio. <b>tunes</b> üzerinde çift tıklama seçili olanı çalar. Uzun basış sonrakini seçer.",
+        "see": "Piyano rulosu, kehribar oynatma çizgisinin önünden kayar.",
+        "fix": ""
+      },
+      "8": {
+        "does": "Tarif edilmiş oyun sesleri: süpürmeler, gürültü, kapanan bir filtre.",
+        "see": "<b>fx</b> üzerinde tüm dalga biçimi, üstünden geçen bir oynatma çizgisi.",
+        "fix": ""
+      },
+      "9": {
+        "does": "Sessizlik.",
+        "see": "Başlıktaki dalgalar durur.",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Sayılardan hareket eden koniye",
+        "intro": "Kart bir örneği hesapladıktan sonra o örneğe ne olur, ses düzeyi düğmesi neden karesel alınır ve mikrofonun hoparlörü alkış sanmasını önleyen yankı koruması."
+      },
+      "1": {
+        "title": "Oynayacağın bir sentezleyici",
+        "intro": "Kartla aynı dalgalar ve zarf. Bir dalga seç, bir tuşa basarak bu tarayıcıda dinle (sessizce, sen basana kadar hiçbir şey çalmaz) ve zarfın tutamaklarını sürükle. Kırmızı çubuklar, kartın 16 kHz'de üretemediği harmoniklerdir: yanlış notalar olarak geri katlanırlar."
+      },
+      "2": {
+        "title": "Ekranda ne görünür",
+        "intro": "Beş görünüm. Tıklama = sonraki, çift tıklama = sol alttaki eylem. Keys: uzun basış = sonraki akor. Tunes ve fx: uzun basış sonrakini seçer. Diğer yerlerde uzun basış sesi durdurur."
+      }
+    },
+    "steps": [
+      "MAX98357A'yı bağla: VIN → 5V, GND, BCLK → 39, LRC → 38, DIN → 47. Hoparlör vida terminalinde, kırmızı +'ya. GAIN ve SD bağlanmadan kalır. Mikrofon gerekmez.",
+      "<code>sound-lab-s7</code>'yi karta yükle. <b>Kontrol noktası 1:</b> açılış çınlaması ve <code>start quiet: vol 20, then raise it</code>.",
+      "<code>vol 20</code> yaz, sonra <code>note A4</code> ile <code>wave next</code>'i beş kez yaz. <b>Kontrol noktası 2:</b> beş tını, beş spektrum.",
+      "<code>adsr 1 300 0 50</code> ve <code>note A4 600</code> yaz, sonra <code>adsr 0 0 100 0</code>. <b>Kontrol noktası 3:</b> zarfın kaldırdığı tıklamayı duyarsın.",
+      "<code>chord Am</code>, <code>tune ode</code>, <code>fx coin</code> yaz. <b>Kontrol noktası 4:</b> üçü de çalar."
+    ],
+    "note": "Tek hoparlör, tek akış: akorlar ve melodiler önce PSRAM'de işlenir (30 sn'ye kadar), sonra çalınır. Saniyede 16 000 örnekte 8 kHz'in üstünde hiçbir şey yoktur. Bu yüzden kare ya da testerenin yüksek harmonikleri yanlış frekanslar olarak geri katlanır: yüksek notalarda hafif bir kumlanma olur. Bu, basit bir sentezleyicinin dürüst sınırıdır. Diğer tüm ses deneyleri aynı hoparlörü çınlamaları için kullanır. Yankı koruması ise hoparlör çalarken dedektörleri sağır tutar.",
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "MICS +"
+      },
+      "2": {
+        "role": "AO"
+      },
+      "3": {
+        "role": "BLK"
+      },
+      "4": {
+        "role": "RES"
+      },
+      "5": {
+        "role": "DC"
+      },
+      "6": {
+        "role": "CS"
+      },
+      "7": {
+        "role": "SDA"
+      },
+      "8": {
+        "role": "SCL"
+      },
+      "9": {
+        "role": "AMP VIN"
+      },
+      "10": {
+        "role": "GND"
+      },
+      "11": {
+        "role": "BTN"
+      },
+      "12": {
+        "role": "MICS G"
+      },
+      "13": {
+        "role": "SD"
+      },
+      "14": {
+        "role": "WS"
+      },
+      "15": {
+        "role": "SCK"
+      },
+      "16": {
+        "role": "BCLK"
+      },
+      "17": {
+        "role": "LRC"
+      },
+      "18": {
+        "role": "BOOT"
+      },
+      "19": {
+        "role": "DIN"
+      },
+      "20": {
+        "role": "DO"
+      },
+      "21": {
+        "role": "AMP G"
+      }
+    },
+    "wiring": {
+      "title": "Bağlantılar: mikrofonlar ve hoparlör (deneyin ihtiyacı olanı bağla, ekran 03 numaralı dersteki gibi kalır)",
+      "head": [
+        "Modül pini",
+        "ESP32-S3",
+        "Notlar"
+      ],
+      "rows": [
+        [
+          "KY-037 + · G",
+          "3V3",
+          "Analog mikrofon. + ikinci 3V3 pinine, G GND'ye. <b>Asla 5 V değil</b>: AO ve DO modülün besleme gerilimine kadar çıkar, ESP32-S3'ün pinleri en fazla 3,3 V kaldırır."
+        ],
+        [
+          "KY-037 AO",
+          "GPIO 6",
+          "Analog çıkış: mikrofonun gerilimi. GPIO 6, ADC1 kanal 5'tir. Wi-Fi açıkken ADC1 çalışmaya devam eder, ADC2 çalışmaz."
+        ],
+        [
+          "KY-037 DO",
+          "GPIO 21",
+          "Dijital çıkış: LM393 karşılaştırıcısı, ses mavi trimpotun ayarından yüksek olduğunda yüksek sinyal verir."
+        ],
+        [
+          "INMP441 VDD · GND",
+          "3V3",
+          "Dijital mikrofon (I2S). VDD 3V3'e (KY-037 ile breadboard rayını paylaşır), GND GND'ye. Yalnızca 3,3 V."
+        ],
+        [
+          "INMP441 L/R",
+          "GND",
+          "Düşük = sol kanalda konuşur. Kart sol kanalı okur."
+        ],
+        [
+          "INMP441 SCK",
+          "GPIO 40",
+          "Bit saati. ESP32 bunu sürer: 16 000 × 64 = 1,024 MHz."
+        ],
+        [
+          "INMP441 WS",
+          "GPIO 41",
+          "Kelime seçimi: sol kanal / sağ kanal. Her 32 saat darbesinde değişir."
+        ],
+        [
+          "INMP441 SD",
+          "GPIO 42",
+          "Veri, en anlamlı bit önce. Aşağı çekilmiş, bu yüzden bağlı olmayan bir mikrofon sıfır okur."
+        ],
+        [
+          "MAX98357A VIN · GND",
+          "5V",
+          "Hoparlör yükselticisi. 5V en çok gücü verir (4 Ω'da yaklaşık 3 W). 3V3 de çalışır, ama daha sessiz."
+        ],
+        [
+          "MAX98357A BCLK",
+          "GPIO 39",
+          "İkinci I2S portunun bit saati (I2S1). Mikrofon I2S0 kullanır, ikisi aynı anda çalışır."
+        ],
+        [
+          "MAX98357A LRC",
+          "GPIO 38",
+          "Kelime seçimi (sol/sağ)."
+        ],
+        [
+          "MAX98357A DIN",
+          "GPIO 47",
+          "Örnekler, 16 bit."
+        ],
+        [
+          "MAX98357A GAIN · SD",
+          "hiçbiri",
+          "İkisini de bağlama: 9 dB kazanç var ve (sol + sağ) / 2 çalar."
+        ],
+        [
+          "hoparlör (4 Ω, 3 W)",
+          "amp + / −",
+          "Yükselticinin vida terminalinde: JST-PH2.0 kablosunun iki teli, kırmızı +'ya."
+        ],
+        [
+          "ekran (8 kablo)",
+          "03 numaralı dersteki gibi",
+          "Değişmez. GPIO 5'teki basmalı düğme isteğe bağlıdır: BOOT'un yaptığını yapar."
+        ]
+      ]
+    }
+  },
+  "S8": {
+    "title": "Ses efektleri",
+    "heading": "Seni tekrar eden bir papağan ve canlı bir robot sesi",
+    "goal": "<span class=\"snd-parts\"><span class=\"need\">INMP441</span><span class=\"need\">MAX98357A + hoparlör</span></span>Mikrofon girer, hoparlör çıkar. Bir şey söyle, papağan onu geri söyler: normal, bir <b>sincap</b> (1,5 kat hızlı), bir <b>dev</b> (0,7 kat), bir <b>robot</b> (halka modülatörü ve 6 bitlik kırma), bir <b>yankı</b> ile ya da <b>ters</b>. Sonra canlı efektler: içine konuştuğun bir yankı, bir robot sesi. Papağan, S4 gibi sesle tetiklenir (12 dB, 0,3 sn ön kayıt, 0,7 sn tutma, en fazla 6 sn) ve kendini asla duymaz.",
+    "goalLine": "Papağanı üç sesle seni tekrar ettir, canlı yankı üzerinden geri besleme uğultusu olmadan konuş ve sincabın neden hızlı konuştuğunu açıkla.",
+    "goalCheck": [
+      "Bir kelime söyledin ve papağan sincap sesiyle cevap verdi. <code>fx giant</code> ve <code>again</code> derin ve yavaş bir cevap verdi.",
+      "<b>echo</b> görünümü: <code>echo on</code> yazınca bir alkış, sönen tekrarlar olarak geri gelir. Gecikme yaklaşık 60-80 ms.",
+      "Hoparlörü mikrofona doğrultarak bir uğultu tetikledin ve koruma onu durdurdu: <code>Howl! Move the speaker away or turn it down</code>."
+    ],
+    "learn": [
+      "yeniden örnekleme = perde + hız",
+      "halka modülasyonu f±c",
+      "bit kırma",
+      "gecikme ve geri besleme",
+      "döngü kazancı 1'den küçük",
+      "geri besleme uğultusu algılama",
+      "gecikme bütçesi",
+      "yankı koruması"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "MICS +"
+      },
+      "2": {
+        "role": "AO"
+      },
+      "3": {
+        "role": "BLK"
+      },
+      "4": {
+        "role": "RES"
+      },
+      "5": {
+        "role": "DC"
+      },
+      "6": {
+        "role": "CS"
+      },
+      "7": {
+        "role": "SDA"
+      },
+      "8": {
+        "role": "SCL"
+      },
+      "9": {
+        "role": "AMP VIN"
+      },
+      "10": {
+        "role": "GND"
+      },
+      "11": {
+        "role": "BTN"
+      },
+      "12": {
+        "role": "MICS G"
+      },
+      "13": {
+        "role": "SD"
+      },
+      "14": {
+        "role": "WS"
+      },
+      "15": {
+        "role": "SCK"
+      },
+      "16": {
+        "role": "BCLK"
+      },
+      "17": {
+        "role": "LRC"
+      },
+      "18": {
+        "role": "BOOT"
+      },
+      "19": {
+        "role": "DIN"
+      },
+      "20": {
+        "role": "DO"
+      },
+      "21": {
+        "role": "AMP G"
+      }
+    },
+    "commands": {
+      "0": {
+        "does": "S8 deneyini derleyip karta yazar, sonra monitörü <code>uv run pio device monitor</code> ile açar.",
+        "see": "<code>Listening for an INMP441 on the I2S pins...</code>, <code>Microphone: INMP441 (I2S, digital) (mic setting: auto)</code> (ya da KY-037), sonra <code>Sound lab S8 …</code>, komut listesi ve hoparlörden üç notalık bir merhaba. Yarım saniye sessiz kal: <code>- learning the quiet...</code>",
+        "fix": "Yanlış mikrofon seçildi: <code>mic inmp441</code> ya da <code>mic ky037</code> (kaydedilir, kart yeniden başlar). Merhaba yok: hoparlör isteğe bağlıdır. VIN ve DIN'i kontrol et. “Failed to connect”: BOOT'a basılı tut, RST'ye dokun, BOOT'u bırak, yeniden çalıştır."
+      },
+      "1": {
+        "does": "Düşük tut: mikrofon hoparlörü duyar.",
+        "see": "<code>- volume 25</code>.",
+        "fix": "KY-037 ile: <code>KY-037: it works, but an INMP441 sounds much clearer</code>."
+      },
+      "2": {
+        "does": "Sessizliğin 12 dB üstünde bir ses, 0,3 sn öncesinden başlayan bir kayıt başlatır. 0,7 sn sessizlik bitirir. Sonra kayıt sesle geri çalınır.",
+        "see": "Konuşma balonu: <code>I'm listening...</code>, REC, sonra gagası hareket ederken <code>Squawk!</code>. <code>+ chipmunk, 1.4 s, x9 louder</code>.",
+        "fix": "<code>too short: a bang, not a word</code>: biraz daha uzun konuş. Hiç başlamıyorsa: <code>trigger 8</code>."
+      },
+      "3": {
+        "does": "Papağanın sesi: normal, sincap, dev, robot, yankı, ters. <b>parrot</b> üzerinde çift tıkla.",
+        "see": "<code>- voice: robot (ring modulator + bitcrush)</code>.",
+        "fix": ""
+      },
+      "4": {
+        "does": "Son kaydı, geçerli sesle yeniden söyler (<b>scope</b> üzerinde çift tıklama).",
+        "see": "Aynı sözler, başka bir ses.",
+        "fix": "<code>nothing recorded yet: say something first</code>."
+      },
+      "5": {
+        "does": "Canlı: mikrofon → gecikme hattı → hoparlör. <code>delay 120</code> (20-500 ms), <code>feedback 60</code> (%0-70). Mikrofonun 16 000 Hz'de çalışması gerekir.",
+        "see": "<code>! live echo: speaker away from the mic, volume low</code>. <b>echo</b> görünümünde bir alkışın izleri ve yaklaşık 60-80 ms gecikme.",
+        "fix": "Bir uğultu: koruma onu alçak bir No sesiyle durdurur. Hoparlörü uzaklaştır, <code>vol</code> ya da <code>feedback</code> değerini düşür."
+      },
+      "6": {
+        "does": "Canlı: senin sesin × yavaş bir sinüs (<code>carrier 50</code>, 10-300 Hz) + kırma. Her f frekansı f − c ve f + c olur.",
+        "see": "Robotun ağzı, çıkanla yanar. <code>carrier 200</code> bir zil gibi duyulur.",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Papağan, tarayıcında",
+        "intro": "fx.h'deki efektlerin aynısı, bu sayfada. Örnek bir ses yüklüdür. Kendi sesini kaydetmek isteğe bağlıdır ve yalnızca düğmeye basınca başlar (3 sn, kayıt sırasında kırmızı bir gösterge, hiçbir şey sayfadan çıkmaz)."
+      },
+      "1": {
+        "title": "Ekranda ne görünür",
+        "intro": "Dört görünüm. Tıklama = sonraki, çift tıklama = sol alttaki eylem (fx next, echo, robot, again), uzun basış = elle kayıt / durdur."
+      }
+    },
+    "steps": [
+      "INMP441'i bağla (VDD 3V3, GND, L/R → GND, SCK 40, WS 41, SD 42) ve MAX98357A + hoparlörü S7'deki gibi bağla. Hoparlörü mikrofondan uzağa doğrult.",
+      "<code>sound-lab-s8</code>'i karta yükle, <code>vol 25</code> yaz. <b>Kontrol noktası 1:</b> <code>Microphone: INMP441</code> ve papağan “Say something!” der.",
+      "Kısa bir cümle söyle. <b>Kontrol noktası 2:</b> sincap cevap verir.",
+      "<code>fx giant</code>, <code>again</code> yaz. Sonra <code>fx reverse</code>, <code>again</code> yaz. <b>Kontrol noktası 3:</b> devin neden yavaş olduğunu söyleyebilirsin.",
+      "<code>echo on</code> yaz ve alkışla. <b>Kontrol noktası 4:</b> sönen tekrarlar. Sonra <code>echo off</code> yaz.",
+      "<code>robot on</code> yaz ve konuş. <b>Kontrol noktası 5:</b> bir robot sesi. Sonra <code>robot off</code> yaz."
+    ],
+    "note": "Bir kaydın hızını değiştirmek, perdesini ve uzunluğunu birlikte değiştirir. Sincabın hızlı konuşmasının nedeni budur. Hızı koruyup perdeyi kaydırmak çok daha fazla sinyal işleme gerektirir (taneler ya da faz vocoder). Geri besleme: mikrofonun duyduğu, çıktığından daha yüksek geri dönerse (döngü kazancı 1'in üstünde), dönüp durur: uğultu. Koruma, seviye sürekli yükseldiğinde (300 ms içinde 9 dB) ya da −12 dBFS'in üstünde kaldığında canlı efekti keser. Gecikme: bir ekran karesinin işlenmesi, hoparlörün kuyruğu ve 16 ms'lik DMA bloğunun toplamıdır.",
+    "wiring": {
+      "title": "Bağlantılar: mikrofonlar ve hoparlör (deneyin ihtiyacı olanı bağla, ekran 03 numaralı dersteki gibi kalır)",
+      "head": [
+        "Modül pini",
+        "ESP32-S3",
+        "Notlar"
+      ],
+      "rows": [
+        [
+          "KY-037 + · G",
+          "3V3",
+          "Analog mikrofon. + ikinci 3V3 pinine, G GND'ye. <b>Asla 5 V değil</b>: AO ve DO modülün besleme gerilimine kadar çıkar, ESP32-S3'ün pinleri en fazla 3,3 V kaldırır."
+        ],
+        [
+          "KY-037 AO",
+          "GPIO 6",
+          "Analog çıkış: mikrofonun gerilimi. GPIO 6, ADC1 kanal 5'tir. Wi-Fi açıkken ADC1 çalışmaya devam eder, ADC2 çalışmaz."
+        ],
+        [
+          "KY-037 DO",
+          "GPIO 21",
+          "Dijital çıkış: LM393 karşılaştırıcısı, ses mavi trimpotun ayarından yüksek olduğunda yüksek sinyal verir."
+        ],
+        [
+          "INMP441 VDD · GND",
+          "3V3",
+          "Dijital mikrofon (I2S). VDD 3V3'e (KY-037 ile breadboard rayını paylaşır), GND GND'ye. Yalnızca 3,3 V."
+        ],
+        [
+          "INMP441 L/R",
+          "GND",
+          "Düşük = sol kanalda konuşur. Kart sol kanalı okur."
+        ],
+        [
+          "INMP441 SCK",
+          "GPIO 40",
+          "Bit saati. ESP32 bunu sürer: 16 000 × 64 = 1,024 MHz."
+        ],
+        [
+          "INMP441 WS",
+          "GPIO 41",
+          "Kelime seçimi: sol kanal / sağ kanal. Her 32 saat darbesinde değişir."
+        ],
+        [
+          "INMP441 SD",
+          "GPIO 42",
+          "Veri, en anlamlı bit önce. Aşağı çekilmiş, bu yüzden bağlı olmayan bir mikrofon sıfır okur."
+        ],
+        [
+          "MAX98357A VIN · GND",
+          "5V",
+          "Hoparlör yükselticisi. 5V en çok gücü verir (4 Ω'da yaklaşık 3 W). 3V3 de çalışır, ama daha sessiz."
+        ],
+        [
+          "MAX98357A BCLK",
+          "GPIO 39",
+          "İkinci I2S portunun bit saati (I2S1). Mikrofon I2S0 kullanır, ikisi aynı anda çalışır."
+        ],
+        [
+          "MAX98357A LRC",
+          "GPIO 38",
+          "Kelime seçimi (sol/sağ)."
+        ],
+        [
+          "MAX98357A DIN",
+          "GPIO 47",
+          "Örnekler, 16 bit."
+        ],
+        [
+          "MAX98357A GAIN · SD",
+          "hiçbiri",
+          "İkisini de bağlama: 9 dB kazanç var ve (sol + sağ) / 2 çalar."
+        ],
+        [
+          "hoparlör (4 Ω, 3 W)",
+          "amp + / −",
+          "Yükselticinin vida terminalinde: JST-PH2.0 kablosunun iki teli, kırmızı +'ya."
+        ],
+        [
+          "ekran (8 kablo)",
+          "03 numaralı dersteki gibi",
+          "Değişmez. GPIO 5'teki basmalı düğme isteğe bağlıdır: BOOT'un yaptığını yapar."
+        ]
+      ]
+    }
+  }
+}

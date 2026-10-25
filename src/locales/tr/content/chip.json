@@ -1,0 +1,1429 @@
+{
+  "headline": {
+    "cores": {
+      "unit": "çekirdek",
+      "label": "Xtensa LX7 çekirdekleri"
+    },
+    "cpu-mhz": {
+      "unit": "MHz",
+      "label": "En yüksek CPU saat hızı"
+    },
+    "sram": {
+      "unit": "KB",
+      "label": "Çip üzerindeki SRAM"
+    },
+    "rom": {
+      "unit": "KB",
+      "label": "Açılış ROM'u"
+    },
+    "gpio": {
+      "unit": "GPIO",
+      "label": "Programlanabilir pin"
+    },
+    "adc-channels": {
+      "unit": "kanal",
+      "label": "12 bitlik ADC girişi"
+    },
+    "wifi-rate": {
+      "unit": "Mbps",
+      "label": "En yüksek Wi-Fi veri hızı"
+    },
+    "deep-sleep": {
+      "unit": "µA",
+      "label": "Derin uyku akımı"
+    }
+  },
+  "facts": {
+    "home-dual-core": {
+      "text": "240 MHz'e kadar çalışan iki 32 bitlik Xtensa LX7 çekirdeği. Bir kayan noktalı birim, 128 bitlik veri yolu ve SIMD komutları var."
+    },
+    "home-radio": {
+      "text": "Wi-Fi (802.11b/g/n, 2,4 GHz) ve Bluetooth 5 LE aynı anteni paylaşır. Yerleşik bir birlikte çalışma mekanizması ikisini sırayla çalıştırır."
+    },
+    "home-matrix": {
+      "text": "Neredeyse her çevre birimi sinyali, neredeyse her pine gidebilir. GPIO matrisi 175 girişi ve 184 çıkışı yönlendirir."
+    },
+    "home-psram": {
+      "text": "32 MB'a kadar harici flash ya da PSRAM, önbellekler üzerinden doğrudan CPU'nun adres alanına eşlenir."
+    },
+    "home-ulp": {
+      "text": "İki küçük yardımcı işlemci (ULP-RISC-V ve ULP-FSM), ana çekirdekler uyurken sensörleri okumaya devam eder."
+    },
+    "home-3v3": {
+      "text": "3,0-3,6 V ile çalışır. Pinleri 5 V'a dayanıklı değildir."
+    }
+  },
+  "blocks": {
+    "cpu": {
+      "name": "CPU",
+      "short": "240 MHz'e kadar iki Xtensa LX7 çekirdeği",
+      "facts": {
+        "cpu-cores": {
+          "text": "İki çekirdekli 32 bitlik Xtensa LX7, beş aşamalı boru hattı, 240 MHz'e kadar hız ve bir kayan noktalı birim."
+        },
+        "cpu-reset-clock": {
+          "text": "Reset sonrası CPU, 40 MHz kristalin 2'ye bölümü olan 20 MHz ile çalışır. Yazılım PLL'e geçene kadar böyle kalır."
+        }
+      }
+    },
+    "ulp": {
+      "name": "ULP yardımcı işlemcileri",
+      "short": "CPU uyurken çalışan küçük bir RISC-V ve bir durum makinesi",
+      "facts": {
+        "ulp-two": {
+          "text": "İki yardımcı işlemci, ULP-RISC-V ve ULP-FSM. İkisi de 17,5 MHz'de çalışır ve 8 KB RTC yavaş belleğe sahiptir. Aynı anda yalnız biri çalışabilir."
+        },
+        "ulp-reach": {
+          "text": "ADC'leri, dokunma pinlerini ve sıcaklık sensörünü okuyabilir. RTC GPIO'larını ve RTC I2C'yi sürebilir, sonra ana CPU'yu uyandırabilir."
+        }
+      }
+    },
+    "gdma": {
+      "name": "GDMA",
+      "short": "Veriyi CPU'yu kullanmadan bellek ile çevre birimleri arasında taşır",
+      "facts": {
+        "gdma-channels": {
+          "text": "Beş gönderme ve beş alma kanalı var. Bunları SPI2, SPI3, UHCI0, I2S0, I2S1, LCD/CAM, AES, SHA, ADC ve RMT paylaşır."
+        },
+        "gdma-reach": {
+          "text": "480 KB'a kadar dahili RAM'e ve 32 MB'a kadar harici RAM'e erişir. Önbellek olarak kullanılan SRAM'e erişemez."
+        }
+      }
+    },
+    "gpio": {
+      "name": "GPIO ve IO MUX",
+      "short": "45 pin ve neredeyse her sinyali neredeyse her pine yönlendiren bir matris",
+      "spark": {
+        "unit": "pin"
+      },
+      "facts": {
+        "gpio-count": {
+          "text": "45 GPIO var. 0-21 ve 26-48 arasında numaralıdırlar. Her biri giriş ya da çıkış olabilir."
+        },
+        "gpio-matrix": {
+          "text": "GPIO matrisi 175 çevre birimi girişini ve 184 çevre birimi çıkışını herhangi bir pine bağlar. Hızlı sinyaller (SPI, JTAG, UART) daha iyi zamanlama için IO MUX üzerinden matrisi atlayabilir."
+        },
+        "gpio-drive": {
+          "text": "Her pin yaklaşık 5, 10, 20 ya da 40 mA sürebilir. Varsayılan 20 mA'dır. GPIO17/18'de 10 mA, GPIO19/20'de 40 mA'dır."
+        },
+        "gpio-pulls": {
+          "text": "Dahili pull-up ve pull-down dirençleri yaklaşık 45 kΩ'dur. Bir düğme için yeterlidir, uzun bir I2C hattı için ise çok zayıftır."
+        },
+        "gpio-5v": {
+          "text": "Girişler besleme gerilimi artı 0,3 V'a kadar gerilimi kabul eder. Pinler 5 V'a dayanıklı değildir."
+        },
+        "gpio-hold": {
+          "text": "Bir pin kilitlenebilir (tutulabilir). Böylece watchdog reseti ya da derin uykuda seviyesini korur."
+        }
+      },
+      "registers": {
+        "0": {
+          "fields": {
+            "0": {
+              "does": "Pinin çıkışını yüksek yapmak için 1 yaz (GPIO0-31). 0 yazılan bitler olduğu gibi kalır."
+            }
+          }
+        },
+        "1": {
+          "fields": {
+            "0": {
+              "does": "Pini çıkış yapmak için 1 yaz (GPIO0-31)."
+            }
+          }
+        },
+        "2": {
+          "fields": {
+            "0": {
+              "does": "GPIO0-31 üzerindeki seviye, her pin için bir bit: 1 yüksek, 0 düşük."
+            }
+          }
+        },
+        "3": {
+          "fields": {
+            "0": {
+              "does": "Pin x'i hangi çevre birimi çıkış sinyalinin süreceğini seçer. 256, düz GPIO çıkışı demektir."
+            },
+            "1": {
+              "does": "Çıkışı ters çevirir."
+            }
+          }
+        },
+        "4": {
+          "fields": {
+            "0": {
+              "does": "Dahili pull-down açık."
+            },
+            "1": {
+              "does": "Dahili pull-up açık."
+            },
+            "2": {
+              "does": "Giriş açık."
+            },
+            "3": {
+              "does": "Sürüş gücü: 0 yaklaşık 5 mA, 3 yaklaşık 40 mA."
+            },
+            "4": {
+              "does": "Pinin aldığı IO MUX işlevi (çoğu pinde 1 numaralı işlev GPIO'dur)."
+            }
+          }
+        }
+      }
+    },
+    "rtc": {
+      "name": "RTC ve güç yönetimi",
+      "short": "Her zaman açık köşe: uyku modlarını çalıştırır ve çipi uyandırır",
+      "facts": {
+        "rtc-modes": {
+          "text": "Dört hazır güç modu var: Aktif, Modem uykusu, Hafif uyku ve Derin uyku. Derin uykuda yalnız RTC açık kalır."
+        },
+        "rtc-memory": {
+          "text": "16 KB RTC belleği (8 KB hızlı, 8 KB yavaş) derin uykuda içeriğini korur."
+        },
+        "rtc-wake": {
+          "text": "Derin uykudan yalnız RTC GPIO'ları (0-21), RTC zamanlayıcısı, dokunma ve ULP çipi uyandırabilir."
+        }
+      }
+    },
+    "sram": {
+      "name": "SRAM",
+      "short": "Kodun ve verilerin için 512 KB hızlı çip üzerinde RAM",
+      "facts": {
+        "sram-size": {
+          "text": "512 KB çip üzerinde SRAM ve 16 KB RTC SRAM. Bir kısmı önbelleklere verilebilir."
+        },
+        "sram-speed": {
+          "text": "CPU genellikle SRAM'i tek bir saat döngüsünde okur."
+        }
+      }
+    },
+    "rom": {
+      "name": "ROM",
+      "short": "384 KB fabrika kodu: önyükleyici ve yükleme modu",
+      "facts": {
+        "rom-size": {
+          "text": "384 KB salt okunur bellek. Açılış kodunu ve düşük seviyeli rutinleri içerir. Değiştirilemez."
+        },
+        "rom-download": {
+          "text": "Reset anında GPIO0 ve GPIO46 düşükken ROM, senin programını çalıştırmak yerine UART ya da USB üzerinden yeni kart yazılımını bekler."
+        }
+      }
+    },
+    "flash-psram": {
+      "name": "Flash ve PSRAM",
+      "short": "Modülün flash'i programını tutar, PSRAM megabaytlarca RAM ekler",
+      "facts": {
+        "flash-psram-size": {
+          "text": "1 GB'a kadar harici flash ve 1 GB'a kadar harici RAM. Önbellekler üzerinden her seferinde 32 MB eşlenir."
+        },
+        "flash-psram-clock": {
+          "text": "Flash varsayılan olarak 80 MHz'e kadar çalışır. Sektörleri yaklaşık 100.000 silme döngüsüne dayanır."
+        },
+        "flash-psram-pins": {
+          "text": "GPIO26-32 flash veri yolunu taşır. Sekizli PSRAM ise GPIO33-37'yi de kullanır."
+        }
+      }
+    },
+    "cache": {
+      "name": "Önbellek",
+      "short": "Son kullanılan flash ve PSRAM verilerini hızlı SRAM'de tutar",
+      "facts": {
+        "cache-sizes": {
+          "text": "16 ya da 32 KB komut önbelleği ve 32 ya da 64 KB veri önbelleği. İki çekirdek de bunları paylaşır."
+        }
+      }
+    },
+    "efuse": {
+      "name": "eFuse",
+      "short": "4096 tek seferlik bit: MAC adresi, anahtarlar ve açılış ayarları",
+      "facts": {
+        "efuse-size": {
+          "text": "4096 bit tek seferlik programlanabilir bellek. Bunların 1792'si kullanıcılara açık: anahtarlar, cihaz kimliği."
+        },
+        "efuse-one-way": {
+          "text": "1 olarak yakıldıktan sonra bir eFuse biti asla 0'a dönmez."
+        }
+      }
+    },
+    "crypto": {
+      "name": "Şifreleme hızlandırıcıları",
+      "short": "Donanım SHA, AES, RSA, HMAC ve dijital imzalar",
+      "facts": {
+        "crypto-set": {
+          "text": "SHA (SHA-1'den SHA-512'ye), AES-128/256, RSA, HMAC ve bir RSA dijital imza bloğu. Yazılımdan çok daha hızlıdır."
+        },
+        "crypto-flash": {
+          "text": "Harici flash ve PSRAM'deki kart yazılımı ve veriler, XTS-AES ile anında şifrelenip çözülebilir."
+        }
+      }
+    },
+    "rng": {
+      "name": "Rastgele sayı üretici",
+      "short": "Isıl gürültüden gerçek rastgele sayılar",
+      "facts": {
+        "rng-source": {
+          "text": "RNG_DATA_REG'den yapılan her 32 bitlik okuma gerçek bir rastgele sayıdır. Tohum değeri ADC gürültüsünden ve saat titreşiminden gelir."
+        },
+        "rng-entropy": {
+          "text": "Tam entropi için bir ADC kaynağını çalışır durumda tut: SAR ADC ya da radyonun hızlı ADC'si. Yalnız saat titreşimi daha zayıftır."
+        }
+      }
+    },
+    "uart": {
+      "name": "UART",
+      "short": "Üç seri port: seri monitörde gördüğün port",
+      "spark": {
+        "unit": "Mbps"
+      },
+      "facts": {
+        "uart-count": {
+          "text": "5 Mbps'e kadar üç UART denetleyicisi (UART0, 1, 2). RS485 ve IrDA modları vardır."
+        },
+        "uart-frame": {
+          "text": "5 ile 8 veri biti, isteğe bağlı parite ve 1, 1,5 ya da 2 durma biti. Veri sayfası 3 durma biti de listeler, TRM listelemez."
+        },
+        "uart-fifo": {
+          "text": "Üç UART 1024 baytlık FIFO RAM'i paylaşır, baud hızını algılayabilir ve RTS/CTS akış denetimini donanımda yapar."
+        },
+        "uart-boot": {
+          "text": "UART0, GPIO43 (TX) ve GPIO44 (RX) üzerindedir. ROM açılış günlüğünü bu pinlere yazdırır."
+        }
+      },
+      "registers": {
+        "0": {
+          "fields": {
+            "0": {
+              "does": "Alınan bir bayt oku ya da göndermek için bir bayt yaz."
+            }
+          }
+        },
+        "1": {
+          "fields": {
+            "0": {
+              "does": "Baud hızı bölücünün tam kısmı."
+            },
+            "1": {
+              "does": "Bölücünün kesirli kısmı."
+            }
+          }
+        },
+        "2": {
+          "fields": {
+            "0": {
+              "does": "Alma FIFO'sunda bekleyen bayt sayısı."
+            },
+            "1": {
+              "does": "Gönderme FIFO'sunda hâlâ kalan bayt sayısı."
+            }
+          }
+        },
+        "3": {
+          "fields": {
+            "0": {
+              "does": "Parite modu."
+            },
+            "1": {
+              "does": "Parite kontrolü açık."
+            },
+            "2": {
+              "does": "Veri biti (3, 8 demek)."
+            },
+            "3": {
+              "does": "Durma biti uzunluğu."
+            },
+            "4": {
+              "does": "Kendini test etmek için TX'i RX'e geri döndür."
+            }
+          }
+        },
+        "4": {
+          "fields": {
+            "0": {
+              "does": "Saat kaynağı: 1 APB_CLK, 2 RC_FAST_CLK, 3 XTAL_CLK."
+            },
+            "1": {
+              "does": "Baud üretecinin önündeki bölücü."
+            }
+          }
+        }
+      }
+    },
+    "i2c": {
+      "name": "I2C",
+      "short": "Sensörler ve küçük ekranlar için iki telli veri yolu",
+      "spark": {
+        "unit": "Mbps"
+      },
+      "facts": {
+        "i2c-count": {
+          "text": "İki I2C denetleyicisi, her biri master ya da slave olabilir. 7 bitlik ve 10 bitlik adresleri destekler."
+        },
+        "i2c-speed": {
+          "text": "Standart (100 kbit/s) ve Hızlı (400 kbit/s) modlar. Veri sayfası, pull-up dirençleri yeterince güçlüyse 800 kbit/s'e kadar çıkabileceğini ekler."
+        },
+        "i2c-commands": {
+          "text": "Master modunda en fazla sekiz komut (yazma, okuma, durdurma ve benzeri) sıraya koyabilirsin. Donanım tüm işlemi kendi yürütür."
+        },
+        "i2c-pullups": {
+          "text": "SDA ve SCL açık drenajlıdır. Veri yoluna pull-up dirençleri gerekir. Dahili 45 kΩ dirençler ise zayıftır."
+        }
+      },
+      "registers": {
+        "0": {
+          "fields": {
+            "0": {
+              "does": "SCL'nin düşük kaldığı süre, modül saat döngüsü cinsinden."
+            }
+          }
+        },
+        "1": {
+          "fields": {
+            "0": {
+              "does": "1 denetleyiciyi master yapar."
+            },
+            "1": {
+              "does": "Sıraya konmuş komutları çalıştırmaya başlar."
+            },
+            "2": {
+              "does": "Açık drenajlı SDA için 0."
+            }
+          }
+        },
+        "2": {
+          "fields": {
+            "0": {
+              "does": "Son ACK biti: 0 ACK, 1 NACK."
+            },
+            "1": {
+              "does": "Veri yolu meşgul."
+            },
+            "2": {
+              "does": "Veri yolunu başka bir master kazandı."
+            }
+          }
+        },
+        "3": {
+          "fields": {
+            "0": {
+              "does": "RX FIFO'dan oku, TX FIFO'ya yaz."
+            }
+          }
+        },
+        "4": {
+          "fields": {
+            "0": {
+              "does": "İlk komut: işlem kodu (1 WRITE, 2 STOP, 3 READ, 4 END, 6 RSTART) ve bayt sayısı."
+            },
+            "1": {
+              "does": "Komut çalıştığında ayarlanır."
+            }
+          }
+        }
+      }
+    },
+    "i2s": {
+      "name": "I2S",
+      "short": "Dijital ses girişi ve çıkışı: mikrofonlar, amplifikatörler, codec'ler",
+      "spark": {
+        "unit": "MHz"
+      },
+      "facts": {
+        "i2s-count": {
+          "text": "İki I2S arayüzü (I2S0, I2S1). Her birinde aynı anda çalışan ayrı gönderme ve alma birimleri var."
+        },
+        "i2s-format": {
+          "text": "8 kHz ile 192 kHz arasında 8, 16, 24 ya da 32 bitlik örnekler. Bit saati 10 kHz ile 40 MHz arasında."
+        },
+        "i2s-pdm": {
+          "text": "Yalnız I2S0, PDM mikrofonlarını PCM'e, PCM'i de PDM'e çevirebilir."
+        },
+        "i2s-dma": {
+          "text": "Ses, CPU'nun her örneği kopyalamasına gerek kalmadan ayrılmış bir DMA üzerinden taşınır."
+        }
+      },
+      "registers": {
+        "0": {
+          "fields": {
+            "0": {
+              "does": "Alma birimini sıfırla."
+            },
+            "1": {
+              "does": "Almaya başla."
+            },
+            "2": {
+              "does": "BCK ve WS'yi dışarıdan al (slave)."
+            },
+            "3": {
+              "does": "Mono mod."
+            },
+            "4": {
+              "does": "PDM alma modu."
+            }
+          }
+        },
+        "1": {
+          "fields": {
+            "0": {
+              "does": "Gönderme birimini sıfırla."
+            },
+            "1": {
+              "does": "Göndermeye başla."
+            },
+            "2": {
+              "does": "Mono mod."
+            },
+            "3": {
+              "does": "Hangi kanalların veri taşıyacağı."
+            }
+          }
+        },
+        "2": {
+          "fields": {
+            "0": {
+              "does": "Bit saati bölücüsü (asla 1 olmaz)."
+            },
+            "1": {
+              "does": "Örnek başına bit sayısı eksi 1: 16 bitlik için 15."
+            }
+          }
+        },
+        "3": {
+          "fields": {
+            "0": {
+              "does": "Saat bölücünün tam kısmı."
+            },
+            "1": {
+              "does": "Alma saati açık."
+            },
+            "2": {
+              "does": "Saat kaynağı: 0 XTAL, 1 PLL_D2, 2 PLL_F160M, 3 MCLK girişi."
+            }
+          }
+        }
+      }
+    },
+    "spi": {
+      "name": "SPI",
+      "short": "Ekranlar, kart okuyucular ve flash için hızlı dört telli veri yolu",
+      "spark": {
+        "unit": "MHz"
+      },
+      "facts": {
+        "spi-count": {
+          "text": "Dört SPI denetleyicisi var. SPI0 ve SPI1 flash ve PSRAM ile konuşur. GP-SPI2 ve GP-SPI3 senin kullanımına açıktır."
+        },
+        "spi-speed": {
+          "text": "Master olarak 80 MHz'e, slave olarak 60 MHz'e kadar. Dört saat modunun (0-3) hepsinde."
+        },
+        "spi-lines": {
+          "text": "GP-SPI2 altı çip seçme hattına sahiptir ve 8 veri hattına kadar çıkar. GP-SPI3 üç çip seçme hattına ve 4 veri hattına kadar sahiptir."
+        },
+        "spi-dma": {
+          "text": "CPU aktarım başına 64 bayta kadar taşıyabilir. DMA ile tek bir aktarım 32 KB'a kadar olabilir. Parçalı aktarımların sınırı yoktur."
+        },
+        "spi-iomux": {
+          "text": "GP-SPI2 (FSPI) pinlerine IO MUX ya da GPIO matrisi üzerinden ulaşabilir. GP-SPI3 her zaman matris üzerinden gider."
+        }
+      },
+      "registers": {
+        "0": {
+          "fields": {
+            "0": {
+              "does": "Bir aktarım başlat. Bitince bu bit kendini temizler."
+            },
+            "1": {
+              "does": "Yeni ayarları SPI saat alanına kopyala."
+            }
+          }
+        },
+        "1": {
+          "fields": {
+            "0": {
+              "does": "1: SPI saati = APB saati (80 MHz)."
+            },
+            "1": {
+              "does": "Ön bölücü."
+            },
+            "2": {
+              "does": "Bölücü: f = APB / (PRE+1) / (N+1)."
+            }
+          }
+        },
+        "2": {
+          "fields": {
+            "0": {
+              "does": "Aktarımın veri uzunluğu, bit cinsinden, eksi 1."
+            }
+          }
+        },
+        "3": {
+          "fields": {
+            "0": {
+              "does": "1, CS0 pinini kapatır."
+            },
+            "1": {
+              "does": "Boştayken saat seviyesi (kutupluluk, CPOL)."
+            }
+          }
+        },
+        "4": {
+          "fields": {
+            "0": {
+              "does": "CPU'nun sürdüğü aktarımlar için 16 veri tamponunun ilki (SPI_W0'dan W15'e, 64 bayt)."
+            }
+          }
+        }
+      }
+    },
+    "lcd-cam": {
+      "name": "LCD ve kamera",
+      "short": "Büyük ekranlar ve kamera sensörleri için paralel 8 ya da 16 bitlik veri yolu",
+      "facts": {
+        "lcd-cam-bus": {
+          "text": "40 MHz'e kadar 8 ile 16 bit arası paralel çıkış (RGB, I8080, MOTO6800) ve DVP kameralardan giriş."
+        }
+      }
+    },
+    "twai": {
+      "name": "TWAI (CAN)",
+      "short": "Araba ve makinelerden gelen sağlam iki telli veri yolu",
+      "facts": {
+        "twai-spec": {
+          "text": "CAN 2.0 (ISO 11898-1) ile uyumludur. 11 ya da 29 bitlik kimlikler kullanır ve 1 kbit/s ile 1 Mbit/s arasında çalışır."
+        },
+        "twai-transceiver": {
+          "text": "Veri yoluna ulaşmak için harici bir alıcı-verici çipi gerekir."
+        }
+      }
+    },
+    "usb-otg": {
+      "name": "USB OTG",
+      "short": "Tam hızlı USB ana cihaz ya da cihaz: klavyeler, MIDI, bellek birimleri",
+      "facts": {
+        "usb-otg-speed": {
+          "text": "USB 2.0 tam hız (12 Mbit/s) ve düşük hız, ana cihaz ya da cihaz olarak. Çip üzerindeki bir alıcı-verici ile."
+        },
+        "usb-otg-shared": {
+          "text": "Çip üzerindeki USB alıcı-vericisini (GPIO19/20) USB Serial/JTAG portu ile paylaşır."
+        }
+      }
+    },
+    "usb-serial-jtag": {
+      "name": "USB Serial/JTAG",
+      "short": "İki pinde bir seri port ve bir hata ayıklayıcı, adaptör gerekmez",
+      "spark": {
+        "unit": "Mbps"
+      },
+      "facts": {
+        "usb-serial-jtag-what": {
+          "text": "Sabit bir USB cihazıdır: bir CDC-ACM seri portu ve hata ayıklayıcı için bir JTAG adaptörü. GPIO19 (D-) ve 20 (D+) üzerindedir."
+        },
+        "usb-serial-jtag-speed": {
+          "text": "Yalnız USB 2.0 tam hız: 12 Mbit/s. 480 Mbit/s yüksek hız desteklenmez."
+        },
+        "usb-serial-jtag-reset": {
+          "text": "Ana bilgisayar çipi USB üzerinden resetleyip indirme moduna alabilir. Bu yüzden BOOT düğmesi gerekmez."
+        },
+        "usb-serial-jtag-pins": {
+          "text": "GPIO19/20'yi düz GPIO olarak kullanmak bu portu kapatır."
+        }
+      },
+      "registers": {
+        "0": {
+          "fields": {
+            "0": {
+              "does": "Ana bilgisayardan bir bayt oku ya da göndermek için bir bayt yaz (paket başına 64'e kadar)."
+            }
+          }
+        },
+        "1": {
+          "fields": {
+            "0": {
+              "does": "Yazılanı gönder."
+            },
+            "1": {
+              "does": "Yazmak için yer var."
+            },
+            "2": {
+              "does": "Ana bilgisayardan bekleyen bayt sayısı."
+            }
+          }
+        },
+        "2": {
+          "fields": {
+            "0": {
+              "does": "Ana bilgisayardan bir paket geldi."
+            },
+            "1": {
+              "does": "Gönderme tamponu boş."
+            },
+            "2": {
+              "does": "Ana bilgisayar veri yolunu sıfırladı."
+            }
+          }
+        },
+        "3": {
+          "fields": {
+            "0": {
+              "does": "0 dahili PHY, 1 harici."
+            },
+            "1": {
+              "does": "D+ pull-up: bir cihazın bağlı olduğunu ana bilgisayara bildirir."
+            },
+            "2": {
+              "does": "Pedler üzerindeki USB işlevi."
+            }
+          }
+        }
+      }
+    },
+    "sdmmc": {
+      "name": "SD/MMC denetleyicisi",
+      "short": "SD kartlar ve eMMC ile 1, 4 ya da 8 bit modunda konuşur",
+      "facts": {
+        "sdmmc-spec": {
+          "text": "İki kart yuvası var (aynı anda değil). SD 3.0/3.01 ve MMC 4.51'e kadar destekler, 80 MHz'e kadar hızda."
+        }
+      }
+    },
+    "timers": {
+      "name": "Zamanlayıcılar",
+      "short": "52 bitlik bir sistem zamanlayıcısı ve dört 54 bitlik genel amaçlı zamanlayıcı",
+      "facts": {
+        "timers-systimer": {
+          "text": "52 bitlik sistem zamanlayıcısı kristalden gelen 16 MHz ile sayar ve işletim sistemine kendi tik sinyalini verir."
+        },
+        "timers-timg": {
+          "text": "Her biri iki 54 bitlik zamanlayıcıdan oluşan iki zamanlayıcı grubu. 16 bitlik ön bölücü, alarmlar ve otomatik yeniden yükleme vardır."
+        }
+      }
+    },
+    "wdt": {
+      "name": "Watchdog'lar",
+      "short": "Program takılınca çipi resetler",
+      "facts": {
+        "wdt-three": {
+          "text": "Üç dijital watchdog (her zamanlayıcı grubunda biri, bir tane de RTC'de) ve bir analog süper watchdog."
+        },
+        "wdt-boot": {
+          "text": "Flash'ten açılırken RTC watchdog ve ilk zamanlayıcı grubunun watchdog'u kendiliğinden açılır."
+        }
+      }
+    },
+    "ledc": {
+      "name": "LED PWM",
+      "short": "LED'leri kendi başına kısıp yumuşakça açıp kapatan sekiz PWM kanalı",
+      "spark": {
+        "unit": "kanal"
+      },
+      "facts": {
+        "ledc-channels": {
+          "text": "Dört zamanlayıcının sürdüğü sekiz PWM kanalı. Birkaç kanal aynı zamanlayıcıyı paylaşabilir."
+        },
+        "ledc-resolution": {
+          "text": "Görev oranında 14 bite kadar çözünürlük (veri sayfası: 1 ms periyot içinde 14 bit)."
+        },
+        "ledc-fade": {
+          "text": "Donanım yumuşak geçişi: görev oranı kendi kendine artar ya da azalır. Geçiş bitince bir kesme gelir."
+        },
+        "ledc-sleep": {
+          "text": "RC_FAST_CLK ile saatlenir, hafif uykuda PWM'ini çalışır tutar."
+        }
+      },
+      "registers": {
+        "0": {
+          "fields": {
+            "0": {
+              "does": "Bu kanalın takip ettiği dört zamanlayıcıdan hangisi."
+            },
+            "1": {
+              "does": "Çıkış açık."
+            },
+            "2": {
+              "does": "Yeni görev oranını ve ayarları uygula."
+            }
+          }
+        },
+        "1": {
+          "fields": {
+            "0": {
+              "does": "Görev oranı: çıkışın düşük olduğu sayı."
+            }
+          }
+        },
+        "2": {
+          "fields": {
+            "0": {
+              "does": "Bir yumuşak geçiş başlat."
+            },
+            "1": {
+              "does": "Yukarı (1) ya da aşağı (0) geçiş."
+            },
+            "2": {
+              "does": "Yumuşak geçiş adım sayısı."
+            }
+          }
+        },
+        "3": {
+          "fields": {
+            "0": {
+              "does": "Sayıcı aralığı: görev oranı çözünürlüğü bit cinsinden."
+            },
+            "1": {
+              "does": "Saat bölücü. Düşük 8 bit kesirli kısımdır."
+            }
+          }
+        },
+        "4": {
+          "fields": {
+            "0": {
+              "does": "Tüm zamanlayıcılar için saat: 1 APB_CLK, 2 RC_FAST_CLK, 3 XTAL_CLK."
+            }
+          }
+        }
+      }
+    },
+    "mcpwm": {
+      "name": "Motor kontrol PWM'i",
+      "short": "Motorlar ve güç katları için ölü zamanlı PWM çiftleri",
+      "facts": {
+        "mcpwm-units": {
+          "text": "İki MCPWM birimi var. Her birinde üç zamanlayıcı, üç operatör (her biri iki çıkışlı), hata girişleri ve bir yakalama modülü bulunur."
+        }
+      }
+    },
+    "rmt": {
+      "name": "RMT",
+      "short": "Tam darbe dizilerini çalar ve kaydeder: IR kumandalar, RGB LED'ler",
+      "spark": {
+        "unit": "kanal"
+      },
+      "facts": {
+        "rmt-channels": {
+          "text": "Sekiz kanal: 0-3 gönderir, 4-7 alır."
+        },
+        "rmt-ram": {
+          "text": "Her darbe bir seviye ile bir süreden oluşur. Kanallar 384 × 32 bitlik kelimelik RAM'i paylaşır. Varsayılan olarak kanal başına 48 kelime düşer."
+        },
+        "rmt-carrier": {
+          "text": "IR kumandaların ihtiyacı olduğu gibi, gönderirken bir taşıyıcı dalga ekleyebilir, almada ise çıkarabilir."
+        },
+        "rmt-rgb": {
+          "text": "Kartın adreslenebilir RGB LED'i RMT darbe dizileriyle sürülür. Sende GPIO38 mi yoksa GPIO48 mi olduğunu kontrol et."
+        }
+      },
+      "registers": {
+        "0": {
+          "fields": {
+            "0": {
+              "does": "Göndermeye başla."
+            },
+            "1": {
+              "does": "Saat bölücü: bir tikin uzunluğu."
+            },
+            "2": {
+              "does": "Kanalın kullandığı 48 kelimelik RAM bloğu sayısı."
+            },
+            "3": {
+              "does": "Bir taşıyıcı dalga ekle."
+            }
+          }
+        },
+        "1": {
+          "fields": {
+            "0": {
+              "does": "Kanalın o anki durumu."
+            },
+            "1": {
+              "does": "Veri bitti (sarma modu kapalı)."
+            }
+          }
+        },
+        "2": {
+          "fields": {
+            "0": {
+              "does": "Saat kaynağı: 1 APB_CLK, 2 RC_FAST_CLK, 3 XTAL_CLK."
+            },
+            "1": {
+              "does": "Saat bölücünün tam kısmı."
+            },
+            "2": {
+              "does": "Yazmaç saati açık."
+            }
+          }
+        }
+      }
+    },
+    "pcnt": {
+      "name": "Darbe sayıcı",
+      "short": "Kenarları kendi başına sayar: encoder'lar, debimetreler",
+      "facts": {
+        "pcnt-units": {
+          "text": "Her biri iki kanallı dört sayıcı birimi, parazit filtreleri ve 40 MHz'e kadar darbe."
+        }
+      }
+    },
+    "adc": {
+      "name": "SAR ADC",
+      "short": "Gerilimi sayıya çeviren iki 12 bitlik dönüştürücü",
+      "spark": {
+        "unit": "kanal"
+      },
+      "facts": {
+        "adc-count": {
+          "text": "20 pinde iki 12 bitlik SAR ADC var: ADC1 GPIO1-10 üzerinde, ADC2 GPIO11-20 üzerinde."
+        },
+        "adc-atten": {
+          "text": "Referans yaklaşık 1,1 V'tur. Zayıflatma (0 dB, 2,5 dB, 6 dB ya da 12 dB) ölçüm aralığını genişletir. Kalibre edilmiş 12 dB, yaklaşık 2,9 V'a kadar okur."
+        },
+        "adc-rate": {
+          "text": "Saniyede 100 bin örneğe kadar. DIG ADC1, örnekleri DMA ile belleğe akıtabilir."
+        },
+        "adc-accuracy": {
+          "text": "Kalibrasyondan sonra hata, 0 dB'de 5 mV, 12 dB'de 50 mV içindedir. Ortalama almak yardımcı olur."
+        },
+        "adc-wifi": {
+          "text": "Wi-Fi açıkken ADC2 kullanılamaz. Analog girişleri ADC1'e bağla."
+        },
+        "adc-dig2": {
+          "text": "ADC2'nin dijital (DMA) denetleyicisi düzgün çalışmaz. Bu yüzden sürekli örnekleme ADC1 ile yapılır."
+        }
+      },
+      "registers": {
+        "0": {
+          "fields": {
+            "0": {
+              "does": "ADC1 sonucu."
+            },
+            "1": {
+              "does": "Dönüşüm bitti."
+            },
+            "2": {
+              "does": "Bir dönüşüm başlat (yazılımdan başlatma)."
+            },
+            "3": {
+              "does": "Ölçülecek pin, bit haritası olarak."
+            }
+          }
+        },
+        "1": {
+          "fields": {
+            "0": {
+              "does": "ADC1 kanalı başına 2 bit zayıflatma."
+            }
+          }
+        },
+        "2": {
+          "fields": {
+            "0": {
+              "does": "1: dönüşümleri yazılımdan başlat."
+            },
+            "1": {
+              "does": "ADC saat bölücü."
+            },
+            "2": {
+              "does": "Taranacak desen tablosu girişi sayısı."
+            }
+          }
+        },
+        "3": {
+          "fields": {
+            "0": {
+              "does": "Radyonun ADC2 kullanımının önceliği."
+            },
+            "1": {
+              "does": "ADC2 okumalarının senin önceliğin."
+            }
+          }
+        }
+      }
+    },
+    "touch": {
+      "name": "Dokunma sensörü",
+      "short": "Kapasitans ile parmağı hisseden on dört pin",
+      "spark": {
+        "unit": "kanal"
+      },
+      "facts": {
+        "touch-pins": {
+          "text": "14 dokunma kanalı var: GPIO1-14 üzerinde T1-T14. Ayrıca gürültüyü ölçen dahili bir T0 vardır."
+        },
+        "touch-hw": {
+          "text": "Bir durum makinesi pinleri kendi başına tarar. Donanım, filtrelerle birlikte bir eşik değerine göre 'dokunuldu' kararını verebilir."
+        },
+        "touch-sleep": {
+          "text": "Dokunma, CPU uyurken de çalışır ve derin uykudan uyandırabilir."
+        },
+        "touch-water": {
+          "text": "En fazla üç pin yakınlık algılayabilir. Nem toleransı ve su reddi yerleşiktir."
+        },
+        "touch-cs": {
+          "text": "Conducted Susceptibility testini geçemedi. Gürültülü besleme hatları sahte dokunmalara yol açabilir."
+        }
+      },
+      "registers": {
+        "0": {
+          "fields": {
+            "0": {
+              "does": "1: taramaları yazılımdan başlat, 0: zamanlayıcıdan."
+            },
+            "1": {
+              "does": "Bir tarama başlat (yazılımdan başlatma)."
+            },
+            "2": {
+              "does": "Dokunma saati açık."
+            }
+          }
+        },
+        "1": {
+          "fields": {
+            "0": {
+              "does": "Hangi dokunma kanallarının bildirim vereceği."
+            },
+            "1": {
+              "does": "Ham, kıyaslama ya da yumuşatılmış veri okunsun."
+            }
+          }
+        },
+        "2": {
+          "fields": {
+            "0": {
+              "does": "n numaralı dokunma pini için parmak eşiği."
+            }
+          }
+        },
+        "3": {
+          "fields": {
+            "0": {
+              "does": "Hangi pinlere dokunulduğu, her biri bir bit."
+            },
+            "1": {
+              "does": "Ölçüm bitti."
+            }
+          }
+        },
+        "4": {
+          "fields": {
+            "0": {
+              "does": "n numaralı dokunma pininin okuması."
+            }
+          }
+        }
+      }
+    },
+    "temp-sensor": {
+      "name": "Sıcaklık sensörü",
+      "short": "Çipin kendi sıcaklığını ölçer",
+      "facts": {
+        "temp-sensor-range": {
+          "text": "Çipin içinde -40 ile 125 °C arasını ölçer. Odadan sıcak okur, yük altında bu fark artar."
+        }
+      }
+    },
+    "wifi": {
+      "name": "Wi-Fi",
+      "short": "2,4 GHz 802.11b/g/n: istasyon, erişim noktası ya da ikisi birden",
+      "spark": {
+        "unit": "Mbps"
+      },
+      "facts": {
+        "wifi-standard": {
+          "text": "2,4 GHz'de 802.11b/g/n (2412-2484 MHz), 20 ya da 40 MHz kanallar ve 150 Mbps'e kadar hız."
+        },
+        "wifi-modes": {
+          "text": "İstasyon, SoftAP ya da ikisi aynı anda. Donanımda WPA2 ve WPA3 güvenliği vardır."
+        },
+        "wifi-power": {
+          "text": "802.11b ile +21 dBm'e kadar çıkış gücü. Gönderirken 340 mA'e kadar akım çeker, bu yüzden besleme en az 500 mA vermelidir."
+        },
+        "wifi-adc2": {
+          "text": "Wi-Fi açıkken ADC2 (GPIO11-20) senin okumaların için kullanılamaz."
+        },
+        "wifi-pll": {
+          "text": "Radyo yalnız CPU saati PLL'den geldiğinde çalışır."
+        }
+      },
+      "registers": {
+        "0": {
+          "fields": {
+            "0": {
+              "does": "CPU saat kaynağı: Wi-Fi için 1 (PLL) gerekir."
+            },
+            "1": {
+              "does": "Kristal frekansı MHz cinsinden (40)."
+            }
+          }
+        },
+        "1": {
+          "fields": {
+            "0": {
+              "does": "ADC2'yi radyoya devret."
+            },
+            "1": {
+              "does": "Radyonun ADC2 üzerindeki önceliği."
+            }
+          }
+        },
+        "2": {
+          "fields": {
+            "0": {
+              "does": "Uyandırma kaynakları. Wi-Fi biti (0x20), radyonun çipi hafif uykudan uyandırmasına izin verir."
+            }
+          }
+        }
+      }
+    },
+    "ble": {
+      "name": "Bluetooth LE",
+      "short": "Bluetooth 5 Low Energy: sinyal vericileri, telefonlar, klavyeler, MIDI",
+      "spark": {
+        "unit": "Mbps"
+      },
+      "facts": {
+        "ble-version": {
+          "text": "Bluetooth 5 LE ve Bluetooth Mesh, 125 kbps, 500 kbps, 1 Mbps ya da 2 Mbps hızlarında."
+        },
+        "ble-range": {
+          "text": "20 dBm'e kadar çıkış gücü. Kodlanmış PHY (125 kbps), uzun menzil için -104,5 dBm'e kadar duyar."
+        },
+        "ble-features": {
+          "text": "Genişletilmiş ve çoklu yayın kümeleri, aynı anda hem merkez hem çevre birimi olarak birkaç bağlantı, bağlantı katmanı şifrelemesi."
+        },
+        "ble-antenna": {
+          "text": "Wi-Fi ve Bluetooth aynı anteni paylaşır. Yerleşik birlikte çalışma mekanizması sıra sıra kullanır."
+        }
+      },
+      "registers": {
+        "0": {
+          "fields": {
+            "0": {
+              "does": "Radyo için düşük güç saatini aç."
+            },
+            "1": {
+              "does": "32 kHz kristali bu saat olarak kullan."
+            },
+            "2": {
+              "does": "Bölünmüş RC_FAST_CLK'yi kullan (varsayılan)."
+            }
+          }
+        },
+        "1": {
+          "fields": {
+            "0": {
+              "does": "CPU saat kaynağı: Bluetooth için 1 (PLL) gerekir."
+            }
+          }
+        },
+        "2": {
+          "fields": {
+            "0": {
+              "does": "Uyandırma kaynakları. BT biti (0x400), Bluetooth'un çipi hafif uykudan uyandırmasına izin verir."
+            }
+          }
+        }
+      }
+    }
+  },
+  "pins": {
+    "0": {
+      "strapping": "Önyükleme modu: yüksekse senin kart yazılımını çalıştırır, düşükse (GPIO46 de düşükken) yükleme moduna girer"
+    },
+    "3": {
+      "strapping": "JTAG kaynağı, yalnız eFuse'lar istediğinde okunur"
+    },
+    "41": {
+      "strapping": "Flash gerilimi (VDD_SPI): düşükse 3,3 V, yüksekse 1,8 V verir"
+    },
+    "42": {
+      "strapping": "Önyükleme modu (GPIO0 ile birlikte) ve ROM açılış mesajları"
+    }
+  },
+  "gotchas": {
+    "strapping-pins": {
+      "title": "Reset anında dört pin okunur",
+      "text": "GPIO0, GPIO3, GPIO45 ve GPIO46, çip resetten çıktığı anda okunur. Önyükleme modunu, flash gerilimini, ROM günlüğünü ve JTAG kaynağını bunlar seçer. Bağlı olan her şey, açılışta bu pinleri yanlış yöne çekmemelidir. Resetten sonra bunlar yeniden sıradan pin olur."
+    },
+    "gpio3-floating": {
+      "title": "GPIO3'ün reset anında pull-up direnci yoktur",
+      "text": "GPIO0'da zayıf bir pull-up, GPIO45 ve GPIO46'da zayıf pull-down vardır. GPIO3 ise havada kalır. eFuse'lar JTAG kaynağını seçtiğinde, dış devre onu net bir seviyede tutmalıdır."
+    },
+    "adc2-wifi": {
+      "title": "Wi-Fi açıkken ADC2 çalışmaz",
+      "text": "ADC2 kanalları (GPIO11-20) Wi-Fi ile aynı anda kullanılamaz. Radyo ADC2'yi bir arabirim üzerinden paylaşır. Analog sensörleri ADC1'e (GPIO1-10) bağla. Ses deneylerinde GPIO6'da da böyle yapılır."
+    },
+    "flash-pins": {
+      "title": "GPIO26-32 flash'e aittir",
+      "text": "Bu yedi pin, modül içindeki flash ve PSRAM'e giden SPI veri yolunu taşır. Espressif bunları başka bir şey için kullanmamayı söyler. DevKitC pin başlığı da bunları dışarı çıkarmaz."
+    },
+    "octal-psram-pins": {
+      "title": "Sekizli PSRAM'li modüllerde GPIO35-37 doludur",
+      "text": "R8 ve R16V modüllerinde (8 ya da 16 MB sekizli PSRAM, bu tezgâhtaki N16R8 gibi) GPIO35, 36 ve 37, PSRAM ile konuşur. Pin başlığında yerlerdedir ama senin değildir."
+    },
+    "r16v-1v8": {
+      "title": "R16V modüllerinde GPIO47 ve 48, 1,8 V ile çalışır",
+      "text": "ESP32-S3R16V çipli modüller flash gerilimini 1,8 V'a ayarlar. GPIO47/48 bu besleme hattını paylaşır. Bu pinlerde 3,3 V'luk bir parça yanlış seviyeler görür."
+    },
+    "not-5v-tolerant": {
+      "title": "Pinler 5 V'a dayanıklı değildir",
+      "text": "Yüksek bir giriş, pinin besleme geriliminin artı 0,3 V'una kadar çıkabilir. 3,3 V'luk bir kartta bu yaklaşık 3,6 V demektir. Güç pinleri en fazla 3,6 V'a dayanır. Bir sensörden ya da Arduino'dan gelen 5 V çipi bozabilir. Seviye dönüştürücü ya da gerilim bölücü kullan."
+    },
+    "usb-pins": {
+      "title": "GPIO19 ve 20 USB hatlarıdır",
+      "text": "Varsayılan olarak GPIO19 (D-) ve GPIO20 (D+), çipin yerleşik USB Serial/JTAG portuna aittir. Bunları düz GPIO yaparsan bu USB portu kapanır."
+    },
+    "uart0-boot-log": {
+      "title": "GPIO43 ve 44 açılış günlüğünü taşır",
+      "text": "TX 43 ve RX 44, UART0'dır. ROM açılış mesajlarını buraya yazar. DevKitC'de bunlar, COM portunun arkasındaki USB-UART köprüsüne gider. Onlara başka bir şey bağlarsan seri monitörü kaybedersin ve cihaz açılış mesajlarını görür."
+    },
+    "jtag-pins": {
+      "title": "GPIO39-42 JTAG olabilir",
+      "text": "MTCK, MTDO, MTDI ve MTMS, GPIO39-42 üzerindedir. Varsayılan olarak boşturlar, çünkü JTAG USB üzerinden gider. Ama harici bir hata ayıklayıcı bunları kullanır."
+    },
+    "power-up-glitch": {
+      "title": "Bazı pinler açılışta kısa süre düşer",
+      "text": "Çip açılırken GPIO1-20, kısa bir düşük seviye (yaklaşık 60 µs) verir. GPIO18-20 ayrıca kısa süre yüksek olur. Bir röleyi ya da motor sürücüsünü, pull direnci olmadan bunlardan doğrudan sürme."
+    },
+    "drive-17-18": {
+      "title": "GPIO17 ve 18'de sürüş gücü farklı sayılır",
+      "text": "Çoğu pinde sürüş seviyesi 1 yaklaşık 10 mA, 2 ise yaklaşık 20 mA demektir. GPIO17 ve 18'de ikisi yer değiştirir. Bu yüzden varsayılan seviye (2) yaklaşık 20 değil, 10 mA verir."
+    },
+    "deep-sleep-wake-pins": {
+      "title": "Derin uykudan yalnız GPIO0-21 uyandırabilir",
+      "text": "Derin uykuda yalnız RTC alanı açık kalır. Bu yüzden çipi yalnız RTC GPIO'ları (0-21) uyandırabilir. GPIO38'e bağlı bir düğme uyandırmaz."
+    },
+    "rgb-led-pin": {
+      "title": "RGB LED, GPIO38 ya da GPIO48'dedir",
+      "text": "DevKitC-1 v1.1 rehberi adreslenebilir RGB LED'i GPIO38'e koyar. Birçok kart ise onu GPIO48'e bağlar. LED karanlık kalırsa diğer pini dene."
+    },
+    "wifi-needs-pll": {
+      "title": "Radyo PLL saatine ihtiyaç duyar",
+      "text": "Wi-Fi ve Bluetooth LE yalnız CPU saati PLL'den geldiğinde çalışır. Güç tasarrufu için CPU'yu kristalden ya da RC osilatöründen çalıştırırsan radyo durur."
+    },
+    "efuse-one-way": {
+      "title": "eFuse'lar yalnız bir kez yakılabilir",
+      "text": "1 yapılmış bir eFuse biti asla 0'a dönmez. Yanlış flash gerilimi ya da JTAG fuse'unu yakmak kalıcıdır. Bu yüzden yakmadan önce iki kez oku."
+    },
+    "touch-not-cs-tested": {
+      "title": "Dokunma sensörü gürültü testini geçemedi",
+      "text": "Espressif, dokunma sensörünün Conducted Susceptibility testini geçemediğini not eder. Bu yüzden gürültülü güç ya da uzun kablolar sahte dokunmalar üretebilir. Tezgâhta sorun olmaz, ama bir üründe iki kez düşün."
+    }
+  },
+  "memory": {
+    "dcache": {
+      "name": "Harici bellek, veri tarafı",
+      "note": "Veri önbelleği üzerinden PSRAM'e (okuma ve yazma) ve flash'a (yalnız okuma) açılan 32 MB'lık pencere. Kare ya da ses klibi gibi büyük tamponlar burada yaşar."
+    },
+    "sram1-data": {
+      "name": "Dahili SRAM 1 (veri yolu)",
+      "note": "416 KB. Komut yolundaki SRAM 1 ile aynı bellek. Değişkenlerin, heap'in ve yığınların burada yaşar."
+    },
+    "sram2": {
+      "name": "Dahili SRAM 2",
+      "note": "Veri yolunda 64 KB. Bunun 32 ya da 64 KB'ı veri önbelleği olabilir. O zaman CPU o kısmı kullanamaz."
+    },
+    "rom1-data": {
+      "name": "Dahili ROM 1 (veri yolu)",
+      "note": "128 KB. Komut yolundaki ROM 1 ile aynı kelimeler."
+    },
+    "rom0": {
+      "name": "Dahili ROM 0",
+      "note": "256 KB açılış ve düşük seviyeli kod, fabrikada sabitlenmiştir."
+    },
+    "rom1-instr": {
+      "name": "Dahili ROM 1 (komut yolu)"
+    },
+    "sram0": {
+      "name": "Dahili SRAM 0",
+      "note": "Komut yolunda 32 KB. Bunun 16 ya da 32 KB'ı komut önbelleği olabilir."
+    },
+    "sram1-instr": {
+      "name": "Dahili SRAM 1 (komut yolu)",
+      "note": "Veri yolundaki SRAM 1 ile aynı 416 KB, komut belleği olarak görülür. Dahili RAM'e yerleştirilen kod buradan çalışır."
+    },
+    "icache": {
+      "name": "Harici bellek, komut tarafı",
+      "note": "Komut önbelleği üzerinden flash'a (ya da PSRAM'e) açılan 32 MB'lık pencere, 64 KB sayfalar halinde. Flash'ta saklanan kod buradan çalışır."
+    },
+    "rtc-slow": {
+      "name": "RTC SLOW belleği",
+      "note": "Derin uykuda kalan ve ULP yardımcı işlemcisinin kullanabildiği 8 KB. TRM metni 0x5000_E000 ~ 0x5001_FFFF de yazar. Tablosu ve şekli ise bu aralığı verir."
+    },
+    "peripherals": {
+      "name": "Çevre birimi yazmaçları",
+      "note": "Her çevre biriminin yazmaçları, her biri 4 KB: UART0 0x6000_0000 adresinde, GPIO 0x6000_4000 adresinde, LED PWM 0x6001_9000... adresinde."
+    },
+    "rtc-fast": {
+      "name": "RTC FAST belleği",
+      "note": "Yalnız ana CPU için 8 KB. Derin uykuda da korunur."
+    }
+  },
+  "clocks": {
+    "nodes": {
+      "xtal": {
+        "name": "XTAL_CLK, ana kristal"
+      },
+      "pll": {
+        "name": "PLL_CLK"
+      },
+      "rc-fast": {
+        "name": "RC_FAST_CLK, hızlı RC osilatörü"
+      },
+      "rc-slow": {
+        "name": "RC_SLOW_CLK, yavaş RC osilatörü"
+      },
+      "xtal32k": {
+        "name": "XTAL32K_CLK, 32 kHz kristal"
+      },
+      "rc-fast-div": {
+        "name": "RC_FAST_DIV_CLK (RC_FAST ÷ 256)"
+      },
+      "cpu-clk": {
+        "name": "CPU_CLK"
+      },
+      "apb-clk": {
+        "name": "APB_CLK"
+      },
+      "pll-f160m": {
+        "name": "PLL_F160M_CLK"
+      },
+      "pll-d2": {
+        "name": "PLL_D2_CLK"
+      },
+      "crypto-pwm-clk": {
+        "name": "CRYPTO_PWM_CLK"
+      },
+      "rtc-slow-clk": {
+        "name": "RTC_SLOW_CLK"
+      },
+      "rtc-fast-clk": {
+        "name": "RTC_FAST_CLK"
+      },
+      "cpu": {
+        "name": "CPU çekirdekleri"
+      },
+      "radio": {
+        "name": "Wi-Fi ve Bluetooth LE"
+      },
+      "uart": {
+        "name": "UART"
+      },
+      "spi": {
+        "name": "SPI"
+      },
+      "i2c": {
+        "name": "I2C"
+      },
+      "i2s": {
+        "name": "I2S"
+      },
+      "ledc": {
+        "name": "LED PWM"
+      },
+      "rmt": {
+        "name": "RMT"
+      },
+      "saradc": {
+        "name": "SAR ADC"
+      },
+      "crypto": {
+        "name": "Şifreleme hızlandırıcıları"
+      },
+      "systimer": {
+        "name": "Sistem zamanlayıcısı"
+      },
+      "rtc": {
+        "name": "RTC: güç yöneticisi, RTC watchdog"
+      },
+      "ulp": {
+        "name": "ULP yardımcı işlemcisi, çip üzerindeki sensörler"
+      }
+    },
+    "edges": {
+      "1": {
+        "label": "÷ (n+1), reset anında 20 MHz"
+      },
+      "2": {
+        "label": "÷ 2, 3, 4 veya 6"
+      },
+      "4": {
+        "label": "÷ 256"
+      },
+      "23": {
+        "label": "hafif uykuda PWM çalışmaya devam eder"
+      },
+      "32": {
+        "label": "÷ 2"
+      }
+    }
+  },
+  "power": {
+    "active-wifi-tx": {
+      "name": "Aktif, Wi-Fi gönderiyor",
+      "keepsOn": [
+        "CPU",
+        "RF devreleri",
+        "Wi-Fi",
+        "tüm çevre birimleri"
+      ],
+      "note": "Durmadan gönderirken en yüksek akım: 21 dBm'de 802.11b için 340 mA, 802.11g/n için yaklaşık 285 mA."
+    },
+    "active-ble-tx": {
+      "name": "Aktif, Bluetooth LE gönderiyor",
+      "keepsOn": [
+        "CPU",
+        "RF devreleri",
+        "Bluetooth LE",
+        "tüm çevre birimleri"
+      ],
+      "note": "0 dBm'de 176 mA. -15 dBm'de 116 mA'den başlayıp 21 dBm'de 335 mA'e kadar çıkar."
+    },
+    "active-rx": {
+      "name": "Aktif, dinliyor",
+      "keepsOn": [
+        "CPU",
+        "RF devreleri",
+        "tüm çevre birimleri"
+      ],
+      "note": "CPU boştayken Wi-Fi alımı 88 mA (40 MHz kanalda 91 mA), Bluetooth LE alımı 93 mA çeker."
+    },
+    "modem-sleep": {
+      "name": "Modem uykusu",
+      "keepsOn": [
+        "CPU",
+        "dijital çevre birimleri",
+        "RTC"
+      ],
+      "note": "Radyo kapalı, CPU 240 MHz'de çalışıyor: boştayken 32,9 mA, iki çekirdek de meşgulken 66,2 mA, her çevre birimi saati açıkken 107,9 mA'e kadar. Çip, reset sonrası bu modda başlar."
+    },
+    "light-sleep": {
+      "name": "Hafif uyku",
+      "keepsOn": [
+        "RTC",
+        "RAM içeriği",
+        "dijital çevre birimleri (isteğe bağlı)"
+      ],
+      "note": "CPU durur, flash beslemesi ve Wi-Fi kapanır. Bir zamanlayıcı, bir pin, UART ya da radyo onu uyandırabilir. 8 MB sekizli PSRAM için yaklaşık 0,14 mA ekle."
+    },
+    "deep-sleep-ulp": {
+      "name": "ULP çalışırken derin uyku",
+      "keepsOn": [
+        "RTC",
+        "RTC belleği",
+        "ULP yardımcı işlemcisi"
+      ],
+      "note": "ULP-FSM açıkken 0,17 mA, ULP-RISC-V açıkken 0,19 mA. ULP ya da dokunma sensörü yalnız ara sıra uyandırıyorsa 18 µA."
+    },
+    "deep-sleep": {
+      "name": "Derin uyku",
+      "keepsOn": [
+        "RTC",
+        "RTC belleği"
+      ],
+      "note": "Yalnız RTC açık kalır: RTC çevre birimleriyle 8 µA, yalnız RTC belleğiyle 7 µA."
+    },
+    "power-off": {
+      "name": "Güç kapalı",
+      "keepsOn": [],
+      "note": "CHIP_PU (EN pini) düşük tutulursa çip kapanır ve yaklaşık 1 µA çeker."
+    }
+  }
+}

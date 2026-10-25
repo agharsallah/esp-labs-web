@@ -1,0 +1,241 @@
+{
+  "03": {
+    "title": "Ekran",
+    "heading": "1,9″ IPS ekran",
+    "goal": "ST7789 ekranını SPI üzerinden sür. Her kareyi PSRAM içinde çiz, sonra tek seferde gönder ki hiçbir şey titremesin.",
+    "learn": [
+      "SPI veri yolu",
+      "RGB565 renk",
+      "kare tamponu",
+      "PSRAM"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "BLK"
+      },
+      "2": {
+        "role": "RES"
+      },
+      "3": {
+        "role": "DC"
+      },
+      "4": {
+        "role": "CS"
+      },
+      "5": {
+        "role": "SDA"
+      },
+      "6": {
+        "role": "SCL"
+      },
+      "7": {
+        "role": "GND"
+      }
+    },
+    "wiring": {
+      "head": [
+        "Ekran pini",
+        "ESP32-S3",
+        "Görevi"
+      ],
+      "rows": [
+        [
+          "GND",
+          "GND",
+          "toprak (sol alttaki pin)"
+        ],
+        [
+          "VCC",
+          "3V3",
+          "güç (sol üstteki pin)"
+        ],
+        [
+          "SCL",
+          "GPIO 12",
+          "SPI saati"
+        ],
+        [
+          "SDA",
+          "GPIO 11",
+          "SPI verisi (MOSI)"
+        ],
+        [
+          "RES",
+          "GPIO 8",
+          "sıfırlama (reset)"
+        ],
+        [
+          "DC",
+          "GPIO 9",
+          "veri / komut"
+        ],
+        [
+          "CS",
+          "GPIO 10",
+          "çip seçimi (chip select)"
+        ],
+        [
+          "BLK",
+          "GPIO 7",
+          "arka ışık"
+        ]
+      ]
+    },
+    "panels": {
+      "0": {
+        "title": "Ekran böyle bağlanır"
+      }
+    },
+    "steps": [
+      "USB'yi çek. Ekranın 8 pinini tabloda gösterildiği gibi bağla (dişi-erkek jumper kablo).",
+      "VCC'nin <b>3V3</b>'e gittiğini, 5V'a gitmediğini iki kez kontrol et.",
+      "Komutu çalıştır. 2,5 saniye boyunca kırmızı, yeşil ve mavi çubuklar görmelisin.",
+      "Sonra tezgâh osiloskobu gelir: hareket eden bir sinüs dalgası, çalışma süresi ve saniyedeki kare sayısı.",
+      "Monitörden gelen fps değerini ve garip görünen her şeyi Claude'a söyle."
+    ],
+    "note": "Hepsi beyaz ya da siyah mı? BLK ve RES'i kontrol et. Renkler ters mi? Kodda invertDisplay ayarını değiştiriyoruz. Bozuk görüntü mü? SPI'ı 20 MHz'e indir."
+  },
+  "03b": {
+    "title": "Gösteri",
+    "heading": "Ekranı sınırına kadar zorla",
+    "variants": {
+      "boot": {
+        "label": "Varyasyon 1 · BOOT düğmesi",
+        "short": "bağlanacak bir şey yok",
+        "goal": "Bağlantı 03 numaralı dersle aynı. Dört sahne, S3'ün neler çizebildiğini gösterir: gerçek zamanlı 3B, piksel başına efektler, parçacıklar ve çipinin canlı panosu. Karttaki BOOT düğmesi sahneleri değiştirir.",
+        "learn": [
+          "3B projeksiyon",
+          "arama tabloları",
+          "parçacık sistemleri",
+          "dahili RAM ve PSRAM",
+          "ölçüm"
+        ],
+        "pins": {
+          "0": {
+            "role": "VCC"
+          },
+          "1": {
+            "role": "BLK"
+          },
+          "2": {
+            "role": "RES"
+          },
+          "3": {
+            "role": "DC"
+          },
+          "4": {
+            "role": "CS"
+          },
+          "5": {
+            "role": "SDA"
+          },
+          "6": {
+            "role": "SCL"
+          },
+          "7": {
+            "role": "GND"
+          },
+          "8": {
+            "role": "BOOT"
+          }
+        },
+        "steps": [
+          "Ekranı 03 numaralı dersteki gibi bağlı bırak. Eklenecek yeni bir şey yok.",
+          "Yukarıdaki komutla yükle (ya da Claude'a “go” de, o çalıştırır).",
+          "3B simidi izle, sonra Plazma, Havai fişek ve Canlı pano arasında geçmek için <b>BOOT</b>'a bas.",
+          "BOOT'u uzun bas (0,6 sn) ve 12 saniyelik otomatik geçişi durdur ya da yeniden başlat.",
+          "<code>uv run pio device monitor</code> komutunu aç ve <code>scene 2</code>, <code>hud</code>, <code>auto off</code> yaz.",
+          "Her sahne için fps, çizim ms ve gönderme ms değerlerini not al ve Claude'a söyle. Bu veriler hız dersinde kullanılacak."
+        ],
+        "note": "BOOT yalnızca açılışta önemlidir. RST'ye basarken ya da USB takarken basılı tutma, yoksa çip flash modunda bekler. Olursa sadece RST'ye bas."
+      },
+      "button": {
+        "label": "Varyasyon 2 · Basmalı düğme",
+        "short": "GPIO 5'e 2 ekstra kablo",
+        "goal": "Aynı dört sahne, bu kez GPIO 5'teki kendi basmalı düğmenle yönetilir: tek tıklama, çift tıklama, uzun basış. Ekran 8 kabloyla çıkış, düğme 2 kabloyla giriştir. Bu varyasyon ikisini birlikte gösterir.",
+        "learn": [
+          "girişler ve çıkışlar",
+          "pull-up dirençleri",
+          "kesmeler",
+          "yazılımsal süzme (debounce)",
+          "hareketler"
+        ],
+        "pins": {
+          "0": {
+            "role": "VCC"
+          },
+          "1": {
+            "role": "BLK"
+          },
+          "2": {
+            "role": "RES"
+          },
+          "3": {
+            "role": "DC"
+          },
+          "4": {
+            "role": "CS"
+          },
+          "5": {
+            "role": "SDA"
+          },
+          "6": {
+            "role": "SCL"
+          },
+          "7": {
+            "role": "GND"
+          },
+          "8": {
+            "role": "BTN"
+          },
+          "9": {
+            "role": "BOOT"
+          }
+        },
+        "wiring": {
+          "title": "Düğme bağlantısı (2 yeni kablo)",
+          "head": [
+            "Nereden",
+            "Nereye",
+            "Nerede"
+          ],
+          "rows": [
+            [
+              "düğmenin A bacağı (herhangi bir köşe)",
+              "GPIO 5",
+              "genişleme kartı: 5 yazılı yuva (4 ve 5 yan yana, etikete bak). Kart breadboard üzerindeyse pin 5 sırasında boş bir delik"
+            ],
+            [
+              "düğmenin D bacağı (A'nın çaprazındaki bacak)",
+              "GND",
+              "herhangi bir GND yuvası ya da terminali"
+            ]
+          ]
+        },
+        "panels": {
+          "0": {
+            "title": "ESP32'de bağlantı: ekran + düğme"
+          },
+          "1": {
+            "title": "Ekran ve düğme"
+          },
+          "2": {
+            "title": "Düğme nasıl bağlanır"
+          }
+        },
+        "steps": [
+          "USB'yi çek. Ekranı 03 numaralı dersteki gibi bağlı bırak.",
+          "Düğmeyi breadboard'a tak. Ortadaki boşluğu aşsın ve karttan uzak tarafa gelsin.",
+          "A bacağından ESP32'nin <b>pin 5</b>'ine jumper kablo çek. Genişleme kartında bu, BLK kablosunun (7) iki yuva ilerisindeki 5 yazılı yuvadır. <b>Çapraz</b> D bacağından herhangi bir <b>GND</b>'ye jumper kablo çek. Breadboard delikleri ESP32'ye bağlı değildir, bu yüzden iki kablo da ESP32'nin kendi yuvalarında bitmelidir.",
+          "Tak ve yukarıdaki komutla yükle (ya da Claude'a “go” de).",
+          "Düğmeye bas: <b>tek tıklama</b> sonraki sahne, <b>çift tıklama</b> önceki, <b>uzun basış</b> otomatik geçişi açar ya da kapatır. BOOT de aynısını yapar.",
+          "<code>uv run pio device monitor</code> komutunu aç: her tıklama, süzdüğü sekme sayısını günlüğe yazar."
+        ],
+        "note": "Düğme hiç tepki vermiyor mu? Sinyal kablosunun komşu 4 değil, gerçekten 5'te bittiğini kontrol et. İki kablonun da breadboard deliğinde değil ESP32'de bittiğini doğrula. Hep “basılı” görünüyor mu? Çapraz karşılıklı bacakları kullan."
+      }
+    }
+  }
+}

@@ -1,0 +1,121 @@
+{
+  "sections": {
+    "goal": {
+      "title": "Amaç",
+      "short": "Amaç"
+    },
+    "explain": {
+      "short": "Nasıl çalışır",
+      "shortNumbered": "Açıklama {{number}}"
+    },
+    "wiring": {
+      "title": "Bağlantılar",
+      "short": "Bağla"
+    },
+    "commands": {
+      "title": "Komutlar, sırayla",
+      "short": "Komutlar"
+    },
+    "steps": {
+      "title": "Adımlar",
+      "short": "Adımlar"
+    },
+    "preview": {
+      "title": "Önizleme: ne görmelisin",
+      "short": "Önizleme"
+    },
+    "board": {
+      "short": "Pin düzeni"
+    }
+  },
+  "nav": {
+    "label": "Bu sayfada"
+  },
+  "header": {
+    "lessonId": "Ders {{id}}",
+    "eyebrow": "{{track}} · {{total}} dersten {{index}}. ders",
+    "goal": "Amaç",
+    "doneWhen": "Şunda bitirmiş olursun",
+    "onBoard": "Kartta",
+    "learn": "Öğreneceksin",
+    "allTicked": "Tüm adımlar işaretli",
+    "ticked_one": "{{count}} adımdan {{ticked}} tanesi işaretli",
+    "ticked_other": "{{count}} adımdan {{ticked}} tanesi işaretli"
+  },
+  "pins": {
+    "label": "Kartta",
+    "usb": "COM portu"
+  },
+  "commands": {
+    "intro": "Bunları seri monitöre yaz (<code>uv run pio device monitor</code>), gri etiket başka bir şey demiyorsa. Renkli etiket, program çalışırken kartın yanında ne olması gerektiğini söyler.",
+    "does": "Yapar",
+    "see": "Görmelisin",
+    "fix": "Olmazsa",
+    "place": {
+      "mac": "Mac terminali",
+      "button": "basmalı düğme / BOOT",
+      "hands": "elinle",
+      "app": "uygulamada",
+      "phone": "telefonunda",
+      "serial": "seri monitör"
+    },
+    "state": {
+      "off": "kart uzakta",
+      "any": "kart: fark etmez",
+      "on": "kart okuyucuda",
+      "both": "kart + etiket birlikte",
+      "still": "kart üstte, hareketsiz",
+      "move": "kart üstte, sonra hareket ettir",
+      "bnone": "telefon gerekmez",
+      "bscan": "telefon: tarayıcı uygulaması açık",
+      "bconn": "telefon bağlı",
+      "bpair": "telefon eşleşmiş",
+      "bhost": "klavye/MIDI olarak eşleşmiş",
+      "bperiph": "klavyen/farenin açık",
+      "squiet": "oda sessiz",
+      "ssound": "biraz ses çıkar",
+      "sany": "ses: fark etmez",
+      "smusic": "mikrofonun yanında müzik"
+    }
+  },
+  "steps": {
+    "complete": "Tüm adımlar işaretli: bu ders tamam. Artık kartında çalışıyor sayılır.",
+    "status_one": "{{count}} adımdan {{ticked}} tanesi işaretli. İşaretler bu tarayıcıda kaydedilir.",
+    "status_other": "{{count}} adımdan {{ticked}} tanesi işaretli. İşaretler bu tarayıcıda kaydedilir."
+  },
+  "wiring": {
+    "from": "Nereden",
+    "to": "Nereye",
+    "notes": "Notlar"
+  },
+  "variants": {
+    "label": "Varyasyonlar"
+  },
+  "source": {
+    "title": "Bu deneyin kodunu GitHub'da aç",
+    "newTab": " (yeni sekmede açılır)"
+  },
+  "tabs": {
+    "label": "Ders görünümleri",
+    "lab": "Deneyi yap",
+    "labSub": "bağla · yükle · kontrol et",
+    "code": "Kodu oku",
+    "stopsRead_one": "{{count}} durak okundu",
+    "stopsRead_other": "{{count}} durak okundu",
+    "codeSub_one": "{{count}} dosya · {{lines}} satır · rehberli tur",
+    "codeSub_other": "{{count}} dosya · {{lines}} satır · rehberli tur",
+    "codeSubEmpty": "rehberli tur · bir satıra dokun"
+  },
+  "next": {
+    "label": "Sonraki",
+    "lesson": "Sonraki ders",
+    "theme": "Bu konunun sonu · sonraki konu",
+    "last": "Bu son dersti",
+    "map": "Deney haritasına dön",
+    "allLabs": "Tüm deneyler",
+    "top": "Başa dön"
+  },
+  "widget": {
+    "loading": "Yükleniyor…"
+  }
+}

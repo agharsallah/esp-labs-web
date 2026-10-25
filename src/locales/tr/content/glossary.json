@@ -1,0 +1,1034 @@
+{
+  "entries": {
+    "assign": {
+      "short": "Sağdaki değeri soldaki ada koyar.",
+      "simple": "Etiketli bir kutuya yeni bir sayı yazmak gibi: içinde ne varsa gider.",
+      "deep": "Bu bir soru değil, atamadır. Karşılaştırma <code>==</code> ile yapılır. <code>uint8_t r = 0;</code> gibi bir tanımlamada <code>=</code> değişkene ilk değerini verir. Buna ilk değer atama, yani başlatma denir."
+    },
+    "arithmetic": {
+      "short": "Toplama, çıkarma ve bölme. Tıpkı hesap makinesinde olduğu gibi.",
+      "simple": "Okul matematiği, ama bir sürprizi var: iki tam sayıyı bölünce kalan atılır. Bu yüzden <code>7 / 2</code> sonucu <code>3</code> olur.",
+      "deep": "Tam sayı bölmesi sıfıra doğru kırpılır. Sonucun <code>3.5</code> olması için <code>7 / 2.0f</code> yaz. <code>uint8_t</code> gibi küçük türler, işlemden önce <code>int</code> türüne çevrilir. Bu yüzden <code>pos * 3</code> işlemi, sonuç geri yazılana kadar taşmaz."
+    },
+    "modulo": {
+      "short": "Bölmeden sonra kalan: <code>7 % 3</code> sonucu <code>1</code>.",
+      "simple": "Saat kadranı gibi düşün. 12'yi geçince yeniden 1'den saymaya başlarsın. Bu yüzden <code>%</code>, dönüp dönüp giden şeyler için çok uygundur.",
+      "deep": "Yalnızca tam sayılarda çalışır. Ondalıklı sayılar için <code>fmodf</code> kullan. Soldaki sayı negatifse sonuç da negatif olur. Yani <code>-1 % 6</code> sonucu <code>5</code> değil, <code>-1</code> olur."
+    },
+    "compound-assign": {
+      "short": "Değişkeni kendi değeriyle güncelleyen kısa yol: <code>x += 5</code>, <code>x = x + 5</code> demektir.",
+      "simple": "Bir kavanozu tamamlamak gibi. Kavanozu boşaltıp yeniden doldurmazsın, sadece biraz daha eklersin.",
+      "deep": "Soldaki taraf yalnızca bir kez hesaplanır. Bu, <code>buf_[i++]</code> gibi bir ifadede önemlidir. Sonuç değişkenin türüne geri çevrilir. Bu yüzden <code>uint8_t</code> değişkeni 255'i geçince sessizce başa döner."
+    },
+    "increment": {
+      "short": "Değişkene bir ekler (<code>++</code>) ya da bir çıkarır (<code>--</code>).",
+      "simple": "Tıkladığın bir sayaç gibi. Bir tık, bir fazla.",
+      "deep": "<code>i++</code> önce eski değeri verir, sonra bir ekler. <code>++i</code> önce ekler. Tek başına bir <code>for</code> döngüsünde ikisi aynı davranır. İşaretsiz <code>uint8_t hue</code> değişkeni 255'ten 0'a döner. 01 numaralı dersteki gökkuşağı buna dayanır."
+    },
+    "compare": {
+      "short": "İki değeri karşılaştırır ve <code>true</code> ya da <code>false</code> cevabını verir. Bir tür adından sonra &lt; ve &gt; ise tür parantezi olarak kullanılır.",
+      "simple": "Evet ya da hayır cevabı olan sorular: eşit mi? Daha küçük mü? Çift <code>==</code> işaretine dikkat et. Tek <code>=</code> soru sormak yerine değeri değiştirir.",
+      "deep": "İşaretli bir sayıyı işaretsiz bir sayıyla karşılaştırırsan, işaretli taraf işaretsize çevrilir. Bu yüzden <code>-1 &lt; 1u</code> yanlış çıkar. Derleyici bu konuda uyarı verir. <code>std::vector&lt;Card&gt;</code> ya da <code>static_cast&lt;int&gt;</code> ifadelerindeki açılı parantezler karşılaştırma değil, şablon parantezidir."
+    },
+    "logic": {
+      "short": "Evet hayır cevaplarını birleştirir: <code>&amp;&amp;</code> ve, <code>||</code> veya, <code>!</code> değil anlamına gelir.",
+      "simple": "“Yağmur yağıyor <b>ve</b> ben dışarıdaysam şemsiyeyi aç.” <code>!</code> bir cevabı tersine çevirir. Yağmur yağmıyor gibi.",
+      "deep": "Kısa devre: <code>a &amp;&amp; b</code> ifadesinde <code>a</code> yanlışsa <code>b</code>'ye hiç bakılmaz. Bu yüzden <code>queue_ &amp;&amp; xQueueReceive(queue_, ...)</code> kuyruk boş (null) olsa bile güvenlidir. Bir tür adından sonra (<code>T &amp;&amp;</code>) çift &amp; işareti, bunun yerine taşınabilir bir referans anlamına gelir."
+    },
+    "ternary": {
+      "short": "Bir değer seçen tek satırlık if/else: <code>test ? this : that</code>.",
+      "simple": "“HUD açık mı? Öyleyse 'açık' de, değilse 'kapalı' de.” İki olası cevabı olan bir soru.",
+      "deep": "İki dal da aynı ortak türe çevrilebilmelidir. Yalnızca seçilen dal hesaplanır. Bu yüzden sıfıra bölmeyi ya da null işaretçiyi engellemek için güvenle kullanılabilir."
+    },
+    "shift": {
+      "short": "Bir sayının bitlerini sola ya da sağa kaydırır. Sola bir adım kaydırmak sayıyı ikiye katlar, sağa bir adım yarıya indirir.",
+      "simple": "Bir sayının rakamlarını ışık anahtarları sırasında kaydırmak gibi. Her şey bir yana kayar, sona yeni bir 0 gelir.",
+      "deep": "Baytları paketlemek ve açmak için kullanılır. <code>(r &amp; 0xF8) &lt;&lt; 8</code> ifadesi kırmızıyı RGB565 renginin en üstteki 5 bitine yerleştirir. Türün genişliği kadar ya da daha fazla kaydırmak tanımsız davranıştır."
+    },
+    "bit-ops": {
+      "short": "Bir sayının tek tek bitleriyle çalışır: <code>|</code> bitleri açar, <code>^</code> bitleri değiştirir, <code>~</code> hepsini ters çevirir.",
+      "simple": "Bir sayıyı 8, 16 ya da 32 ışık anahtarından oluşan bir sıra gibi düşün. Bu işleçler seçtiğin anahtarları çevirir, diğerlerine dokunmaz.",
+      "deep": "<code>flags |= bit</code> bir biti açar. <code>flags &amp;= ~bit</code> onu kapatır. <code>flags ^= bit</code> onu tersine çevirir. Bizim MFRC522 sürücümüz gibi yazmaç sürücüleri bunlarla çalışır. ArduinoJson, <code>|</code> işlecini varsayılan değer için de kullanır: <code>in[\"type\"] | \"\"</code>."
+    },
+    "scope": {
+      "short": "Bir ad aramak için ad alanının, sınıfın ya da enum'un içine girer: <code>std::min</code>, <code>std</code> içinde yaşayan <code>min</code>'dir.",
+      "simple": "Bir adres gibi: <i>London::Baker Street</i>. İki sokak farklı kasabalarda olduğu sürece aynı adı taşıyabilir.",
+      "deep": "Kapsam çözümleme işlecidir. <code>Button::Event::Click</code> iki düzey yürür. Başta <code>::</code> olan ad, <code>::ble::activity()</code> gibi, genel ad alanından başlar. Bu yüzden yerel bir ad bunu asla gölgeleyemez."
+    },
+    "arrow": {
+      "short": "İşaretçinin gösterdiği nesnenin bir üyesini kullanır: <code>p->x</code>, <code>(*p).x</code> ile aynıdır.",
+      "simple": "Nokta (<code>.</code>) elinde tuttuğun bir nesneyle konuşur. Ok ise yalnızca adresini bildiğin bir nesneyle konuşur.",
+      "deep": "İşaretçi üzerinden üyeye erişim. Web işleyicileri <code>AsyncWebServerRequest *req</code> alır, bu yüzden kullanım <code>req->send(...)</code> olur. <code>nullptr</code> üzerinden işlem yapmak ESP32'nin LoadProhibited ya da StoreProhibited hatasıyla çökmesine yol açar. Bu yüzden işaretçiler önce kontrol edilir."
+    },
+    "maths": {
+      "short": "C kütüphanesindeki matematik yardımcıları: sinüs, kosinüs, karekök, yuvarlama, mutlak değer ve benzerleri.",
+      "simple": "Hesap makinesindeki bilimsel tuşlar, kodda kullanıma hazır. Açılar radyan cinsindendir. Tam bir tur yaklaşık 6,283 eder.",
+      "deep": "<code>f</code> ile biten sürümler, yani <code>sinf</code> ve <code>sqrtf</code>, <code>float</code> ile çalışır. ESP32-S3'ün donanım FPU birimi bunları hızlı yapar. <code>double</code> sürümleri yazılımla çalışır ve birkaç kat yavaştır. <code>lroundf</code> en yakın tam sayıya yuvarlar."
+    },
+    "snprintf": {
+      "short": "Bir kalıptan ve değerlerden, sabit boyutlu bir kutuya metin oluşturur.",
+      "simple": "Boşluk doldurma formu gibi. <code>\"%d/%d\"</code> iki boşluğa sahiptir ve verdiğin sayılar sırayla bu boşlukları doldurur.",
+      "deep": "<code>snprintf(buf, sizeof(buf), fmt, ...)</code> arabelleğin dışına asla yazmaz. Metni her zaman bir <code>'\\0'</code> ile bitirir. Çok uzun metin kesilir. <code>Serial.printf</code> ile aynı <code>%</code> kodları kullanılır: <code>%d</code> int, <code>%u</code> işaretsiz, <code>%lu</code> işaretsiz long, <code>%.1f</code> float, <code>%s</code> metin, <code>%02X</code> onaltılık sayı."
+    },
+    "void": {
+      "short": "“Hiçbir şey” anlamına gelir. <code>void</code> fonksiyon işini yapar ama geriye bir değer vermez.",
+      "simple": "Kapı zili gibi. Basarsın, bir şey olur, ama elinde tutacak bir şey vermez.",
+      "deep": "Dönüş türü olarak sonuç olmadığı anlamına gelir. <code>void *</code>, türü bilinmeyen bir belleğin işaretçisidir. FreeRTOS görevlerinin ve kesme işleyicilerinin aldığı <code>void *arg</code> bunun örneğidir. Kullanmadan önce türü geri çevrilmelidir."
+    },
+    "bool": {
+      "short": "Evet ya da hayır değeri: ya <code>true</code> ya da <code>false</code>.",
+      "simple": "Bir ışık anahtarı gibi. Açık ya da kapalı, arada bir şey yok.",
+      "deep": "Bir bayt yer kaplar. Sayılar ve işaretçiler otomatik olarak <code>bool</code> türüne çevrilir. Sıfır ve <code>nullptr</code> false olur. Bu yüzden <code>if (buf_)</code> çalışır. Arduino'nun <code>boolean</code> türü de aynı türdür."
+    },
+    "true-false": {
+      "short": "Bir <code>bool</code> değişkenin tutabileceği iki değer.",
+      "simple": "Evet ve hayır, derleyicinin anladığı biçimde yazılmış hali.",
+      "deep": "<code>bool</code> türünün anahtar sözcükleridir. Sayıya çevrildiklerinde 1 ve 0 olurlar. FreeRTOS aynı fikir için kendi <code>pdTRUE</code> ve <code>pdFALSE</code> değerlerini kullanır."
+    },
+    "int": {
+      "short": "Negatif de olabilen bir tam sayı. Sayma için günlük hayatta varsayılan seçimdir.",
+      "simple": "-3, 0 ya da 42 gibi tam sayılar için bir kutu. Kesirli sayı konmaz.",
+      "deep": "ESP32'de bir <code>int</code> 32 bittir: yaklaşık -2,1 milyar ile +2,1 milyar arası. Boyutu çipe göre değişir. Örneğin Arduino Uno'da 16 bittir. Bu yüzden donanım kodu genellikle boyutunu adında belirten <code>int32_t</code> ve benzeri türleri tercih eder."
+    },
+    "long": {
+      "short": "En az <code>int</code> kadar büyük bir tam sayı türü. ESP32'de ikisi de 32 bittir.",
+      "simple": "Tam sayılar için bir kutu daha. Bu çipte <code>int</code>'in tuttuğu şeyin aynısını tutar.",
+      "deep": "Xtensa ESP32'de <code>long</code> 32 bit, <code>long long</code> 64 bittir. <code>millis()</code> <code>unsigned long</code> döndürür. Bunu yazdırmak için <code>%lu</code> gerekir. Kod genellikle <code>static_cast&lt;unsigned long&gt;</code> ile tür dönüşümü yapar. Böylece türler tam eşleşir."
+    },
+    "unsigned": {
+      "short": "Sıfırın altına inemeyen bir tam sayı. Bu yüzden iki kat daha yükseğe çıkabilir.",
+      "simple": "Bir arabanın kilometre sayacı gibi. Yalnızca 0'dan yukarı sayar, son basamağı geçince yeniden 0'a döner.",
+      "deep": "İşaretsiz hesaplamada taşma yerine sarma olur. <code>0u - 1</code> en büyük değerdir. Bu sarma sayesinde <code>millis()</code> başa döndüğünde <code>now - last >= interval</code> çalışmaya devam eder. <code>unsigned(x)</code> hızlı bir tür dönüşümüdür. printf içinde <code>%u</code> için işe yarar."
+    },
+    "float": {
+      "short": "<code>3.14</code> ya da <code>-0.5</code> gibi, ondalık noktası olan bir sayı.",
+      "simple": "İnce çizgileri olan bir cetvel. Ölçüm için iyidir ama küçük yuvarlama hataları girer. Bu yüzden iki kayan noktalı sayıyı asla tam eşit mi diye sınama.",
+      "deep": "32 bit, yaklaşık 7 anlamlı basamak. ESP32-S3 tek duyarlıklı bir FPU'ya sahiptir. Bu yüzden <code>float</code> hesapları hızlıdır. Sabitleri <code>0.5f</code> gibi yaz. Böylece derleyici yavaş olan <code>double</code>'a geçmez."
+    },
+    "double": {
+      "short": "<code>float</code>'a göre yaklaşık iki kat daha hassas bir ondalıklı sayı.",
+      "simple": "<code>float</code> ile aynı cetvel, ama çizgileri daha ince. Bu çipte okumak daha yavaştır.",
+      "deep": "64 bit, yaklaşık 15 anlamlı basamak. ESP32-S3 FPU yalnızca tek duyarlıklı çalışır. Bu yüzden <code>double</code> yazılımla yapılır. Arada bir yapılan hesap için uygundur. Ama her piksel ya da her ses örneği için çok yavaştır."
+    },
+    "char": {
+      "short": "Tek bir metin karakteri, küçük bir sayı olarak saklanır. <code>const char *</code> ise bütün bir metindir.",
+      "simple": "Kelime oyunundaki tek bir harf taşı gibi. Harfleri sıraya diz, sonuna görünmez bir durma taşı <code>'\\0'</code> koy. Bir kelimen olur.",
+      "deep": "Bir bayt. C metni, <code>'\\0'</code> ile biten bir <code>char</code> dizisidir. <code>char text[32]</code> en fazla 31 harf tutar. <code>\"hello\"</code> flash bellekte tutulan metne bir <code>const char *</code>'dır. <code>'h'</code> (tek tırnak) ise tek bir <code>char</code>'dır."
+    },
+    "size-t": {
+      "short": "Bellekteki nesnelerin boyutları ve sayıları için yapılmış işaretsiz bir tam sayı.",
+      "simple": "Bellek için bir mezura üzerindeki sayı: kaç bayt, kaç öğe. Asla negatif olamaz.",
+      "deep": "ESP32'de 32 bittir. <code>sizeof</code>'un verdiği ve <code>malloc</code>'un aldığı türdür. Bir tür dönüşümünden sonra <code>%u</code> ile yazdır. Ya da <code>%zu</code> kullan."
+    },
+    "uint8-t": {
+      "short": "0 ile 255 arasında bir tam sayı: tam olarak bir bayt.",
+      "simple": "En küçük kutu: bir bayt, sekiz açık-kapalı anahtar. Bir renk kanalı, bir pin numarası ya da bir parlaklık için mükemmel.",
+      "deep": "<code>u</code> işaretsiz, <code>int</code> tam sayı, <code>8</code> bit, <code>_t</code> ise tür demektir. <code>&lt;stdint.h&gt;</code> içinde tanımlıdır. Bu yüzden boyutu her çipte aynıdır. Arduino'nun <code>byte</code> türü de aynı türdür. 255'i geçince 0'a döner."
+    },
+    "uint16-t": {
+      "short": "0 ile 65.535 arasında bir tam sayı: iki bayt.",
+      "simple": "Bir baytın iki katı büyüklükte bir kutu. Bu deneylerdeki her ekran rengi bunun içine sığar.",
+      "deep": "İşaretsiz, 16 bit. ST7789 RGB565 kullanır: 5 bit kırmızı, 6 bit yeşil, 5 bit mavi tek bir <code>uint16_t</code> içinde paketlenir. BLE tanıtıcılarında ve 16 bitlik UUID'lerde de kullanılır."
+    },
+    "uint32-t": {
+      "short": "0 ile yaklaşık 4,29 milyar arasında bir tam sayı: dört bayt.",
+      "simple": "Büyük sayımlar için büyük bir kutu. Mesela kart açıldığından beri geçen milisaniyeler gibi.",
+      "deep": "İşaretsiz, 32 bit. Bu, ESP32'nin doğal kelime boyutudur. Bu yüzden okuma ve yazma tek komutla yapılır. <code>millis()</code> zamanları bunun içinde tutulur. Yaklaşık 49,7 günde başa döner."
+    },
+    "uint64-t": {
+      "short": "Çok büyük bir tam sayı: 0 ile yaklaşık 18 milyar milyar arası. Sekiz bayt.",
+      "simple": "Pratikte asla dolmayacak kadar büyük bir kutu. Çipin 48 bitlik MAC adresi bunun içine rahatça sığar.",
+      "deep": "İşaretsiz, 64 bit. 32 bitlik bir CPU'da her işlem birkaç komut sürer. Bir kesmeyle ana kodun paylaştığı bu değeri okumak tek bir adım değildir. Bu yüzden deneylerde paylaşılan zaman damgaları 32 bit tutulur."
+    },
+    "int8-t": {
+      "short": "-128 ile 127 arasında küçük bir tam sayı: negatif de olabilen bir bayt.",
+      "simple": "Eksi işareti için yeri olan bir baytlık kutu. Wi-Fi sinyal gücünü dBm cinsinden tutmak için iyidir.",
+      "deep": "İşaretli, 8 bit, iki tümleyen. BLE iletim gücü ve RSSI değerleri <code>int8_t</code> olarak bildirilir."
+    },
+    "int16-t": {
+      "short": "-32.768 ile 32.767 arasında bir tam sayı: negatif olabilen iki bayt.",
+      "simple": "Eksi işaretli iki baytlık bir kutu. Ekran koordinatları bunu kullanır. Şekiller ekranın kenarının biraz dışından başlayabilir.",
+      "deep": "İşaretli, 16 bit. Adafruit GFX x, y, genişlik ve yükseklik için <code>int16_t</code> kullanır. Mikrofondan gelen 16 bitlik ses örnekleri de <code>int16_t</code>'dir."
+    },
+    "int32-t": {
+      "short": "Yaklaşık -2,1 milyar ile +2,1 milyar arasında bir tam sayı: negatif olabilen dört bayt.",
+      "simple": "Bu çipte <code>int</code> ile aynı kutu. Ama adı, her çipte boyutunun aynı olacağını söyler.",
+      "deep": "İşaretli, 32 bit. INMP441 mikrofonu 24 bitlik örnekleri 32 bitlik I2S yuvalarında gönderir. Bunlar <code>int32_t</code> olarak okunur, sonra aşağı kaydırılır."
+    },
+    "int64-t": {
+      "short": "Negatif de olabilen çok büyük bir tam sayı: sekiz bayt.",
+      "simple": "Mikrosaniye sayan saatler için hiç bitmeyen bir kutu.",
+      "deep": "İşaretli, 64 bit. <code>esp_timer_get_time()</code> açılıştan beri geçen mikrosaniyeyi <code>int64_t</code> olarak döndürür. Bu sayı taşmak için yaklaşık 292 bin yıl alır."
+    },
+    "string-class": {
+      "short": "Arduino'nun metin türü: büyüyebilen, küçülebilen ve içinde aranabilen bir metin.",
+      "simple": "Kelimeler için esnek bir defter sayfası. Ekle, parça kes, bir kelime ara. Harfleri kendin saymak zorunda kalmazsın.",
+      "deep": "Harflerini heap'te tutar. Kısa olanlar yerinde tutulur. Yoğun bir döngüde tekrar tekrar <code>+</code> kullanmak belleği durmadan değiştirir. Deneylerde seri komutlar ve web yanıtları için <code>String</code> kullanılır. Hız ya da kesme önemli olduğunda sabit <code>char</code> dizileri kullanılır. <code>String(42)</code> bir sayıyı metne çevirir."
+    },
+    "auto": {
+      "short": "Derleyicinin, verdiğin değerden türü kendisinin bulmasını sağlar.",
+      "simple": "Kutunun adını söylemek yerine “doğru boyutta bir kutuya koy” demek gibi.",
+      "deep": "Tür yine derleme zamanında sabitlenir, çalışırken değişmez. <code>auto *self = static_cast&lt;Button *&gt;(arg);</code> satırı <code>Button</code> yazmayı önler. <code>auto</code>, lambda'ları saklamak için de kullanılır. Çünkü bir lambda'nın türünün adı yoktur."
+    },
+    "nullptr": {
+      "short": "Hiçbir şeyi göstermeyen bir işaretçi.",
+      "simple": "Boş bir adres etiketi. Ziyaret edecek bir ev yok, o yüzden gitmeden kontrol et.",
+      "deep": "Tür güvenli null işaretçi sabitidir (C++11). <code>NULL</code> ve <code>0</code> yerine kullanılır. <code>heap_caps_malloc</code> gibi bellek ayırma fonksiyonları başarısız olunca bunu döndürür. Birçok ESP-IDF çağrısı da “buna ihtiyacım yok” demek için bunu kullanır."
+    },
+    "if": {
+      "short": "Yalnızca parantez içindeki koşul doğruysa bir sonraki bloğu çalıştırır.",
+      "simple": "“Yağmur yağıyorsa bir şemsiye al.” Yağmur yağmıyorsa şemsiye adımı atlanır.",
+      "deep": "Koşul <code>bool</code> türüne çevrilir. Bu yüzden sayılar ve işaretçiler doğrudan kullanılabilir. Koşulun içindeki bir tanımlama, örneğin <code>if (DeserializationError e = deserializeJson(...))</code>, değişkeni if'in içinde tutar."
+    },
+    "else": {
+      "short": "Diğer yol: <code>if</code> koşulu yanlış olduğunda çalışır.",
+      "simple": "“...yoksa güneş gözlüğü tak.” İki yoldan tam olarak biri olur.",
+      "deep": "<code>else if</code>, bloğu başka bir <code>if</code> olan bir <code>else</code>'tir. Zincirler yukarıdan aşağıya kontrol edilir ve ilk doğru koşulda durur."
+    },
+    "for": {
+      "short": "Bir bloğu sayılı sayıda tekrarlar ya da bir listedeki her öğe için bir kez çalıştırır.",
+      "simple": "“6 baytın her biri için, yazdır.” 0'dan başla, bitmedi mi diye bak, işi yap, say, tekrarla.",
+      "deep": "<code>for (init; test; step)</code> biçimi. Aralık biçimi, yani <code>for (const auto &amp;card : cards)</code>, bir dizinin ya da kapsayıcının her öğesini indeks kullanmadan gezer."
+    },
+    "while": {
+      "short": "Koşulu doğru kaldığı sürece bir bloğu tekrarlar.",
+      "simple": "“Posta kutusunda mektup varsa birini çıkar.” Kutu boşalınca dur.",
+      "deep": "Koşul her turdan önce kontrol edilir. Bu yüzden gövde hiç çalışmayabilir. <code>loop()</code> içinde hiç bitmeyen bir <code>while</code>, programın geri kalanına sıra gelmesini engeller. Deneylerde girişler <code>while (Serial.available())</code> ile okunur. Tampon boşalır boşalmaz döngü biter."
+    },
+    "do-while": {
+      "short": "<code>while</code> gibidir, ama blok koşuldan önce en az bir kez her zaman çalışır.",
+      "simple": "Çorbayı tat, sonra tuz gerekip gerekmediğine karar ver. Önce her zaman tadarsın.",
+      "deep": "Koşul bloğun arkasında durur ve noktalı virgül ister: <code>do { ... } while (cond);</code>. “İyi bir değer çıkana kadar rastgele değer seç” gibi işlerde işe yarar."
+    },
+    "switch": {
+      "short": "Bir değeri sabit seçeneklerle karşılaştırarak birkaç yoldan birini seçer.",
+      "simple": "Asansör paneli gibi: 3'e bas, üçüncü kata gidersin. Her <code>case</code> bir düğmedir.",
+      "deep": "Tam sayılar ve enum'lar üzerinde çalışır, metin üzerinde değil. <code>break</code> ya da <code>return</code> yazmazsan çalışma bir sonraki case'e geçer. <code>enum class</code> ile derleyici, unuttuğun durumlar için uyarı verir."
+    },
+    "case": {
+      "short": "<code>switch</code> içinde bir seçenek: değer eşleştiğinde çalışacak kod.",
+      "simple": "Asansör panelindeki bir düğme. Yanında kat numarası yazılıdır.",
+      "deep": "Etiket derleme zamanı sabiti olmalıdır. Birkaç etiket üst üste yazılarak aynı gövde paylaşılabilir. <code>break</code> olmayan bir gövde, bir sonraki case'e kadar devam eder."
+    },
+    "default": {
+      "short": "<code>switch</code> içinde hiçbir <code>case</code> eşleşmediğinde alınan yol.",
+      "simple": "“Bunların dışında her şey” düğmesi.",
+      "deep": "İsteğe bağlıdır ve switch içinde nereye konursa konsun geçerlidir. Bir sınıfta ise <code>= default</code> başka bir şey anlamına gelir. Derleyiciden o kurucuyu ya da işleci senin yerine yazmasını istersin."
+    },
+    "break": {
+      "short": "Mevcut döngüden ya da <code>switch</code>'ten hemen çıkar.",
+      "simple": "Acil çıkış kapısı. Dönmeyi bırak, döngüden sonra devam et.",
+      "deep": "Sadece en içteki döngüden ya da switch'ten çıkar. Bir döngünün içindeki switch'te <code>break</code>, döngüyü değil switch'i bırakır."
+    },
+    "continue": {
+      "short": "Döngünün bu turunun geri kalanını atlar ve bir sonraki tura geçer.",
+      "simple": "“Bu mektup bana değil. Kenara koy, sıradakini aç.”",
+      "deep": "<code>for</code> döngüsünde adım (<code>i++</code>) yine de bir sonraki koşuldan önce çalışır. Çoğu zaman iç içe <code>if</code>'ler yerine bozuk verileri erkenden atlamak için kullanılır."
+    },
+    "return": {
+      "short": "Fonksiyonu hemen bitirir. İstenirse çağıranına bir değer geri verir.",
+      "simple": "Bitmiş ödevi teslim etmek gibi. İş bitti, cevap da burada.",
+      "deep": "<code>void</code> fonksiyonda çıplak bir <code>return;</code> sadece erken çıkar. Bu, bozuk girişten kaçmanın yaygın yoludur. Buna koruma cümlesi denir. Yerel değişkenler çıkışta yok edilir. <code>std::lock_guard</code> kilidi bu sayede açar."
+    },
+    "setup-loop": {
+      "short": "Her Arduino programında bu ikisi bulunur: <code>setup()</code> açılışta bir kez çalışır, <code>loop()</code> ise sonsuza kadar çalışır.",
+      "simple": "Bir dükkân açmak gibi. <code>setup()</code> kapıyı açar ve ışıkları bir kez yakar. <code>loop()</code> ise kapanış saatine kadar, yani güç kesilene kadar, müşteri müşteri hizmet verir.",
+      "deep": "Arduino çekirdeğinin <code>main</code> fonksiyonu bir FreeRTOS görevi başlatır. Adı \"loopTask\", çekirdek 1 ve varsayılan yığın 8 KB'tır. Bu görev <code>setup()</code>'ı, sonra da <code>loop()</code>'u tekrar tekrar çağırır. <code>loop()</code>'u hızlı ve bekletmeden tut. Uzun <code>delay()</code> yerine <code>millis()</code> kontrol et. Bir deneyin <code>lab.loop()</code> fonksiyonu, ortak iskeletin kendi tur başı işidir."
+    },
+    "lambda": {
+      "short": "Tam ihtiyaç duyulan yerde yazılan küçük bir fonksiyon. Genellikle sonra çağrılmak üzere başka bir fonksiyona verilir.",
+      "simple": "Birine verdiğin, yapılacakları yazılı bir yapışkan not: “/ adresine istek gelince bunu yap.”",
+      "deep": "<code>[capture](params) { body }</code>. Yakalama listesi, çevreden neleri kullanabileceğini söyler: <code>[this]</code> mevcut nesneyi, <code>[&amp;]</code> her şeyi referansla, <code>[]</code> hiçbir şeyi. Web rotaları, Wi-Fi olayları ve sıralama burada lambda alır."
+    },
+    "variadic": {
+      "short": "“İstediğin kadar ekstra argüman” anlamına gelir. Bir printf kalıbının ihtiyaç duyduğu değerler gibi.",
+      "simple": "“...ve benzeri”: fonksiyon sana verdiğin kadar ekstra değeri alır.",
+      "deep": "<code>void warn(const char *fmt, ...)</code> içinde ekstra değerler <code>va_list</code> ile okunur ve <code>vsnprintf</code>'e aktarılır. <code>[[gnu::format(printf, 2, 3)]]</code> özniteliği, derleyicinin bunları kalıba göre kontrol etmesini sağlar. Bir makroda <code>__VA_ARGS__</code> bunları yerine yapıştırır."
+    },
+    "inline": {
+      "short": "Bir fonksiyonun ya da değişkenin, birçok dosyanın eklediği bir başlık dosyasında tanımlanmasına izin verir.",
+      "simple": "Bunu ihtiyaç duyan her yemek kitabında basılan bir tarif. Mutfak, bunların hepsinin aynı tarif olduğunu kabul eder, rakip değil.",
+      "deep": "Asıl işi tek tanım kuralıdır. Bir <code>.h</code> içindeki <code>inline</code> fonksiyon, bağlayıcı çakışmadan birçok <code>.cpp</code> dosyasında yer alabilir. Çağrının gerçekten satır içine alınıp alınmayacağına optimize edici karar verir. <code>constexpr</code> fonksiyonlar ve sınıfın içinde tanımlanan fonksiyonlar otomatik olarak inline'dır."
+    },
+    "operator": {
+      "short": "Bir türe, <code>==</code>, <code>[]</code> ya da <code>+</code> gibi bir işaretin onunla ne yapacağını öğretir.",
+      "simple": "Yeni bir oyun taşına mevcut kuralları öğretmek gibi. Artık <code>a == b</code> kendi türün için de çalışır.",
+      "deep": "<code>bool operator==(const Uid &amp;o) const</code> özel bir adı olan sıradan bir fonksiyondur. <code>explicit operator bool()</code> ise bir nesnenin <code>if</code> içinde denenmesini sağlar."
+    },
+    "noexcept": {
+      "short": "Bir fonksiyonun asla istisna (exception) fırlatmayacağına dair bir söz.",
+      "simple": "Kapıdaki bir tabela: “Burada sürpriz yok.”",
+      "deep": "Yine de fırlatırsa <code>std::terminate</code> programı bitirir. Standart kapsayıcılar, bir öğeyi taşımanın güvenli olup olmadığını buna göre belirler. Arduino-ESP32 istisnaları destekleyecek şekilde derlenir. Ama deneylerde hiç istisna fırlatılmaz."
+    },
+    "override": {
+      "short": "<code>virtual</code> bir alt sınıfın bir fonksiyonu değiştirmesine izin verir. <code>override</code> ise bu değişikliği işaretler.",
+      "simple": "Boşluklu bir form. Kütüphane “bir pikseli nasıl çizerim” kısmını senin doldurmana bırakır. <code>override</code> ise “bu boşluğa verdiğim cevap budur” der.",
+      "deep": "Çağrılar bir fonksiyon işaretçisi tablosundan (vtable) geçer. Bu yüzden <code>Adafruit_GFX</code> kodu sonunda bizim <code>FrameBuffer::drawPixel</code> fonksiyonunu çağırır. <code>override</code>, derleyicinin eşleşen bir virtual olduğunu kontrol etmesini sağlar. <code>onConnect</code> gibi NimBLE geri çağırmaları da aynı şekilde çalışır."
+    },
+    "explicit": {
+      "short": "Derleyicinin bir kurucu üzerinden bir türü sessizce başka bir türe çevirmesini engeller.",
+      "simple": "“Önce sor.” Bir sayı, <code>Button</code> bir sayıdan kurulabiliyor diye <code>Button</code>'a dönüşmez.",
+      "deep": "Bu olmadan tek argümanlı bir kurucu örtük dönüşüm olur. Yani <code>BootButton</code> alan bir fonksiyon, düz bir sayıyla da çağrılabilir. Ayrıca <code>operator bool</code> üzerinde de kullanılır."
+    },
+    "constructor": {
+      "short": "Sınıfın kendi adını taşıyan ve yeni bir nesneyi kuran özel bir fonksiyon. Buna kurucu (constructor) denir.",
+      "simple": "Yeni bir şey kutudan çıktığında bir kez çalışan montaj talimatları.",
+      "deep": "Dönüş türü yoktur. <code>:</code> işaretinden sonraki liste, örneğin <code>: pin_(pin), name_(name)</code>, gövde çalışmadan önce üyeleri tanımlandıkları sırayla doldurur. Nesne yok olduğunda <code>~Name()</code> yıkıcısı (destructor) çalışır. Bu, <code>FrameBuffer</code>'ın piksellerini serbest bırakması gibidir."
+    },
+    "address-reference": {
+      "short": "Üç görevi var: bir türden sonra referans (başka bir ad) yapar, bir değişkenden önce adresini alır, sayılar arasında bit düzeyinde VE işlemi yapar.",
+      "simple": "Referans bir takma addır. <code>uint8_t &amp;r</code> bir fonksiyonun doğrudan senin kutuna yazmasını sağlar. <code>&amp;x</code> kutunun adresidir. <code>a &amp; b</code> ise iki sayıda da açık olan bitleri tutar.",
+      "deep": "<code>T &amp;</code> var olan bir nesneye bağlanır. Null olamaz ve başka yere yönlendirilemez. <code>const T &amp;</code> büyük nesneleri kopyalamadan geçirir. <code>&amp;lock_</code> bir <code>portMUX_TYPE *</code> verir. <code>x &amp; 0xFF</code> düşük baytı maskeler."
+    },
+    "pointer": {
+      "short": "Üç görevi var: bir türden sonra işaretçi tanımlar, bir işaretçiden önce onu takip eder, sayılar arasında çarpar.",
+      "simple": "İşaretçi, üzerinde bir adres yazan bir kâğıt parçasıdır. <code>*p</code>, “o adrese git ve oradakini kullan” demektir. İki sayının arasında ise sadece çarpmadır.",
+      "deep": "ESP32'de işaretçiler 4 bayt yer kaplar. <code>uint16_t *buf_</code> piksellerin nerede başladığını tutar. <code>buf_[i]</code>, <code>*(buf_ + i)</code> ile aynıdır. <code>const char *</code>, okunabilen ama değiştirilemeyen bir metne işaretçidir."
+    },
+    "array": {
+      "short": "Aynı türden, 0'dan numaralanan sabit bir değer dizisi.",
+      "simple": "Bir yumurta kolisi: sabit sayıda bölme, hepsi aynı biçimde. Bölme numaraları 0'dan başlar. Yani 6 bölmelik bir kolinin bölmeleri 0'dan 5'e kadardır.",
+      "deep": "<code>char text[32]</code> hemen orada 32 bayt ayırır, heap kullanılmaz. İndeksi kimse kontrol etmez. Bu yüzden <code>text[32]</code>'ye yazmak, yanındaki her şeyi sessizce ezer. <code>sizeof(text)</code> tam boyutu bayt olarak verir. Tampon fonksiyonlarına bu yüzden verilir."
+    },
+    "const": {
+      "short": "Bir değeri salt okunur olarak işaretler. Bir kez verildikten sonra kod onu değiştiremez.",
+      "simple": "Kalemle yazılmış bir etiket, kurşun kalemle değil.",
+      "deep": "<code>constexpr</code>'den farklı olarak değer çalışan koddan gelebilir, örneğin <code>const uint32_t now = millis();</code>. Bir üye fonksiyonun parantezinden sonra gelen <code>const</code>, fonksiyonun nesneyi değiştirmeyeceğine söz verir. <code>const char *p</code> metni korur. <code>char *const p</code> ise işaretçiyi korur."
+    },
+    "static": {
+      "short": "Bir değişkeni tüm program boyunca yaşatır ya da bir sınıfın bütün nesneleri arasında tek bir kopya paylaştırır.",
+      "simple": "Bir fonksiyonun içinde, ziyaretler arasında masada duran bir defter gibidir. Bu yüzden <code>loop()</code> son değerini hatırlar.",
+      "deep": "Üç anlamı var. Bir <code>static</code> yerel değişken bir kez oluşturulur ve çağrılar arasında yaşamaya devam eder. Bir <code>static</code> üye sınıfa aittir, her nesneye değil. Kesme işleyicisi <code>onEdge</code> static'tir ve nesneye <code>arg</code> üzerinden ulaşır. Dosya düzeyinde ise bir adı o dosyaya özel yapar."
+    },
+    "volatile": {
+      "short": "Derleyiciye bu değerin onun arkasından değişebileceğini söyler. Bu yüzden her seferinde yeniden okumalıdır.",
+      "simple": "Sen bakmazken dolabilen bir posta kutusu. “Hâlâ boş” diye varsaymak yerine gidip kontrol etmelisin.",
+      "deep": "Bir kesme tarafından yazılıp normal kod tarafından okunan değişkenler için gerekir. Kilit <b>değildir</b> ve atomik de değildir. 64 bitlik bir değerin yarısı eski, yarısı yeni okunabilir. Görevler arasında paylaşılan veriler için <code>std::atomic</code>, bir mutex ya da kritik bölüm tercih edilir."
+    },
+    "sizeof": {
+      "short": "Bir türün ya da değişkenin kaç bayt yer kapladığını söyler.",
+      "simple": "Bir kavanozun içine bir şey koymadan önce üzerindeki hacim yazısını okumak gibi.",
+      "deep": "Derleme zamanında hesaplanır, çalışırken bir maliyeti yoktur. Bir dizinin <code>sizeof(text)</code> değeri tam bayt boyutudur. Ama bir işaretçinin sizeof değeri sadece 4'tür. <code>sizeof(arr) / sizeof(arr[0])</code> öğe sayısını verir."
+    },
+    "new-delete": {
+      "short": "<code>new</code> boş bellekte (heap'te) bir nesne oluşturur. <code>delete</code> onu yok eder ve belleği geri verir.",
+      "simple": "Bir depo kiralamak gibi. <code>new</code> kiralar, <code>delete</code> anahtarı geri verir. Anahtarı geri vermeyi unutursan, cihaz yeniden başlatılana kadar o alan kaybolur.",
+      "deep": "Her <code>new</code> için tam bir <code>delete</code> gerekir. <code>new[]</code> için <code>delete[]</code> gerekir. ESP32'de düz <code>new</code>, boyuta ve derleme ayarlarına göre iç RAM'e ya da PSRAM'e düşebilir. Seçmek için <code>heap_caps_malloc</code> kullan. Bir fonksiyonda <code>= delete</code>, kopyalama gibi bir işlemi yasaklar."
+    },
+    "progmem": {
+      "short": "Verinin RAM'e kopyalanmak yerine flash bellekte kalmasını ister.",
+      "simple": "Büyük kitabı kütüphane rafında bırak ve orada oku. Küçük masana fotokopisini koymak zorunda değilsin.",
+      "deep": "AVR Arduino'larda şarttır. ESP32'de hiçbir şeye dönüşür, yani boş tanımlanır. Çünkü <code>const</code> veriler zaten belleğe eşlenmiş flash'ta kalır. <code>kPage</code> içindeki web sayfasında olduğu gibi, açıklık ve taşınabilirlik için tutulur."
+    },
+    "iram-attr": {
+      "short": "Bir fonksiyonu çipin hızlı iç RAM'ine yerleştirir. Böylece bir kesme tetiklendiği an çalışabilir.",
+      "simple": "Yangın söndürücüyü bodrumda değil, kapının yanında tutmak gibi. Hemen elinin altında olmalı.",
+      "deep": "Normal kod, bir önbellek üzerinden harici flash'tan çalışır. Flash'a yazılırken (NVS, OTA) önbellek kapatılır. Flash'ta duran bir kesme işleyicisi çipi çökertir. <code>IRAM_ATTR</code> onu IRAM'de tutar. Onun çağırdığı her şey de IRAM'de olmalıdır. Bu yüzden işleyicileri küçük tut."
+    },
+    "c-strings": {
+      "short": "C'nin <code>char</code> dizilerindeki metinler için araçları: kopyala, karşılaştır, ölç.",
+      "simple": "Harf taşlarıyla elle çalışmak gibi. Bir kelimeyi satırına kopyala, iki satırı karşılaştır, durma taşından önceki taşları say.",
+      "deep": "<code>strlcpy(dst, src, sizeof(dst))</code> güvenle kopyalar ve her zaman <code>'\\0'</code> ile biter. <code>strcmp</code>, iki metin eşitse 0 döndürür. Bu “doğru” demek değildir. Bu yüzden kod <code>strcmp(a, b) == 0</code> diye okunur. <code>strlen</code> harfleri sayar, son <code>'\\0'</code>'ı saymaz."
+    },
+    "memcpy": {
+      "short": "Ham baytlardan oluşan bir bloğu kopyalar, doldurur ya da karşılaştırır.",
+      "simple": "Bir tepsi yumurtayı tek tek değil, bir hamlede taşımak gibi.",
+      "deep": "Bunlar baytlar üzerinde çalışır ve türleri bilmez. Uzunluk her zaman bayt cinsindendir. Bu yüzden <code>sizeof</code> kullan. <code>memcpy</code> üst üste binen alanlarda kullanılmaz. Bunun yerine <code>memmove</code> kullan. <code>memcmp</code> eşitse 0 döndürür. Kart UID'leri ve BLE verileri bu şekilde işlenir."
+    },
+    "struct": {
+      "short": "Birkaç adlandırılmış değeri tek bir yeni türde bir araya getirir.",
+      "simple": "Etiketli alanları olan bir form. Bir Card'ın bir UID'si, bir adı ve bir rengi vardır. Bunlar birlikte yolculuk eder.",
+      "deep": "<code>class</code> ile aynıdır. Tek fark, üyelerin varsayılan olarak <code>public</code> olmasıdır. Deneyler düz veri için struct (<code>HttpsResult</code>, <code>Frame</code>), davranışı olan şeyler için class kullanır."
+    },
+    "class": {
+      "short": "Yeni bir nesne türü tanımlar: tuttuğu veriler ve yapabildiği işler.",
+      "simple": "Bir cihazın planı. İçinde hangi parçalar var, dışta hangi düğmeler var?",
+      "deep": "Üyeler varsayılan olarak <code>private</code>'tır. <code>class FrameBuffer : public Adafruit_GFX</code>, bir GFX çizim yüzeyinin yapabildiği her şeyi miras alır. <code>enum class</code> aynı kelimeyi farklı bir şey için kullanır: kapsamlı enum."
+    },
+    "enum": {
+      "short": "<code>Click</code>, <code>DoubleClick</code>, <code>LongPress</code> gibi adlandırılmış seçenekler listesi.",
+      "simple": "Çoktan seçmeli bir soru. Cevap, kâğıtta yazan seçeneklerden biri olmalı.",
+      "deep": "<code>enum class Event { ... }</code> kapsamlıdır, yani <code>Event::Click</code> diye yazılır. Yanlışlıkla <code>int</code>'e dönüşmez. <code>: uint8_t</code> depolama türünü seçer. Düz <code>enum</code> ise adlarını çevresindeki kapsama sızdırır."
+    },
+    "namespace": {
+      "short": "Fonksiyonlar ve türler için adlandırılmış bir klasör. Böylece farklı parçalardaki adlar asla çakışmaz.",
+      "simple": "Kodlar için soyadları. <code>pal::ink</code> ve <code>sv::ink</code> birlikte var olabilir. Farklı ailelerde iki Sam olabilir gibi.",
+      "deep": "İsimsiz <code>namespace { }</code> içindeki her şeyi o <code>.cpp</code> dosyasına özel yapar (iç bağlantı). 01 numaralı ders de yardımcı fonksiyonlarında bunu kullanır. <code>using namespace x;</code> adları yeniden dışarı çeker. Başlık dosyalarında kullanmaktan kaçın."
+    },
+    "std": {
+      "short": "C++ standart kütüphanesinin ad alanı: <code>std::min</code>, <code>std::vector</code>, <code>std::mutex</code>...",
+      "simple": "Her C++ derleyicisiyle gelen alet kutusu. <code>std::</code>, “bu aleti standart kutudan al” demektir.",
+      "deep": "Arduino-ESP32, FreeRTOS'un üstüne tam bir C++ standart kütüphanesi (GCC'nin libstdc++) ile gelir. Kapsayıcılar, algoritmalar, <code>&lt;atomic&gt;</code> ve <code>&lt;mutex&gt;</code> buna dahildir. Heap kullanımına dikkat et. Kapsayıcılar bellek ayırır."
+    },
+    "access": {
+      "short": "Bir sınıfın üyelerini kimlerin kullanabileceğine karar verir: herkes, yalnızca sınıfın kendisi ya da sınıf ve alt sınıfları.",
+      "simple": "Bir radyonun önündeki düğmeler <code>public</code>'tir. İçindeki devre kartı ise <code>private</code>'tır.",
+      "deep": "Bir sınıf verilerini <code>private</code> tutar. Burada <code>pin_</code> gibi sonunda <code>_</code> ile. Ardından <code>public</code> fonksiyonlar sunar. Böylece içini değiştirirken çağıranları bozmaz. <code>: public Adafruit_GFX</code> içinde bu kelime, ebeveynin üyelerinin nasıl miras alınacağını belirler."
+    },
+    "this": {
+      "short": "Bir üye fonksiyonun içinde, fonksiyonun üzerinde çalıştığı nesneye bir işaretçi.",
+      "simple": "“Ben”: kendi kendine işaret eden nesne.",
+      "deep": "Genellikle örtüktür. <code>pin_</code>, <code>this->pin_</code> anlamına gelir. C tarzı bir geri çağırmanın yolunu bulması gerektiğinde açıkça verilir. Örneğin <code>attachInterruptArg(..., onEdge, this, CHANGE)</code> ya da bir görevin parametresi gibi. Lambda'lar da <code>[this]</code> ile bunu yakalar."
+    },
+    "using": {
+      "short": "Bir türe daha kısa ya da daha açık bir ad verir.",
+      "simple": "Bir takma ad. Her seferinde uzun türü yazmak yerine <code>JsonFn</code> diyebilirsin.",
+      "deep": "<code>using JsonFn = std::function&lt;...&gt;;</code>, <code>typedef</code>'in modern biçimidir ve soldan sağa okunur. <code>using namespace std;</code> ve <code>using Base::f;</code>, aynı kelimenin diğer kullanımlarıdır."
+    },
+    "union": {
+      "short": "Aynı baytları paylaşan birkaç üye. Bu yüzden her seferinde yalnızca biri anlamlıdır.",
+      "simple": "Birkaç araba için tek bir park yeri. En son park eden araba orada durur.",
+      "deep": "Union, en büyük üyesi kadar yer kaplar. C++'da son yazılandan farklı bir üyeyi okumak teknik olarak tanımsız davranıştır. GCC buna izin verir. Baytları yeniden yorumlamanın temiz yolu <code>memcpy</code> ya da <code>std::bit_cast</code> kullanmaktır."
+    },
+    "extern": {
+      "short": "Bir değişkenin var olduğunu söyler, ama programın başka bir yerinde tanımlandığını bildirir.",
+      "simple": "“Anahtar öbür odada.” Burada ondan söz edebilirsin, bağlayıcı onu sonra getirir.",
+      "deep": "Tanımı olmayan bir bildirimdir. HTTPS istemcisi, derlemenin flash'a bağladığı Mozilla sertifika paketine bu yolla ulaşır. Bağlayıcı, sembol adlarıyla onu bulur."
+    },
+    "constexpr": {
+      "short": "Program derlenirken sabitlenen bir değer. Kart çalışırken asla değişemez.",
+      "simple": "Kutunun üzerine basılmış bir sayı gibi. Kart daha açılmadan belli.",
+      "deep": "<code>constexpr</code> değişkenleri derleyici tarafından hesaplanır ve çalışırken RAM harcamaz. <code>rgb()</code> gibi bir <code>constexpr</code> fonksiyon, girdileri sabit olduğunda derleme zamanında çalışabilir. Deneyler bunları <code>kSomething</code> diye adlandırır."
+    },
+    "static-cast": {
+      "short": "Bir değeri, görebildiğin bir yerde, bilerek başka bir türe çevirir.",
+      "simple": "Bir içeceği, bilerek ve herkesin gözü önünde başka bir bardağa dökmek gibi.",
+      "deep": "Derleyici kontrol eder. Sayı türlerinde çalışma zamanında bir maliyeti yoktur. Burada sık görülen kullanımlar: <code>%lu</code> ile eşleşmesi için <code>static_cast&lt;unsigned long&gt;</code> ve bir <code>void *</code>'ı eski nesnesine geri çevirmek. Kısa biçim <code>uint8_t(x)</code> basit türler için aynı işi yapar."
+    },
+    "reinterpret-cast": {
+      "short": "Aynı baytları, onları değiştirmeden tamamen farklı bir tür gibi ele alır.",
+      "simple": "Bir sayı sayfasını harf gibi okumak. Mürekkep aynı, değişen tek şey okuma biçimi.",
+      "deep": "Hiçbir dönüşüm olmaz. Yalnızca bir işaretçinin etiketi değişir. Örneğin bir bayt tamponunu metin olarak görmek için <code>uint8_t *</code>'ten <code>const char *</code>'a. Yanlış kullanımı kolaydır. Hizalama ve katı takma ad kuralları yine geçerlidir."
+    },
+    "const-cast": {
+      "short": "Eski tarz bir fonksiyona verilebilmesi için bir işaretçiden <code>const</code>'u kaldırır.",
+      "simple": "Kalemle yazılmış bir etiketi, yalnızca kurşun kalemle yazılanları kabul eden bir fonksiyon için ödünç almak gibi. Söz verirsin: gerçekten yazmayacaksın.",
+      "deep": "Yalnızca nesne aslında hiç const değilse ya da çağrılan fonksiyon onu değiştirmiyorsa güvenlidir. Birçok C API'si sadece <code>const</code>'u unutmuştur. Gerçekten const olan veriye bu yolla yazmak tanımsız davranıştır."
+    },
+    "template": {
+      "short": "Bir fonksiyonu ya da sınıfı her tür için bir kez yazar. Derleyici, kullanılan her tür için bir kopya üretir.",
+      "simple": "Bir kurabiye kalıbı: tek bir şekil, her hamur. <code>T</code>, sen seçene kadar hamurun yerini tutar.",
+      "deep": "<code>template &lt;typename F&gt; void withChip(F &amp;&amp;fn)</code>, lambda'lar dahil her çağrılabilir şeyi çalışma zamanı maliyeti olmadan kabul eder. Her yeni tür yeni bir derlenmiş kopya demektir. Bu yüzden yoğun kullanım yazılımı büyütür. Türü açılı parantezler verir: <code>std::vector&lt;Card&gt;</code>."
+    },
+    "std-min-max": {
+      "short": "İki değerden küçük ya da büyük olanı geri verir.",
+      "simple": "“Hangisi düşükse” ve “hangisi yüksekse.” Sayıları bir aralıkta tutmak için işe yarar.",
+      "deep": "İki argüman da aynı türde olmalıdır. Yoksa türü adıyla belirt: <code>std::min&lt;uint32_t&gt;(n, 320)</code>. <code>std::max(0, n - 9)</code> bir değerin sıfırın altına düşmesini engeller."
+    },
+    "std-clamp": {
+      "short": "Bir değeri bir aralığa sıkıştırır. Alt sınırın altındaysa alt sınır, üst sınırın üstündeyse üst sınır olur.",
+      "simple": "Merdivenlerdeki bir çocuk kapısı. Etrafta dolaşabilirsin, ama iki uçtaki kapıların ötesine geçemezsin.",
+      "deep": "C++17'dir, <code>&lt;algorithm&gt;</code> içinden gelir. Üç argümanın da türü aynı olmalıdır. Bu yüzden <code>0.0f</code> ve <code>1.0f</code> yazılır. Arduino'nun <code>constrain()</code> fonksiyonu aynı işi yapar."
+    },
+    "std-algorithms": {
+      "short": "Standart kütüphaneden hazır döngüler: doldur, kopyala, sırala, en büyüğü bul...",
+      "simple": "Mutfak aletleri gibi. Elle de doğrayabilirsin, ama alet daha hızlıdır ve kaymaz.",
+      "deep": "<code>&lt;algorithm&gt;</code> içindendir. Başlangıç ve bitiş işaretçisi (ya da yineleyici) ile verilen her aralıkta çalışırlar. Bitiş, son öğenin bir sonrasıdır. <code>std::fill_n(buf_, n, c)</code> tüm ekran tamponunu doldurur. <code>std::sort</code>, “önce gelen” ne demek olduğunu söyleyen bir lambda alır."
+    },
+    "std-move": {
+      "short": "Bir nesnenin içeriğini kopyalamak yerine başka bir nesneye devreder.",
+      "simple": "Eşyaları yeni eve kopyalatıp satın almak yerine, kolileri olduğu gibi taşımak gibi.",
+      "deep": "Yalnızca bir sağ değer referansına (<code>T &amp;&amp;</code>) çevirmedir. Asıl taşıma, alan türün taşıma kurucusu (move constructor) ile yapılır. Sonrasında kaynak geçerli ama boş sayılır. Değerine güvenme. <code>String</code>, <code>std::vector</code> ve <code>std::function</code> için ucuzdur."
+    },
+    "std-vector": {
+      "short": "Büyüyüp küçülebilen, tek türden öğeler tutan bir liste.",
+      "simple": "Genişleyen bir dosya klasörü. Sayfa eklersin, yer açılır. Yine de “3 numaralı sayfayı ver” diyebilirsin.",
+      "deep": "Öğeleri tek bir bitişik heap bloğunda tutar. Dolunca boyutunu iki katına çıkarır. Bu, belleği taşır ve parçalayabilir. Deneyler vektörleri zamana duyarlı yollarda değil, dışarıda doldurur. Örneğin kart listesini ekran için kopyalar. <code>v.size()</code>, <code>v.push_back(x)</code>, <code>v[i]</code>."
+    },
+    "std-function": {
+      "short": "Verilen biçimde herhangi bir fonksiyonu ya da lambda'yı, sonra çağırmak için tutabilen bir kutu.",
+      "simple": "Yapılacaklar yazılı bir yapışkan notun konduğu bir yuva. Aynı girdileri alan her not sığar.",
+      "deep": "<code>std::function&lt;void(Card &amp;)&gt;</code>, bir <code>Card &amp;</code> alır ve hiçbir şey döndürmez. Esnektir ama bir şablondan daha ağırdır. Çağırması dolaylıdır. Büyük yakalamalar heap'e gider. Bir sınıfta saklanan geri çağırmalar için iyidir."
+    },
+    "std-atomic": {
+      "short": "İki görevin aynı anda okuyup yazabildiği, yarım kalmış bir değişikliği asla görmeyeceği bir değişken.",
+      "simple": "Herkesin çevirebileceği tek bir ışık anahtarı. Ona kim dokunursa dokunsun, açık mı kapalı mı net belli olur.",
+      "deep": "ESP32'de <code>std::atomic&lt;bool&gt;</code> ve <code>std::atomic&lt;uint32_t&gt;</code> kilitsizdir. Bir bayrak ya da sayaç gibi tek bir küçük değer için kullan. Birlikte değişmesi gereken birkaç değer için bir mutex kullan."
+    },
+    "memory-order": {
+      "short": "Atomik bir okuma ya da yazmanın, çevresindeki bellekle ne kadar sıkı hizalanması gerektiğini söyler.",
+      "simple": "“Release” bir mektubu yalnızca mühürlendikten sonra postaya vermek gibidir. “Acquire” ise okumadan önce zarfı açmaktır. Birlikte, okuyanın yazanın hazırladığı her şeyi görmesini garanti ederler.",
+      "deep": "<code>relaxed</code> yalnızca tek değeri atomik yapar. Bir <code>acquire</code> yüklemesiyle eşleşen bir <code>release</code> depolaması, depolamadan önce yazılan her şeyi yüklemeden sonra görünür kılar. Bu, ESP32'nin iki çekirdeği arasında da geçerlidir. Varsayılan (<code>seq_cst</code>) en sıkı olanıdır."
+    },
+    "std-mutex": {
+      "short": "Bir kod ya da veri parçasına aynı anda yalnızca bir görevin girmesine izin veren bir kilit.",
+      "simple": "Ortak bir banyonun tek anahtarı. Anahtarı alan içeri girer, diğerleri kapıda bekler.",
+      "deep": "Arduino-ESP32'de bir FreeRTOS mutex'i üzerine kuruludur. Bu yüzden bekleyen bir görev, dönüp durmak yerine uyur. Bir kesmenin içinde asla kilitleme. Her zaman <code>std::lock_guard</code> ile kilitle. Böylece erken bir <code>return</code> olsa bile kilit açılır."
+    },
+    "lock-guard": {
+      "short": "Oluşturulduğunda bir mutex'i kilitler ve blok bittiğinde otomatik olarak açar.",
+      "simple": "Kendi kendine kapanan bir anahtar. Banyoya girerken anahtarı alır, nasıl çıkarsan çık, anahtarı kendiliğinden geri koyar.",
+      "deep": "RAII: kurucu <code>lock()</code> çağırır. Değişken kapsamdan çıkınca yıkıcı <code>unlock()</code> çağırır. Bu sayede erken bir <code>return</code>'de kilit açmayı unutmak imkânsız olur. Bloğu kısa tut."
+    },
+    "decltype": {
+      "short": "Derleyiciye “bu ifadenin türü nedir?” diye sorar ve cevabı tür olarak kullanır.",
+      "simple": "“Bununla tıpatıp aynı bir kutu ver.”",
+      "deep": "Derleme zamanında değerlendirilir. İfade hiç çalıştırılmaz. Şablonlarda ve bir lambda'nın türüne ad vermekte işe yarar."
+    },
+    "static-assert": {
+      "short": "Derleme sırasında çalışan bir kontrol. Başarısız olursa derleme senin mesajınla durur.",
+      "simple": "Fabrikada bir bekçi. Yerine oturmayan parça binadan asla çıkamaz.",
+      "deep": "Çalışma zamanında bir maliyeti yoktur. Tipik kullanımı: paketlenmiş bir struct'ın bir protokolün beklediği bayt boyutuna sahip olduğunu, ya da bir tablonun her enum değeri için bir girişi olduğunu kontrol etmektir."
+    },
+    "mutable": {
+      "short": "Bir üyenin, <code>const</code> bir fonksiyonun içinde bile değişmesine izin verir. Nesnenin değerinin parçası olmayan iç notlar için.",
+      "simple": "Mühürlü bir belgenin üzerine iliştirilmiş bir karalama kâğıdı. Belge aynı kalır, notlar değişebilir.",
+      "deep": "Okuma fonksiyonları <code>const</code> olan bir nesnenin içindeki mutex ya da önbellek için tipiktir. Kilitlemek mutex'i değiştirir, ama nesnenin anlamını değiştirmez. Bir lambda üzerinde <code>mutable</code>, lambda'nın kendi yakaladığı kopyaları değiştirmesine izin verir."
+    },
+    "include": {
+      "short": "Başka bir dosyayı buraya yapıştırır. Böylece bu dosya, o dosyanın bildirdiklerini kullanabilir.",
+      "simple": "Bir tarifin en üstüne “ekteki tarif kartına bak” yazmak gibi. Orada listelenen malzemeler artık senin elinin altında.",
+      "deep": "Açılı parantezli <code>&lt;Arduino.h&gt;</code> kütüphane ve sistem yollarında arar. Tırnaklı <code>\"pins.h\"</code> ise önce bu dosyanın yanına, sonra projenin <code>include/</code> klasörüne bakar. Bu düz metin yapıştırmadır ve derlemeden önce yapılır."
+    },
+    "pragma-once": {
+      "short": "Bir başlık dosyasının, onu kaç dosya eklerse eklesin yalnızca bir kez yapıştırılmasını sağlar.",
+      "simple": "“Bunu zaten okudun” yer imi. İkinci kez gelince sayfa atlanır.",
+      "deep": "GCC ve diğer büyük derleyiciler destekler. Eski <code>#ifndef X / #define X / #endif</code> ekleme korumasının yerini alır. Bu olmazsa, iki kez tanımlanan bir struct derleme hatası olurdu."
+    },
+    "define": {
+      "short": "Kod derlenmeden önce bir metinle değiştirilen bir ad oluşturur.",
+      "simple": "Bilgisayarın kodunu okumadan hemen önce yaptığı bul ve değiştir işlemi. Her <code>PIN_RGB</code>, <code>48</code> olur.",
+      "deep": "Makrolar türleri ve kapsamı bilmez. <code>pins.h</code> bunları kullanır. Böylece <code>-DPIN_RGB=38</code> gibi bir derleme bayrağı bir pini değiştirebilir. Sıradan sabitler için <code>constexpr</code> tercih edilir. <code>BLE_NOTE(kind, ...)</code> gibi parantezli bir makro, argümanlarını yerine yapıştırır."
+    },
+    "conditional-compile": {
+      "short": "Bir adın tanımlı olup olmamasına göre, derlemeden önce kod satırlarını tutar ya da atar.",
+      "simple": "“Henüz kimse bir pin seçmediyse 48'i kullan.” Geçerli olmayan satırlar, derleyici onları görmeden kesilip atılır.",
+      "deep": "<code>#ifndef PIN_RGB</code> ... <code>#endif</code> yapısı, <code>platformio.ini</code> içindeki derleme bayraklarının <code>pins.h</code> içindeki varsayılanların üstüne geçmesini sağlar. <code>#if</code> bir sabit ifadeyi test eder. Her <code>#if</code>, <code>#ifdef</code> ve <code>#ifndef</code> için eşleşen bir <code>#endif</code> gerekir."
+    },
+    "serial-begin": {
+      "short": "Bilgisayarınla seri hattı seçtiğin hızda açar. Böylece kart mesaj yazdırabilir.",
+      "simple": "Telefonu açmak ve ikinizin ne kadar hızlı konuşacağını kararlaştırmak gibi. 115200, seri monitörün dinlediği hızdır.",
+      "deep": "Hız baud (saniyedeki bit) cinsindendir. <code>platformio.ini</code> içindeki <code>monitor_speed</code> ile aynı olmalıdır. Bu deneylerde <code>Serial</code>, <code>COM</code> portundaki USB-seri çipi üzerinden erişilen UART0'dır. Bu yüzden hiçbir şey USB'nin kendini tanıtmasını beklemez."
+    },
+    "serial-printf": {
+      "short": "Seri monitöre bir satır yazdırır. Değerleri <code>%</code> kodlarıyla yerleştirir.",
+      "simple": "Bir form mektubu gibi: <code>\"%d cores\"</code> içinde bir boşluk vardır, verdiğin sayı o boşluğu doldurur.",
+      "deep": "<code>vsnprintf</code> ile biçimlendirir, sonra UART0'a 115200 baud hızında yazar. Bu yaklaşık 11,5 KB/s eder. Yani uzun çıktılar döngüyü yavaşlatır. Kodlar: <code>%d</code> int, <code>%u</code> işaretsiz, <code>%lu</code> işaretsiz long, <code>%.1f</code> float, <code>%s</code> C metni (bir <code>String</code> için <code>.c_str()</code> kullan), <code>%02X</code> iki basamaklı onaltılık sayı. Satır sonunu <code>\\n</code> ile kendin ekle."
+    },
+    "serial-print": {
+      "short": "Seri monitöre metin ya da sayı yazdırır. <code>println</code> ayrıca yeni bir satır başlatır.",
+      "simple": "Bilgisayarına sesli bir şey söylemek gibi. <code>println</code>, sonrasında Enter tuşuna basmak gibidir.",
+      "deep": "Metin, sayı ve <code>String</code> kabul eder. <code>Serial.print(x, HEX)</code> onaltılık yazdırır. Veriyi bir gönderme tamponuna yazar. Yalnızca tampon dolduğunda bekler."
+    },
+    "serial-read": {
+      "short": "<code>available()</code>, bekleyen kaç harf olduğunu söyler. <code>read()</code> sıradakini alır.",
+      "simple": "Posta kutusunu kontrol etmek gibi. <code>available()</code> içinde kaç mektup olduğunu söyler, <code>read()</code> birini çıkarır.",
+      "deep": "İkisi de hemen döner. Bekleyen bir şey yoksa <code>read()</code> -1 verir. Deneyler harfleri yeni satıra kadar bir tampona toplar, sonra komutu çalıştırır. Böylece yazmak ekranı asla kilitlemez. <code>flush()</code>, yazdırılan her şey gönderilene kadar bekler."
+    },
+    "pin-mode": {
+      "short": "Bir GPIO pinini kullanmadan önce giriş ya da çıkış olarak ayarlar.",
+      "simple": "Bir kapının giriş mi çıkış mı için olduğuna karar vermek gibi: düğmeyi okumak mı, LED'i yakmak mı?",
+      "deep": "Bu pin için GPIO matrisini ayarlar. <code>INPUT_PULLUP</code>, 3,3 V'a bağlı zayıf bir dahili direnci de açar. Bu yüzden GND'ye bağlı bir düğme ek parça istemez. <code>pins.h</code> dosyasının başında listelenen önyükleme (strapping), flash ve PSRAM pinlerinden kaçın."
+    },
+    "pin-modes": {
+      "short": "Bir pinin ayarlanabileceği yollar: dinlemek, sürmek ya da dahili bir dirençle dinlemek.",
+      "simple": "<code>OUTPUT</code> açıp kapattığın bir musluk gibidir. <code>INPUT</code> okuduğun bir göstergedir. <code>INPUT_PULLUP</code>, bir şey aşağı çekene kadar “yüksek” değerde duran bir göstergedir.",
+      "deep": "Bağlı olmayan bir <code>INPUT</code> gürültü toplar. <code>INPUT_PULLUP</code> ve <code>INPUT_PULLDOWN</code>, ESP32'nin zayıf dahili dirençlerini (on kiloohm mertebesinde) açar. Bu deneylerde basılı düğmelerin <code>LOW</code> okunmasının sebebi budur."
+    },
+    "digital-write": {
+      "short": "Bir çıkış pinini açar (3,3 V) ya da kapatır (0 V).",
+      "simple": "Bir ışık anahtarını çevirmek gibi. <code>HIGH</code> açıktır, <code>LOW</code> kapalıdır.",
+      "deep": "ESP32-S3 pinleri 3,3 V'tur, asla 5 V değildir. Her pin varsayılan olarak yaklaşık 20 mA verebilir ya da çekebilir. Bu, <code>gpio_set_drive_capability</code> ile ayarlanabilir. Bu yüzden bir LED'in her zaman seri bir direnci olmalıdır."
+    },
+    "digital-read": {
+      "short": "Bir giriş pininin yüksek (yaklaşık 3,3 V) mi düşük (yaklaşık 0 V) mi olduğunu okur.",
+      "simple": "Kapı zilinin düğmesine sormak gibi: şu an basılı mısın?",
+      "deep": "<code>HIGH</code> (1) ya da <code>LOW</code> (0) döndürür. <code>INPUT_PULLUP</code> ile basılı bir düğme <code>LOW</code> okunur. Bu yüzden <code>== LOW</code>, “basıldı” anlamına gelir. Mekanik temaslar birkaç milisaniye sıçrar. <code>Button</code> bunu filtreler."
+    },
+    "high-low": {
+      "short": "Dijital bir pinin iki seviyesi: <code>HIGH</code> 3,3 V, <code>LOW</code> 0 V'tur.",
+      "simple": "Açık ve kapalı, gerilim cinsinden.",
+      "deep": "Bunlar basitçe 1 ve 0'dır. ESP32'de bir giriş, 3,3 V'un yaklaşık dörtte üçünün üzerinde <code>HIGH</code>, dörtte birinin altında <code>LOW</code> okunur. Aradaki değerler garanti edilmez."
+    },
+    "analog-read": {
+      "short": "Bir pindeki gerilimi 0 ile 4095 arasında bir sayı olarak ölçer.",
+      "simple": "Açık kapalı anahtar yerine bir dimmer okuması: gerilim 0 ile 4095 ölçeğinde ne kadar yukarıda?",
+      "deep": "ESP32-S3 ADC'si 12 bittir. ADC1 pinlerini kullan (GPIO 1-10). ADC2, Wi-Fi ile paylaşılır. Tek bir çağrı yavaş bir örnek alır. Bu yüzden ses deneylerinde bunun yerine DMA ile sürekli mod kullanılır."
+    },
+    "millis": {
+      "short": "Kart açıldığından beri kaç milisaniye geçtiğini söyler.",
+      "simple": "Açılışta başlayan ve hiç durmayan bir kronometre. Daha önceki bir okumayla karşılaştırarak ne kadar zaman geçtiğini öğrenirsin.",
+      "deep": "64 bitlik <code>esp_timer</code>'dan türetilen 32 bitlik bir <code>unsigned long</code> döndürür. Yaklaşık 49,7 günde 0'a döner. Yine de <code>millis() - last >= interval</code> işlemi, işaretsiz hesaplama sayesinde bu dönüşte doğru çalışır. Döngüler, <code>delay()</code> kullanmadan “her N ms'de bir” işleri böyle yapar."
+    },
+    "micros": {
+      "short": "Kart açıldığından beri kaç mikrosaniye (saniyenin milyonda biri) geçtiğini söyler.",
+      "simple": "<code>millis()</code> ile aynı kronometre, ama bin kat daha ince okunur.",
+      "deep": "32 bittir. Yaklaşık 71,6 dakikada başa döner. Kısa şeyleri zamanlamak için yeterlidir. Pratikte hiç dönmeyen 64 bitlik bir saat için <code>esp_timer_get_time()</code> kullan."
+    },
+    "delay": {
+      "short": "Mevcut kodu belirli sayıda milisaniye duraklatır.",
+      "simple": "Kısa bir uyku. Sen uyanana kadar <code>loop()</code> içinde başka hiçbir şey olmaz.",
+      "deep": "ESP32'de <code>vTaskDelay</code> çağırır. Bu yüzden bu görev uyurken CPU diğer görevler için (Wi-Fi, BLE, örnekleyici) serbest kalır. Buradaki FreeRTOS tiki 1 ms'dir. Uzun gecikmeler yine de düğmeleri ve ekranı dondurur. Bu yüzden deneyler çoğunlukla <code>millis()</code> kontrolleri kullanır."
+    },
+    "delay-microseconds": {
+      "short": "Çok kısa duraklamalar isteyen donanım için birkaç mikrosaniye bekler.",
+      "simple": "Bir göz kırpışı için nefes tutmak gibi. Uyumak için çok kısa, o yüzden yerinde beklersin.",
+      "deep": "Meşgul bekleme: CPU döner durur ve bu çekirdekteki diğer görevler çalışmaz. Birkaç yüz mikrosaniye için uygundur, örneğin bir çekme direncinin oturması için. Uzun beklemeler için hiç kullanılmamalıdır."
+    },
+    "ledc-attach": {
+      "short": "Bir pini seçilen frekans ve çözünürlükle PWM çıkışına çevirir. LED'leri ya da arka ışıkları kısmak için kullanılır.",
+      "simple": "Saniyede binlerce kez açılıp kapanan çok hızlı bir ışık anahtarı kurmak gibi. Göz “yarı parlak” görür.",
+      "deep": "Arduino-ESP32 3.x API'si LEDC birimi üzerinde çalışır. <code>ledcAttach(pin, freq, bits)</code>, uygun bir kanal ya da frekans yoksa <code>false</code> döndürür. 8 bitte 5 kHz, görünür bir titreme olmadan 0-255 arası görev değerleri verir."
+    },
+    "ledc-write": {
+      "short": "Pinin her PWM döngüsünün ne kadarında açık kalacağını ayarlar. 0 kapalıdır, en üst değer tamamen açıktır.",
+      "simple": "O hızlı anahtarın üzerindeki kısma düğmesini çevirmek.",
+      "deep": "Arduino-ESP32 3.x'te pini alır (2.x kanal alıyordu). Görev aralığı, <code>ledcAttach</code> ile verilen bitlere göre 0 ile 2^bits - 1 arasıdır. 8 bit için bu 0-255'tir. LEDC donanımı dalga biçimini CPU işi olmadan çalıştırmaya devam eder."
+    },
+    "rgb-led-write": {
+      "short": "Kartın üzerindeki RGB LED'in rengini kırmızı, yeşil ve mavi değerlerden (her biri 0-255) ayarlar.",
+      "simple": "Boya karıştırmak gibi: biraz kırmızı, çok yeşil, hiç mavi. LED karışımı gösterir.",
+      "deep": "Kart üzerindeki LED bir WS2812'dir. Rengini hassas zamanlanmış bir darbe dizisiyle alır. Arduino-ESP32 bunu RMT birimiyle üretir. LED çok parlaktır, bu yüzden deneyler değerleri küçültür. Eski çekirdeklerde adı <code>neopixelWrite</code>'tı."
+    },
+    "attach-interrupt": {
+      "short": "Bir pin değiştiği anda bir fonksiyonu çalıştırır. Kodun geri kalanı meşgul olsa bile.",
+      "simple": "Pencereden bakmak yerine kapı zili: biri bastığı anda kart kesilir.",
+      "deep": "<code>CHANGE</code>, <code>RISING</code> ya da <code>FALLING</code>, hangi kenarların tetikleyeceğini seçer. <code>attachInterruptArg</code>, bir <code>void *</code> (burada <code>this</code>) da geçirir. Böylece statik işleyici nesnesini bulabilir. İşleyiciler kısa olmalı, <code>IRAM_ATTR</code> ile işaretlenmeli ve yalnızca <code>volatile</code> ya da atomik veriye dokunmalıdır."
+    },
+    "digital-pin-to-interrupt": {
+      "short": "Bir pin numarasını, <code>attachInterrupt</code>'ın beklediği kesme numarasına çevirir.",
+      "simple": "Hangi kapı zili telinin hangi kapıya ait olduğunu bulmak gibi.",
+      "deep": "ESP32'de her GPIO kesme üretebilir ve numara pinin kendisidir. Yine de bunu yazmak, kodun kartlar arasında taşınabilir kalmasını sağlar. Kartlar arasında bu değerler farklı olabilir."
+    },
+    "random": {
+      "short": "Rastgele bir tam sayı seçer. <code>random(40, 200)</code> 40 ile 199 arasında bir sayı verir.",
+      "simple": "Yüzlerini sen seçtiğin bir zar atmak gibi. En üst sayı asla çıkmaz.",
+      "deep": "<code>random(max)</code> 0 ile max-1 arası, <code>random(min, max)</code> ise min ile max-1 arası sayı verir. <code>randomSeed(esp_random())</code>, diziyi donanımsal bir rastgele sayıdan başlatır. Böylece her açılış farklı görünür."
+    },
+    "constrain": {
+      "short": "Bir değeri izin verilen en düşük ve en yüksek değer arasında tutar.",
+      "simple": "Bowling şeridindeki bariyerler: top aralarında her yere yuvarlanabilir, ama asla dışarı çıkmaz.",
+      "deep": "Arduino'nun <code>std::clamp</code> karşılığıdır: <code>constrain(x, lo, hi)</code>. MIDI notaları ve hızları 0-127 arasında kalmalıdır. Bu yüzden BLE MIDI deneyi onları sınırlar."
+    },
+    "min-max": {
+      "short": "Arduino'nun iki değerden küçük ya da büyük olanı bulmak için kısa yolu.",
+      "simple": "“Hangisi küçükse” ya da “hangisi büyükse”. <code>max(2, s / 6)</code>, “en az 2” demektir.",
+      "deep": "Sürprizlerden kaçmak için iki argümana da aynı türü ver. Deneyler başka yerlerde, açık tür de alabilen <code>std::min</code> ve <code>std::max</code> yazar: <code>std::min&lt;uint32_t&gt;(n, 320)</code>."
+    },
+    "string-c-str": {
+      "short": "Bir <code>String</code>'in metnini düz bir C metni olarak verir. <code>const char *</code> isteyen fonksiyonlar içindir.",
+      "simple": "Harfleri esnek defterinden çıkarıp masaya dizmek gibi. Yalnızca harf taşlarını okuyan biri için.",
+      "deep": "İşaretçi yalnızca <code>String</code> yaşarken ve değişmediğinde geçerlidir. <code>a.toString().c_str()</code> gibi geçici bir nesneden alınan işaretçiyi o satırın ötesinde asla saklama. printf içindeki <code>%s</code> için gerekir."
+    },
+    "string-is-empty": {
+      "short": "Bir <code>String</code>'e harf olup olmadığını ya da kaç harf içerdiğini sor.",
+      "simple": "Defter sayfası boş mu? Üzerinde kaç harf var?",
+      "deep": "<code>length()</code> karakterleri sayar. Bu bayt sayısıdır, yani bir emoji birkaç sayılır. Gizli <code>'\\0'</code>'ı saymaz. <code>isEmpty()</code>, <code>length() == 0</code> ile aynıdır ve daha kolay okunur."
+    },
+    "string-substring": {
+      "short": "<code>indexOf</code>, bir metnin nerede geçtiğini bulur. <code>substring</code> ise bir parçasını kesip alır.",
+      "simple": "Bir cümlede parmağınla bir kelime bulmak, sonra ihtiyacın olan kısmı makasla kesmek gibi.",
+      "deep": "Konumlar 0'dan sayılır. <code>substring(from)</code> sona kadar gider. <code>substring(from, to)</code> ise <code>to</code>'dan hemen önce durur. Hiçbir şey bulunamazsa <code>indexOf</code> -1 döndürür. Her <code>substring</code>, heap üzerinde yeni bir <code>String</code> oluşturur."
+    },
+    "string-starts-with": {
+      "short": "Bir <code>String</code>'in bir metinle başlayıp başlamadığını (ya da bitip bitmediğini) kontrol eder.",
+      "simple": "“Bu komut 'vol ' ile mi başlıyor?” Hızlı bir evet ya da hayır.",
+      "deep": "Büyük küçük harfe duyarlıdır. Bu yüzden komutlar önce küçük harfe çevrilir, örneğin <code>lower.startsWith(...)</code>. Her deneyin seri komut ayrıştırıcısı kendi kelimelerini böyle tanır."
+    },
+    "string-trim": {
+      "short": "Metni yerinde düzenler: uçlardaki boşlukları kaldırır, harf durumunu değiştirir ya da bir metin parçasını başkasıyla değiştirir.",
+      "simple": "Bir notu okumadan önce düzeltmek gibi. Fazla boşluk yok, hepsi küçük harf. Böylece “Yardım ” ile “yardım” aynı anlama gelir.",
+      "deep": "Bunlar <code>String</code>'in kendisini değiştirir ve bir şey döndürmez. Bu yüzden sahip olduğun bir kopya üzerinde çağır: <code>String lower = line; lower.toLowerCase();</code>. <code>trim</code>, bazı terminallerin gönderdiği <code>\\r</code> karakterini de siler."
+    },
+    "string-to-int": {
+      "short": "<code>\"42\"</code> gibi bir metni 42 sayısına çevirir.",
+      "simple": "Bir notun üzerindeki rakamları okuyup hesap makinesine yazmak gibi.",
+      "deep": "Bir <code>long</code> (ya da <code>float</code>) döndürür. Sayıyla başlamayan metin 0 verir. Bu yüzden yazılan <code>0</code> ile saçma bir metin aynı görünür. Bu önemliyse metni kontrol et."
+    },
+    "spi-begin": {
+      "short": "Seçtiğin pinlerde SPI veriyolunu başlatır. Böylece kart ekrana ya da RFID okuyucuya hızlıca konuşabilir.",
+      "simple": "Konuşmak, dinlemek ve iki tarafın da tutturduğu ritim için ayrı tellerle özel bir telefon hattı kurmak gibi.",
+      "deep": "<code>SPI.begin(sck, miso, mosi, ss)</code>. -1 bir pini atlar. Ekranın MISO'su yoktur. <code>SPI</code>, S3'ün SPI2 (FSPI) birimidir. RFID konusu, SPI3 üzerinde ikinci bir <code>SPIClass</code> kurar. Böylece ikisi asla tel ya da zamanlama paylaşmaz."
+    },
+    "log-macros": {
+      "short": "Etiketli bir günlük satırı yazdırır: <code>i</code> bilgi, <code>w</code> uyarı, <code>e</code> hata, <code>d</code> hata ayıklama.",
+      "simple": "Bir geminin seyir defterindeki notlar. Her biri, ne kadar ciddi olduğunu gösteren bir damgayla gelir.",
+      "deep": "Arduino-ESP32 makroları, printf biçiminde kalıplarla çalışır. Her satırın başına seviye, dosya, satır ve fonksiyon eklenir. <code>CORE_DEBUG_LEVEL</code> değerinin (<code>platformio.ini</code> içinde 3, yani bilgi) üstündeki satırlar derleme sırasında silinir. Bu yüzden buradaki <code>log_d</code> hiçbir maliyet getirmez. Çıktı, <code>Serial</code> ile aynı seri porta gider."
+    },
+    "esp-info": {
+      "short": "Çipe kendisi hakkında sor: model, çekirdek, hız, flash ve PSRAM boyutu, MAC adresi.",
+      "simple": "Kartın kendi kimlik kartını sesli okuması.",
+      "deep": "01 numaralı ders şunları bekler: <i>ESP32-S3</i>, 240 MHz'de 2 çekirdek, 16 MB flash (N16) ve yaklaşık 8 MB PSRAM (R8). <code>getEfuseMac()</code>, eFuse içindeki fabrika MAC adresini <code>uint64_t</code> olarak verir. En düşük bayt önce gelir."
+    },
+    "free-heap": {
+      "short": "Yeni ayırmalar için hâlâ ne kadar bellek boş olduğunu söyler.",
+      "simple": "Yeni bir şey almadan önce dolapta ne kadar yer kaldığına bakmak gibi.",
+      "deep": "<code>ESP.getFreeHeap()</code> iç RAM'i sayar. <code>heap_caps_get_free_size(MALLOC_CAP_SPIRAM)</code> ise PSRAM'i sayar. Boş olmak, kullanılabilir olmakla aynı şey değildir. <code>heap_caps_get_largest_free_block</code>, tek bir parça olarak en büyük boş alanı verir. Kare tamponu da tam bunu ister."
+    },
+    "esp-restart": {
+      "short": "Çipi sıfırdan yeniden başlatır. Sanki sıfırlama düğmesine basmışsın gibi.",
+      "simple": "Programın içinden kapatıp açmak gibi.",
+      "deep": "Yazılımsal bir sıfırlamadır. RAM temizlenir, NVS (Preferences) kalır. Bir sonraki açılışta <code>esp_reset_reason()</code> <code>ESP_RST_SW</code> bildirir. Yalnızca açılışta uygulanan bir kayıtlı ayarı değiştirdikten sonra kullanılır."
+    },
+    "esp-reset-reason": {
+      "short": "Kartın en son neden açıldığını söyler: güç verilmesi, sıfırlama düğmesi, çökme, düşük gerilim...",
+      "simple": "Uyanıp soruyorsun: “Az önce uyudum mu, yoksa düşüp bayıldım mı?”",
+      "deep": "<code>ESP_RST_POWERON</code>, <code>ESP_RST_SW</code>, <code>ESP_RST_PANIC</code>, <code>ESP_RST_TASK_WDT</code> ya da <code>ESP_RST_BROWNOUT</code> gibi bir <code>esp_reset_reason_t</code> döndürür. Son ikisi, çökmeyi ya da düşük gerilimi (besleme geriliminin düşmesi) gösterir. Açılışta bunu yazdırmak çökmeleri görünür yapar."
+    },
+    "esp-timer-get-time": {
+      "short": "Açılıştan beri geçen mikrosaniye. Asla bitmeyen 64 bitlik bir saatten okunur.",
+      "simple": "Çok hassas bir kronometre. Bir ekran karesinin çizilmesinin ne kadar sürdüğünü ölçmek için iyidir.",
+      "deep": "ESP-IDF yüksek çözünürlüklü zamanlayıcısından <code>int64_t</code> döndürür. Kesmenin içinden çağırmak güvenlidir. <code>millis()</code> ve <code>micros()</code> bunun üzerine kuruludur. Düğme işleyicisi yalnızca düşük 32 biti tutar. Böylece bir okuma tek adımda yapılır."
+    },
+    "esp-timer": {
+      "short": "ESP-IDF'in bir gecikmeden sonra ya da düzenli aralıklarla çalıştırdığı bir geri çağırma kurar. Zamanlama mikrosaniye hassasiyetindedir.",
+      "simple": "Kodun geri kalanı ne yapıyor olursa olsun her 125 ms'de bir çalan bir mutfak zamanlayıcısı.",
+      "deep": "Geri çağırmalar <code>loop()</code> içinde değil, öncelikli <code>esp_timer</code> görevinde çalışır. Bu yüzden kısa tut ve verileri güvenle paylaş. Periyotlar mikrosaniye cinsindendir."
+    },
+    "esp-random": {
+      "short": "Çipin donanımsal rastgele sayı üreticisinden gelen rastgele bir 32 bitlik sayı.",
+      "simple": "Bir formülle değil, çipin içindeki fizikle atılan zar.",
+      "deep": "Wi-Fi ya da Bluetooth çalışırken gerçekten rastgeledir. Radyo gürültüsü onu besler. Bundan önce ise yalnızca sözde rastgele kabul et. <code>esp_fill_random(buf, n)</code> bir tamponu doldurur. Kasa deneyi de gizli anahtarı için bunu kullanır."
+    },
+    "heap-caps-malloc": {
+      "short": "Seçtiğin türden bir RAM'den bellek bloğu ister: hızlı iç RAM ya da büyük harici PSRAM.",
+      "simple": "Masandaki küçük çekmece (çabuk ulaşılır) ile koridorun sonundaki büyük depo (ferah ama daha yavaş) arasında seçim yapmak gibi.",
+      "deep": "S3'ün yaklaşık 512 KB iç SRAM'i vardır. Burada ise 8 MB sekizli PSRAM kullanılır. <code>MALLOC_CAP_INTERNAL</code> ya da <code>MALLOC_CAP_SPIRAM</code> havuzu seçer. Yeterince büyük blok yoksa sonuç <code>nullptr</code> olur. Serbest bırakmak için <code>heap_caps_free</code> kullan."
+    },
+    "gpio-drive": {
+      "short": "Bir çıkış pininin akımı ne kadar güçlü sürdüğünü, zayıftan güçlüye doğru seçer.",
+      "simple": "Bir musluğun suyu ne kadar güçlü itebileceğini ayarlamak gibi: ince bir damla ya da tam basınç.",
+      "deep": "Bir ESP-IDF çağrısıdır. <code>gpio_num_t</code> ister, bu yüzden tür dönüşümü vardır. 0-3 seviyeleri yaklaşık 5, 10, 20 (varsayılan) ve 40 mA'dir. Daha zayıf sürüş, kenarları yumuşatır ve LED'leri daha loş tutar."
+    },
+    "esp-err": {
+      "short": "ESP-IDF fonksiyonları bir sonuç kodu ile cevap verir. <code>ESP_OK</code> (0) işlemin başarılı olduğunu söyler.",
+      "simple": "Bir fiş: “Tamam” ya da neden olmadığının açıklaması.",
+      "deep": "Başka her değer bir hatadır. Örneğin <code>ESP_ERR_NO_MEM</code> ya da <code>ESP_ERR_TIMEOUT</code>. <code>esp_err_to_name()</code>, bunu günlük için metne çevirir. Deneyler <code>!= ESP_OK</code> kontrolü yapar ve çökmek yerine işlemi durdurur."
+    },
+    "preferences": {
+      "short": "Küçük ayarları çipin flash belleğinde saklar. Böylece kapatıp açtıktan ya da yeniden yükledikten sonra da kalırlar.",
+      "simple": "Kartın içine yapıştırılmış bir defter: “Wi-Fi adı = ev” yaz, yarın da orada durur.",
+      "deep": "Arduino'nun ESP-IDF NVS üzerindeki sarmalayıcısıdır. NVS, kendi flash bölümündeki bir anahtar-değer deposudur. <code>begin(\"ns\", readOnly)</code> bir ad alanı açar. Ad alanları ve anahtarlar en fazla 15 karakter olabilir. Varsayılan olarak şifrelenmez. İş bitince <code>end()</code> çağır."
+    },
+    "preferences-put-get": {
+      "short": "Bir anahtarın altına değer yaz, ya da hiç kaydedilmemişse yedek değerle geri oku.",
+      "simple": "Bir rafa dizilmiş etiketli kavanozlar: “ses” yazılı kavanoza bir şey koy, sonra tekrar çıkar.",
+      "deep": "Tür adın içindedir. <code>UChar</code> <code>uint8_t</code>'dir, <code>UInt</code> ise <code>uint32_t</code>'dir. <code>getX(key, fallback)</code>, anahtar yoksa yedek değeri döndürür. Yazmalar flash'ı yıpratır. Bu yüzden deneyler yalnızca değişince kaydeder."
+    },
+    "x-task-create": {
+      "short": "Yeni bir görev başlatır: <code>loop()</code> ile birlikte çalışan bir fonksiyon. Çekirdeği sen seçersin.",
+      "simple": "İkinci bir aşçı tutmak. Kendi tarifi var ve sen çalışırken kendi ocağında aynı anda çalışıyor.",
+      "deep": "Argümanlar: fonksiyon, ad, yığın boyutu, bir <code>void *</code> parametresi (çoğu zaman <code>this</code>), öncelik, isteğe bağlı bir tanıtıcı (handle) ve çekirdek. ESP-IDF'de yığın boyutu <b>bayt</b> cinsindendir. <code>loop()</code> çekirdek 1'de çalışır. Deneyler okuyucularını ve örnekleyicilerini çekirdek 0'a sabitler. Başarılıysa <code>pdPASS</code> döndürür."
+    },
+    "v-task-delay": {
+      "short": "Bu görevi birkaç tik boyunca uyutur. Böylece diğer görevler CPU'yu kullanabilir.",
+      "simple": "İkinci aşçı, biri ocağı kullanabilsin diye bir an ocaktan geri çekilir.",
+      "deep": "Arduino-ESP32'de bir tik 1 ms'dir. Yine de anlam açık olsun diye <code>pdMS_TO_TICKS(ms)</code> yaz. Bir görevin sonsuz döngüsü bir yerde bloke olmalı ya da gecikmeli olmalıdır. Aksi halde düşük öncelikli görevler aç kalır ve görev bekçisi (watchdog) şikâyet eder."
+    },
+    "pd-ms-to-ticks": {
+      "short": "Milisaniyeleri FreeRTOS tiklerine çevirir. FreeRTOS'taki her bekleme bu birimi kullanır.",
+      "simple": "Dakikaları mutfak saatinin kendi birimine çevirmek gibi.",
+      "deep": "Bir makrodur: <code>ms * configTICK_RATE_HZ / 1000</code>. Buradaki 1000 Hz tikle birebir eşittir. Ama tik hızı değişirse kod yine doğru çalışır. Bir tikten kısa beklemeler aşağı yuvarlanıp 0 olur."
+    },
+    "port-max-delay": {
+      "short": "“Sonsuza kadar bekle.” Bir şey gelene kadar bloke etmek için zaman aşımı olarak verilir.",
+      "simple": "Posta gelene kadar, ne kadar sürerse sürsün posta kutusunun yanında beklemek gibi.",
+      "deep": "En büyük tik sayısıdır. FreeRTOS bunu zaman aşımı yok sayar. Yapacak başka işi olmayan bir işçi görev için uygundur. <code>loop()</code> içinde ya da bir kesmede asla kullanma."
+    },
+    "pd-true": {
+      "short": "FreeRTOS'un kendi evet/hayır cevapları: <code>pdTRUE</code> ve <code>pdPASS</code>, işlemin başarılı olduğu anlamına gelir.",
+      "simple": "Bir kuyruk ya da görev isteğinden sonra FreeRTOS'un geri verdiği fiş.",
+      "deep": "Düz tam sayılardır (<code>BaseType_t</code>). Doğru ya da başarılı için 1, yanlış ya da başarısız için 0. Açıkça karşılaştır: <code>xQueueSend(...) == pdTRUE</code>."
+    },
+    "x-queue-create": {
+      "short": "Bir kuyruk oluşturur: bir görevden başka bir göreve öğe taşımak için güvenli bir posta kutusu.",
+      "simple": "Sabit sayıda gözü olan bir posta kutusu. Bir görev mektupları atar, bir diğeri çıkarır. Asla çarpışmazlar.",
+      "deep": "<code>xQueueCreate(length, itemSize)</code>, bir <code>QueueHandle_t</code> döndürür. Bellek yoksa null döner. Öğeler içeri ve dışarı <b>kopyalanır</b>. Bu yüzden küçük struct'lar gönder, kaybolabilecek şeylere işaretçi gönderme."
+    },
+    "x-queue-send": {
+      "short": "Bir öğenin kopyasını kuyruğa koyar. Kuyruk doluysa belli bir süre bekler.",
+      "simple": "Posta kutusuna bir mektup atmak. Kutu doluysa bir an bekleyebilir ya da gidebilirsin.",
+      "deep": "Zaman aşımı 0 ise hiç beklemez. Yer yoksa <code>errQUEUE_FULL</code> döndürür. Bu, takılmaması gereken <code>loop()</code> ve web işleyicileri için doğrudur. Bir kesmeden kullanırken <code>FromISR</code> sürümünü kullan."
+    },
+    "x-queue-receive": {
+      "short": "Kuyruktaki sıradaki öğeyi alır. Kuyruk boşsa belli bir süre bekler.",
+      "simple": "Posta kutusunu açmak: en eski mektubu al, ya da bir tane gelene kadar biraz bekle.",
+      "deep": "Öğeler sırayla çıkar ve değişkenine kopyalanır. İşçi bir görev genellikle burada zaman aşımıyla bloke olur (ya da <code>portMAX_DELAY</code> ile). İş gelene kadar CPU harcamaz."
+    },
+    "semaphore": {
+      "short": "Bir görevin beklediği, başka bir görevin ya da bir kesmenin verdiği bir sinyal.",
+      "simple": "Bir stafet yarışında çubuk: koşucu çubuk elinden alınana kadar bekler, sonra koşar.",
+      "deep": "MFRC522 sürücüsü, okuyucunun IRQ kesmesi <code>xSemaphoreGiveFromISR</code> çağırana kadar <code>xSemaphoreTake(done_, timeout)</code> içinde uyur. Böylece SPI yoklaması gerekmez. Mutex türü semafor, kilitleme için öncelik devrini ekler."
+    },
+    "task-handle": {
+      "short": "Bir tanıtıcı çalışan bir görevi adlandırır. <code>vTaskDelete</code> ise birini sonlandırır.",
+      "simple": "İkinci aşçının isim rozeti ve onu eve gönderen not.",
+      "deep": "<code>vTaskDelete(nullptr)</code> çağıran görevi sonlandırır. Bir görev fonksiyonu asla sadece dönmemelidir. <code>uxTaskGetStackHighWaterMark</code>, bir görevin yığınını taşırmaya ne kadar yaklaştığını gösterir."
+    },
+    "critical-section": {
+      "short": "Birkaç satırı kilitler. Bu sırada başka hiçbir görev, çekirdek ya da kesme aynı veriye dokunamaz.",
+      "simple": "Rafta iki şeyi değiştirirken kapıyı bir saniyeliğine ayağınla kapalı tutmak gibi.",
+      "deep": "Bir <code>portMUX_TYPE</code> dönen kilit (spinlock) alır ve bu çekirdekteki kesmeleri kapatır. Böylece hem iki ESP32 çekirdeğinde hem de kesmelerle birlikte çalışır. Bölümü birkaç kopyalama ile sınırlı tut. Yazdırma, bekleme ve bellek ayırma yapma."
+    },
+    "adafruit-st7789": {
+      "short": "03 numaralı dersten itibaren kullanılan 1,9 inç 320×170 renkli ekranın sürücüsü.",
+      "simple": "Kart ile ekran arasında tercüman: “bunu çiz” dersin, o da SPI üzerinden ekranın dilinde konuşur.",
+      "deep": "Adafruit'in ST7789 sürücüsü. <code>init(170, 320)</code> panel boyutunu ayarlar. <code>setRotation(1)</code> ekranı yatay yapar. <code>setSPISpeed</code> saati 40 MHz'e kadar çıkarır. Pikseller RGB565'tir."
+    },
+    "adafruit-gfx": {
+      "short": "Her ekran çağrısının arkasındaki çizim kütüphanesi: çizgiler, daireler, dikdörtgenler, metin.",
+      "simple": "Bir kutu şablon ve kalem. Tek bir pikseli boyayabilen her ekran, diğer tüm şekilleri bedavaya alır.",
+      "deep": "Soyut bir temel sınıftır. Bir alt sınıfın tek yapması gereken <code>drawPixel</code>'i uygulamaktır. Diğer her şey bunun üzerine kuruludur. Bizim <code>FrameBuffer</code> ise hız için çizgi ve doldurma çağrılarını da geçersiz kılar. Koordinatlar <code>int16_t</code>'dir ve sol üst köşeden başlar."
+    },
+    "gfx-canvas16": {
+      "short": "Bellekte, üzerine çizip sonra tek seferde ekrana gönderdiğin ekran dışı bir resim.",
+      "simple": "Önce kâğıda taslak çizmek, sonra bitmiş sayfayı pencereye tutmak gibi. Kimse yarım bir çizim görmez.",
+      "deep": "Adafruit GFX'in 16 bitlik tuvali. Her piksel için bir <code>uint16_t</code> vardır: 320×170×2, yani yaklaşık 106 KB. Düz <code>malloc</code> ile ayırır. Burada bu PSRAM'e düşer. Bizim <code>FrameBuffer</code> ise iç RAM'i tercih eder."
+    },
+    "frame-buffer": {
+      "short": "Projenin ekran dışı resmi: normal GFX çağrılarıyla içine çizer, sonra ekrana gönderirsin.",
+      "simple": "Kendi çizim defterimiz. En hızlı ve yeri olan çekmecede saklanır.",
+      "deep": "<code>kit/lib/bench/src/frame_buffer.h</code> içinde tanımlıdır. <code>begin()</code> önce hızlı iç RAM'i dener, olmazsa PSRAM'e geçer. <code>internal()</code> hangisini aldığını söyler. <code>drawPixel</code>, <code>fillScreen</code> ve çizgi ile dikdörtgen çağrılarını, doğrudan <code>pixels()</code> üzerine yazarak geçersiz kılar."
+    },
+    "display": {
+      "short": "Projenin ekran yardımcısı: ST7789, arka ışığı ve kare tamponu. Her deneyde aynı şekilde kurulur.",
+      "simple": "Ekran ve çizim defteri bir arada paketlenmiş hali: <code>fb()</code> üzerine çizersin, <code>push()</code> gösterir.",
+      "deep": "<code>kit/lib/bench/src/display.h</code> içinde tanımlıdır. <code>begin()</code> arka ışık için PWM'i, 40 MHz SPI'ı ve paneli yatay modda başlatır. <code>push()</code> tüm resmi tek bir <code>drawRGBBitmap</code> çağrısıyla gönderir."
+    },
+    "button": {
+      "short": "Projenin basmalı düğme yardımcısı: ham basışları temiz tıklamalara, çift tıklamalara ve uzun basışlara çevirir.",
+      "simple": "Düğme için bir kapıcı: metal temasların titreşimini yok sayar ve kişinin gerçekte ne istediğini söyler.",
+      "deep": "<code>kit/lib/bench/src/button.h</code> içinde tanımlıdır. <code>IRAM_ATTR</code> bir kesme her kenarı sayar. <code>poll()</code>, 25 ms sessizlikten sonra yeni bir seviyeyi kabul eder. <code>Event::Click</code>, <code>DoubleClick</code> (280 ms içinde) ya da <code>LongPress</code> (600 ms) bildirir."
+    },
+    "lab-shell": {
+      "short": "Her konunun deneyleri üzerine kurulduğu ortak iskelet: ekran, düğme, LED, seri komutlar ve kancalar.",
+      "simple": "Hazır kurulmuş bir tezgâh. Her deney yalnızca kendi araçlarını (görünümleri ve komutları) getirip takar.",
+      "deep": "Bir deney bir <code>...Spec</code> yapısıdır. Görünümleri (çizim fonksiyonları ve çift tıklama eylemi), seri komutları ve <code>setup</code>, <code>tick</code> ve <code>gesture</code> gibi kancaları vardır. <code>lab.warn</code> ve <code>lab.note</code>, printf biçiminde mesajları hem günlüğe hem ekrana yazar. Her <code>src/&lt;lab&gt;/main.cpp</code> büyük ölçüde bu listedir. Bu yüzden <code>help</code>, dersin tam olarak neyi öğrettiğini gösterir."
+    },
+    "mfrc522": {
+      "short": "Projenin RC522 kart okuyucusu için kendi sürücüsü. Hiçbir kütüphane kullanmadan, yazmaç yazmaç yazılmıştır.",
+      "simple": "Okuyucu çipiyle doğrudan konuşmak, bir seferde bir bayt. Böylece konuşmanın her kelimesini görebilirsin.",
+      "deep": "<code>kit/lib/rfid-kit/src/mfrc522.h</code> içinde tanımlıdır. SPI çerçevelemesi, yazmaçlar, FIFO, çipin zamanlayıcısı ve IRQ teline göre ya yoklama ya da uyuma yer alır. <code>iso14443a.h</code> ve <code>mifare_classic.h</code>, kart protokolünü bunların üzerine kurar."
+    },
+    "rgb565": {
+      "short": "Kırmızı, yeşil ve maviyi (ya da renk çemberindeki bir tonu) tek bir 16 bitlik ekran rengine çevirir.",
+      "simple": "Boya karıştırmak, sonra karışımı ekranın anlayacağı tek bir kod olarak yazmak.",
+      "deep": "RGB565 kırmızıdan 5, yeşilden 6, maviden 5 bit tutar: <code>((r &amp; 0xF8) &lt;&lt; 8) | ((g &amp; 0xFC) &lt;&lt; 3) | (b &gt;&gt; 3)</code>. Bizim <code>rgb()</code> <code>constexpr</code>'dir. Bu yüzden palet renkleri çalışma zamanında hiçbir maliyet getirmez."
+    },
+    "gfx-fill-screen": {
+      "short": "Tüm ekranı (ya da tuvali) tek bir renge boyar.",
+      "simple": "Her şeyin üstüne yeni bir kat boya. Genellikle yeni bir kare çizmenin ilk adımıdır.",
+      "deep": "Bizim <code>FrameBuffer</code>'da bu, 54.400 piksel üzerinde tek bir <code>std::fill_n</code>'dir. Paneli üzerinde ise bu kadar pikseli SPI üzerinden akıtır."
+    },
+    "gfx-draw-pixel": {
+      "short": "x, y konumunda tek bir noktayı boyar.",
+      "simple": "Keçeli kalemin tek bir noktası.",
+      "deep": "Her Adafruit GFX yüzeyinin sağlaması gereken tek fonksiyondur. Diğer tüm şekiller bunla yapılabilir. Bizimki sınırları kontrol eder ve <code>buf_[y * _width + x]</code> değerine yazar."
+    },
+    "gfx-rect": {
+      "short": "Sol üst köşesinden, genişliği ve yüksekliğiyle bir dikdörtgen çizer. Dolu, çerçeveli ya da köşeleri yuvarlak olabilir.",
+      "simple": "Resmin üzerine bir kutu şekli basmak.",
+      "deep": "Argümanlar: <code>(x, y, w, h, colour)</code>. Yuvarlak sürümler için bir köşe yarıçapı da alır. <code>fill</code> içini boyar, <code>draw</code> yalnızca kenarlığı çizer. Her deney ekranındaki çubuklar, paneller ve düğmeler bunlardan yapılır."
+    },
+    "gfx-circle": {
+      "short": "Yuvarlak şekiller ve üçgenler çizer. Daireler merkez ve yarıçapla, üçgenler üç köşeyle çizilir.",
+      "simple": "Ekran için bir pergel ve bir gönye.",
+      "deep": "<code>fillCircle(cx, cy, r, colour)</code>, köşe yerine merkezi kullanır. Üçgenler <code>(x0, y0, x1, y1, x2, y2, colour)</code> alır. Hepsi bizim kare tamponumuzda hızlı yatay çizgilerle yapılır."
+    },
+    "gfx-line": {
+      "short": "İki nokta arasına düz bir çizgi ya da hızlı bir yatay ya da dikey çizgi çizer.",
+      "simple": "Cetvel ve kalem. “Hızlı” olanlar yalnızca yatay ya da dikey gider, ama çok daha süratlidir.",
+      "deep": "<code>drawLine(x0, y0, x1, y1, c)</code>, Bresenham algoritmasını kullanır ve her seferinde bir piksel çizer. <code>drawFastHLine(x, y, w, c)</code> ise kare tamponumuzda tek bir <code>std::fill_n</code> ile bir pikseller dizisini doldurur. Bu yüzden ayırıcılar ve çubuklar bunu kullanır."
+    },
+    "gfx-cursor": {
+      "short": "<code>setCursor</code> metnin nerede başlayacağını ayarlar. Ardından <code>fb.print</code> metni o noktaya ekrana yazar.",
+      "simple": "Yazmadan önce kalemi bir yere koymak gibi.",
+      "deep": "Yerleşik yazı tipiyle nokta, metnin sol üst köşesidir. Özel bir <code>GFXfont</code> ile ise taban çizgisinin sol ucudur. Bu yüzden y değeri daha aşağıda olmalıdır. <code>print</code> ve <code>printf</code> (<code>Serial.printf</code> ile aynı <code>%</code> kodları), yazarken imleci ilerletir."
+    },
+    "gfx-text-style": {
+      "short": "Bundan sonra yazacağın metnin rengini, boyutunu ve yazı tipini seçer.",
+      "simple": "Hangi kalemi ve hangi harf şablonunu kullanacağını seçmek.",
+      "deep": "<code>setTextColor(fg)</code> şeffaf metin çizer. <code>setTextColor(fg, bg)</code> arka planı da boyar (yalnızca yerleşik yazı tipiyle). <code>setFont(&amp;FreeSans9pt7b)</code>, Adafruit GFX ile gelen düzgün bir yazı tipini seçer (9 pt, normal). <code>setFont(nullptr)</code> 6×8 yerleşik yazı tipine döner. <code>setTextSize(2)</code> metni iki katına çıkarır."
+    },
+    "gfx-text-bounds": {
+      "short": "Bir metnin çizmeden ne kadar geniş ve yüksek olacağını ölçer.",
+      "simple": "Tabelayı duvara asmadan önce ölçmek. Böylece duvarda ortalayabilirsin.",
+      "deep": "<code>getTextBounds(text, x, y, &amp;x1, &amp;y1, &amp;w, &amp;h)</code>, mevcut yazı tipi ve boyutuyla metnin kaplayacağı kutuyu doldurur. Etiketleri ortalamak ve sağa yaslamak için kullanılır."
+    },
+    "gfx-rgb-bitmap": {
+      "short": "Pikselden oluşan bütün bir bloğu tek seferde ekrana kopyalar.",
+      "simple": "Bitmiş bir fotoğrafı noktası noktası boyamak yerine çerçeveye kaydırmak gibi.",
+      "deep": "<code>drawRGBBitmap(x, y, pixels, w, h)</code>, RGB565 verisini SPI üzerinden akıtır. Tam bir 320×170 kare yaklaşık 106 KB eder. 40 MHz'de yaklaşık 22 ms sürer. Kare hızının üst sınırı budur. Bu yüzden deneyler önce ekran dışında çizer."
+    },
+    "gfx-rotation": {
+      "short": "Ekran resmini 90°'lik adımlarla döndürür. Böylece doğru yönde okunur.",
+      "simple": "Bir fotoğraf çerçevesini dikey konumdan yatay konuma çevirmek gibi.",
+      "deep": "0-3 değerleri sırasıyla 0°, 90°, 180° ve 270° demektir. Döndürme 1 olduğunda 170×320 panel, 320×170 boyutunda yatay bir ekran olur. Genişlik ve yükseklik buna göre yer değiştirir."
+    },
+    "wifi-begin": {
+      "short": "Adını ve şifresini vererek bir Wi-Fi ağına bağlanmaya başlar.",
+      "simple": "Yönlendiricinin kapısını şifreyle çalmak. Cevap birkaç saniye sonra gelir.",
+      "deep": "Hemen döner. Bağlanma, arka plandaki Wi-Fi görevinde olur. Bizim <code>Connection</code> sınıfı bir döngüde beklemek yerine olayları dinler: bağlandı, IP aldı, bağlantı koptu. Şifre olarak <code>nullptr</code> verilirse açık bir ağa bağlanılır."
+    },
+    "wifi-mode": {
+      "short": "Kartın bir ağa bağlanıp bağlanmayacağını (istasyon), kendi ağını kurup kurmayacağını (erişim noktası) ya da ikisini birden seçer.",
+      "simple": "Başkasının partisinde misafir olmak, kendi partini düzenlemek ya da ikisini aynı anda yapmak.",
+      "deep": "<code>WIFI_AP_STA</code>, ikisini tek bir radyoda çalıştırır. Bu yüzden aynı kanalı paylaşırlar. Kurulum sayfası, senin ağına bağlanmayı denerken bir sayfa göstermek için bunu kullanır. <code>softAP</code>, kartın kendi ağını başlatır. Varsayılan olarak <code>192.168.4.1</code> adresinden ulaşılır."
+    },
+    "wifi-info": {
+      "short": "Wi-Fi bağlantısından ayrıntı ister: kartın IP adresi, sinyal gücü, kanal ve MAC.",
+      "simple": "Kartın ağdaki ev numarasını ve sinyalin kaç çubuk olduğunu okumak.",
+      "deep": "<code>localIP()</code> bir <code>IPAddress</code> döndürür. Metin için <code>toString()</code> kullanılır. <code>RSSI()</code> dBm cinsindendir. Yaklaşık -50 mükemmeldir. -80'in altı zayıftır. Bağlanana kadar hepsi 0 ya da boştur."
+    },
+    "wifi-scan": {
+      "short": "Yakındaki Wi-Fi ağlarını dinler ve adlarını, sinyal gücünü ve güvenliğini listeler.",
+      "simple": "Radyo ayar kadranını çevirerek etrafta hangi istasyonların olduğunu duymak.",
+      "deep": "<code>async = true</code> ile hemen döner (-1 verir, tarama sürüyordur). Sayıyı öğrenmek için <code>scanComplete()</code>'i yokla. Her kaydı oku. Sonra listeyi serbest bırakmak için <code>scanDelete()</code> çağır. Bütün kanallarda tarama birkaç saniye sürer."
+    },
+    "wifi-events": {
+      "short": "Bir şey olduğunda Wi-Fi sürücüsünün çağırdığı bir fonksiyon kaydeder: bağlandı, IP alındı, bağlantı koptu.",
+      "simple": "Ziyaretçin geldiğinde seni aramasını resepsiyondan istemek. Lobide beklemek zorunda kalmazsın.",
+      "deep": "Geri çağırma Wi-Fi olay görevinde çalışır, <code>loop()</code> içinde değil. Bu yüzden yalnızca bayrak ayarlamalı. Asıl işi <code>loop()</code> yapar. <code>info</code>, bağlantının neden koptuğu gibi ayrıntıları taşır."
+    },
+    "mdns": {
+      "short": "Karta ağında <code>bench.local</code> gibi kolay bir ad verir.",
+      "simple": "Bir isim etiketi. Diğer cihazlar kartın numarasını bilmeden onu bulabilir.",
+      "deep": "Çoklu yayın DNS, yalnızca yerel ağdaki ad sorgularını yanıtlar. macOS ve iOS bunu kutudan çıktığı gibi destekler. <code>addService(\"http\", \"tcp\", 80)</code>, web sunucusunu da duyurur."
+    },
+    "ntp-time": {
+      "short": "Saati internetteki zaman sunucularından ayarlar, sonra yerel tarihi ve saati okur.",
+      "simple": "Kartın pilli bir saati yok. Bu yüzden internete bağlanınca bir kez “saat kaç?” diye sorar.",
+      "deep": "<code>configTzTime(tz, server1, server2)</code>, POSIX saat dilimini ayarlar ve SNTP'yi başlatır. <code>getLocalTime(&amp;tm, timeoutMs)</code> bir <code>struct tm</code> doldurur. İlk eşitleme olana kadar <code>false</code> döndürür."
+    },
+    "http-client": {
+      "short": "Karttan web istekleri yapar. Küçük bir tarayıcı gibi: bir adres sorarsın, cevabı geri alırsın.",
+      "simple": "Bir web sitesine mektup göndermek ve cevabını beklemek.",
+      "deep": "Arduino-ESP32'nin TCP ya da TLS bağlantısı üzerindeki HTTP istemcisi. Bizim <code>https::get</code>, sunucunun sertifikasını paketlenmiş Mozilla kökleriyle denetler. 0,3 saniye ile birkaç saniye arasında bloke olur. Bu yüzden bir işçi görevinden çağır, asla <code>loop()</code>'tan çağırma."
+    },
+    "json-document": {
+      "short": "ArduinoJson'ın JSON verisi için kabı: bir sözlük gibi doldurursun ya da aldığın bir veriyi okursun.",
+      "simple": "Etiketli klasörlü bir dosya tepsisi. <code>doc[\"heap\"] = 1234</code>, sayıyı heap adlı klasöre koyar.",
+      "deep": "ArduinoJson 7'de bir <code>JsonDocument</code>, ihtiyaç oldukça heap'te büyür. <code>doc[\"k\"].to&lt;JsonArray&gt;()</code> iç içe diziler oluşturur. <code>doc[\"k\"] | fallback</code>, anahtar yoksa ya da tür yanlışsa varsayılan değerle okur."
+    },
+    "serialize-json": {
+      "short": "Bir <code>JsonDocument</code>'i göndermeye hazır JSON metnine çevirir.",
+      "simple": "Dosya tepsisindekileri tek bir düzenli mektuba yazmak gibi.",
+      "deep": "<code>serializeJson(doc, out)</code>, bir <code>String</code>'e, bir <code>char</code> tamponuna ya da <code>Serial</code> gibi bir akışa yazar. Yazılan bayt sayısını döndürür."
+    },
+    "deserialize-json": {
+      "short": "JSON metnini, içinde arama yapabileceğin bir <code>JsonDocument</code>'e okur.",
+      "simple": "Bir mektubu açıp içindekileri etiketli klasörlere ayırmak.",
+      "deep": "Bir şey ters gittiğinde doğru olan bir <code>DeserializationError</code> döndürür. Ne olduğunu <code>e.c_str()</code> söyler. Bir <code>Filter</code>, yalnızca ihtiyacın olan alanları tutar. Büyük hava durumu cevaplarında bu çok fazla RAM kazandırır."
+    },
+    "async-web-server": {
+      "short": "Kartta çalışan bir web sunucusu. Telefonun ya da bilgisayarın bir sayfa ya da API açar, kart cevap verir.",
+      "simple": "Küçük bir dükkân vitrini. Her adresin (<code>/api/card</code> gibi) neye cevap vereceğini bilen bir görevlisi vardır.",
+      "deep": "ESPAsyncWebServer kendi ağ görevinde cevap verir. Bu yüzden ekran ve okuyucu asla beklemez. <code>server_.on(path, HTTP_GET, handler)</code> bir rota kaydeder. İşleyiciler hızlı olmalı ve bloke etmemelidir. Ağır işler bu yüzden başka bir göreve kuyruğa alınır."
+    },
+    "async-request": {
+      "short": "Gelen tek bir web isteği: ne istendiği ve nasıl cevap verileceği.",
+      "simple": "Dükkân vitrinindeki müşteri. Siparişini okursun ve bir cevap verirsin.",
+      "deep": "İşleyiciler isteği bir işaretçi olarak alır. Bu yüzden kullanım <code>req-&gt;send(200, \"application/json\", body)</code> olur. <code>hasParam</code> ve <code>getParam</code>, sorgu ya da form alanlarını okur. Her istek tam olarak bir <code>send</code> almalıdır."
+    },
+    "async-web-socket": {
+      "short": "Tarayıcıya canlı, iki yönlü bir hat. Böylece kart bir şey olduğu anda güncelleme gönderebilir.",
+      "simple": "Mektup yerine telefon görüşmesi. Hat açık kalır ve iki taraf da istediği zaman konuşabilir.",
+      "deep": "Web sunucusuna <code>/ws</code> gibi bir yolda bağlanır. <code>textAll</code>, bağlı her tarayıcıya gönderir. <code>onEvent</code> bağlanma, kopma ve mesajları dinler. Gitmiş bağlantıları temizlemek için <code>cleanupClients()</code>'i arada bir çağır."
+    },
+    "nimble-device": {
+      "short": "Bluetooth LE'nin giriş kapısı: radyo yığınını başlatır ve sunucu, tarayıcı ve istemci verir.",
+      "simple": "Bluetooth resepsiyonu: bir kez <code>init</code> ile selam ver, sonra ihtiyacın olanı iste.",
+      "deep": "NimBLE-Arduino, Bluedroid'den daha hafif bir BLE yığınıdır. Fonksiyonları <code>static</code>'tir. Bu yüzden nesne olmadan <code>NimBLEDevice::...</code> diye çağrılırlar. <code>init(name)</code> duyurulan adı ayarlar. <code>setPower</code>, iletim gücünü dBm cinsinden ayarlar."
+    },
+    "nimble-server": {
+      "short": "Kartın kendi Bluetooth menüsü. Hizmetler (service), telefonun okuyabileceği, yazabileceği ya da abone olabileceği küçük değerleri (characteristic) gruplar.",
+      "simple": "Etiketli gözleri olan bir ilan panosu. Bir telefon yaklaşır, sıcaklık gözüne bakar ya da mesaj gözüne bir not iğnelir.",
+      "deep": "GATT: bir hizmet (UUID ile), karakteristikleri (characteristic) taşır. Her karakteristiğin bir UUID'si, <code>READ | WRITE | NOTIFY</code> gibi özellikleri ve MTU'ya kadar bir değeri vardır. <code>notify()</code>, abone olmuş telefonlara sorulmadan yeni bir değer gönderir."
+    },
+    "nimble-advertising": {
+      "short": "Kartın saniyede birkaç kez “Buradayım!” diye bağırmasını sağlar. Böylece telefonlar onu görebilir ve bağlanabilir.",
+      "simple": "Bir deniz feneri: yakındaki herkesin görebileceği, düzenli aralıklarla kısa ışık çakmaları.",
+      "deep": "Eski tip bir yayın paketi en fazla 31 bayt taşır: ad, bayraklar, hizmet UUID'leri, üretici verisi. Tarama cevabında bir 31 bayt daha eklenir."
+    },
+    "nimble-scan": {
+      "short": "Yakında yayın yapan diğer Bluetooth cihazlarını dinler ve bulduğu her birini bildirir.",
+      "simple": "Kıyıdaki deniz fenerinin ışıklarını izlemek ve gördüğün her çakmayı not etmek.",
+      "deep": "Her <code>NimBLEAdvertisedDevice</code>'ın bir adresi, RSSI'si ve yükü vardır. Etkin tarama, tarama cevabı da ister. Geri çağırmalar NimBLE ana görevinde çalışır. Bu yüzden sonuçları orada çizmek yerine <code>loop()</code>'a aktar."
+    },
+    "nimble-client": {
+      "short": "Kartın ziyaretçi olarak hali: başka bir Bluetooth cihazına bağlanır ve onun değerlerini okur ya da yazar.",
+      "simple": "Kendi ilan panonu kurmak yerine, bir başkasının ilan panosuna gitmek.",
+      "deep": "Merkez rolüdür. Bağlan, hizmetleri keşfet (<code>getServices(true)</code>), sonra uzak karakteristikleri oku, yaz ya da abone ol. Bağlanma ve keşif bloke eder. Bu yüzden B8 bunları bir işçi görevinde yapar."
+    },
+    "nimble-conn-info": {
+      "short": "Tek bir Bluetooth bağlantısının ayrıntıları: kim bağlı, nasıl güvence altında, bir paket ne kadar büyük olabilir.",
+      "simple": "Ziyaretçinin kimlik kartı: adı, kimliğini gösterip göstermediği ve bir seferde ne kadar taşıyabildiği.",
+      "deep": "<code>onConnect</code> ve <code>onAuthenticationComplete</code> gibi geri çağırmalara verilir. Karşı tarafın adresini, bağlantı tanıtıcısını, MTU'yu ve bağlantının şifreli, doğrulanmış ve bağ kurulmuş olup olmadığını taşır."
+    },
+    "nimble-callbacks": {
+      "short": "Bluetooth olaylarını dinlemek için miras alacağın sınıflar: bağlanma, kopma, yazma, okuma.",
+      "simple": "Resepsiyona telefon numaranı bırakmak: “Biri gelince beni ara.”",
+      "deep": "Yalnızca ihtiyacın olan <code>virtual</code> fonksiyonları geçersiz kıl (<code>onConnect</code>, <code>onWrite</code>...). Sonra nesneyi <code>setCallbacks</code> ile kaydet. Bunlar NimBLE ana görevinde çalışır. Bu yüzden kısa ve iş parçacığı güvenli tut."
+    },
+    "nimble-security": {
+      "short": "Bir Bluetooth bağlantısının nasıl güvence altına alınacağına karar verir: eşleştirme, PIN kodları ve hatırlanan eşleşme kayıtları.",
+      "simple": "Kapı politikası: herkesi içeri al, bir kod iste ya da yalnızca daha önce tanıştığın arkadaşları al.",
+      "deep": "<code>setSecurityAuth(bond, mitm, sc)</code>, bağ kurma, ortadaki adam saldırısına karşı koruma ve LE Secure Connections ister. IO yeteneği, bir PIN kodunun mu yoksa evet/hayır karşılaştırmasının mı gösterileceğini belirler. Bağ bilgileri NVS'te saklanır ve yeniden başlatmalardan sonra da kalır."
+    },
+    "ble-note": {
+      "short": "Projenin, Bluetooth deneylerinin etkinlik günlüğüne satır eklemek için kısa yolu.",
+      "simple": "Deney defterine hızlıca bir not almak. Hem ekran hem seri günlük bunu gösterir.",
+      "deep": "<code>kit/lib/ble-kit/src/ble_link.h</code> içinde bir makrodur. <code>::ble::activity().add(::ble::Act::kind, ...)</code> olarak genişler. Bu, kritik bölümle korunan bir döngüsel tampona printf biçiminde bir satır yazar. Böylece NimBLE görevindeki geri çağırmalar güvenle yazabilir."
+    },
+    "i2s-channel": {
+      "short": "Dijital bir mikrofona ya da hoparlör amfisine I2S ses kanalı kurar.",
+      "simple": "Ses için bir taşıma bandı kurmak. Bir saat ritmi tutar ve her örnek için bir sayı birlikte gider.",
+      "deep": "ESP-IDF 5'in I2S sürücüsü: <code>i2s_new_channel</code> TX ve/veya RX kanalları oluşturur. <code>i2s_channel_init_std_mode</code> örnekleme hızını, bit genişliğini ve pinleri ayarlar (standart Philips I2S biçimi). <code>i2s_channel_enable</code> saatleri ve DMA'yı başlatır."
+    },
+    "i2s-read-write": {
+      "short": "I2S kanalı üzerinden mikrofondan örnek alır ya da hoparlöre örnek verir.",
+      "simple": "Taşıma bandından paketleri almak ya da bandın üstüne koymak.",
+      "deep": "<code>i2s_channel_read(handle, buf, bytes, &amp;got, timeoutMs)</code>, DMA tamponlarından kopyalar. Hazır bir şey yoksa bekler. Yazmalar, DMA dolu olduğu sürece bekler. Bu yüzden hoparlör görevi, sesin çalındığı hızda tam olarak çalışır."
+    }
+  },
+  "topics": {
+    "basics": {
+      "title": "Yapı taşları",
+      "blurb": "Her satırda toplama, karşılaştırma ve seçim yapan küçük semboller."
+    },
+    "types": {
+      "title": "Değer türleri",
+      "blurb": "Tam sayılar, ondalıklı sayılar, metin ve evet/hayır: her kutunun neyi tutabileceği."
+    },
+    "flow": {
+      "title": "Karar verme ve tekrar",
+      "blurb": "Kod hangi yolu seçer, döngü nasıl döner ve bir iş nasıl biter."
+    },
+    "functions": {
+      "title": "Fonksiyonlar",
+      "blurb": "setup() ve loop()'tan küçük lambda'lara kadar kodun çalıştırabileceği adlandırılmış tarifler."
+    },
+    "memory": {
+      "title": "Bellek ve const",
+      "blurb": "Değerlerin nerede yaşadığı, onlara nasıl işaret edildiği ve değişmemeleri nasıl sağlandığı."
+    },
+    "classes": {
+      "title": "Kendi türlerin",
+      "blurb": "Struct, class, enum ve namespace: kendi şey türlerin."
+    },
+    "modern": {
+      "title": "Modern C++",
+      "blurb": "Derleme zamanı sabitleri, şablonlar, tür dönüşümleri ve standart kütüphanenin yardımcıları."
+    },
+    "preprocessor": {
+      "title": "Derlemeden önce",
+      "blurb": "# ile başlayan ve derleyici kodu okumadan önce onu yeniden düzenleyen satırlar."
+    },
+    "arduino": {
+      "title": "Arduino temelleri",
+      "blurb": "Pinler, zamanlama, seri yazdırma ve metin: günlük Arduino araç kutusu."
+    },
+    "esp": {
+      "title": "ESP32 çipi",
+      "blurb": "Bu çipe özgü günlük kaydı, bellek, zamanlayıcılar ve depolama."
+    },
+    "rtos": {
+      "title": "Aynı anda iki iş",
+      "blurb": "FreeRTOS görevleri, kuyruklar ve kilitler: kartın güvenle çoklu görev yapmasını sağlar."
+    },
+    "libraries": {
+      "title": "Kütüphaneler",
+      "blurb": "Deneylerin kullandığı ekran, Wi-Fi, web sunucusu, JSON, Bluetooth ve ses yardımcıları."
+    }
+  }
+}

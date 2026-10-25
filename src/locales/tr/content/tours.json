@@ -1,0 +1,378 @@
+{
+  "01-hello": {
+    "bigPicture": "Bu ilk program kartın canlı olduğunu kanıtlar. <code>setup()</code> bir kez çalışır: seri monitörü açar ve çipin kimlik kartını yazdırır. Sonra <code>loop()</code> sonsuza kadar çalışır. Her seferinde karttaki RGB LED'i bir renk çemberinde bir adım ilerletir, böylece yavaş bir gökkuşağı görürsün.",
+    "files": {
+      "labs/01-hello/src/main.cpp": {
+        "stops": {
+          "0": {
+            "title": "Bu program ne yapar",
+            "say": "<code>//</code> ile başlayan satırlar yorumdur: derleyicinin atladığı, insanlar için notlar. Bu satır planı söyler: bir kimlik kartı yazdır, sonra LED'i döndür. Ayrıca her Arduino programının sahip olduğu iki fonksiyonun adını verir. <code>setup()</code> bir kez çalışır, <code>loop()</code> tekrar tekrar çalışır.",
+            "deep": "Perde arkasında Arduino çekirdeğinin kendi <code>main()</code> fonksiyonu vardır. FreeRTOS'u başlatır ve senin <code>setup()</code> fonksiyonunu bir kez çağıran, sonra sonsuz bir <code>for</code> döngüsünde <code>loop()</code> fonksiyonunu çağıran bir görev oluşturur."
+          },
+          "1": {
+            "title": "Araç kutusunu al",
+            "say": "<code>#include</code> derlemeden önce başka bir dosyayı yapıştırır. <code>Arduino.h</code>, <code>Serial</code>, <code>delay()</code> ve <code>millis()</code> gibi hazır araçları getirir. <code>pins.h</code> bizim kendi dosyamız: hangi kablonun nereye gideceğini söyler.",
+            "deep": "Köşeli parantezler kütüphane ve çatı klasörlerinde arar. Tırnak işaretleri ise önce projede arar. <code>pins.h</code>, <code>platformio.ini</code> içindeki <code>-Iinclude</code> derleme ayarıyla bulunur."
+          },
+          "2": {
+            "title": "Oynayabileceğin iki sayı",
+            "say": "Adlandırılmış sayılar kodu okumayı ve değiştirmeyi kolaylaştırır. <code>kBrightness</code>, çok parlak LED'i gücünün yaklaşık altıda birine indirir. <code>kHeartbeatMs</code> ise kartın ne sıklıkta (5000 ms = 5 saniye) “still alive” satırı yazdıracağını belirler.",
+            "deep": "<code>constexpr</code>, değerin derleme sırasında sabitlendiği anlamına gelir. Bu yüzden çalışma sırasında bellek harcamaz. Adsız <code>namespace { ... }</code> bu adları yalnızca bu dosyaya özel tutar. <code>uint8_t</code> 0 ile 255 arasını, <code>uint32_t</code> yaklaşık 4 milyara kadar olan sayıları tutar."
+          },
+          "3": {
+            "title": "Renk çemberinin tarifi",
+            "say": "Ona 0 ile 255 arasında bir konum verirsin, o da bir miktar kırmızı, yeşil ve mavi geri verir. Çemberin üç dilimi vardır: kırmızı yeşile, yeşil maviye, mavi tekrar kırmızıya geçer. Konumu her seferinde bir adım artırırsan pürüzsüz bir gökkuşağı elde edersin.",
+            "deep": "Her dilim 85 adım genişliğindedir. <code>pos * 3</code>, 0-84 aralığını 0-252 aralığına uzatır. <code>uint8_t &amp;r</code> içindeki <code>&amp;</code>, fonksiyonun tek bir değer döndürmek yerine doğrudan çağıranın değişkenlerine yazdığı anlamına gelir."
+          },
+          "4": {
+            "title": "Çipin kimlik kartını yazdır",
+            "say": "Her <code>Serial.printf</code> satırı, seri monitörde gördüğün kartın bir satırını yazar: çip modeli, flash boyutu, PSRAM boyutu ve boş bellek. Köşeli parantez içindeki notlar, N16R8'de ne bekleyeceğini söyler: 16 MB flash ve yaklaşık 8 MB PSRAM.",
+            "deep": "<code>printf</code>, her <code>%s</code>, <code>%d</code> ya da <code>%lu</code> yerine sıradaki değeri koyar. Boyutlar bayt olarak gelir. Bu yüzden <code>1024 * 1024</code> ile bölersen megabayta çevrilirler. Heap, program çalışırken ödünç alabileceği kalan bellektir."
+          },
+          "5": {
+            "title": "Kartın eşsiz adresi",
+            "say": "Her çip fabrikadan kendi MAC adresiyle çıkar. Bu, Wi-Fi ve Bluetooth'ta kullanacağı kimliktir. Bu döngü altı baytı, iki nokta üst üste ile ayrılmış harf ve rakam çiftleri olarak yazdırır. Ardından içindeki yazılım kitinin sürümünü yazar.",
+            "deep": "48 bitlik MAC, çipin içindeki tek seferlik programlanabilir bitler olan eFuse'lerde saklanır. <code>(mac >> (8 * i)) &amp; 0xFF</code>, <code>i</code>. baytı en alta kaydırır ve yalnızca onu tutar. <code>%02X</code> onu iki büyük harfli onaltılık rakam olarak yazar."
+          },
+          "6": {
+            "title": "Kart yanlışsa bağır",
+            "say": "Çip PSRAM bildirmezse ya da ödediğimizden daha az flash bildirirse kırmızı bir hata ya da sarı bir uyarı yazdırır. Burada sessizlik, donanımın etiketle uyuştuğu anlamına gelir.",
+            "deep": "<code>log_e</code> ve <code>log_w</code>, ESP32 çekirdeğinin günlük makrolarıdır. <code>platformio.ini</code> içindeki <code>CORE_DEBUG_LEVEL=3</code>, hata, uyarı ve bilgi satırlarını tutar. Monitörün <code>colorize</code> filtresi onları seviyelerine göre renklendirir."
+          },
+          "7": {
+            "title": "Seri monitörü uyandır",
+            "say": "Bu, açılıştan ya da sıfırlamadan hemen sonra bir kez çalışır. Seri bağlantıyı saniyede 115200 bit ile açar, bir an bekler, kimlik kartını yazdırır ve sonra RGB LED'in hangi pinde olduğunu söyler.",
+            "deep": "COM portunda bir USB-seri çipi, ESP32'nin UART0 hattını bilgisayarına taşır. İki ucun hızda anlaşması gerekir. Bu yüzden <code>monitor_speed</code> de 115200'dür. <code>log_i</code>, her mesaja seviyeyi, dosyayı ve satırı ekler.",
+            "quiz": {
+              "question": "<code>delay(1500)</code> satırını silersen en olası ne olur?",
+              "options": [
+                "Kart başlamayı reddeder",
+                "Kimlik kartının başını kaçırabilirsin",
+                "Gökkuşağı daha hızlı döner"
+              ],
+              "why": "Kart hemen yazdırılır. Oysa bilgisayarındaki monitör, sıfırlamadan sonra yeniden bağlanmayı bitirmemiş olabilir. Bu yüzden ilk satırlar fark edilmeden kayabilir. Bekleme, monitöre dinlemesi için zaman verir."
+            }
+          },
+          "8": {
+            "title": "Gökkuşağının etrafında bir adım",
+            "say": "Her geçişte <code>hue</code> konumundaki rengi seçer, <code>hue</code> değerini bir artırır, rengi <code>kBrightness</code> ile karartır ve LED'e gönderir. Binlerce küçük adım, gördüğün pürüzsüz gökkuşağını oluşturur.",
+            "deep": "<code>static</code> değişkenler, <code>loop()</code> çağrıları arasında değerlerini korur ve baştan başlamaz. <code>rgbLedWrite</code>, S3'ün RMT birimini kullanarak WS2812 LED'in tek telli zamanlama protokolünü bizim yerimize yönetir. <code>r * kBrightness / 255</code>, 0-255 aralığını 0-40 aralığına indirir.",
+            "quiz": {
+              "question": "<code>hue</code>, bir <code>uint8_t</code>'dir (0 ile 255). 255'e ulaştıktan sonra ne olur?",
+              "options": [
+                "Program çöker",
+                "0'a döner ve gökkuşağı tekrarlanır",
+                "255'te kalır ve LED değişmez"
+              ],
+              "why": "İşaretsiz 8 bitlik bir sayı 256'yı tutacak yer bulamaz, bu yüzden 0'a sarar. Tıpkı bir arabanın kilometre sayacı gibi. Tam istediğimiz de bu: renk çemberi yeni bir tura başlar."
+            }
+          },
+          "9": {
+            "title": "Beş saniyede bir kalp atışı",
+            "say": "<code>millis()</code>, açılışta başlayan bir kronometredir. Son kalp atışından beri beş saniye geçtiğinde kart, ne kadar süredir yaşadığını ve o anki hue değerini yazdırır, sonra işaretini sıfırlar. Gökkuşağı beklerken hiç durmaz.",
+            "deep": "Önce çıkarma yapmak (<code>millis() - lastHeartbeat</code>), 32 bitlik sayaç yaklaşık 49,7 günde başa sardığında bile testi doğru tutar. “Saate bak, zamansa harekete geç” kalıbı, bloklamadan birden çok iş yapmanın yoludur."
+          },
+          "10": {
+            "title": "Gökkuşağının temposu",
+            "say": "<code>loop()</code> yeniden başlamadan önce kısa bir bekleme. 20 ms'lik 256 adım, renk çemberinin tam bir turu için yaklaşık beş saniyedir.",
+            "deep": "Burada kısa bir <code>delay()</code> sorun değildir, çünkü başka hiçbir şeyin ilgiye ihtiyacı yoktur. İçeride <code>delay()</code>, meşgul meşgul beklemek yerine FreeRTOS'un başka görevleri çalıştırmasına izin verir. Bu yüzden biraz güç de tasarruf eder.",
+            "quiz": {
+              "question": "Bunu <code>delay(5)</code> yaparsan ne görürsün?",
+              "options": [
+                "Aynı gökkuşağı, dört kat hızlı",
+                "Daha sönük bir gökkuşağı",
+                "Yanıp sönen bir LED"
+              ],
+              "why": "Her adım artık 20 ms yerine 5 ms sürer. Bu yüzden bir tam tur yaklaşık 1,3 saniye sürer. Parlaklığı <code>kBrightness</code> belirler, gecikme değil."
+            }
+          }
+        }
+      },
+      "kit/include/pins.h": {
+        "stops": {
+          "0": {
+            "title": "Her kablo için tek bir dosya",
+            "say": "Tüm deneyler pin numaralarını buradan okur. Bu yüzden bir kabloyu değiştirmek, tek bir sayıyı değiştirmek demektir. Liste, çipin açılış, USB, flash bellek ve PSRAM için zaten kullandığı pinlerden uzak durmanı söyler.",
+            "deep": "<code>#pragma once</code>, birçok dosya bunu içerse bile dosyanın iki kez yapıştırılmasını önler."
+          },
+          "1": {
+            "title": "Gökkuşağı LED'inin yeri",
+            "say": "<code>PIN_RGB</code> çoğu kartta 48'dir. Ders 01'de hiçbir renk görünmezse kartın 38'i kullanan bir v1.1 olabilir. Bu durumda numarayı burada değiştir.",
+            "deep": "<code>#ifndef</code> ... <code>#endif</code> sarmalayıcısı yalnızca varsayılan bir değer belirler. <code>platformio.ini</code> içindeki <code>-DPIN_RGB=38</code> gibi bir derleme ayarı, bu dosyayı düzenlemeye gerek kalmadan öncelik kazanır."
+          },
+          "2": {
+            "title": "Yaklaşan dersler için pinler",
+            "say": "Geri kalanlar, sonraki derslerdeki düğmelerin, LED'in, ekranın, RFID okuyucunun ve ses parçalarının pinleridir. Her yorum, modüldeki hangi etiketin hangi ESP32 pinine gittiğini söyler."
+          }
+        }
+      }
+    }
+  },
+  "02-led": {
+    "bigPicture": "Bu program, breadboard'undaki bir LED'i sürer ve seri monitörde yazdığın komutları dinler. <code>setup()</code> bir kez çalışır: pini PWM donanımına verir ve yumuşak bir solmayı başlatır. Sonra <code>loop()</code> sonsuza kadar çalışır. Her turda iki hızlı iş yapar: yazılan harfleri okur ve LED'in parlaklığını geçerli mod için ayarlar. Böylece dinlerken bile canlandırması durmaz.",
+    "files": {
+      "labs/02-led/src/main.cpp": {
+        "stops": {
+          "0": {
+            "title": "Devre ve komutlar",
+            "say": "Küçük çizim devreyi gösterir: 4 numaralı pin, bir dirençten geçer, LED'in uzun bacağına bağlanır ve kısa bacağından toprağa çıkar. Altında iki yeni fikir ve yazabileceğin komutlar var.",
+            "deep": "Direnç akımı sınırlar. Pinden yaklaşık 3,3 V geldiğinde, kırmızı bir LED'de yaklaşık 2 V düşer ve 220 Ω ile akım yaklaşık 5 mA olur. Bu, hem LED hem pin için güvenlidir."
+          },
+          "1": {
+            "title": "Araçlar ve düşük seviyeli bir ek",
+            "say": "Ders 01 ile aynı, bir ekleme var: <code>driver/gpio.h</code>, çipin pin ayarlarına doğrudan erişim verir. Bunu <code>setup()</code> içinde bir güvenlik ağı için kullanırız.",
+            "deep": "<code>driver/gpio.h</code>, Arduino çekirdeğinin üzerine kurulduğu Espressif çatısı ESP-IDF'den gelir. Böylece iki tür çağrı da aynı programda yer alabilir."
+          },
+          "2": {
+            "title": "Yarı parlaklığı taklit etmek",
+            "say": "Bir pin yalnızca tamamen açık ya da tamamen kapalı olabilir. PWM, pini saniyede 5000 kez açıp kapatır. Açık kaldığı sürenin payı, yani görev oranı, LED'in ne kadar parlak görüneceğini belirler. 8 bitle görev oranı 0'dan (kapalı) 255'e (her zaman açık) kadar gider.",
+            "deep": "S3'ün LEDC birimi PWM'i donanımda üretir, bu yüzden işlemci boş kalır. Sayacı 80 MHz APB saatinden çalışır: 5 kHz × 256 adım için 62,5 bölücü gerekir ve bu destekleniyor.",
+            "quiz": {
+              "question": "LED, 5000 Hz'de görev oranı 128 alıyor. Ne görürsün?",
+              "options": [
+                "Hızlı, fark edilen bir titreşim",
+                "Tam parlaklıktan daha sönük, sabit bir ışık",
+                "Hiçbir şey: yarı açık, kapalı sayılır"
+              ],
+              "why": "Saniyede 5000 geçiş, gözlerinin fark edemeyeceği kadar hızlıdır. Gözlerin ışığı ortalar ve sabit, daha sönük bir parlaklık görürsün."
+            }
+          },
+          "3": {
+            "title": "LED'in hafızası",
+            "say": "<code>Mode</code>, LED'in sahip olabileceği her davranışı listeler. <code>state</code>, geçerli modu, <i>on</i> ve <i>blink</i> için parlaklığı, yanıp sönme hızını ve geçerli modun ne zaman başladığını hatırlar.",
+            "deep": "Bu bir durum makinesinin kalbidir. Programın bir sonraki parlaklığı belirlemek için ihtiyacı olan her şey tek bir küçük <code>struct</code> içinde durur ve komutlar yalnızca bu alanları değiştirir.",
+            "quiz": {
+              "question": "Kartı yüklüyorsun ve hiçbir şey yazmıyorsun. LED ne yapar?",
+              "options": [
+                "Kapalı kalır",
+                "Tam olarak yanar",
+                "Yavaşça parlayıp söner"
+              ],
+              "why": "<code>mode</code> başlangıçta <code>Mode::Fade</code> değerini alır. <code>setup()</code> de aynı modu yeniden ayarlar. Bu yüzden sen bir şey yazana kadar LED nefes alır gibi yanıp söner."
+            }
+          },
+          "4": {
+            "title": "Bir modu bir kelimeye çevir",
+            "say": "Her moda yazdırılabilir bir ad verir. Böylece monitör, çıplak bir sayı yerine <code>mode -> blink</code> gösterebilir.",
+            "deep": "<code>switch</code>'ten sonraki <code>return \"?\"</code> bugün hiç çalışmaz. Ama derleyiciyi tatmin eder ve biri bir mod ekleyip ad vermeyi unutursa güvenli kalır."
+          },
+          "5": {
+            "title": "Solmaları düzgün göstermek",
+            "say": "Gözlerin loş ışıktaki değişiklikleri parlak ışıktakinden çok daha iyi fark eder. Değerin karesini almak, LED'i daha uzun süre loş tutar ve parlak uçta hızlı geçer. Böylece solma, birden parlağa sıçramak yerine pürüzsüz görünür.",
+            "deep": "Bu, 2 değerinde bir gama eğrisidir: <code>x * x / 255</code>. Önce <code>uint16_t</code>'ye genişletmek önemlidir, çünkü 255 × 255 = 65025 8 bite sığmaz."
+          },
+          "6": {
+            "title": "Modu değiştir ve saati yeniden başlat",
+            "say": "Mod değişince yeni modu kaydeder, başlama zamanını not eder ve değişikliği monitöre yazar.",
+            "deep": "<code>modeStartedAt</code> kaydetmek, her canlandırmanın zamanı kendi başlangıcından ölçmesi demektir. Bu yüzden <i>sos</i> her zaman ilk noktayla başlar."
+          },
+          "7": {
+            "title": "Komutları hatırlat",
+            "say": "Komut listesini ve geçerli ayarları yazdırır. Başlangıçta ve sen <code>help</code> yazdığında çalışır."
+          },
+          "8": {
+            "title": "Metin olarak Morse kodu",
+            "say": "SOS, bir dizi 1 ve 0 olarak saklanır: her karakter 150 ms'lik bir zaman dilimidir. 1 ışık, 0 karanlık demektir. Kısa 1 dizileri noktalardır, uzun 1 dizileri çizgilerdir. Sondaki sıfırlar ise tekrar başlamadan önceki duraklamadır.",
+            "deep": "Metin 33 karakterden oluşur. Bu yüzden tek bir SOS, 33 × 150 ms sürer, yani 5 saniyenin biraz altında. Bir deseni koddan çok veri olarak saklamak, çizim mantığını küçük tutar."
+          },
+          "9": {
+            "title": "Parlaklık tarifi",
+            "say": "Geçerli modun ne kadar süredir çalıştığını bilerek tek bir soruyu yanıtlar: LED şu anda ne kadar parlak olmalı? <i>Off</i> 0'dır, <i>on</i> senin seviyendir ve <i>blink</i> seviye ile 0 arasında sırayla geçer.",
+            "deep": "Yanıp sönme için <code>elapsed / blinkMs</code>, kaç yarım periyodun geçtiğini sayar. <code>% 2</code> yalnızca bu sayının çift mi (açık) yoksa tek mi (kapalı) olduğunu tutar. Zamanlayıcı yok, saklanan bir açık/kapalı bayrağı da yok.",
+            "quiz": {
+              "question": "<code>blink 100</code> yazıyorsun. Saniyede kaç yanıp sönme görürsün?",
+              "options": [
+                "10",
+                "5",
+                "1"
+              ],
+              "why": "100 ms açık, sonra 100 ms kapalı: her 200 ms'de bir yanıp sönme, yani saniyede beş."
+            }
+          },
+          "10": {
+            "title": "Nefes alma ve Morse",
+            "say": "<i>Fade</i> bir saniye içinde karanlıktan parlağa çıkar, sonra bir sonrakinde geri iner ve sonucu göze uygun eğriden geçirir. <i>SOS</i> ise Morse dizisinde hangi dilimde olduğumuzu bulur ve bu dilim 1 ise LED'i yakar.",
+            "deep": "Solma, 2 saniyelik periyotlu bir üçgen dalgadır. <code>sizeof(kSos) - 1</code>, gizli bitiş işareti <code>'\\0'</code> olmadan metnin uzunluğudur. <code>%</code> işlemi deseni sonsuza kadar tekrarlar."
+          },
+          "11": {
+            "title": "Yazdığını düzenle, sonra uygula",
+            "say": "Bir komut tek satır metin olarak gelir. Fazla boşlukları temizler, harfleri küçültür ve ilk boşlukta bir komuta ve isteğe bağlı bir sayıya böler. Tek kelimelik komutlar yalnızca modu değiştirir.",
+            "deep": "<code>String</code>, Arduino'nun büyüyebilen metin türüdür. <code>indexOf(' ')</code> boşluk yoksa -1 döndürür, bu yüzden <code>arg</code> boş kalır."
+          },
+          "12": {
+            "title": "Sayı alan komutlar",
+            "say": "<code>blink</code> ve <code>level</code>, komuttan sonra gelen sayıyı okur ve kullanmadan önce makul olup olmadığını kontrol eder. Kartın tanımadığı her şey, sürpriz yerine kibar bir uyarı alır.",
+            "deep": "<code>toInt()</code>, metin sayı değilse 0 döndürür. Bu yüzden <code>level abc</code> sessizce 0'ı (kapalı) ayarlar. Aralıkları baştan kontrol etmek, kötü değerlerin <code>state</code> içine girmesini önler.",
+            "quiz": {
+              "question": "LED solarken <code>blink 10</code> yazıyorsun. Ne olur?",
+              "options": [
+                "Çok hızlı yanıp söner",
+                "Bir uyarı çıkar ve solma devam eder",
+                "Kart yeniden başlar"
+              ],
+              "why": "10, 20 ms'lik alt sınırın altında kalır. Kod bu yüzden bir uyarı kaydeder ve <code>setMode</code> çağrılmadan geri döner. Hiçbir şey değişmez."
+            }
+          },
+          "13": {
+            "title": "Beklemeden dinle",
+            "say": "Bu, o ana kadar gelmiş harfleri alır, küçük bir tampona ekler ve Enter'ı görünce tüm satırı <code>handleCommand</code> fonksiyonuna verir. Hiçbir şey gelmediyse hemen döner. Böylece sen yazarken LED canlandırmasına devam eder.",
+            "deep": "<code>Serial.available()</code> hiçbir zaman beklemez. Monitör sonda bir satır sonu karakteri gönderir (<code>monitor_eol = LF</code>). Satır başı karakteri (CR) de kabul edilir. 32 karakterlik sınır, kontrolden çıkmış bir satırın belleği yemesini önler."
+          },
+          "14": {
+            "title": "Pini PWM'e devret",
+            "say": "Bir kez çalışır. Seri monitörü açar, 4 numaralı pini PWM donanımına bağlar, güvenlik ağı olarak pinin gücünü kısar, ders 01'den kalan gökkuşağı LED'ini kapatır ve solmayı başlatır.",
+            "deep": "<code>ledcAttach</code>, pin için boş bir LEDC kanalı seçer. <code>GPIO_DRIVE_CAP_0</code>, en zayıf sürme gücüdür (yaklaşık 5 mA). Direnç yoksa LED'i ve pini korur. Uygun bir direnç varsa tam parlaklık için bunu kaldırabilirsin."
+          },
+          "15": {
+            "title": "Dinle, sonra ışık ver",
+            "say": "Her 5 ms'de bir yazılan harfleri kontrol eder, geçerli mod için parlaklığı hesaplar ve LED'e yazar. İki adım da beklemediği için yazmak canlandırmayı hiçbir zaman dondurmaz.",
+            "deep": "<code>millis() - state.modeStartedAt</code>, modun başlamasından beri geçen süredir. <code>dutyFor</code>'un ihtiyacı olan tek şey budur. <code>ledcWrite</code> yalnızca bir kaydediciyi günceller. Çağrılar arasında PWM'i LEDC donanımı sürdürür.",
+            "quiz": {
+              "question": "Bir SOS'un ortasında <code>sos</code> komutunu tekrar yazıyorsun. Ne olur?",
+              "options": [
+                "Hiçbir şey: zaten SOS modunda",
+                "Desen ilk noktadan yeniden başlar",
+                "Kapanır"
+              ],
+              "why": "<code>setMode</code>, <code>modeStartedAt</code> değerini sıfırlar. Geçen süre 0'a döner ve desen yeniden başlar."
+            }
+          }
+        }
+      }
+    }
+  },
+  "03-display": {
+    "bigPicture": "Bu program 1,9″ ekranı yakar. <code>setup()</code> bir kez çalışır: arka ışığı açar, SPI veri yolunu kurar, renkleri kontrol edebilmen için kırmızı, yeşil ve mavi çubuklar gösterir, sonra PSRAM'de resim boyutunda bir tuval ayırır. <code>loop()</code> ise sonsuza kadar çalışır. Bu tuvalde kare hızı ve çalışma süresiyle birlikte hareket eden bir sinüs dalgası çizer ve bitmiş her resmi tek seferde ekrana gönderir.",
+    "files": {
+      "labs/03-display/src/main.cpp": {
+        "stops": {
+          "0": {
+            "title": "Bağlantılar ve plan",
+            "say": "Başlık, hangi ekran pininin hangi kart pinine gittiğini, neler göreceğini (önce renk çubukları, sonra hareketli bir dalga) ve iki yeni fikri listeler: SPI veri yolu ve kare tamponu.",
+            "deep": "ST7789, ekran modülündeki denetleyici çiptir. Resmi kendi belleğinde tutar ve ekranı kendi kendine yeniler. Biz yalnızca ona yeni pikseller göndeririz."
+          },
+          "1": {
+            "title": "Ekranı tanıyan kütüphaneler",
+            "say": "<code>Adafruit_GFX</code>, çizgi, dikdörtgen ve yazı çizmeyi bilir. <code>Adafruit_ST7789</code> bu ekranla konuşmayı bilir. <code>SPI.h</code>, ikisinin kullandığı veri yoludur.",
+            "deep": "Tam kütüphane sürümleri <code>platformio.ini</code> içinde <code>lib_deps</code> altında sabitlenmiştir. Böylece her derleme aynı kodu kullanır."
+          },
+          "2": {
+            "title": "Ekran boyutu ve veri yolu hızı",
+            "say": "Panel 170 × 320 pikseldir. Onu yana çeviririz, böylece 320 genişliğinde ve 170 yüksekliğinde olur. <code>kSpiHz</code>, bitlerin kablodan ne kadar hızlı geçtiğini belirler: saniyede 40 milyon.",
+            "deep": "Tam bir resim 320 × 170 × 16 bit ≈ 870 bin bittir. Bu yüzden 40 MHz'de göndermek yaklaşık 22 ms sürer. <code>40'000'000</code> içindeki <code>'</code>, yalnızca okumayı kolaylaştıran bir basamak ayıracıdır.",
+            "quiz": {
+              "question": "<code>kSpiHz</code> değerini 20 MHz'e indirirsen ekranda ne değişir?",
+              "options": [
+                "Renkler solar",
+                "fps sayısı düşer",
+                "Resim küçülür"
+              ],
+              "why": "Her resmi göndermek iki kat uzun sürer. Bu yüzden her saniye ekrana daha az kare ulaşır. Resmin kendisi aynıdır."
+            }
+          },
+          "3": {
+            "title": "Ekran ve tuval",
+            "say": "<code>tft</code>, gerçek ekranla konuşan nesnedir. <code>frame</code>, bir tuvale işaret edecek: her kareyi göstermeden önce çizdiğimiz, bellekte görünmez bir resim. Başlangıçta <code>nullptr</code> değerindedir. Bu da “henüz yok” demektir.",
+            "deep": "Tuval 320 × 170 × 2 bayt ≈ 106 KB yer ister. Bu, S3'ün iç RAM'inde rahatça tutmak için fazla. Bu yüzden 8 MB PSRAM'e konur. Çekirdek büyük ayırmaları oraya otomatik koyar."
+          },
+          "4": {
+            "title": "16 bitte renkler",
+            "say": "Her pikselin rengi 16 bite sığar: kırmızı için 5, yeşil için 6, mavi için 5 bit (RGB565). <code>pal</code>, küçük osiloskobumuzun altı rengini tutar. Her birinin adı, ne için kullanıldığını söyler.",
+            "deep": "Yeşile fazladan bit verilir, çünkü gözler en çok ona duyarlıdır. Piksel başına 16 bit, 24 bitlik renge göre gönderilecek veriyi yarıya indirir. Bunun bedeli, pürüzsüz geçişlerde hafif bantlanmadır."
+          },
+          "5": {
+            "title": "Osiloskop renklerini karıştır",
+            "say": "Paleti, 0-255 arasındaki kırmızı, yeşil ve mavi miktarlarından oluşturur: koyu mavi-siyah bir arka plan, soluk bir ızgara, yeşil-camgöbeği bir iz, kehribar rengi sayılar ve iki yazı rengi.",
+            "deep": "<code>color565</code>, her kanalın en üstteki 5, 6 ve 5 bitini tutar ve onları tek bir 16 bitlik sayıya paketler."
+          },
+          "6": {
+            "title": "Kırmızı, yeşil, mavi: hızlı bir test",
+            "say": "Üç çubuk çizer ve etiketler. Soldaki çubuk kırmızı, ortadaki yeşil ve sağdaki mavi ise bağlantılar ve renk ayarları doğrudur. Bu, tuval olmadan doğrudan ekrana çizilir.",
+            "deep": "<code>ST77XX_RED</code> ve benzerleri, hazır RGB565 değerleridir. Tek bir sabit resim için doğrudan çizmek uygundur. Animasyonda ise her çubuğun tek tek belirdiğini görürdün.",
+            "quiz": {
+              "question": "Çubuklar bunun yerine camgöbeği, macenta ve sarı çıkıyor. Muhtemel neden nedir?",
+              "options": [
+                "Gevşek bir kablo",
+                "Renkler ters çevrilmiş",
+                "PSRAM eksik"
+              ],
+              "why": "Camgöbeği, macenta ve sarı, kırmızı, yeşil ve mavinin zıttıdır. Yorumda yazdığı gibi, <code>tft.init()</code> çağrısından sonra <code>tft.invertDisplay(false)</code> bunu düzeltir."
+            }
+          },
+          "7": {
+            "title": "Izgarayı çiz",
+            "say": "Tuvalin alt kısmına, bir osiloskop ekranındaki ızgara gibi soluk dikey ve yatay çizgiler çizer.",
+            "deep": "<code>drawFastVLine</code> ve <code>drawFastHLine</code>, genel <code>drawLine</code> fonksiyonundan daha ucuzdur. Çünkü yalnızca düz bir piksel dizisini doldurmaları yeter."
+          },
+          "8": {
+            "title": "Tuvali temizle, başlığı yaz",
+            "say": "Her kare, tüm tuvali arka plan rengiyle boyayarak başlar. Sonra büyük “hello, bench” başlığını yazar. Sağ üstte ise kart adını ve o anki saniyedeki kare sayısını yazar.",
+            "deep": "<code>g</code>, referansla geçirilen tuvaldir (<code>&amp;</code>). Bu yüzden 106 KB kopyalamadan gerçek tuvalin üzerine çizeriz. <code>setCursor</code> yazıyı yerleştirir, <code>setTextSize</code> yerleşik yazı tipini ölçekler."
+          },
+          "9": {
+            "title": "Hareket eden dalga",
+            "say": "Her piksel sütunu için bir sinüs dalgasının yüksekliğini hesaplar ve onu bir önceki sütuna kısa bir çizgiyle bağlar. Dalganın konumu zamana bağlıdır. Bu yüzden her karede biraz ilerlemiş olur. Gördüğün hareket budur.",
+            "deep": "Ana dalga yaklaşık 140 px uzunluğundadır ve saniyede yaklaşık 67 px kayar. Yavaş ikinci bir sinüs, yüksekliğini yüzde 70 ile 100 arasında nefes alır gibi değiştirir. Küçük ve hızlı bir sinüs de dalgalanma ekler. Orta çizgi y = 102 konumundadır."
+          },
+          "10": {
+            "title": "Köşedeki saat",
+            "say": "Açılıştan beri geçen milisaniyeleri saat, dakika ve saniyeye çevirir ve bunları sağ altta kehribar rengiyle yazar.",
+            "deep": "<code>s / 60 % 60</code>, toplam dakikadan tam saatlerin dakikalarını çıkarınca kalan sayıdır. <code>%02lu</code> her sayıyı başına sıfır koyarak iki haneye tamamlar.",
+            "quiz": {
+              "question": "Kart 3725 saniyedir çalışıyor. Saat ne gösterir?",
+              "options": [
+                "00:62:05",
+                "01:02:05",
+                "01:00:25"
+              ],
+              "why": "3725 s, 1 saat (3600 s) artı 125 s demektir. 125 s ise 2 dakika 5 saniyedir."
+            }
+          },
+          "11": {
+            "title": "Önce arka ışık",
+            "say": "Bir kez çalışır. Seri monitörü açtıktan sonra, başka her şeyden önce arka ışığı yakar. Ekran ışıldar ama boş kalırsa, güç ve arka ışığın sağlam olduğunu, sorunun veri kablolarında olduğunu bilirsin.",
+            "deep": "Arka ışık, panelin arkasındaki bir dizi LED'dir. BLK pini yalnızca onları açıp kapatır. Ders 02'deki gibi PWM de alabilir ve ekranı karartabilir."
+          },
+          "12": {
+            "title": "Veri yolunu başlat, ekranı uyandır",
+            "say": "SPI'yi kendi pinlerimizde başlatır, ekranı uyandırır, hızı ayarlar, ekranı yana çevirir ve paleti oluşturur. Günlük satırı boyutu ve hızı doğrular. Bu yüzden monitör 40 MHz'de 320x170 yazmalıdır.",
+            "deep": "Ekran hiçbir zaman veri geri göndermez, bu yüzden MISO <code>-1</code>'dir. S3'teki varsayılan <code>SPI</code> nesnesi SPI2 (FSPI) birimidir. <code>setRotation(1)</code>, genişlik ile yüksekliği değiştirir. Günlüğün 320x170 yazmasının nedeni budur."
+          },
+          "13": {
+            "title": "Renk çubuklarını göster, sonra tuvali yap",
+            "say": "Renk çubuklarını 2,5 saniye gösterir, sonra 106 KB tuval ister. Bu başarısız olursa bir hata kaydeder ve vazgeçer. Böylece PSRAM ayarını kontrol etmen gerektiğini bilirsin.",
+            "deep": "<code>new GFXcanvas16</code>, piksel tamponu ayrılamasa bile başarılı olabilir. Bu yüzden kod hem nesneyi hem de <code>getBuffer()</code> çağrısını kontrol eder.",
+            "quiz": {
+              "question": "PSRAM kapalı olsaydı ve tuval yapılamasaydı ekranda ne görünürdü?",
+              "options": [
+                "Siyah bir ekran",
+                "Renk çubukları, donmuş halde",
+                "Titreyen bir dalga"
+              ],
+              "why": "Çubuklar tuval istenmeden önce çizilir. <code>loop()</code> ise yalnızca bekler. Bu yüzden hiçbir şey onların üstüne çizmez."
+            }
+          },
+          "14": {
+            "title": "Kare hızını ölç",
+            "say": "Sonsuza kadar çalışır. Tuval yoksa yalnızca bekler. Varsa, son kareden beri geçen süreyi ölçer ve bunu saniyedeki kare sayısına çevirir. Ekrandaki sayı titremesin diye yumuşatılır.",
+            "deep": "Yumuşatma, eski değerin yüzde 90'ını tutar ve yeni değerin yüzde 10'unu ekler (üstel hareketli ortalama). <code>static</code> değişkenler, turlar arasında değerlerini korur."
+          },
+          "15": {
+            "title": "Gizlice çiz, hemen göster",
+            "say": "Önce tüm resim tuvale çizilir, sonra <code>drawRGBBitmap</code> onu tek ve uzun bir patlamayla ekrana gönderir. Her beş saniyede bir kare hızı da monitöre yazdırılır.",
+            "deep": "Doğrudan ekrana çizmek, her adımı (arka plan, ızgara, dalga) olurken gösterirdi. Bu da titremeye yol açar. Kare tamponuyla ekran yalnızca bitmiş resimler alır.",
+            "quiz": {
+              "question": "Dalga neden titremeden hareket eder?",
+              "options": [
+                "Ekran çok hızlı yenilenir",
+                "Her kare gönderilmeden önce bellekte tamamlanır",
+                "SPI yolu 40 MHz'dir"
+              ],
+              "why": "PSRAM'deki tuval, yarım kalmış tüm adımları tutar. Ekran yalnızca son resmi alır."
+            }
+          }
+        }
+      }
+    }
+  }
+}

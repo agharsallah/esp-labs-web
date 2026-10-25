@@ -1,0 +1,211 @@
+{
+  "press": {
+    "label": "BAS",
+    "aria": "Çizilen düğmeye bas"
+  },
+  "preview": {
+    "aria": "Simüle edilmiş 320 x 170 ekran: renk testi, ardından hareket eden bir sinüs dalgası",
+    "captions": {
+      "check": "Adım 1: renk testi (2,5 sn). Soldan sağa kırmızı, yeşil, mavi görünmeli.",
+      "scope": "Adım 2: tezgâh osiloskobu. Gerçek ekranın bunu 22 fps ile çalıştırır."
+    }
+  },
+  "wiring": {
+    "prev": "◀ Geri",
+    "play": "Oynat",
+    "pause": "Duraklat",
+    "next": "İleri ▶",
+    "showAll": "Hepsini göster",
+    "signals": "Sinyaller",
+    "count_one": "{{step}} / {{count}} kablo",
+    "count_other": "{{step}} / {{count}} kablo",
+    "aria": "Bağlantı şeması: ekran başlığından ESP32'nin sol başlığına 8 jumper kablo",
+    "displayModule": "1,9″ EKRAN MODÜLÜ",
+    "leftHeader": "ESP32-S3 · SOL BAŞLIK",
+    "start": {
+      "title": "Önce USB'yi çıkar",
+      "text": "Sonra Oynat'a bas. Her seferinde bir kablo takmak için İleri'ye bas."
+    },
+    "done": {
+      "title_one": "Tüm {{count}} kablo takıldı",
+      "title_other": "Tüm {{count}} kablo takıldı",
+      "text": "VCC'nin 3V3'te olduğunu iki kez kontrol et. Her kablonun ne taşıdığını görmek için Sinyaller'e bas."
+    },
+    "wire": "Kablo {{step}}: ekran {{disp}} → {{esp}}"
+  },
+  "wires": {
+    "GND": "Önce toprak (GND). İki kart da aynı 0 V referansını kullanmalı, yoksa hiçbir sinyal anlamlı olmaz.",
+    "VCC": "Ekranın gücü. 5V değil 3V3 kullan: ESP32'nin pinleri 3,3 V ile konuşur.",
+    "SCL": "SPI saati. ESP bu hatta her bit için bir kez tık atar, saniyede 40 milyon kez.",
+    "SDA": "SPI verisi (MOSI). Bitlerin kendisi: ekran her saat darbesinde bir bit okur.",
+    "RES": "Sıfırlama (reset). Başlangıçta bir kez düşük yapılır, ekranın denetleyici çipini yeniden başlatmak için.",
+    "DC": "Veri/Komut. Düşükse bayt bir komuttur, yüksekse piksel verisidir.",
+    "CS": "Çip seçimi (chip select). Düşükse “sana konuşuyorum” demektir. Birkaç cihazın tek bir SPI yolunu paylaşmasını sağlar.",
+    "BLK": "Arka ışık. Yüksekse ışık yanar. Bu olmadan ekran çizim yapsa bile ölü görünür."
+  },
+  "analyzer": {
+    "aria": "Tek bir SPI aktarımının mantık analizörü görünümü",
+    "data": "veri",
+    "cmd": "komut",
+    "bitCommand": "CS düşük · DC düşük · bit {{bit}} =",
+    "bitData": "CS düşük · DC yüksek · bit {{bit}} =",
+    "notes": {
+      "command": "komut: “ekran belleğine yaz”",
+      "high": "piksel verisi, yüksek bayt",
+      "low": "piksel verisi, düşük bayt → 0xF800 = bir kırmızı piksel"
+    },
+    "csHigh": "CS yüksek:",
+    "ignored": "ekran veri yolunu yok sayar",
+    "still": "SCL sabit kalır, hiçbir şey gönderilmez",
+    "csLow": "CS düşük:",
+    "listening": "ekran dinliyor",
+    "switching": "DC, komut ile veri arasında geçiş yapar"
+  },
+  "full": {
+    "show": "Göster",
+    "modes": {
+      "both": "İkisi",
+      "screen": "Ekran · 8 kablo",
+      "button": "Düğme · 2 kablo"
+    },
+    "captions": {
+      "both": {
+        "title": "Tek başlıkta 10 kablo",
+        "text": "8'i ekrana gider (çıkış), 2'si düğmeye gider (giriş). İkisi de bir GND ister. Herhangi bir GND pini olur. 5 numaralı pin hemen 4'ün yanında, bu yüzden etikete bak."
+      },
+      "screen": {
+        "title": "Ekran: 8 kabloyla bir çıkış",
+        "text": "Güç (VCC, GND), SPI yolu (SCL, SDA) ve kontrol hatları (CS, DC, RES, BLK). Veri ESP32'den ekrana akar, saniyede milyonlarca bit."
+      },
+      "button": {
+        "title": "Düğme: 2 kabloyla bir giriş",
+        "text": "GPIO 5 ve GND. Güç kablosu yok: çipin dahili pull-up direnci GPIO 5'i YÜKSEK tutar, basınca GND'ye bağlanır ve DÜŞÜK olur. Sinyalin içeri akışını görmek için düğmeye bas."
+      }
+    },
+    "aria": "ESP32 sol başlığı: ekran 8 pine, basmalı düğme GPIO 5 ve GND'ye bağlı",
+    "screen": "EKRAN",
+    "output": "çıkış",
+    "display": "1,9″ EKRAN · ÇIKIŞ",
+    "button": "BASMALI DÜĞME · GİRİŞ",
+    "out": "ÇIKIŞ → ESP32 ekrana konuşur",
+    "in": "GİRİŞ ← ESP32 düğmeyi dinler",
+    "gnd": "ekran ve düğme GND: herhangi bir GND pini olur",
+    "pinLow": "GPIO 5 = DÜŞÜK (basılı)",
+    "pinHigh": "GPIO 5 = YÜKSEK"
+  },
+  "button": {
+    "aria": "4 bacaklı basmalı düğmenin içi ve breadboard'da GPIO 5 ile GND'ye bağlı hali",
+    "inside": "DÜĞMENİN İÇİ (ÜSTTEN GÖRÜNÜM)",
+    "joined": "A–C ve B–D her zaman birbirine bağlıdır.",
+    "pressing": "Basınca iki taraf birleşir.",
+    "breadboard": "BREADBOARD ÜZERİNDE",
+    "gap": "orta boşluk",
+    "toPin": "ESP32 pin 5'e",
+    "toGnd": "ESP32 GND'ye",
+    "diagonal": "çapraz bacakları kullan",
+    "orientation1": "A ile D:",
+    "orientation2": "her yönde çalışır",
+    "readsLow": "GPIO 5 DÜŞÜK okur (0 V)",
+    "readsHigh": "GPIO 5 YÜKSEK okur (3,3 V)",
+    "pressed": {
+      "title": "Basılı: GPIO 5, GND'ye bağlı",
+      "text": "Pin 0 V'a çekilir, bu yüzden DÜŞÜK okunur. Dahili pull-up yalnızca çok küçük bir akım sızdırır."
+    },
+    "released": {
+      "title": "Bırakılmış: pull-up pini YÜKSEK tutar",
+      "text": "Çipin içindeki bir direnç GPIO 5'i 3,3 V'a bağlar, bu yüzden boşta duran düğme YÜKSEK okunur. Yukarıdaki düğmeyi basılı tut."
+    },
+    "scopeAria": "GPIO 5 üzerindeki sinyal: sekmeli ham hali ve süzülmüş hali",
+    "canvas": {
+      "raw": "HAM PİN",
+      "debounced": "SÜZÜLMÜŞ",
+      "window": "son 1,2 sn",
+      "zoom": "YAKINLAŞTIR: basışın ilk 7 ms'i",
+      "spike": "her tepe = bir sekme",
+      "capture": "kaydetmek için bas"
+    },
+    "scope": {
+      "press": "Yukarıdaki düğmeye bas.",
+      "traces": "Sarı çizgi pinin gerçekte ne yaptığıdır. Yeşil olan, programın güvendiğidir.",
+      "try": "Tek tıklamayı, çift tıklamayı ve uzun basmayı dene.",
+      "gesture": "hareket:",
+      "debounce": "süzme (debounce), bir değişikliğe güvenmeden önce {{ms}} ms sessizlik bekler"
+    },
+    "gestures": {
+      "click_one": "Tıklama → sonraki sahne ({{count}} sekme süzüldü)",
+      "click_other": "Tıklama → sonraki sahne ({{count}} sekme süzüldü)",
+      "double": "Çift tıklama → önceki sahne",
+      "long": "Uzun basış → otomatik geçişi aç/kapat"
+    }
+  },
+  "compare": {
+    "aria": "Ekran ile düğmenin karşılaştırması",
+    "aspect": "Özellik",
+    "output": "ÇIKIŞ",
+    "input": "GİRİŞ",
+    "screen": "Ekran",
+    "button": "Düğme",
+    "rows": {
+      "direction": {
+        "label": "Yön",
+        "screen": "<b>Çıkış.</b> ESP32 gönderir, ekran yalnızca dinler.",
+        "button": "<b>Giriş.</b> ESP32 dinler, düğme yalnızca bildirir."
+      },
+      "wires": {
+        "label": "Kablolar",
+        "screen": "8: güç için VCC + GND, veri için SCL + SDA, kontrol için CS, DC, RES, BLK",
+        "button": "2: GPIO 5 ve GND"
+      },
+      "power": {
+        "label": "Güç",
+        "screen": "Yanmak için karttan 3V3 gerekir",
+        "button": "Yok. Düğme yalnızca bir anahtardır"
+      },
+      "signal": {
+        "label": "Sinyal",
+        "screen": "SPI yolu: bir saat (SCL) ve veri (SDA), saniyede 40 milyon bit",
+        "button": "Tek bir seviye: YÜKSEK (yukarı) ya da DÜŞÜK (basılı), saniyede birkaç değişiklik"
+      },
+      "pins": {
+        "label": "Hangi pinler",
+        "screen": "SCL/SDA, S3'ün hızlı SPI pinleri 12/11'de. Diğer 4'ü herhangi bir güvenli GPIO'da",
+        "button": "Herhangi bir güvenli GPIO. Biz 5'i seçtik"
+      },
+      "helper": {
+        "label": "Çipin içindeki yardımcı",
+        "screen": "SPI birimi bitleri bizim yerimize saat sinyaliyle gönderir",
+        "button": "Dahili pull-up direnci, basılana kadar pini YÜKSEK tutar"
+      },
+      "code": {
+        "label": "Kod"
+      },
+      "wrong": {
+        "label": "Ters giderse",
+        "screen": "Siyah ya da beyaz ekran: VCC, BLK, RES'i kontrol et",
+        "button": "Hep ya da hiç basılmıyor: çapraz bacakları kullan"
+      }
+    }
+  },
+  "showcase": {
+    "scenes": {
+      "torus": "3B simit",
+      "plasma": "Plazma",
+      "fireworks": "Havai fişek",
+      "dashboard": "Canlı pano"
+    },
+    "choice": "{{n}} {{name}}",
+    "scenesLabel": "Sahneler",
+    "aria": "Simüle edilmiş ekran, {{n}}. sahne: {{name}}",
+    "autoOn": "otomatik geçiş açık · sahne başına 12 sn",
+    "autoOff": "otomatik geçiş kapalı",
+    "terminal": "$ uv run pio device monitor   (beklenen çıktı)",
+    "boot": {
+      "aria": "BOOT düğmesi: tek tıklama sonraki sahne, uzun basış otomatik geçiş",
+      "caption": "Sonraki sahne için BOOT'a tıkla, otomatik geçişi açmak ya da kapatmak için 0,6 sn basılı tut. Tıpkı gerçek BOOT düğmesi gibi. Buradaki pano örnek sayılar kullanır. Kendi kartın gerçek sıcaklığını, belleğini ve kare sürelerini gösterir."
+    },
+    "button": {
+      "aria": "Basmalı düğme: tek tıklama sonraki sahne, çift tıklama önceki, uzun basış otomatik geçiş",
+      "caption": "Sonraki sahne için düğmeye tıkla, öncekine çift tıkla, otomatik geçişi açmak ya da kapatmak için 0,6 sn basılı tut. Tıpkı senin basmalı düğmen gibi. Buradaki pano örnek sayılar kullanır. Kendi kartın gerçek sıcaklığını, belleğini ve kare sürelerini gösterir."
+    }
+  }
+}

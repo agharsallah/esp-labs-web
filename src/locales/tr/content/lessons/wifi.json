@@ -1,0 +1,229 @@
+{
+  "W1": {
+    "title": "Tara ve bağlan",
+    "heading": "Havayı tara, sonra kendi ağına bağlan",
+    "goal": "İlk Wi-Fi deneyi, kendi yazılımıyla (wifi-lab-w1). Tüm deneylerin ortak kodu kit/lib/wifi-kit içinde durur. ESP32, yakındaki her 2,4 GHz ağı listeler, sonra senin ağına bağlanır: ağı tarama tablosundan seçersin ve parolayı bir kez yazarsın. Parola çipte saklanır, koda asla yazılmaz. Durum görünümü saati (internet saatini), IP adresini, bench.local adresini ve canlı bir sinyal grafiğini gösterir.",
+    "learn": [
+      "istasyon modu",
+      "kanallar ve dBm",
+      "güvenlik türleri",
+      "NVS depolama",
+      "Wi-Fi olayları",
+      "internet saati (NTP)",
+      "mDNS"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "BLK"
+      },
+      "2": {
+        "role": "RES"
+      },
+      "3": {
+        "role": "DC"
+      },
+      "4": {
+        "role": "CS"
+      },
+      "5": {
+        "role": "SDA"
+      },
+      "6": {
+        "role": "SCL"
+      },
+      "7": {
+        "role": "GND"
+      },
+      "8": {
+        "role": "BTN"
+      },
+      "9": {
+        "role": "BOOT"
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Tarama nasıl çalışır"
+      },
+      "1": {
+        "title": "Wi-Fi konusu"
+      }
+    },
+    "steps": [
+      "Ekranı 03 numaralı dersteki gibi bağlı bırak. Basmalı düğme (pin 5 + GND) isteğe bağlıdır. BOOT'un yaptığını birebir yapar.",
+      "Yukarıdaki komutla yükle (ya da Claude'a “go” de).",
+      "İlk taramayı izle. Görünümler arasında <b>tıklayarak</b> geç: ağlar, kanallar, radar, durum.",
+      "<code>uv run pio device monitor</code> komutunu aç. Ağının numarasını tarama tablosunda bul.",
+      "<code>join 3</code> yaz (kendi numaranı yaz), sonraki satıra parolanı yaz. Parola çipe kaydedilir. Günlükte yalnızca uzunluğu görünür.",
+      "Durum görünümü kendiliğinden açılır: saat, IP adresi, <code>bench.local</code>, sinyal grafiği. Mac'inden <code>ping bench.local</code> komutunu dene. Kartın tarafından routerı test etmek için monitöre <code>ping</code> yaz.",
+      "Çıkar, tekrar tak: kendiliğinden yeniden bağlanır. <code>forget</code> kayıtlı ağı siler."
+    ],
+    "note": "5 GHz ağlar hiç görünmez: S3'ün radyosu yalnızca 2,4 GHz çalışır. Monitör komşularının ağ adlarını ve yazdığın her şeyi, parola dahil, gösterir. Bu kısmı paylaştığın hiçbir yere yapıştırma."
+  },
+  "W2": {
+    "title": "Telefondan kontrol",
+    "heading": "Tezgâhı telefonundan ve Mac'inden kontrol et",
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "BLK"
+      },
+      "2": {
+        "role": "RES"
+      },
+      "3": {
+        "role": "DC"
+      },
+      "4": {
+        "role": "CS"
+      },
+      "5": {
+        "role": "SDA"
+      },
+      "6": {
+        "role": "SCL"
+      },
+      "7": {
+        "role": "GND"
+      },
+      "8": {
+        "role": "BTN"
+      },
+      "9": {
+        "role": "BOOT"
+      }
+    },
+    "variants": {
+      "lan": {
+        "label": "Varyasyon 1 · Kendi Wi-Fi'nde",
+        "short": "telefon → kart, evde",
+        "goal": "Kendi yazılımı (wifi-lab-w2): W1'deki her şey, artı küçük bir web sunucusu. Bu sunucuda bir REST API, canlı bir WebSocket, bench.local adresinde telefon sayfası ve kablo olmadan Wi-Fi'ye bağlanmak için bir kurulum ağı var. esp-labs/apps/dashboard içindeki React + Node paneli, Mac'inde aynı kontrolleri canlı grafikler ve yazılım güncellemeleriyle sunar.",
+        "learn": [
+          "REST API",
+          "WebSocket",
+          "eşzamansız web sunucusu",
+          "captive portal",
+          "kablosuz güncelleme (OTA)",
+          "yönetici token'ı",
+          "React + Node"
+        ],
+        "panels": {
+          "0": {
+            "title": "Parçalar nasıl konuşur"
+          }
+        },
+        "steps": [
+          "W1 ile aynı bağlantı (basmalı düğme isteğe bağlı). Yukarıdaki komutla yükle (ya da Claude'a “go” de).",
+          "Henüz bağlanmadın mı? Durum görünümü <code>bench-setup</code> kurulum ağını ve parolasını gösterir. Telefonundan bu ağa katıl, açılan sayfada kendi Wi-Fi'ni seç ve parolayı yaz.",
+          "Bağlandın: telefonunda <code>http://bench.local</code> adresini aç. Görünümü değiştir, bir mesaj gönder, bir LED rengi seç, ekranı kıs.",
+          "Seri monitöre <code>token</code> yaz ve çıkan değeri kopyala.",
+          "Mac'te: <code>cd esp-labs/apps/dashboard</code>, <code>cp .env.example .env</code>, sonra token'ı <code>ESP_TOKEN=</code> satırına yapıştır. Ardından <code>pnpm install</code> ve <code>pnpm dev</code> çalıştır. <code>http://localhost:5173</code> adresini aç.",
+          "Düğmeye ya da BOOT'a bas: tıklama telefon sayfasında ve panoda anında görünür.",
+          "Kablosuz güncellemeyi dene: <code>uv run pio run -d labs/wifi-lab-w2 -e wifi-lab-w2</code> çalıştır, sonra panelin Yönetici bölümünden <code>.pio/build/wifi-lab-w2/firmware.bin</code> dosyasını yükle. Ekran ilerlemeyi gösterir."
+        ],
+        "note": "Günlük kontroller, evdeki ağa bağlı herkese açıktır: bu bir tezgâh oyuncağı. Yeniden başlatma, Wi-Fi'yi unutma ve yazılım güncellemeleri token ister. Token çipte ve panelin .env dosyasında durur (git bu dosyayı yok sayar). Tarayıcıda asla durmaz. Sayfa açılmıyor mu? Adrese <code>http://</code> yazmayı dene. FRITZ!Box'ta “WLAN devices may communicate with each other” seçeneğini işaretle. Mac'te tarayıcıya Gizlilik ve Güvenlik → Yerel Ağ altından izin ver."
+      },
+      "remote": {
+        "label": "Varyasyon 2 · Her yerden",
+        "short": "kart, sunucuna dışarı doğru bağlanır",
+        "goal": "Aynı kart ve telefon sayfası, artı uzaktan bağlantı: kart <b>dışarı</b> doğru paneli sunucuna bağlanır ve güvenli bir WebSocket açık tutar. Sunucunun herkese açık bir https adresi olmalı: bugün Mac'in ve bir tünel (cloudflared ya da ngrok), sonra aynı uygulama barındırılan bir sunucuda. Kart için fark etmez. Tezgâhı mobil veriden, ofisten, nerede olursan ol yönet. Router'ında hiçbir şey açılmaz ve Wi-Fi izolasyonu artık sorun olmaz.",
+        "learn": [
+          "dışarı giden bağlantılar ve NAT",
+          "tüneller",
+          "TLS ve kök sertifikalar",
+          "WebSocket istemcisi",
+          "FreeRTOS görevleri",
+          "giriş ve çerezler"
+        ],
+        "panels": {
+          "0": {
+            "title": "Uzaktan kontrol nasıl çalışır"
+          }
+        },
+        "steps": [
+          "Aynı bağlantı (basmalı düğme isteğe bağlı). Yukarıdaki komutla yükle (ya da Claude'a “go” de). İlk seferde bir kütüphane indirir: links2004/WebSockets 2.7.3.",
+          "Mac'te <code>esp-labs/apps/dashboard/.env</code> dosyasına şunları yaz: <code>ESP_MODE=relay</code>, <code>ESP_TOKEN=</code> satırına seri monitördeki <code>token</code> değeri ve <code>DASHBOARD_KEY=</code> satırına <code>openssl rand -hex 16</code> çıktısı.",
+          "Sunucuyu başlat: <code>cd esp-labs/apps/dashboard && pnpm remote</code> (uygulamayı derler ve 8787 portunda sunar).",
+          "İkinci bir terminal aç ve tünel kur: <code>pnpm tunnel:cloudflare</code> (hesap gerekmez, <code>https://…trycloudflare.com</code> yazar, her seferinde yenisi çıkar) ya da <code>pnpm tunnel:ngrok</code> (ngrok hesabın gerekir, <code>--url=&lt;your free static domain&gt;</code> ekle, adres hiç değişmez).",
+          "Seri monitörde <code>relay wss://&lt;tunnel host&gt;</code> yazarak kartı tünele bağla. Kart adresi kaydeder ve bağlanır. Ardından <code>relay</code> <code>online</code> yazar. Ekranda bağlantı noktasının çevresinde turkuaz bir halka belirir.",
+          "Telefonunda Wi-Fi'yi kapat (mobil veri), tünel adresini aç, anahtarla giriş yap ve görünümü ya da LED'i değiştir. Tezgâhı artık evinin dışından kontrol ediyorsun.",
+          "Kartı çıkar ve tekrar tak: Wi-Fi'ye yeniden bağlanır ve kendiliğinden tünele tekrar bağlanır. <code>relay off</code> bağlantıyı durdurur."
+        ],
+        "note": "Hızlı tünel adresleri, cloudflared her yeniden başladığında değişir. Yeni adresi <code>relay</code> ile yaz ya da ngrok'un ücretsiz sabit alan adını bir kez kullan. Yazılım güncellemeleri şimdilik Wi-Fi'de kalır (varyasyon 1). İşin bitince tüneli durdur (Ctrl+C), yoksa herkese açık adres de çalışmaz olur. Sunucuyu barındırmak istersen aynı uygulamayı orada çalıştır (<code>pnpm build && pnpm start</code>, <code>ESP_MODE=relay</code>, <code>HOST=0.0.0.0</code>, <code>TRUST_PROXY=true</code>) ve <code>relay</code> komutunu onun adresine yönlendir. Önce tünelsiz denemek ister misin? .env dosyasında <code>HOST=0.0.0.0</code> ayarla ve <code>relay ws://&lt;your Mac's IP&gt;:8787</code> yaz."
+      }
+    }
+  },
+  "W3": {
+    "title": "İnternet ve yapay zekâ",
+    "heading": "İnternetten hava durumu, buluttan bir şair",
+    "goal": "Kart bir internet istemcisine dönüşür. Şehrinin hava durumunu HTTPS üzerinden JSON olarak çeker (Open-Meteo, hesap ya da anahtar gerekmez) ve çizer: canlı bir gökyüzü, sonraki 24 saat ve hafta. Sonra Tezgâh Kahini gelir. Kart, bir yapay zekâ modeline bu anda bildiklerini gönderir: yer, saat, hava ve kendi sıcaklığı. Karşılığında bir haiku ya da sorduğun sorunun cevabını, bir LED rengi ve bir sahneyle birlikte yapılandırılmış JSON olarak alır. İstek Mac'indeki LiteLLM'den geçer. Bu yüzden her sağlayıcı ve model çalışır, sağlayıcı anahtarları ise çipe hiç dokunmaz.",
+    "learn": [
+      "HTTPS istemcisi",
+      "TLS sertifikaları",
+      "JSON ve filtreler",
+      "REST API'ler",
+      "yapay zekâ fonksiyon çağrısı",
+      "LLM geçidi (LiteLLM)",
+      "arka plan görevleri"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "BLK"
+      },
+      "2": {
+        "role": "RES"
+      },
+      "3": {
+        "role": "DC"
+      },
+      "4": {
+        "role": "CS"
+      },
+      "5": {
+        "role": "SDA"
+      },
+      "6": {
+        "role": "SCL"
+      },
+      "7": {
+        "role": "GND"
+      },
+      "8": {
+        "role": "BTN"
+      },
+      "9": {
+        "role": "BOOT"
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Bir isteği adım adım izle"
+      }
+    },
+    "steps": [
+      "Aynı bağlantı (basmalı düğme isteğe bağlı). Yukarıdaki komutla yükle (ya da Claude'a “go” de). W1 ve W2'de kaydettiğin Wi-Fi ağını kullanır.",
+      "<code>uv run pio device monitor</code> komutunu aç ve <code>city Hamburg</code> yaz (kendi şehrini yaz). Kart şehri arar, kaydeder ve hava durumunu çeker.",
+      "Görünümler arasında <b>tıklayarak</b> geç: şimdi (canlı gökyüzü), tahmin (sonraki 24 saat), hafta. Alt bilgi her isteği gösterir: ne kadar sürdüğünü ve cevabın ne kadar büyük olduğunu.",
+      "Mac'te yapay zekâ geçidini başlat: <code>cd esp-labs/apps/ai-gateway</code>, <code>cp .env.example .env</code> (bir <code>LITELLM_MASTER_KEY</code> ve sağlayıcı anahtarın, ör. <code>ANTHROPIC_API_KEY</code>), <code>uv sync</code>, sonra <code>uv run --env-file .env litellm --config config.yaml --port 4000</code>.",
+      "Kartın geçidin yerini monitörde söylesin: <code>ai url http://&lt;your Mac's IP&gt;:4000</code> ve <code>ai key &lt;LITELLM_MASTER_KEY&gt;</code>. Anahtarları yalnızca orada yaz, asla bir sohbete yazma.",
+      "Kahin görünümüne geç ve <b>çift tıkla</b>: model bu ana dair bir haiku yazar ve LED rengini seçer. Herhangi bir görünümden düğmeyi basılı tutarak aynısını yapabilirsin.",
+      "Ona sorular sor: <code>ask should I bike to work?</code> ya da <code>ask what should I build next?</code>. Kahin hava durumunu ve kartın durumunu bilir.",
+      "Modeli kartı yeniden yüklemeden değiştir: <code>ai model oracle-fast</code> yaz ya da <code>config.yaml</code> dosyasına herhangi bir sağlayıcı ekle (OpenAI, Gemini, yerel bir Ollama modeli) ve adını seç. Her cevabın altındaki süreyi ve token sayılarını karşılaştır."
+    ],
+    "note": "Sağlayıcı anahtarları, Mac'indeki geçidin .env dosyasında kalır. Kart yalnızca geçidin kendi anahtarını saklar (NVS'te, asla yazdırılmaz: günlük yalnızca son 4 karakterini gösterir). <code>ai key forget</code> bu anahtarı siler. Ev Wi-Fi'nde kart geçidi düz http ile konuşur. Her yerden erişmek için geçidi https arkasına koy (bir tünel ya da sunucu, W2 varyasyon 2'deki gibi). Her sağlayıcıda bir harcama sınırı belirle. Kart en fazla 10 saniyede bir istek gönderir ve bunu kendi kendine asla yapmaz."
+  },
+  "W4": {
+    "title": "Radyo deneyi (bonus)"
+  },
+  "W5": {
+    "title": "Donanım günlüğü"
+  }
+}

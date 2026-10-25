@@ -58,7 +58,7 @@
         "fix": "“Failed to connect”：按住 BOOT，點按 RST，鬆開 BOOT，再執行一次。"
       },
       "1": {
-        "does": "開啟串列埠監視器（開發板會重啟）。",
+        "does": "開啟序列埠監視器（開發板會重啟）。",
         "see": "<code>ble-lab-b1: NimBLE 2.5.1 up, address …</code>、<code>+ active scan, 100/100 ms (100% listening)</code>，然後是命令列表。",
         "fix": "沒有 <code>NimBLE … up</code> 這一行：協議棧沒有啟動；拔掉再插上開發板。"
       },
@@ -187,7 +187,7 @@
         "fix": "“Failed to connect”：按住 BOOT，點按 RST，鬆開 BOOT，再執行一次。"
       },
       "1": {
-        "does": "開啟串列埠監視器。",
+        "does": "開啟序列埠監視器。",
         "see": "<code>+ bench ADV_IND every 100 ms, 24+7 B</code> 和命令列表。",
         "fix": ""
       },
@@ -321,7 +321,7 @@
         "fix": "“Failed to connect”：按住 BOOT，點按 RST，鬆開 BOOT，再執行一次。"
       },
       "1": {
-        "does": "開啟串列埠監視器。",
+        "does": "開啟序列埠監視器。",
         "see": "<code>- advertising as \"Bench B3\"</code>，然後是命令列表。",
         "fix": ""
       },
@@ -446,7 +446,7 @@
         "fix": "“Failed to connect”：按住 BOOT，點按 RST，鬆開 BOOT，再執行一次。"
       },
       "1": {
-        "does": "開啟串列埠監視器。",
+        "does": "開啟序列埠監視器。",
         "see": "<code>- pairing: Passkey · lock off · anyone may connect</code>，然後是命令列表。配對方式儲存在 flash 裡：重新燒錄 B4 後它依然保留。",
         "fix": ""
       },
@@ -488,7 +488,7 @@
       "9": {
         "does": "只有已繫結的身份才會進入過濾接受列表；控制器用儲存的 IRK 解析每個私有位址，並拒絕其餘的。",
         "see": "<code>+ only bonded phones may connect (saved)</code>。你的手機能連線；另一部手機（或你自己忘記之後的手機）根本連不上。",
-        "fix": "把自己鎖在外面了：透過串列埠輸入 <code>allow anyone</code>。"
+        "fix": "把自己鎖在外面了：透過序列埠輸入 <code>allow anyone</code>。"
       },
       "10": {
         "does": "LED 和 Message 也需要加密連線。許可權是 GATT 表的一部分，在啟動時一次性建好，所以開發板會儲存設定並重啟。",
@@ -606,7 +606,7 @@
       "6": {
         "does": "訂閱 Speed 並寫入 <code>01 50 C3 00 00</code>。開發板上的一個小任務會以 (MTU − 3) 位元組的資料包通知 50,000 位元組，直到協議棧緩衝區滿了，等待，再繼續；最後是一份 15 位元組的摘要。",
         "see": "監視器：<code>&lt; write Speed: start 50000 bytes</code>，然後是 <code>+ speed: 50000 B in 2310 ms = 21.6 kB/s</code>。應用裡顯示一根相同數量級的柱子。",
-        "fix": "<code>speed: subscribe to Speed (ba5e0012) first</code>：透過串列埠執行之前，先開啟一次 Speed 標籤頁。"
+        "fix": "<code>speed: subscribe to Speed (ba5e0012) first</code>：透過序列埠執行之前，先開啟一次 Speed 標籤頁。"
       },
       "7": {
         "does": "向 Link 寫入 1、3 和 5：開發板請求中心裝置使用 7.5–15 ms 的間隔、2M PHY 和 251 位元組的無線電資料包。",
@@ -647,7 +647,7 @@
   "B6": {
     "title": "鍵盤與媒體",
     "heading": "一個藍芽鍵盤，和一個控制音樂的遙控器",
-    "goal": "開發板變成一個真正的藍芽鍵盤：用的是每個無線鍵盤都有的同一個 HID 服務，所以手機、Mac 和 PC 都用自己的驅動來使用它。它的按鈕變成遙控器：播放/暫停和切歌（手機上的音樂可以透過你的 JBL 音箱播放）、調節音量、翻幻燈片，或者輸入你從串列埠監視器傳送的文字。你來編寫告訴電腦我們的位元組是什麼意思的 Report Map，並看到為什麼鍵盤從不傳送字母，只傳送按鍵編號。",
+    "goal": "開發板變成一個真正的藍芽鍵盤：用的是每個無線鍵盤都有的同一個 HID 服務，所以手機、Mac 和 PC 都用自己的驅動來使用它。它的按鈕變成遙控器：播放/暫停和切歌（手機上的音樂可以透過你的 JBL 音箱播放）、調節音量、翻幻燈片，或者輸入你從序列埠監視器傳送的文字。你來編寫告訴電腦我們的位元組是什麼意思的 Report Map，並看到為什麼鍵盤從不傳送字母，只傳送按鍵編號。",
     "goalLine": "把開發板配對成鍵盤，用按鈕控制你的音樂，並以正確的佈局輸入文字。",
     "goalCheck": [
       "你的手機或 Mac 把 <b>Bench B6</b> 列為已連線的鍵盤，螢幕的狀態列顯示鎖（已加密）和鑰匙（已繫結）。",
@@ -771,7 +771,7 @@
   "B7": {
     "title": "音樂",
     "heading": "一個藍芽 MIDI 樂器",
-    "goal": "開發板透過低功耗藍芽變成一個 MIDI 樂器，使用標準的 BLE-MIDI 服務，GarageBand、Audio MIDI Setup、Android 合成器應用和 Chrome 都能識別它。MIDI 傳遞的是音符，不是聲音：另一端的合成器負責發聲（還可以把聲音送到你的 JBL）。你可以用按鈕、五根觸控線、串列埠命令和一臺 16 步鼓機來演奏；在另一端彈的音符會點亮開發板的鋼琴條和它的 LED。你會看到音符如何帶著時間戳被打包，以及為什麼連線間隔決定了延遲。",
+    "goal": "開發板透過低功耗藍芽變成一個 MIDI 樂器，使用標準的 BLE-MIDI 服務，GarageBand、Audio MIDI Setup、Android 合成器應用和 Chrome 都能識別它。MIDI 傳遞的是音符，不是聲音：另一端的合成器負責發聲（還可以把聲音送到你的 JBL）。你可以用按鈕、五根觸控線、序列埠命令和一臺 16 步鼓機來演奏；在另一端彈的音符會點亮開發板的鋼琴條和它的 LED。你會看到音符如何帶著時間戳被打包，以及為什麼連線間隔決定了延遲。",
     "goalLine": "把開發板上彈的音符送進合成器，並在開發板上看到合成器的音符。",
     "goalCheck": [
       "GarageBand（或 ble-app 的 Music 標籤頁）列出 <b>Bench B7</b>，點選按鈕時會發出聲音。",
@@ -946,7 +946,7 @@
         "fix": "“Failed to connect”：按住 BOOT，點按 RST，鬆開 BOOT，再執行一次。"
       },
       "1": {
-        "does": "開啟串列埠監視器（並重啟開發板）。",
+        "does": "開啟序列埠監視器（並重啟開發板）。",
         "see": "<code>Bluetooth lab B8 Host (ble-lab-b8)</code> 和各個命令。",
         "fix": ""
       },

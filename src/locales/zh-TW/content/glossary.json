@@ -163,7 +163,7 @@
     "string-class": {
       "short": "Arduino 的文字型別：一段可以增長、縮短和搜尋的文字。",
       "simple": "一張可伸縮的筆記本頁面，用來寫字：可以往裡新增、剪掉一部分、查詢一個詞，而不用自己數字母。",
-      "deep": "它的字母存放在堆上（短的則存放在內部），所以在繁忙的迴圈裡反覆使用 <code>+</code> 會折騰記憶體。各實驗把 <code>String</code> 用於串列埠命令和網頁回覆，在速度或中斷重要的地方則用固定的 <code>char</code> 陣列。<code>String(42)</code> 把數字變成文字。"
+      "deep": "它的字母存放在堆上（短的則存放在內部），所以在繁忙的迴圈裡反覆使用 <code>+</code> 會折騰記憶體。各實驗把 <code>String</code> 用於序列埠命令和網頁回覆，在速度或中斷重要的地方則用固定的 <code>char</code> 陣列。<code>String(42)</code> 把數字變成文字。"
     },
     "auto": {
       "short": "讓編譯器根據你給的值自己推斷出型別。",
@@ -496,17 +496,17 @@
       "deep": "<code>#ifndef PIN_RGB</code> ... <code>#endif</code> 讓 <code>platformio.ini</code> 的構建選項優先於 <code>pins.h</code> 裡的預設值。<code>#if</code> 測試一個常量表示式；每個 <code>#if</code>/<code>#ifdef</code>/<code>#ifndef</code> 都需要一個匹配的 <code>#endif</code>。"
     },
     "serial-begin": {
-      "short": "以選定的速度開啟通往你電腦的串列埠線，這樣開發板就能列印訊息。",
-      "simple": "拿起電話，約定好你們說話的速度。115200 是串列埠監視器監聽的速度。",
-      "deep": "以波特 (baud，每秒位元數) 為單位的速度；必須與 <code>platformio.ini</code> 裡的 <code>monitor_speed</code> 一致。在這些實驗裡，<code>Serial</code> 是 UART0，透過 <code>COM</code> 口上的 USB 轉串列埠晶片連線，所以不需要等待 USB 列舉完成。"
+      "short": "以選定的速度開啟通往你電腦的序列埠線，這樣開發板就能列印訊息。",
+      "simple": "拿起電話，約定好你們說話的速度。115200 是序列埠監視器監聽的速度。",
+      "deep": "以波特 (baud，每秒位元數) 為單位的速度；必須與 <code>platformio.ini</code> 裡的 <code>monitor_speed</code> 一致。在這些實驗裡，<code>Serial</code> 是 UART0，透過 <code>COM</code> 口上的 USB 轉序列埠晶片連線，所以不需要等待 USB 列舉完成。"
     },
     "serial-printf": {
-      "short": "向串列埠監視器列印一行，並用 <code>%</code> 程式碼填入各個值。",
+      "short": "向序列埠監視器列印一行，並用 <code>%</code> 程式碼填入各個值。",
       "simple": "一封格式信：<code>\"%d cores\"</code> 有一個空，你傳入的數字會填進去。",
       "deep": "先用 <code>vsnprintf</code> 格式化，再以 115200 波特寫入 UART0（約 11.5 KB/s，所以長篇列印會拖慢迴圈）。程式碼：<code>%d</code> int，<code>%u</code> unsigned，<code>%lu</code> unsigned long，<code>%.1f</code> float，<code>%s</code> C 字串（<code>String</code> 要用 <code>.c_str()</code>），<code>%02X</code> 兩位十六進位制。<code>\\n</code> 要自己加。"
     },
     "serial-print": {
-      "short": "把文字或數字列印到串列埠監視器；<code>println</code> 還會另起一行。",
+      "short": "把文字或數字列印到序列埠監視器；<code>println</code> 還會另起一行。",
       "simple": "對你的電腦大聲說話。<code>println</code> 就像說完之後再按一下回車。",
       "deep": "接受文字、數字和 <code>String</code>；<code>Serial.print(x, HEX)</code> 以十六進位制列印。它寫入傳送緩衝區，只有緩衝區滿時才會等待。"
     },
@@ -623,7 +623,7 @@
     "string-starts-with": {
       "short": "檢查一個 <code>String</code> 是否以某段文字開頭（或結尾）。",
       "simple": "“這條命令是以 'vol ' 開頭的嗎？”一個快速的是或否。",
-      "deep": "區分大小寫，所以命令要先轉成小寫 (<code>lower.startsWith(...)</code>)。每個實驗的串列埠命令解析器就是這樣識別它的詞的。"
+      "deep": "區分大小寫，所以命令要先轉成小寫 (<code>lower.startsWith(...)</code>)。每個實驗的序列埠命令解析器就是這樣識別它的詞的。"
     },
     "string-trim": {
       "short": "就地整理文字：去掉兩端的空格、改變字母大小寫，或者把一段文字換成另一段。",
@@ -643,7 +643,7 @@
     "log-macros": {
       "short": "列印帶標籤的日誌行：<code>i</code> 資訊，<code>w</code> 警告，<code>e</code> 錯誤，<code>d</code> 除錯。",
       "simple": "船上航海日誌裡的記錄，每條都有一個表明嚴重程度的標記。",
-      "deep": "使用 printf 風格模式的 Arduino-ESP32 宏。每一行都帶有級別、檔案、行號和函式名的字首，高於 <code>CORE_DEBUG_LEVEL</code>（<code>platformio.ini</code> 裡 3 = 資訊）的行會在編譯時被移除，所以 <code>log_d</code> 在這裡沒有任何開銷。輸出和 <code>Serial</code> 走同一個串列埠。"
+      "deep": "使用 printf 風格模式的 Arduino-ESP32 宏。每一行都帶有級別、檔案、行號和函式名的字首，高於 <code>CORE_DEBUG_LEVEL</code>（<code>platformio.ini</code> 裡 3 = 資訊）的行會在編譯時被移除，所以 <code>log_d</code> 在這裡沒有任何開銷。輸出和 <code>Serial</code> 走同一個序列埠。"
     },
     "esp-info": {
       "short": "向晶片詢問它自己的資訊：型號、核心數、速度、flash 和 PSRAM 大小、MAC 位址。",
@@ -791,9 +791,9 @@
       "deep": "定義在 <code>kit/lib/bench/src/button.h</code> 中。一個 <code>IRAM_ATTR</code> 中斷統計每一個邊沿；<code>poll()</code> 在安靜 25 ms 之後接受新的電平，並報告 <code>Event::Click</code>、<code>DoubleClick</code>（280 ms 內）或 <code>LongPress</code>（600 ms）。"
     },
     "lab-shell": {
-      "short": "每條路線的實驗所基於的共享外殼：螢幕、按鈕、LED、串列埠命令和鉤子。",
+      "short": "每條路線的實驗所基於的共享外殼：螢幕、按鈕、LED、序列埠命令和鉤子。",
       "simple": "一個現成的工作臺。每個實驗只帶上自己的工具（檢視和命令），並把它們插上去。",
-      "deep": "一個實驗就是一個 <code>...Spec</code>：它的檢視（繪製函式加一個雙擊動作）、它的串列埠命令，以及 <code>setup</code>、<code>tick</code> 和 <code>gesture</code> 這樣的鉤子。<code>lab.warn</code> 和 <code>lab.note</code> 以 printf 風格把訊息列印到日誌和螢幕上。每個 <code>src/&lt;lab&gt;/main.cpp</code> 基本上就是那份清單，所以 <code>help</code> 恰好顯示這一課教的內容。"
+      "deep": "一個實驗就是一個 <code>...Spec</code>：它的檢視（繪製函式加一個雙擊動作）、它的序列埠命令，以及 <code>setup</code>、<code>tick</code> 和 <code>gesture</code> 這樣的鉤子。<code>lab.warn</code> 和 <code>lab.note</code> 以 printf 風格把訊息列印到日誌和螢幕上。每個 <code>src/&lt;lab&gt;/main.cpp</code> 基本上就是那份清單，所以 <code>help</code> 恰好顯示這一課教的內容。"
     },
     "mfrc522": {
       "short": "這個專案自己的 RC522 讀卡器驅動，逐個暫存器編寫，不使用任何庫。",
@@ -967,7 +967,7 @@
     },
     "ble-note": {
       "short": "這個專案的快捷方式，用來向藍芽實驗的活動日誌新增一行。",
-      "simple": "在實驗筆記本上快速記一筆，螢幕和串列埠日誌都會顯示。",
+      "simple": "在實驗筆記本上快速記一筆，螢幕和序列埠日誌都會顯示。",
       "deep": "來自 <code>kit/lib/ble-kit/src/ble_link.h</code> 的一個宏，展開為 <code>::ble::activity().add(::ble::Act::kind, ...)</code>：向一個由臨界區保護的環形緩衝區新增一條 printf 風格的記錄，這樣 NimBLE 任務中的回撥可以安全地寫入。"
     },
     "i2s-channel": {
@@ -1016,7 +1016,7 @@
     },
     "arduino": {
       "title": "Arduino 基礎",
-      "blurb": "腳位、計時、串列埠列印和文字：日常的 Arduino 工具箱。"
+      "blurb": "腳位、計時、序列埠列印和文字：日常的 Arduino 工具箱。"
     },
     "esp": {
       "title": "ESP32 晶片",

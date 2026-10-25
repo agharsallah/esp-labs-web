@@ -159,7 +159,7 @@
       "retry": "重試"
     },
     "terminal": {
-      "label": "模擬串列埠監視器",
+      "label": "模擬序列埠監視器",
       "placeholder": "輸入命令，按回車",
       "command": "命令"
     },

@@ -131,7 +131,7 @@
         "fix": "“Failed to connect”：按住 BOOT，點按 RST，鬆開 BOOT，再執行一次。"
       },
       "1": {
-        "does": "開啟串列埠監視器。開啟它會讓開發板重啟，所以你能看到啟動時的幾行輸出。",
+        "does": "開啟序列埠監視器。開啟它會讓開發板重啟，所以你能看到啟動時的幾行輸出。",
         "see": "<code>RC522 on SPI3: SS 15 SCK 16 MOSI 17 MISO 18 RST 14 IRQ 13 · 4 MHz</code>，接著是 <code>VersionReg 0x92: MFRC522 v2.0</code> 和命令列表。",
         "fix": "<code>0x00</code>：晶片沒有供電，或者 MISO 被拉低：檢查 3.3V、GND、RST。<code>0xFF</code>：沒有任何東西驅動 MISO：檢查 MISO (18) 和 SDA (15)。"
       },
@@ -950,7 +950,7 @@
       "6": {
         "does": "開發板根據它的列表做決定：OPEN 5 秒（綠色 LED，掛鎖開啟）或 DENIED 2 秒（紅色 LED，並給出原因）。",
         "see": "應用的門面板和日誌在一秒內更新；訪客的使用次數依次是 5 → 4 → 3。",
-        "fix": "沒有反應，或提示“card can't be read”：看應用裡的 <b>Reader chip</b> 單元格和它下面的橫幅。“settings restored”表示 RC522 在它的 3.3 V 電壓下跌時（常發生在 Wi-Fi 發射時）自己復位了：用短導線接到 3.3V 腳位，把排針按緊或焊牢。“IRQ wire stays quiet”是無害的：開發板會改用輪詢。串列埠：<code>status</code> 會列印同樣的資訊。"
+        "fix": "沒有反應，或提示“card can't be read”：看應用裡的 <b>Reader chip</b> 單元格和它下面的橫幅。“settings restored”表示 RC522 在它的 3.3 V 電壓下跌時（常發生在 Wi-Fi 發射時）自己復位了：用短導線接到 3.3V 腳位，把排針按緊或焊牢。“IRQ wire stays quiet”是無害的：開發板會改用輪詢。序列埠：<code>status</code> 會列印同樣的資訊。"
       },
       "7": {
         "does": "最快的規則：被封禁的卡片在檢查其他任何條件之前就會被拒絕。",
@@ -968,7 +968,7 @@
         "fix": ""
       },
       "10": {
-        "does": "工作臺只有一個讀卡器，所以它每次只安裝在一把鎖上（儲存在開發板裡）。串列埠命令：<code>at admin</code>、<code>at front</code>。",
+        "does": "工作臺只有一個讀卡器，所以它每次只安裝在一把鎖上（儲存在開發板裡）。序列埠命令：<code>at admin</code>、<code>at front</code>。",
         "see": "管理室的方塊出現青色邊框和 “reader here”；螢幕在掛鎖上方顯示 ADMIN ROOM。",
         "fix": ""
       },
@@ -978,7 +978,7 @@
         "fix": "住戶仍然顯示 OPEN？檢查是哪個方塊寫著 “reader here”。"
       },
       "12": {
-        "does": "透過應用或串列埠開啟某一把鎖，不管附近有什麼卡片；單獨的 <code>open</code> 是指前門。",
+        "does": "透過應用或序列埠開啟某一把鎖，不管附近有什麼卡片；單獨的 <code>open</code> 是指前門。",
         "see": "那個方塊會變綠 5 秒；日誌寫著 “opened from the app” 以及這把鎖。",
         "fix": ""
       },
@@ -1008,7 +1008,7 @@
         "fix": ""
       },
       "18": {
-        "does": "用出廠金鑰讀取塊 4-6 和塊 8-10，並把它們作為一份有名字的快照儲存在開發板上（最多 8 份，存於 NVS）。串列埠命令：<code>save White</code>、<code>saved</code>。",
+        "does": "用出廠金鑰讀取塊 4-6 和塊 8-10，並把它們作為一份有名字的快照儲存在開發板上（最多 8 份，存於 NVS）。序列埠命令：<code>save White</code>、<code>saved</code>。",
         "see": "“6 of 6 blocks saved as …” 以及一份有六個單元的快照：文字、數值（R5 的積分）、零。",
         "fix": "“no lab block opens”：那張卡片的扇區 1-2 使用了另一把金鑰：沒有可儲存的內容。"
       },
@@ -1018,7 +1018,7 @@
         "fix": ""
       },
       "20": {
-        "does": "讀取讀卡器上的卡片，然後螢幕顯示 COPY: 2ND CARD，LED 閃紫色。拿起它，並在 20 秒內放上另一張卡片：每個塊都會被寫入並讀回。串列埠命令：<code>copy</code>、<code>cancel</code>。",
+        "does": "讀取讀卡器上的卡片，然後螢幕顯示 COPY: 2ND CARD，LED 閃紫色。拿起它，並在 20 秒內放上另一張卡片：每個塊都會被寫入並讀回。序列埠命令：<code>copy</code>、<code>cancel</code>。",
         "see": "“6 of 6 blocks copied from White card onto 9C4F6A0D”，日誌裡有一行 “data copied here”。",
         "fix": "再次放上同一張卡片什麼也不會發生（它在等另一張不同的卡片）。取消不會寫入任何內容。"
       },
@@ -1028,7 +1028,7 @@
         "fix": ""
       },
       "22": {
-        "does": "再點一次確認。把快照寫回它來源的那張卡片（恢復），例如在 R5 用掉積分之後，或者寫到另一張卡片上。串列埠命令：<code>restore 1</code>。",
+        "does": "再點一次確認。把快照寫回它來源的那張卡片（恢復），例如在 R5 用掉積分之後，或者寫到另一張卡片上。序列埠命令：<code>restore 1</code>。",
         "see": "“… written to 9C4F2A1B (the card it came from)”。",
         "fix": ""
       },
@@ -1167,10 +1167,10 @@
       "4": {
         "does": "開發板把它新增為下一張卡片（最多 12 張），上面還沒有小夥伴。",
         "see": "螢幕：一張搖晃的 ? 卡片，“New card! Give it a friend”。應用：一個新方塊在呼喚小夥伴。",
-        "fix": "“12 cards!”：在 Setup 裡忘掉一張，或者用串列埠命令 <code>forget 3</code>。"
+        "fix": "“12 cards!”：在 Setup 裡忘掉一張，或者用序列埠命令 <code>forget 3</code>。"
       },
       "5": {
-        "does": "或者先點小夥伴，再點卡片（用鍵盤時按 Enter，再按 Enter）。它會傳送 <code>PUT /api/card?uid=… {\"character\":\"robot\"}</code>，然後顯示出來。串列埠命令：<code>give 2 robot</code>。",
+        "does": "或者先點小夥伴，再點卡片（用鍵盤時按 Enter，再按 Enter）。它會傳送 <code>PUT /api/card?uid=… {\"character\":\"robot\"}</code>，然後顯示出來。序列埠命令：<code>give 2 robot</code>。",
         "see": "小夥伴在螢幕和 3D 舞臺上蹦出來；方塊上顯示它的臉。",
         "fix": "401：BENCH_TOKEN 缺失或已過期，修改 .env 後請重啟 <code>pnpm dev</code>。"
       },
@@ -1180,7 +1180,7 @@
         "fix": "沒有聲音：點一下頁面（瀏覽器要求這樣做），或者檢查 Setup → Sound。"
       },
       "7": {
-        "does": "給那張卡片上的那個小夥伴起個名字（最多 15 個普通字元）。串列埠命令：<code>name 1 Rusty</code>，<code>name 1 -</code> 恢復原樣。",
+        "does": "給那張卡片上的那個小夥伴起個名字（最多 15 個普通字元）。序列埠命令：<code>name 1 Rusty</code>，<code>name 1 -</code> 恢復原樣。",
         "see": "螢幕上和氣泡裡顯示 “Hi again! Rusty”。",
         "fix": ""
       },

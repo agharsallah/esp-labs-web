@@ -270,7 +270,7 @@
     },
     "uart": {
       "name": "UART",
-      "short": "三個串列埠，其中一個就是你在串列埠監視器裡看到的那個",
+      "short": "三個序列埠，其中一個就是你在序列埠監視器裡看到的那個",
       "spark": {
         "unit": "Mbps"
       },
@@ -609,13 +609,13 @@
     },
     "usb-serial-jtag": {
       "name": "USB Serial/JTAG",
-      "short": "兩個腳位就是一個串列埠加一個偵錯程式，不需要轉接器",
+      "short": "兩個腳位就是一個序列埠加一個偵錯程式，不需要轉接器",
       "spark": {
         "unit": "Mbps"
       },
       "facts": {
         "usb-serial-jtag-what": {
-          "text": "一個固定的 USB 裝置：CDC-ACM 串列埠加上給偵錯程式用的 JTAG 介面卡，在 GPIO19（D-）和 20（D+）上。"
+          "text": "一個固定的 USB 裝置：CDC-ACM 序列埠加上給偵錯程式用的 JTAG 介面卡，在 GPIO19（D-）和 20（D+）上。"
         },
         "usb-serial-jtag-speed": {
           "text": "只支援 USB 2.0 全速：12 Mbit/s，沒有 480 Mbit/s 的高速。"
@@ -1172,7 +1172,7 @@
     },
     "uart0-boot-log": {
       "title": "GPIO43 和 44 承載啟動日誌",
-      "text": "TX 43 和 RX 44 就是 UART0。ROM 在這裡列印啟動資訊，在 DevKitC 上，這些資訊會送到 COM 埠背後的 USB 轉 UART 橋接晶片。如果把別的東西接到它們上面，你就失去了串列埠監視器，而且那個裝置還會收到啟動資訊。"
+      "text": "TX 43 和 RX 44 就是 UART0。ROM 在這裡列印啟動資訊，在 DevKitC 上，這些資訊會送到 COM 埠背後的 USB 轉 UART 橋接晶片。如果把別的東西接到它們上面，你就失去了序列埠監視器，而且那個裝置還會收到啟動資訊。"
     },
     "jtag-pins": {
       "title": "GPIO39-42 可以作 JTAG",

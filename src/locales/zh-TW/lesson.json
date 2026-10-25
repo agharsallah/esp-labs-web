@@ -46,7 +46,7 @@
     "usb": "COM 口"
   },
   "commands": {
-    "intro": "除非灰色標籤另有說明，請在串列埠監視器（<code>uv run pio device monitor</code>）裡輸入這些命令。彩色標籤說明程式執行時開發板旁邊應該有什麼。",
+    "intro": "除非灰色標籤另有說明，請在序列埠監視器（<code>uv run pio device monitor</code>）裡輸入這些命令。彩色標籤說明程式執行時開發板旁邊應該有什麼。",
     "does": "作用",
     "see": "你應該看到",
     "fix": "如果沒有",
@@ -56,7 +56,7 @@
       "hands": "用手操作",
       "app": "在應用裡",
       "phone": "在手機上",
-      "serial": "串列埠監視器"
+      "serial": "序列埠監視器"
     },
     "state": {
       "off": "卡片拿開",

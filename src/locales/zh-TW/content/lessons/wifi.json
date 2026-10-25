@@ -121,7 +121,7 @@
           "接線與 W1 相同（按鈕可選）。用上面的命令燒錄（或者對 Claude 說“go”）。",
           "還沒連上網？狀態檢視會顯示配置網路 <code>bench-setup</code> 及其密碼。用手機連上它，在開啟的頁面裡選擇你的 Wi-Fi，輸入密碼。",
           "連上之後：在手機上開啟 <code>http://bench.local</code>。切換檢視、傳送訊息、選一種 LED 顏色、調暗螢幕。",
-          "在串列埠監視器中輸入 <code>token</code>，並複製得到的值。",
+          "在序列埠監視器中輸入 <code>token</code>，並複製得到的值。",
           "在 Mac 上：執行 <code>cd esp-labs/apps/dashboard</code>、<code>cp .env.example .env</code>，把令牌貼上為 <code>ESP_TOKEN=</code>，然後執行 <code>pnpm install</code> 和 <code>pnpm dev</code>。開啟 <code>http://localhost:5173</code>。",
           "按下按鈕或 BOOT：這次點選會實時出現在手機頁面和儀表盤上。",
           "試試無線更新：執行 <code>uv run pio run -d labs/wifi-lab-w2 -e wifi-lab-w2</code>，然後在儀表盤的 Admin 面板中上傳 <code>.pio/build/wifi-lab-w2/firmware.bin</code>。螢幕會顯示進度。"
@@ -147,10 +147,10 @@
         },
         "steps": [
           "接線相同（按鈕可選）。用上面的命令燒錄（或者對 Claude 說“go”）。首次會下載一個庫：links2004/WebSockets 2.7.3。",
-          "在 Mac 上，編輯 <code>esp-labs/apps/dashboard/.env</code>：<code>ESP_MODE=relay</code>，<code>ESP_TOKEN=</code> 填串列埠裡 <code>token</code> 命令輸出的值，<code>DASHBOARD_KEY=</code> 填 <code>openssl rand -hex 16</code> 的輸出。",
+          "在 Mac 上，編輯 <code>esp-labs/apps/dashboard/.env</code>：<code>ESP_MODE=relay</code>，<code>ESP_TOKEN=</code> 填序列埠裡 <code>token</code> 命令輸出的值，<code>DASHBOARD_KEY=</code> 填 <code>openssl rand -hex 16</code> 的輸出。",
           "啟動伺服器：<code>cd esp-labs/apps/dashboard && pnpm remote</code>（構建應用，並在 8787 埠提供服務）。",
           "在第二個終端裡開啟隧道：<code>pnpm tunnel:cloudflare</code>（無需賬號；會列印 <code>https://…trycloudflare.com</code>，每次都不同）或 <code>pnpm tunnel:ngrok</code>（使用你的 ngrok 賬號；加上 <code>--url=&lt;your free static domain&gt;</code>，位址就永遠不變）。",
-          "在串列埠監視器裡告訴開發板：<code>relay wss://&lt;tunnel host&gt;</code>。它會儲存位址並連線；之後 <code>relay</code> 會顯示 <code>online</code>，螢幕上鍊路圓點周圍會出現一個青色圓環。",
+          "在序列埠監視器裡告訴開發板：<code>relay wss://&lt;tunnel host&gt;</code>。它會儲存位址並連線；之後 <code>relay</code> 會顯示 <code>online</code>，螢幕上鍊路圓點周圍會出現一個青色圓環。",
           "在手機上關掉 Wi-Fi（用移動資料），開啟隧道位址，用金鑰登入，然後切換檢視或 LED。你正在從家門外控制工作臺。",
           "拔掉開發板再插上：它會重新連上 Wi-Fi，並自動再次連入。<code>relay off</code> 會停止這條鏈路。"
         ],

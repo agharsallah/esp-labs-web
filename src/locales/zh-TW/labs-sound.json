@@ -335,7 +335,7 @@
       "phone": {
         "1": {
           "title": "開啟頁面",
-          "text": "你的手機開啟 <code>http://bench.local/</code>。頁面本身是公開的，但不含音訊。貼上管理員令牌（串列埠命令 <code>token</code>）；它只儲存在這個標籤頁的 sessionStorage 裡。"
+          "text": "你的手機開啟 <code>http://bench.local/</code>。頁面本身是公開的，但不含音訊。貼上管理員令牌（序列埠命令 <code>token</code>）；它只儲存在這個標籤頁的 sessionStorage 裡。"
         },
         "2": {
           "title": "列出片段",
@@ -371,15 +371,15 @@
       "usb": {
         "1": {
           "title": "關閉監視器",
-          "text": "同一時間只有一個程式能佔用串列埠。請先關閉 <code>pio device monitor</code>。"
+          "text": "同一時間只有一個程式能佔用序列埠。請先關閉 <code>pio device monitor</code>。"
         },
         "2": {
           "title": "請求第 n 個片段",
-          "text": "<code>uv run python tools/sound_pull.py /dev/cu.usbserial-A5069RR4 3</code> 會在不重置開發板的情況下開啟串列埠，並輸入 <code>send 3</code>。"
+          "text": "<code>uv run python tools/sound_pull.py /dev/cu.usbserial-A5069RR4 3</code> 會在不重置開發板的情況下開啟序列埠，並輸入 <code>send 3</code>。"
         },
         "3": {
           "title": "Base64 行",
-          "text": "開發板回覆 <code>WAV-BEGIN 3 102444 clip-3.wav</code>，然後是整個 WAV 的 base64 文字，每行 76 個字元（串列埠是文字管道），最後是 <code>WAV-END &lt;crc32&gt;</code>。中間不會列印別的東西。"
+          "text": "開發板回覆 <code>WAV-BEGIN 3 102444 clip-3.wav</code>，然後是整個 WAV 的 base64 文字，每行 76 個字元（序列埠是文字管道），最後是 <code>WAV-END &lt;crc32&gt;</code>。中間不會列印別的東西。"
         },
         "4": {
           "title": "檢查並儲存",
@@ -391,7 +391,7 @@
     "path": "路徑",
     "choices": {
       "phone": "📱 手機 (Wi-Fi)",
-      "usb": "🔌 USB（串列埠）",
+      "usb": "🔌 USB（序列埠）",
       "board": "🔈 開發板的揚聲器"
     },
     "previous": "上一步",
@@ -405,7 +405,7 @@
     "boxes": {
       "clips": "PSRAM 裡的片段",
       "you": "你",
-      "serialOrButton": "串列埠或按鍵",
+      "serialOrButton": "序列埠或按鍵",
       "speaker": "+ 揚聲器",
       "phone": "手機",
       "browser": "瀏覽器"
@@ -413,7 +413,7 @@
     "headline": {
       "phone": "每條音訊路由都需要令牌 · 無論誰啟動，開發板都會顯示 REC",
       "board": "開發板自己播放：不需要手機，也不需要線纜",
-      "usb": "不需要 Wi-Fi · 開發板的 USB 串列埠，115 200 波特率"
+      "usb": "不需要 Wi-Fi · 開發板的 USB 序列埠，115 200 波特率"
     },
     "wavLabel": "44 位元組的 WAV 檔案頭",
     "wav": {
@@ -597,7 +597,7 @@
       "whistle": "〰 吹口哨 3 秒",
       "silence": "🤫 安靜"
     },
-    "previewCaption": "一個假想的麥克風和揚聲器，畫法和開發板一樣。這些按鈕代替你的手、你的聲音、按鍵和串列埠監視器；點一下螢幕就是拍一下手。瀏覽器聲音在你開啟之前保持關閉。",
+    "previewCaption": "一個假想的麥克風和揚聲器，畫法和開發板一樣。這些按鈕代替你的手、你的聲音、按鍵和序列埠監視器；點一下螢幕就是拍一下手。瀏覽器聲音在你開啟之前保持關閉。",
     "micToKy": "麥克風：INMP441 → KY-037",
     "micToInmp": "麥克風：KY-037 → INMP441",
     "browserOn": "🔈 在瀏覽器裡聽：開",

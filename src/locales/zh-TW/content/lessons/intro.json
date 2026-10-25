@@ -2,18 +2,18 @@
   "00": {
     "title": "準備",
     "heading": "接上電腦，找到開發板",
-    "goal": "讓工具鏈和晶片“說上話”：一根資料線、正確的 USB 介面，以及你 Mac 上的串列埠名稱。",
+    "goal": "讓工具鏈和晶片“說上話”：一根資料線、正確的 USB 介面，以及你 Mac 上的序列埠名稱。",
     "learn": [
       "USB-C 資料線與純充電線",
       "COM 口與原生 USB 口",
-      "串列埠",
+      "序列埠",
       "啟動模式"
     ],
     "steps": [
       "把一根<b>資料</b> USB-C 線插入標有 <code>COM</code>（或 <code>UART</code>）的介面。",
       "檢查紅色電源 LED 是否亮起。",
       "執行上面的命令。應該會出現一個新的 <code>/dev/cu.usbmodem…</code> 或 <code>/dev/cu.wchusbserial…</code>。",
-      "告訴 Claude 串列埠名稱，以及你的開發板有一個還是兩個 USB 口。"
+      "告訴 Claude 序列埠名稱，以及你的開發板有一個還是兩個 USB 口。"
     ],
     "note": "燒錄時提示 “Failed to connect”（連線失敗）？按住 BOOT，點按 RST，再鬆開 BOOT，然後重新燒錄。"
   },
@@ -23,7 +23,7 @@
     "goal": "燒錄你的第一個程式。它會列印晶片的“身份證”，並讓板載 RGB LED 迴圈顯示彩虹色。",
     "learn": [
       "setup() 和 loop()",
-      "串列埠日誌",
+      "序列埠日誌",
       "millis()",
       "WS2812 RGB LED"
     ],

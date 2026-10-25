@@ -3,7 +3,8 @@
     "home": "走進 ESP32-S3",
     "pins": "腳位與供電",
     "blocks": "周邊圖鑑",
-    "inside": "記憶體、時鐘與電源模式"
+    "inside": "記憶體、時鐘與電源模式",
+    "read": "閱讀資料手冊"
   },
   "scenes": {
     "descent": {
@@ -321,7 +322,8 @@
       "next": "下一節",
       "children": "本節內容",
       "back": "回到剛才的位置",
-      "pdf": "在樂鑫的 PDF 中開啟"
+      "pdf": "在樂鑫的 PDF 中開啟",
+      "book": "在完整資料手冊中繼續閱讀"
     },
     "cite": {
       "open": "在閱讀器中開啟 {{doc}} §{{section}}",
@@ -329,5 +331,42 @@
       "pdfLabel": "在樂鑫官網開啟 {{doc}}（新分頁）"
     },
     "newTab": "（在新分頁開啟）"
+  },
+  "mode": {
+    "label": "瀏覽資料手冊的方式",
+    "explore": "探索",
+    "read": "閱讀"
+  },
+  "book": {
+    "kicker": "資料手冊，從頭到尾",
+    "lead": "本指南所依據的五份樂鑫文件，合為一本書：開發板指南、模組與晶片資料手冊、技術參考手冊及其附錄。逐章閱讀，配有與閱讀器相同的圖表、表格、關鍵數值和暫存器。",
+    "continue": "繼續閱讀：",
+    "start": "從頭開始",
+    "stats": {
+      "documents": "文件",
+      "chapters": "章節",
+      "reading": "閱讀時間",
+      "read": "已讀"
+    },
+    "hours_other": "{{count}} 小時",
+    "chapters_other": "{{count}} 章",
+    "min_other": "{{count}} 分鐘",
+    "parts": "五份文件，一本書",
+    "about": {
+      "A": "DevKitC-1 開發板：排針、供電方式、訂購資訊。",
+      "M": "WROOM-1 模組：接腳、電氣與射頻特性、佈局。",
+      "C": "晶片概覽：接腳、開機、功能、電氣限值。",
+      "T": "每個周邊及其暫存器的詳細說明。",
+      "X": "術語表、暫存器慣例和來源。"
+    },
+    "progress": "已讀 {{read}}/{{total}} 節",
+    "contents": "目錄",
+    "closeContents": "關閉目錄",
+    "read": "已讀",
+    "link": "連結到 §{{section}}",
+    "explore": "在 3D 中探索 {{block}}",
+    "prev": "上一章",
+    "next": "下一章",
+    "end": "整本資料手冊已讀完，辛苦了！"
   }
 }

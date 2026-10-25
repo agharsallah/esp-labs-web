@@ -3,7 +3,8 @@
     "home": "Dentro l'ESP32-S3",
     "pins": "Pin e alimentazione",
     "blocks": "Atlante delle periferiche",
-    "inside": "Memoria, clock e modalità di risparmio"
+    "inside": "Memoria, clock e modalità di risparmio",
+    "read": "Leggi il datasheet"
   },
   "scenes": {
     "descent": {
@@ -333,7 +334,8 @@
       "next": "Successiva",
       "children": "In questa sezione",
       "back": "Torna dove eri",
-      "pdf": "Apri nel PDF di Espressif"
+      "pdf": "Apri nel PDF di Espressif",
+      "book": "Continua nel datasheet completo"
     },
     "cite": {
       "open": "Apri {{doc}} §{{section}} nel lettore",
@@ -341,5 +343,45 @@
       "pdfLabel": "Apri {{doc}} sul sito di Espressif (nuova scheda)"
     },
     "newTab": "(si apre in una nuova scheda)"
+  },
+  "mode": {
+    "label": "Come percorrere il datasheet",
+    "explore": "Esplora",
+    "read": "Leggi"
+  },
+  "book": {
+    "kicker": "Il datasheet, dall'inizio alla fine",
+    "lead": "I cinque documenti Espressif dietro la guida, in un solo libro: la guida della scheda, i datasheet del modulo e del chip, il manuale di riferimento tecnico e le sue appendici. Capitolo dopo capitolo, con gli stessi grafici, tabelle, numeri chiave e registri del lettore.",
+    "continue": "Riprendi da",
+    "start": "Inizia dall'inizio",
+    "stats": {
+      "documents": "Documenti",
+      "chapters": "Capitoli",
+      "reading": "Tempo di lettura",
+      "read": "Letto finora"
+    },
+    "hours_one": "{{count}} ora",
+    "hours_other": "{{count}} ore",
+    "chapters_one": "{{count}} capitolo",
+    "chapters_other": "{{count}} capitoli",
+    "min_one": "{{count}} min",
+    "min_other": "{{count}} min",
+    "parts": "Cinque documenti, un libro",
+    "about": {
+      "A": "La scheda DevKitC-1: connettori, alimentazione, ordini.",
+      "M": "Il modulo WROOM-1: pin, valori elettrici e RF, layout.",
+      "C": "Il chip in breve: pin, avvio, funzioni, limiti elettrici.",
+      "T": "Ogni periferica e i suoi registri, in dettaglio.",
+      "X": "Glossario, convenzioni dei registri e fonti."
+    },
+    "progress": "{{read}} sezioni lette su {{total}}",
+    "contents": "Indice",
+    "closeContents": "Chiudi l'indice",
+    "read": "Letto",
+    "link": "Link al §{{section}}",
+    "explore": "Esplora {{block}} in 3D",
+    "prev": "Capitolo precedente",
+    "next": "Capitolo successivo",
+    "end": "Hai letto tutto il datasheet. Ottimo lavoro!"
   }
 }

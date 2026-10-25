@@ -52,7 +52,7 @@ export function ReaderHeader({
             <BlockIcon icon={block.icon} size={44} />
           </span>
         ) : null}
-        <h2 id={titleId} className={styles.title} lang="en">
+        <h2 id={titleId} className={styles.title} lang="en" dir="ltr">
           <span className={styles.secNum}>§{section.id}</span> {section.title}
         </h2>
       </div>

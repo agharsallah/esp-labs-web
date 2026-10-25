@@ -3,10 +3,12 @@ import type { ReactNode } from "react";
 import { Link } from "react-router";
 import { prefetchSection } from "../queries";
 import { useSectionLink } from "../use-reader-nav";
+import { useSectionTarget } from "./section-link-context";
 
 /**
- * A link that opens another section in the reader, keeping the page under it. Pointing at it or
- * focusing it starts loading that section, so the reader opens without a wait.
+ * A link that opens another section in the reader, keeping the page under it (or, inside the book,
+ * goes to that section's place in it). Pointing at it or focusing it starts loading that section,
+ * so it shows without a wait.
  */
 export function SectionLinkTo({
   id,
@@ -22,7 +24,10 @@ export function SectionLinkTo({
   title?: string;
   children: ReactNode;
 }) {
-  const { to, state, preventScrollReset } = useSectionLink()(id);
+  const inBook = useSectionTarget();
+  const drawer = useSectionLink()(id);
+  const { to, preventScrollReset } = inBook?.(id) ?? drawer;
+  const state = inBook ? undefined : drawer.state;
   const client = useQueryClient();
   const warm = () => prefetchSection(client, id);
   return (
@@ -31,7 +36,7 @@ export function SectionLinkTo({
       state={state}
       preventScrollReset={preventScrollReset}
       className={className}
-      aria-haspopup={opensDialog ? "dialog" : undefined}
+      aria-haspopup={opensDialog && !inBook ? "dialog" : undefined}
       title={title}
       onPointerEnter={warm}
       onFocus={warm}

@@ -1,0 +1,36 @@
+/* Explore or read: a two-way segmented switch above the section's page pills. */
+.switch {
+  display: inline-flex;
+  justify-self: start;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+}
+.option {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 36px;
+  padding-inline: 14px;
+  border-radius: 999px;
+  color: var(--muted);
+  font: 700 13.5px var(--font-display);
+  text-decoration: none;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+.option:hover {
+  color: var(--ink);
+}
+.option[aria-current="page"] {
+  background: var(--copper);
+  color: var(--bg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .option {
+    transition: none;
+  }
+}

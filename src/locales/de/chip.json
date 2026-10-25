@@ -3,7 +3,8 @@
     "home": "Im ESP32-S3",
     "pins": "Pins und Strom",
     "blocks": "Peripherie-Atlas",
-    "inside": "Speicher, Takte und Schlafmodi"
+    "inside": "Speicher, Takte und Schlafmodi",
+    "read": "Das Datenblatt lesen"
   },
   "scenes": {
     "descent": {
@@ -327,7 +328,8 @@
       "next": "Weiter",
       "children": "In diesem Abschnitt",
       "back": "Zurück, wo du warst",
-      "pdf": "In Espressifs PDF öffnen"
+      "pdf": "In Espressifs PDF öffnen",
+      "book": "Im ganzen Datenblatt weiterlesen"
     },
     "cite": {
       "open": "{{doc}} §{{section}} im Reader öffnen",
@@ -335,5 +337,45 @@
       "pdfLabel": "{{doc}} auf Espressifs Website öffnen (neuer Tab)"
     },
     "newTab": "(öffnet in einem neuen Tab)"
+  },
+  "mode": {
+    "label": "Wie du das Datenblatt durchgehst",
+    "explore": "Erkunden",
+    "read": "Lesen"
+  },
+  "book": {
+    "kicker": "Das Datenblatt, von vorne bis hinten",
+    "lead": "Die fünf Espressif-Dokumente hinter der Anleitung als ein Buch: die Board-Anleitung, die Datenblätter von Modul und Chip, das technische Referenzhandbuch und seine Anhänge. Kapitel für Kapitel, mit denselben Diagrammen, Tabellen, Kennzahlen und Registern wie im Leser.",
+    "continue": "Weiterlesen bei",
+    "start": "Von vorne beginnen",
+    "stats": {
+      "documents": "Dokumente",
+      "chapters": "Kapitel",
+      "reading": "Lesezeit",
+      "read": "Bisher gelesen"
+    },
+    "hours_one": "{{count}} Stunde",
+    "hours_other": "{{count}} Stunden",
+    "chapters_one": "{{count}} Kapitel",
+    "chapters_other": "{{count}} Kapitel",
+    "min_one": "{{count}} Min.",
+    "min_other": "{{count}} Min.",
+    "parts": "Fünf Dokumente, ein Buch",
+    "about": {
+      "A": "Das DevKitC-1-Board: Stiftleisten, Stromversorgung, Bestellung.",
+      "M": "Das WROOM-1-Modul: Pins, elektrische und HF-Werte, Layout.",
+      "C": "Der Chip im Überblick: Pins, Boot, Funktionen, elektrische Grenzen.",
+      "T": "Jede Peripherie mit ihren Registern, im Detail.",
+      "X": "Glossar, Register-Konventionen und Quellen."
+    },
+    "progress": "{{read}} von {{total}} Abschnitten gelesen",
+    "contents": "Inhalt",
+    "closeContents": "Inhalt schließen",
+    "read": "Gelesen",
+    "link": "Link zu §{{section}}",
+    "explore": "{{block}} in 3D erkunden",
+    "prev": "Vorheriges Kapitel",
+    "next": "Nächstes Kapitel",
+    "end": "Das war das ganze Datenblatt. Gut gelesen!"
   }
 }

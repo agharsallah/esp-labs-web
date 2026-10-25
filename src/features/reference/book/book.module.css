@@ -1,0 +1,569 @@
+/* The datasheet as a book: contents beside a continuous read on wide screens, a reading bar with
+   a contents sheet on phones. Each document has its accent, from the parts palette. */
+
+[data-doc="A"] {
+  --doc: var(--part-green);
+}
+[data-doc="M"] {
+  --doc: var(--part-blue);
+}
+[data-doc="C"] {
+  --doc: var(--copper);
+}
+[data-doc="T"] {
+  --doc: var(--part-purple);
+}
+[data-doc="X"] {
+  --doc: var(--muted);
+}
+
+/* Layout */
+.reader {
+  display: grid;
+  gap: 32px;
+  min-width: 0;
+}
+.side {
+  display: none;
+}
+@media (min-width: 1000px) {
+  .reader {
+    grid-template-columns: 290px minmax(0, 1fr);
+    align-items: start;
+  }
+  .side {
+    display: block;
+    position: sticky;
+    inset-block-start: 12px;
+    max-block-size: calc(100dvh - 24px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-inline-end: 8px;
+    scrollbar-width: thin;
+  }
+}
+.flow {
+  display: grid;
+  gap: 28px;
+  min-width: 0;
+  max-inline-size: 76ch;
+}
+
+/* The reading bar: where you are and how much of the chapter you have read */
+.bar {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  margin-inline: calc(var(--gutter) * -1);
+  padding-block: 8px;
+  padding-inline: var(--gutter);
+  border-block-end: 1px solid var(--line);
+  background: color-mix(in oklab, var(--bg) 92%, transparent);
+  backdrop-filter: blur(8px);
+}
+@media (min-width: 1000px) {
+  .bar {
+    margin-inline: 0;
+    padding-inline: 0;
+  }
+}
+.where {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+  font: 700 13.5px var(--font-display);
+}
+.whereDoc {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  inline-size: 26px;
+  block-size: 26px;
+  border-radius: 50%;
+  background: color-mix(in oklab, var(--doc) 16%, var(--surface));
+  color: var(--doc);
+}
+.whereText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.contentsButton {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  min-block-size: 36px;
+  padding-inline: 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  font: 700 13px var(--font-display);
+  cursor: pointer;
+}
+.contentsButton:hover {
+  border-color: var(--copper);
+}
+@media (min-width: 1000px) {
+  .contentsButton {
+    display: none;
+  }
+}
+
+/* The progress meter */
+.meter {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+}
+.meterBar {
+  position: relative;
+  inline-size: 44px;
+  block-size: 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--line);
+}
+.meterBar > i {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: calc(var(--share) * 100%);
+  border-radius: inherit;
+  background: var(--ok);
+  transition: inline-size 0.4s ease;
+}
+.meterCount {
+  font: 600 11px var(--font-mono);
+  color: var(--muted);
+}
+
+/* Chapters and sections */
+.chapter {
+  display: grid;
+  gap: 22px;
+  min-width: 0;
+  padding-block-start: 8px;
+}
+.chapterHead {
+  display: grid;
+  gap: 10px;
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-inline-start: 4px solid var(--doc);
+  border-radius: var(--radius-l);
+  background: var(--surface);
+  animation: rise 420ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.chapterMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+}
+.chapterTitle {
+  margin: 0;
+  font: 800 clamp(22px, 4.4vw, 30px) / 1.15 var(--font-display);
+}
+.section {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  scroll-margin-top: 64px;
+}
+.section:focus {
+  outline: none;
+}
+.section:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 6px;
+}
+.section:focus .sectionTitle {
+  animation: arrive 1.4s ease-out;
+}
+.sectionTitle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 8px;
+  margin: 0;
+  padding-block-start: 14px;
+  border-block-start: 1px solid var(--line);
+  border-radius: var(--radius-s);
+  font: 800 20px / 1.3 var(--font-display);
+}
+.section[data-depth="3"] .sectionTitle,
+.section[data-depth="4"] .sectionTitle {
+  border-block-start: 0;
+  padding-block-start: 4px;
+  font-size: 17px;
+}
+.anchor {
+  color: inherit;
+  text-decoration: none;
+}
+.anchor:hover {
+  text-decoration: underline;
+}
+.readMark {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 20px;
+  block-size: 20px;
+  border-radius: 50%;
+  background: color-mix(in oklab, var(--ok) 16%, var(--surface));
+  color: var(--ok);
+  align-self: center;
+}
+.text {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+  animation: fade 300ms ease-out;
+}
+.placeholder {
+  border-radius: var(--radius-m);
+  background: repeating-linear-gradient(
+    to bottom,
+    color-mix(in oklab, var(--line) 45%, transparent) 0 14px,
+    transparent 14px 26px
+  );
+  opacity: 0.5;
+}
+
+/* From a block's chapter to its 3D page */
+.bridges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.explore {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding-block: 4px;
+  padding-inline: 4px 14px;
+  border: 1px solid color-mix(in oklab, var(--copper) 45%, var(--line));
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--copper) 8%, var(--surface));
+  color: var(--ink);
+  font: 700 13.5px var(--font-display);
+  text-decoration: none;
+  transition: border-color 0.2s ease;
+}
+.explore:hover {
+  border-color: var(--copper);
+}
+
+/* Before and after the chapters on the page */
+.previous {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  color: var(--muted);
+  font: 600 13.5px var(--font-display);
+  text-decoration: none;
+}
+.previous:hover {
+  color: var(--ink);
+}
+.end {
+  padding-block-end: 40px;
+}
+.nextCard {
+  display: grid;
+  gap: 6px;
+  padding: 20px;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-l);
+  color: var(--ink);
+  text-decoration: none;
+}
+.nextCard:hover {
+  border-color: var(--copper);
+  border-style: solid;
+}
+.nextKicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 700 12px var(--font-display);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.nextTitle {
+  font: 800 20px / 1.25 var(--font-display);
+}
+.theEnd {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--muted);
+}
+
+/* Contents */
+.contents {
+  display: grid;
+  gap: 20px;
+}
+.part {
+  display: grid;
+  gap: 8px;
+}
+.partHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0;
+}
+.chapters,
+.subsections {
+  display: grid;
+  gap: 1px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.chapterLink,
+.subLink {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 8px;
+  padding-block: 6px;
+  padding-inline: 8px;
+  border-radius: var(--radius-s);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.35;
+  text-decoration: none;
+}
+.chapterLink:hover,
+.subLink:hover {
+  background: color-mix(in oklab, var(--copper) 8%, transparent);
+}
+.chapterLink[aria-current="location"],
+.subLink[aria-current="location"] {
+  background: color-mix(in oklab, var(--copper) 14%, var(--surface));
+  box-shadow: inset 3px 0 0 var(--copper);
+}
+:global([dir="rtl"]) .chapterLink[aria-current="location"],
+:global([dir="rtl"]) .subLink[aria-current="location"] {
+  box-shadow: inset -3px 0 0 var(--copper);
+}
+li[data-open] > .chapterLink {
+  font-weight: 700;
+}
+.chapterName {
+  min-width: 0;
+}
+.chapterMinutes {
+  font: 600 11px var(--font-mono);
+  color: var(--muted);
+  white-space: nowrap;
+}
+.subsections {
+  margin-block: 2px 6px;
+  margin-inline-start: 14px;
+  padding-inline-start: 6px;
+  border-inline-start: 1px solid var(--line);
+}
+.subLink {
+  grid-template-columns: auto minmax(0, 1fr);
+  font-size: 13px;
+  color: var(--muted);
+}
+.subLink[data-read] {
+  color: var(--ink);
+}
+.subLink[aria-current="location"] {
+  color: var(--ink);
+}
+
+/* The contents sheet on narrow screens */
+.sheet {
+  position: fixed;
+  inset: auto 0 0;
+  margin: 0;
+  padding-block: 56px 24px;
+  padding-inline: 16px;
+  inline-size: 100vw;
+  max-inline-size: 100vw;
+  max-block-size: 85dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border: 0;
+  border-start-start-radius: var(--radius-l);
+  border-start-end-radius: var(--radius-l);
+  background: var(--bg);
+  color: var(--ink);
+}
+.sheet[open] {
+  animation: rise 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.sheet::backdrop {
+  background: color-mix(in oklab, var(--ink) 28%, transparent);
+}
+@media (min-width: 640px) {
+  .sheet {
+    inset: 0 auto 0 0;
+    inline-size: min(380px, 100vw);
+    max-block-size: 100dvh;
+    block-size: 100dvh;
+    border-radius: 0;
+  }
+}
+
+/* Cover */
+.coverActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-block-start: 8px;
+}
+.cta,
+.ctaQuiet {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-block-size: 44px;
+  padding-inline: 18px;
+  border-radius: 999px;
+  font: 700 14.5px var(--font-display);
+  text-decoration: none;
+}
+.cta {
+  background: var(--copper);
+  color: var(--bg);
+}
+.ctaQuiet {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+}
+.cta:hover {
+  background: color-mix(in oklab, var(--copper) 85%, var(--ink));
+}
+.ctaQuiet:hover {
+  border-color: var(--copper);
+}
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+  margin: 10px 0 0;
+}
+.stats > div {
+  display: grid;
+  gap: 2px;
+}
+.stats dt {
+  font: 700 11px var(--font-display);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.stats dd {
+  margin: 0;
+  font: 800 20px var(--font-display);
+}
+.partCards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.partCard {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  block-size: 100%;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-block-start: 4px solid var(--doc);
+  border-radius: var(--radius-l);
+  background: var(--surface);
+  color: var(--ink);
+  text-decoration: none;
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease;
+}
+.partCard:hover {
+  transform: translateY(-3px);
+  border-color: var(--doc);
+}
+.partIcon {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 44px;
+  block-size: 44px;
+  border-radius: 50%;
+  background: color-mix(in oklab, var(--doc) 14%, var(--surface));
+  color: var(--doc);
+}
+.partName {
+  font: 800 17px var(--font-display);
+}
+.partAbout {
+  font-size: 13.5px;
+  color: var(--muted);
+}
+.partSize {
+  font: 600 12px var(--font-mono);
+  color: var(--muted);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 16px;
+  }
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes arrive {
+  from {
+    background: color-mix(in oklab, var(--copper) 22%, transparent);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chapterHead,
+  .text,
+  .sheet[open],
+  .section:focus .sectionTitle {
+    animation: none;
+  }
+  .partCard,
+  .meterBar > i {
+    transition: none;
+  }
+}
+:global(:root[data-motion="reduced"]) .chapterHead,
+:global(:root[data-motion="reduced"]) .text,
+:global(:root[data-motion="reduced"]) .sheet[open],
+:global(:root[data-motion="reduced"]) .section:focus .sectionTitle {
+  animation: none;
+}

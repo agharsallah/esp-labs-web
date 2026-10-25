@@ -361,10 +361,13 @@
       "read": "Leído hasta ahora"
     },
     "hours_one": "{{count}} hora",
+    "hours_many": "{{count}} horas",
     "hours_other": "{{count}} horas",
     "chapters_one": "{{count}} capítulo",
+    "chapters_many": "{{count}} capítulos",
     "chapters_other": "{{count}} capítulos",
     "min_one": "{{count}} min",
+    "min_many": "{{count}} min",
     "min_other": "{{count}} min",
     "parts": "Cinco documentos, un libro",
     "about": {

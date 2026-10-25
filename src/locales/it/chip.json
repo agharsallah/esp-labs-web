@@ -361,10 +361,13 @@
       "read": "Letto finora"
     },
     "hours_one": "{{count}} ora",
+    "hours_many": "{{count}} ore",
     "hours_other": "{{count}} ore",
     "chapters_one": "{{count}} capitolo",
+    "chapters_many": "{{count}} capitoli",
     "chapters_other": "{{count}} capitoli",
     "min_one": "{{count}} min",
+    "min_many": "{{count}} min",
     "min_other": "{{count}} min",
     "parts": "Cinque documenti, un libro",
     "about": {

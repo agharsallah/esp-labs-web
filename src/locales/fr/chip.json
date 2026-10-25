@@ -361,10 +361,13 @@
       "read": "Lu jusqu'ici"
     },
     "hours_one": "{{count}} heure",
+    "hours_many": "{{count}} heures",
     "hours_other": "{{count}} heures",
     "chapters_one": "{{count}} chapitre",
+    "chapters_many": "{{count}} chapitres",
     "chapters_other": "{{count}} chapitres",
     "min_one": "{{count}} min",
+    "min_many": "{{count}} min",
     "min_other": "{{count}} min",
     "parts": "Cinq documents, un seul livre",
     "about": {

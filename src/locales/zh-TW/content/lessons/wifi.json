@@ -2,7 +2,7 @@
   "W1": {
     "title": "掃描並連線",
     "heading": "掃描空中的訊號，然後連上你的網路",
-    "goal": "第一個 Wi-Fi 實驗，使用它自己的韌體 (wifi-lab-w1)；所有實驗共用的程式碼放在 kit/lib/wifi-kit 中。ESP32 會列出附近所有 2.4 GHz 網路，然後連上你的網路：你在掃描表中選中它，輸入一次密碼即可。密碼儲存在晶片裡，絕不寫進程式碼。狀態頁面會顯示時鐘（網際網路時間）、IP 地址、bench.local 和實時訊號圖。",
+    "goal": "第一個 Wi-Fi 實驗，使用它自己的韌體 (wifi-lab-w1)；所有實驗共用的程式碼放在 kit/lib/wifi-kit 中。ESP32 會列出附近所有 2.4 GHz 網路，然後連上你的網路：你在掃描表中選中它，輸入一次密碼即可。密碼儲存在晶片裡，絕不寫進程式碼。狀態頁面會顯示時鐘（網際網路時間）、IP 位址、bench.local 和實時訊號圖。",
     "learn": [
       "Station 模式",
       "通道與 dBm",
@@ -53,12 +53,12 @@
       }
     },
     "steps": [
-      "螢幕接線與第 03 課相同。按鈕（引腳 5 + GND）是可選的：它的作用和 BOOT 完全一樣。",
+      "螢幕接線與第 03 課相同。按鈕（腳位 5 + GND）是可選的：它的作用和 BOOT 完全一樣。",
       "用上面的命令燒錄（或者對 Claude 說“go”）。",
       "看第一次掃描。<b>單擊</b>切換各個檢視：網路、通道、雷達、狀態。",
       "開啟 <code>uv run pio device monitor</code>。在掃描表中找到你的網路編號。",
       "輸入 <code>join 3</code>（換成你的編號），然後在下一行輸入密碼。密碼會儲存在晶片上；日誌裡只顯示它的長度。",
-      "狀態檢視會自動開啟：時鐘、IP 地址、<code>bench.local</code>、訊號圖。試試在 Mac 上執行 <code>ping bench.local</code>，並在監視器裡輸入 <code>ping</code>，從開發板這一側測試路由器。",
+      "狀態檢視會自動開啟：時鐘、IP 位址、<code>bench.local</code>、訊號圖。試試在 Mac 上執行 <code>ping bench.local</code>，並在監視器裡輸入 <code>ping</code>，從開發板這一側測試路由器。",
       "拔掉再插上：它會自動重新連線。<code>forget</code> 會清除已儲存的網路。"
     ],
     "note": "5 GHz 網路永遠不會出現：S3 的無線電只支援 2.4 GHz。監視器會顯示鄰居的網路名稱，以及你輸入的內容，包括密碼。不要把這部分貼到任何會分享出去的地方。"
@@ -131,7 +131,7 @@
       "remote": {
         "label": "變體 2 · 隨時隨地",
         "short": "開發板主動連線你的伺服器",
-        "goal": "同樣的開發板和手機頁面，再加一條遠端鏈路：開發板<b>主動</b>連出去，連到你的儀表盤伺服器，並保持一條安全的 WebSocket 連線。伺服器需要一個公網 https 地址：現在用你的 Mac 加一條隧道（cloudflared 或 ngrok），以後可以把同一個應用放到託管伺服器上。開發板分不出區別。你可以用手機流量、在辦公室、在任何地方控制工作臺。路由器上什麼都不用開放，Wi-Fi 隔離也不再有影響。",
+        "goal": "同樣的開發板和手機頁面，再加一條遠端鏈路：開發板<b>主動</b>連出去，連到你的儀表盤伺服器，並保持一條安全的 WebSocket 連線。伺服器需要一個公網 https 位址：現在用你的 Mac 加一條隧道（cloudflared 或 ngrok），以後可以把同一個應用放到託管伺服器上。開發板分不出區別。你可以用手機流量、在辦公室、在任何地方控制工作臺。路由器上什麼都不用開放，Wi-Fi 隔離也不再有影響。",
         "learn": [
           "出站連線與 NAT",
           "隧道",
@@ -149,12 +149,12 @@
           "接線相同（按鈕可選）。用上面的命令燒錄（或者對 Claude 說“go”）。首次會下載一個庫：links2004/WebSockets 2.7.3。",
           "在 Mac 上，編輯 <code>esp-labs/apps/dashboard/.env</code>：<code>ESP_MODE=relay</code>，<code>ESP_TOKEN=</code> 填串列埠裡 <code>token</code> 命令輸出的值，<code>DASHBOARD_KEY=</code> 填 <code>openssl rand -hex 16</code> 的輸出。",
           "啟動伺服器：<code>cd esp-labs/apps/dashboard && pnpm remote</code>（構建應用，並在 8787 埠提供服務）。",
-          "在第二個終端裡開啟隧道：<code>pnpm tunnel:cloudflare</code>（無需賬號；會列印 <code>https://…trycloudflare.com</code>，每次都不同）或 <code>pnpm tunnel:ngrok</code>（使用你的 ngrok 賬號；加上 <code>--url=&lt;your free static domain&gt;</code>，地址就永遠不變）。",
-          "在串列埠監視器裡告訴開發板：<code>relay wss://&lt;tunnel host&gt;</code>。它會儲存地址並連線；之後 <code>relay</code> 會顯示 <code>online</code>，螢幕上鍊路圓點周圍會出現一個青色圓環。",
-          "在手機上關掉 Wi-Fi（用移動資料），開啟隧道地址，用金鑰登入，然後切換檢視或 LED。你正在從家門外控制工作臺。",
+          "在第二個終端裡開啟隧道：<code>pnpm tunnel:cloudflare</code>（無需賬號；會列印 <code>https://…trycloudflare.com</code>，每次都不同）或 <code>pnpm tunnel:ngrok</code>（使用你的 ngrok 賬號；加上 <code>--url=&lt;your free static domain&gt;</code>，位址就永遠不變）。",
+          "在串列埠監視器裡告訴開發板：<code>relay wss://&lt;tunnel host&gt;</code>。它會儲存位址並連線；之後 <code>relay</code> 會顯示 <code>online</code>，螢幕上鍊路圓點周圍會出現一個青色圓環。",
+          "在手機上關掉 Wi-Fi（用移動資料），開啟隧道位址，用金鑰登入，然後切換檢視或 LED。你正在從家門外控制工作臺。",
           "拔掉開發板再插上：它會重新連上 Wi-Fi，並自動再次連入。<code>relay off</code> 會停止這條鏈路。"
         ],
-        "note": "每次重啟 cloudflared，快速隧道的地址都會變：用 <code>relay</code> 輸入新地址，或者一次性設定好 ngrok 的免費靜態域名。韌體更新目前仍只能在你的 Wi-Fi 內進行（變體 1）。用完後停止隧道（Ctrl+C），公網地址就會失效。如果改用託管伺服器：在那裡執行同一個應用（<code>pnpm build && pnpm start</code>、<code>ESP_MODE=relay</code>、<code>HOST=0.0.0.0</code>、<code>TRUST_PROXY=true</code>），並讓 <code>relay</code> 指向它的地址。想先不用隧道測試？在 .env 中設定 <code>HOST=0.0.0.0</code>，然後輸入 <code>relay ws://&lt;your Mac's IP&gt;:8787</code>。"
+        "note": "每次重啟 cloudflared，快速隧道的位址都會變：用 <code>relay</code> 輸入新位址，或者一次性設定好 ngrok 的免費靜態域名。韌體更新目前仍只能在你的 Wi-Fi 內進行（變體 1）。用完後停止隧道（Ctrl+C），公網位址就會失效。如果改用託管伺服器：在那裡執行同一個應用（<code>pnpm build && pnpm start</code>、<code>ESP_MODE=relay</code>、<code>HOST=0.0.0.0</code>、<code>TRUST_PROXY=true</code>），並讓 <code>relay</code> 指向它的位址。想先不用隧道測試？在 .env 中設定 <code>HOST=0.0.0.0</code>，然後輸入 <code>relay ws://&lt;your Mac's IP&gt;:8787</code>。"
       }
     }
   },

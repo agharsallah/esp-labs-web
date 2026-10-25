@@ -21,7 +21,7 @@
       "bench": "工作臺",
       "settings": "設定"
     },
-    "footnote": "引腳佈局遵循樂鑫 DevKitC-1 v1.0。相容板幾乎一樣，但以你開發板上印的標註為準。你的勾選只儲存在這個瀏覽器裡。",
+    "footnote": "腳位佈局遵循樂鑫 DevKitC-1 v1.0。相容板幾乎一樣，但以你開發板上印的標註為準。你的勾選只儲存在這個瀏覽器裡。",
     "partsLink": "元件庫",
     "new": "新"
   },
@@ -36,7 +36,7 @@
   },
   "routeError": {
     "code": "錯誤",
-    "notFound": "這個引腳上什麼也沒有。",
+    "notFound": "這個腳位上什麼也沒有。",
     "failed": "這個頁面停止工作了。",
     "unknown": "出錯了。",
     "back": "回到你的課程",
@@ -119,7 +119,7 @@
     "dark": "深色"
   },
   "board": {
-    "label": "開發板引腳圖",
+    "label": "開發板腳位圖",
     "legend": {
       "label": "圖例",
       "used": "本課用到",
@@ -137,13 +137,13 @@
       "rewire": "斷電後再改接線",
       "check": "檢查 VCC 接在 3V3 上，沒有鬆動的線頭",
       "flash": "插上，燒錄下一課",
-      "warning": "<code>Writing at 0x…</code> 期間千萬別拔線。引腳要從輸出改成輸入？先燒錄，再接線。"
+      "warning": "<code>Writing at 0x…</code> 期間千萬別拔線。腳位要從輸出改成輸入？先燒錄，再接線。"
     },
     "pinout": {
-      "title": "ESP32-S3 DevKitC 引腳圖",
+      "title": "ESP32-S3 DevKitC 腳位圖",
       "use": "{{pin}} 用作{{role}}",
       "uses": "本課用到：{{uses}}。",
-      "none": "本課不使用排針上的引腳。"
+      "none": "本課不使用排針上的腳位。"
     }
   },
   "ui": {

@@ -52,13 +52,13 @@
     },
     "scope": {
       "short": "深入名稱空間、類或列舉內部去找一個名字：<code>std::min</code> 就是住在 <code>std</code> 裡的那個 <code>min</code>。",
-      "simple": "就像地址：<i>倫敦::貝克街</i>。只要在不同的城市，兩條街可以重名。",
+      "simple": "就像位址：<i>倫敦::貝克街</i>。只要在不同的城市，兩條街可以重名。",
       "deep": "作用域解析運算子。<code>Button::Event::Click</code> 往下走兩層；開頭的 <code>::</code>（如 <code>::ble::activity()</code>）從全域性名稱空間開始，所以區域性名字永遠不會遮蔽它。"
     },
     "arrow": {
       "short": "使用指標所指向的物件的成員：<code>p->x</code> 與 <code>(*p).x</code> 相同。",
-      "simple": "點 (<code>.</code>) 用來訪問你手裡拿著的物件；箭頭用來訪問你只有地址的物件。",
-      "deep": "透過指標訪問成員。Web 處理函式拿到的是 <code>AsyncWebServerRequest *req</code>，所以要寫 <code>req->send(...)</code>。跟隨一個 <code>nullptr</code> 會讓 ESP32 因 LoadProhibited 或 StoreProhibited 而崩潰，所以要先檢查指標。"
+      "simple": "點 (<code>.</code>) 用來存取你手裡拿著的物件；箭頭用來存取你只有位址的物件。",
+      "deep": "透過指標存取成員。Web 處理函式拿到的是 <code>AsyncWebServerRequest *req</code>，所以要寫 <code>req->send(...)</code>。跟隨一個 <code>nullptr</code> 會讓 ESP32 因 LoadProhibited 或 StoreProhibited 而崩潰，所以要先檢查指標。"
     },
     "maths": {
       "short": "C 庫裡的數學幫手：正弦、餘弦、平方根、取整、絕對值等等。",
@@ -122,7 +122,7 @@
     },
     "uint8-t": {
       "short": "0 到 255 的整數：正好一個位元組。",
-      "simple": "最小的盒子：一個位元組，八個開關。非常適合表示顏色通道、引腳編號或亮度。",
+      "simple": "最小的盒子：一個位元組，八個開關。非常適合表示顏色通道、腳位編號或亮度。",
       "deep": "<code>u</code> = 無符號，<code>int</code> = 整數，<code>8</code> 位，<code>_t</code> = 一個型別。它在 <code>&lt;stdint.h&gt;</code> 中定義，所以大小在每顆晶片上都相同。Arduino 的 <code>byte</code> 是同一種型別。超過 255 就回繞到 0。"
     },
     "uint16-t": {
@@ -137,7 +137,7 @@
     },
     "uint64-t": {
       "short": "一個巨大的整數，0 到約 1800 億億：八個位元組。",
-      "simple": "一個大到實際上永遠裝不滿的盒子。晶片 48 位的 MAC 地址輕鬆放得下。",
+      "simple": "一個大到實際上永遠裝不滿的盒子。晶片 48 位的 MAC 位址輕鬆放得下。",
       "deep": "無符號，64 位。在 32 位 CPU 上，每個運算要花幾條指令，而且讀取一個在中斷和主程式碼之間共享的 64 位值並不是單一步驟，所以各實驗把共享的時間戳保持為 32 位。"
     },
     "int8-t": {
@@ -172,7 +172,7 @@
     },
     "nullptr": {
       "short": "一個什麼都不指向的指標。",
-      "simple": "一張空的地址標籤：沒有房子可去，所以出發前要先檢查。",
+      "simple": "一張空的位址標籤：沒有房子可去，所以出發前要先檢查。",
       "deep": "型別安全的空指標常量 (C++11)，取代 <code>NULL</code> 和 <code>0</code>。<code>heap_caps_malloc</code> 這樣的分配函式在失敗時返回它，許多 ESP-IDF 呼叫用它表示“我不需要這個”。"
     },
     "if": {
@@ -188,7 +188,7 @@
     "for": {
       "short": "把一個程式碼塊重複固定的次數，或者對列表中的每一項各執行一次。",
       "simple": "“對這 6 個位元組中的每一個，把它列印出來。”從 0 開始，檢查有沒有做完，做事，計數加一，重複。",
-      "deep": "<code>for (init; test; step)</code>。範圍形式 <code>for (const auto &amp;card : cards)</code> 不用下標就能訪問陣列或容器的每個元素。"
+      "deep": "<code>for (init; test; step)</code>。範圍形式 <code>for (const auto &amp;card : cards)</code> 不用下標就能存取陣列或容器的每個元素。"
     },
     "while": {
       "short": "只要條件保持為真，就一直重複一個程式碼塊。",
@@ -276,13 +276,13 @@
       "deep": "沒有返回型別。<code>:</code> 之後的列表 (<code>: pin_(pin), name_(name)</code>) 在函式體執行之前，按成員宣告的順序填充成員。<code>~Name()</code> 解構函式在物件消失時執行，就像 <code>FrameBuffer</code> 釋放它的畫素。"
     },
     "address-reference": {
-      "short": "三種用途：在型別之後它構成引用（另一個名字），在變數之前它取這個變數的地址，在數字之間它是按位與。",
-      "simple": "引用是一個暱稱：<code>uint8_t &amp;r</code> 讓函式直接寫進你的盒子裡。<code>&amp;x</code> 是盒子的街道地址。<code>a &amp; b</code> 只保留兩者都為 1 的位。",
+      "short": "三種用途：在型別之後它構成引用（另一個名字），在變數之前它取這個變數的位址，在數字之間它是按位與。",
+      "simple": "引用是一個暱稱：<code>uint8_t &amp;r</code> 讓函式直接寫進你的盒子裡。<code>&amp;x</code> 是盒子的街道位址。<code>a &amp; b</code> 只保留兩者都為 1 的位。",
       "deep": "<code>T &amp;</code> 繫結到一個已有的物件，不能為空，也不能改指別處；<code>const T &amp;</code> 傳遞大物件而不用複製。<code>&amp;lock_</code> 得到一個 <code>portMUX_TYPE *</code>。<code>x &amp; 0xFF</code> 遮蔽出低位元組。"
     },
     "pointer": {
       "short": "三種用途：在型別之後它宣告一個指標，在指標之前它跟隨這個指標，在數字之間它是乘法。",
-      "simple": "指標就是一張寫著地址的紙條。<code>*p</code> 的意思是“去那個地址，使用那裡的東西”。在兩個數字之間，它就是乘。",
+      "simple": "指標就是一張寫著位址的紙條。<code>*p</code> 的意思是“去那個位址，使用那裡的東西”。在兩個數字之間，它就是乘。",
       "deep": "在 ESP32 上指標是 4 個位元組。<code>uint16_t *buf_</code> 儲存畫素從哪裡開始；<code>buf_[i]</code> 與 <code>*(buf_ + i)</code> 相同。<code>const char *</code> 是指向你可以讀但不能改的文字的指標。"
     },
     "array": {
@@ -297,7 +297,7 @@
     },
     "static": {
       "short": "讓一個變數在整個程式期間都存活，或者讓一個類的所有物件共享同一份複製。",
-      "simple": "在函式內部，它是一本在兩次訪問之間一直放在桌上的筆記本，所以 <code>loop()</code> 能記住它上一次的值。",
+      "simple": "在函式內部，它是一本在兩次存取之間一直放在桌上的筆記本，所以 <code>loop()</code> 能記住它上一次的值。",
       "deep": "有三種含義。<code>static</code> 區域性變數只建立一次，並在多次呼叫之間保留。<code>static</code> 成員屬於類，而不屬於每個物件（中斷處理函式 <code>onEdge</code> 是 static 的，透過 <code>arg</code> 拿到物件）。在檔案級別，它讓一個名字只在該檔案內可見。"
     },
     "volatile": {
@@ -383,7 +383,7 @@
     "extern": {
       "short": "說明一個變數存在，但在程式的別處定義。",
       "simple": "“鑰匙在另一個房間”：你可以在這裡談論它，連結器稍後會把它取來。",
-      "deep": "沒有定義的宣告。HTTPS 客戶端用它按連結器符號名，訪問構建時連結進 flash 的 Mozilla 證書包。"
+      "deep": "沒有定義的宣告。HTTPS 客戶端用它按連結器符號名，存取構建時連結進 flash 的 Mozilla 證書包。"
     },
     "constexpr": {
       "short": "在程式編譯時就固定的值，所以開發板執行時它永遠不會改變。",
@@ -488,11 +488,11 @@
     "define": {
       "short": "建立一個名字，在程式碼被編譯之前，它會被替換成一段文字。",
       "simple": "由計算機在讀你的程式碼之前做的查詢替換：每個 <code>PIN_RGB</code> 都變成 <code>48</code>。",
-      "deep": "宏不瞭解型別或作用域。<code>pins.h</code> 使用它們，這樣 <code>-DPIN_RGB=38</code> 這樣的構建選項就可以覆蓋一個引腳；對普通常量請優先使用 <code>constexpr</code>。帶括號的宏，如 <code>BLE_NOTE(kind, ...)</code>，會把它的引數貼上進去。"
+      "deep": "宏不瞭解型別或作用域。<code>pins.h</code> 使用它們，這樣 <code>-DPIN_RGB=38</code> 這樣的構建選項就可以覆蓋一個腳位；對普通常量請優先使用 <code>constexpr</code>。帶括號的宏，如 <code>BLE_NOTE(kind, ...)</code>，會把它的引數貼上進去。"
     },
     "conditional-compile": {
       "short": "根據某個名字是否已定義，在編譯前保留或丟棄某些程式碼行。",
-      "simple": "“如果還沒有人選引腳，就用 48。”不適用的那些行在編譯器看到之前就被剪掉了。",
+      "simple": "“如果還沒有人選腳位，就用 48。”不適用的那些行在編譯器看到之前就被剪掉了。",
       "deep": "<code>#ifndef PIN_RGB</code> ... <code>#endif</code> 讓 <code>platformio.ini</code> 的構建選項優先於 <code>pins.h</code> 裡的預設值。<code>#if</code> 測試一個常量表示式；每個 <code>#if</code>/<code>#ifdef</code>/<code>#ifndef</code> 都需要一個匹配的 <code>#endif</code>。"
     },
     "serial-begin": {
@@ -516,34 +516,34 @@
       "deep": "兩者都立即返回；沒有東西在等待時 <code>read()</code> 返回 -1。各實驗把字母收集到緩衝區裡，直到換行，然後執行命令，所以輸入永遠不會阻塞螢幕。<code>flush()</code> 會等到所有已列印的內容都傳送完畢。"
     },
     "pin-mode": {
-      "short": "在使用之前，把一個 GPIO 引腳設定為輸入或輸出。",
+      "short": "在使用之前，把一個 GPIO 腳位設定為輸入或輸出。",
       "simple": "決定一扇門是用來進（讀取按鈕）還是用來出（點亮 LED）。",
-      "deep": "為該引腳配置 GPIO 矩陣。<code>INPUT_PULLUP</code> 還會開啟一個通向 3.3 V 的微弱內部電阻，所以接到 GND 的按鈕不需要額外元件。避開 <code>pins.h</code> 頂部列出的 strapping、flash 和 PSRAM 引腳。"
+      "deep": "為該腳位配置 GPIO 矩陣。<code>INPUT_PULLUP</code> 還會開啟一個通向 3.3 V 的微弱內部電阻，所以接到 GND 的按鈕不需要額外元件。避開 <code>pins.h</code> 頂部列出的 strapping、flash 和 PSRAM 腳位。"
     },
     "pin-modes": {
-      "short": "引腳可以設定的幾種方式：監聽、驅動，或者帶內建電阻的監聽。",
+      "short": "腳位可以設定的幾種方式：監聽、驅動，或者帶內建電阻的監聽。",
       "simple": "<code>OUTPUT</code> 是一個你可以開關的水龍頭。<code>INPUT</code> 是一個你來讀數的儀表。<code>INPUT_PULLUP</code> 是一個平時停在“高”的儀表，直到有東西把它拉低。",
       "deep": "懸空的 <code>INPUT</code> 會拾取噪聲；<code>INPUT_PULLUP</code>/<code>INPUT_PULLDOWN</code> 會啟用 ESP32 微弱的內部電阻（幾十千歐）。這就是為什麼在這些實驗裡按下的按鈕讀作 <code>LOW</code>。"
     },
     "digital-write": {
-      "short": "把輸出引腳開啟 (3.3 V) 或關閉 (0 V)。",
+      "short": "把輸出腳位開啟 (3.3 V) 或關閉 (0 V)。",
       "simple": "撥動電燈開關：<code>HIGH</code> 是開，<code>LOW</code> 是關。",
-      "deep": "ESP32-S3 的引腳是 3.3 V，絕不是 5 V。預設情況下每個引腳可以輸出或吸收約 20 mA（可用 <code>gpio_set_drive_capability</code> 調整），所以 LED 總是需要串聯電阻。"
+      "deep": "ESP32-S3 的腳位是 3.3 V，絕不是 5 V。預設情況下每個腳位可以輸出或吸收約 20 mA（可用 <code>gpio_set_drive_capability</code> 調整），所以 LED 總是需要串聯電阻。"
     },
     "digital-read": {
-      "short": "讀取輸入引腳是高（接近 3.3 V）還是低（接近 0 V）。",
+      "short": "讀取輸入腳位是高（接近 3.3 V）還是低（接近 0 V）。",
       "simple": "問門鈴按鈕：你現在被按下了嗎？",
       "deep": "返回 <code>HIGH</code> (1) 或 <code>LOW</code> (0)。使用 <code>INPUT_PULLUP</code> 時，按下的按鈕讀作 <code>LOW</code>，所以 <code>== LOW</code> 表示“按下了”。機械觸點會抖動幾毫秒，<code>Button</code> 會把它過濾掉。"
     },
     "high-low": {
-      "short": "數字引腳的兩個電平：<code>HIGH</code> 是 3.3 V，<code>LOW</code> 是 0 V。",
+      "short": "數字腳位的兩個電平：<code>HIGH</code> 是 3.3 V，<code>LOW</code> 是 0 V。",
       "simple": "開和關，電壓版本。",
       "deep": "它們就是 1 和 0。在 ESP32 上，輸入高於約 3.3 V 的四分之三讀作 <code>HIGH</code>，低於四分之一讀作 <code>LOW</code>；介於兩者之間則不能保證。"
     },
     "analog-read": {
-      "short": "把引腳上的電壓測量為一個 0 到 4095 的數字。",
+      "short": "把腳位上的電壓測量為一個 0 到 4095 的數字。",
       "simple": "一個調光式的讀數，而不是開/關開關：在 0 到 4095 的刻度上，電壓有多高？",
-      "deep": "ESP32-S3 的 ADC 是 12 位的。請使用 ADC1 引腳（GPIO 1-10）：ADC2 與 Wi-Fi 共用。一次呼叫就是一次慢速取樣，這就是聲音實驗改用 ADC 連續模式加 DMA 的原因。"
+      "deep": "ESP32-S3 的 ADC 是 12 位的。請使用 ADC1 腳位（GPIO 1-10）：ADC2 與 Wi-Fi 共用。一次呼叫就是一次慢速取樣，這就是聲音實驗改用 ADC 連續模式加 DMA 的原因。"
     },
     "millis": {
       "short": "開發板啟動以來過去了多少毫秒。",
@@ -566,14 +566,14 @@
       "deep": "忙等待：CPU 空轉，這個核心上的其他任務不會執行。幾百微秒（讓上拉穩定下來）沒問題，絕不要用於長時間等待。"
     },
     "ledc-attach": {
-      "short": "把一個引腳變成 PWM 輸出，帶有選定的頻率和解析度，用於給 LED 或背光調光。",
+      "short": "把一個腳位變成 PWM 輸出，帶有選定的頻率和解析度，用於給 LED 或背光調光。",
       "simple": "裝一個非常快的電燈開關，它每秒開關幾千次，所以眼睛看到的是“半亮”。",
       "deep": "基於 LEDC 外設的 Arduino-ESP32 3.x API：如果沒有合適的通道或頻率，<code>ledcAttach(pin, freq, bits)</code> 返回 <code>false</code>。5 kHz、8 位給出 0-255 的佔空比值，沒有可見的閃爍。"
     },
     "ledc-write": {
-      "short": "設定引腳在每個 PWM 週期裡保持開啟的比例：0 是關，最大值是完全開啟。",
+      "short": "設定腳位在每個 PWM 週期裡保持開啟的比例：0 是關，最大值是完全開啟。",
       "simple": "轉動那個快速開關上的調光旋鈕。",
-      "deep": "在 Arduino-ESP32 3.x 中它接受引腳（2.x 接受通道）。佔空比範圍由 <code>ledcAttach</code> 決定，從 0 到 2^bits - 1（8 位時是 0-255）；LEDC 硬體不需要 CPU 參與就能持續輸出波形。"
+      "deep": "在 Arduino-ESP32 3.x 中它接受腳位（2.x 接受通道）。佔空比範圍由 <code>ledcAttach</code> 決定，從 0 到 2^bits - 1（8 位時是 0-255）；LEDC 硬體不需要 CPU 參與就能持續輸出波形。"
     },
     "rgb-led-write": {
       "short": "根據紅、綠、藍的值（各 0-255）設定開發板內建 RGB LED 的顏色。",
@@ -581,12 +581,12 @@
       "deep": "板載 LED 是 WS2812，它把顏色當作精確計時的脈衝序列來接收；Arduino-ESP32 用 RMT 外設來生成它。它非常亮，所以各實驗把數值調小。在較老的核心中叫 <code>neopixelWrite</code>。"
     },
     "attach-interrupt": {
-      "short": "在引腳變化的瞬間執行一個函式，即使其餘程式碼正忙著也一樣。",
+      "short": "在腳位變化的瞬間執行一個函式，即使其餘程式碼正忙著也一樣。",
       "simple": "用門鈴，而不是探頭往窗外張望：有人一按，開發板立刻就被打斷。",
-      "deep": "<code>CHANGE</code>、<code>RISING</code> 或 <code>FALLING</code> 選擇哪種邊沿會觸發。<code>attachInterruptArg</code> 還會傳遞一個 <code>void *</code>（這裡是 <code>this</code>），讓靜態處理函式能找到它的物件。處理函式必須很短，標記 <code>IRAM_ATTR</code>，並且只訪問 <code>volatile</code> 或原子資料。"
+      "deep": "<code>CHANGE</code>、<code>RISING</code> 或 <code>FALLING</code> 選擇哪種邊沿會觸發。<code>attachInterruptArg</code> 還會傳遞一個 <code>void *</code>（這裡是 <code>this</code>），讓靜態處理函式能找到它的物件。處理函式必須很短，標記 <code>IRAM_ATTR</code>，並且只存取 <code>volatile</code> 或原子資料。"
     },
     "digital-pin-to-interrupt": {
-      "short": "把引腳編號轉換成 <code>attachInterrupt</code> 所期望的中斷編號。",
+      "short": "把腳位編號轉換成 <code>attachInterrupt</code> 所期望的中斷編號。",
       "simple": "查一查哪根門鈴線屬於哪扇門。",
       "deep": "在 ESP32 上，每個 GPIO 都能觸發中斷，編號就是引指令碼身，但寫上它能讓程式碼在兩者不同的開發板上保持可移植。"
     },
@@ -636,9 +636,9 @@
       "deep": "返回一個 <code>long</code>（或 <code>float</code>）。不是以數字開頭的文字會得到 0，所以輸入的 <code>0</code> 和亂碼看起來一樣；需要區分時要檢查文字。"
     },
     "spi-begin": {
-      "short": "在你選的引腳上啟動 SPI 匯流排，讓開發板能快速地與螢幕或 RFID 讀卡器通訊。",
+      "short": "在你選的腳位上啟動 SPI 匯流排，讓開發板能快速地與螢幕或 RFID 讀卡器通訊。",
       "simple": "鋪設一條私人電話線，說話、聽、以及雙方對齊節拍各用單獨的線。",
-      "deep": "<code>SPI.begin(sck, miso, mosi, ss)</code>；-1 表示跳過一個引腳（顯示屏沒有 MISO）。<code>SPI</code> 是 S3 的 SPI2 (FSPI)；RFID 路線在 SPI3 上另建一個 <code>SPIClass</code>，這樣兩者永遠不會共用導線或時序。"
+      "deep": "<code>SPI.begin(sck, miso, mosi, ss)</code>；-1 表示跳過一個腳位（顯示屏沒有 MISO）。<code>SPI</code> 是 S3 的 SPI2 (FSPI)；RFID 路線在 SPI3 上另建一個 <code>SPIClass</code>，這樣兩者永遠不會共用導線或時序。"
     },
     "log-macros": {
       "short": "列印帶標籤的日誌行：<code>i</code> 資訊，<code>w</code> 警告，<code>e</code> 錯誤，<code>d</code> 除錯。",
@@ -646,7 +646,7 @@
       "deep": "使用 printf 風格模式的 Arduino-ESP32 宏。每一行都帶有級別、檔案、行號和函式名的字首，高於 <code>CORE_DEBUG_LEVEL</code>（<code>platformio.ini</code> 裡 3 = 資訊）的行會在編譯時被移除，所以 <code>log_d</code> 在這裡沒有任何開銷。輸出和 <code>Serial</code> 走同一個串列埠。"
     },
     "esp-info": {
-      "short": "向晶片詢問它自己的資訊：型號、核心數、速度、flash 和 PSRAM 大小、MAC 地址。",
+      "short": "向晶片詢問它自己的資訊：型號、核心數、速度、flash 和 PSRAM 大小、MAC 位址。",
       "simple": "開發板大聲讀出它自己的身份證。",
       "deep": "第 01 課期望的是 <i>ESP32-S3</i>、2 個 240 MHz 的核心、16 MB flash（N16）和約 8 MB PSRAM（R8）。<code>getEfuseMac()</code> 以 <code>uint64_t</code> 返回 eFuse 中的出廠 MAC，低位元組在前。"
     },
@@ -686,7 +686,7 @@
       "deep": "S3 有約 512 KB 的內部 SRAM，這裡還有 8 MB 的八線 PSRAM。<code>MALLOC_CAP_INTERNAL</code> 或 <code>MALLOC_CAP_SPIRAM</code> 選擇記憶體池；如果沒有足夠大的塊，結果是 <code>nullptr</code>。用 <code>heap_caps_free</code> 釋放它。"
     },
     "gpio-drive": {
-      "short": "選擇輸出引腳推送電流的力度，從弱到強。",
+      "short": "選擇輸出腳位推送電流的力度，從弱到強。",
       "simple": "設定水龍頭能把水推得多用力：輕柔的細流或全壓。",
       "deep": "一個 ESP-IDF 呼叫（它需要 <code>gpio_num_t</code>，所以要做型別轉換）。0-3 級大約是 5、10、20（預設）和 40 mA。較弱的驅動讓邊沿更平緩，也讓 LED 更暗。"
     },
@@ -863,10 +863,10 @@
     "wifi-mode": {
       "short": "選擇開發板是加入一個網路（station），建立自己的網路（接入點），還是兩者兼有。",
       "simple": "做別人派對上的客人、自己辦派對，或者兩件事同時做。",
-      "deep": "<code>WIFI_AP_STA</code> 在同一個無線電上同時執行兩者，所以它們共用一個通道；配置門戶用它在嘗試連線你的網路的同時顯示一個頁面。<code>softAP</code> 啟動開發板自己的網路，預設透過 <code>192.168.4.1</code> 訪問。"
+      "deep": "<code>WIFI_AP_STA</code> 在同一個無線電上同時執行兩者，所以它們共用一個通道；配置門戶用它在嘗試連線你的網路的同時顯示一個頁面。<code>softAP</code> 啟動開發板自己的網路，預設透過 <code>192.168.4.1</code> 存取。"
     },
     "wifi-info": {
-      "short": "向 Wi-Fi 連線詢問詳細資訊：開發板的 IP 地址、訊號強度、通道、MAC。",
+      "short": "向 Wi-Fi 連線詢問詳細資訊：開發板的 IP 位址、訊號強度、通道、MAC。",
       "simple": "讀取開發板在網路上的門牌號，以及它的訊號有幾格。",
       "deep": "<code>localIP()</code> 是一個 <code>IPAddress</code>（用 <code>toString()</code> 得到文字）。<code>RSSI()</code> 以 dBm 為單位：約 -50 極好，低於 -80 就弱了。在連線之前，所有這些都是 0 或空。"
     },
@@ -912,7 +912,7 @@
     },
     "async-web-server": {
       "short": "開發板上的 Web 伺服器：你的手機或膝上型電腦開啟一個頁面或 API，開發板作答。",
-      "simple": "一個小小的店鋪視窗：每個地址 (<code>/api/card</code>) 都有一位知道該怎麼回覆的店員。",
+      "simple": "一個小小的店鋪視窗：每個位址 (<code>/api/card</code>) 都有一位知道該怎麼回覆的店員。",
       "deep": "ESPAsyncWebServer 在它自己的網路任務裡作答，所以螢幕和讀卡器永遠不用等待。<code>server_.on(path, HTTP_GET, handler)</code> 註冊一個路由；處理函式必須很快，而且不能阻塞，所以繁重的工作會排隊交給另一個任務。"
     },
     "async-request": {
@@ -943,7 +943,7 @@
     "nimble-scan": {
       "short": "監聽附近其他正在廣播的藍芽裝置，並報告發現的每一個。",
       "simple": "注視海岸線上燈塔的閃光，並記下你看到的每一次。",
-      "deep": "每個 <code>NimBLEAdvertisedDevice</code> 都有一個地址、RSSI 和負載。主動掃描還會索取掃描響應。回撥在 NimBLE 主機任務裡執行，所以要把結果交給 <code>loop()</code>，而不是在那裡繪製。"
+      "deep": "每個 <code>NimBLEAdvertisedDevice</code> 都有一個位址、RSSI 和負載。主動掃描還會索取掃描響應。回撥在 NimBLE 主機任務裡執行，所以要把結果交給 <code>loop()</code>，而不是在那裡繪製。"
     },
     "nimble-client": {
       "short": "開發板扮演訪客：連線到另一個藍芽裝置，並讀取或寫入它的值。",
@@ -953,7 +953,7 @@
     "nimble-conn-info": {
       "short": "一次藍芽連線的詳細資訊：誰連上了、它如何受到保護、一個資料包能有多大。",
       "simple": "訪客的胸牌：姓名、他們是否出示了身份證，以及一次能攜帶多少東西。",
-      "deep": "傳給 <code>onConnect</code> 和 <code>onAuthenticationComplete</code> 這樣的回撥：對端的地址、連線控制代碼、MTU，以及連線是否已加密、已認證、已繫結。"
+      "deep": "傳給 <code>onConnect</code> 和 <code>onAuthenticationComplete</code> 這樣的回撥：對端的位址、連線控制代碼、MTU，以及連線是否已加密、已認證、已繫結。"
     },
     "nimble-callbacks": {
       "short": "你繼承的一些類，用來獲知藍芽事件：連線、斷開、寫入、讀取。",
@@ -973,7 +973,7 @@
     "i2s-channel": {
       "short": "為數字麥克風或揚聲器功放設定一個 I2S 聲音通道。",
       "simple": "為聲音鋪設一條傳送帶：一個時鐘打著節拍，每個取樣都有一個數字隨行。",
-      "deep": "ESP-IDF 5 的 I2S 驅動：<code>i2s_new_channel</code> 建立 TX 和/或 RX 通道，<code>i2s_channel_init_std_mode</code> 設定取樣率、位寬和引腳（標準 Philips I2S 格式），<code>i2s_channel_enable</code> 啟動時鐘和 DMA。"
+      "deep": "ESP-IDF 5 的 I2S 驅動：<code>i2s_new_channel</code> 建立 TX 和/或 RX 通道，<code>i2s_channel_init_std_mode</code> 設定取樣率、位寬和腳位（標準 Philips I2S 格式），<code>i2s_channel_enable</code> 啟動時鐘和 DMA。"
     },
     "i2s-read-write": {
       "short": "透過 I2S 通道，從麥克風取得采樣，或把取樣交給揚聲器。",
@@ -1016,7 +1016,7 @@
     },
     "arduino": {
       "title": "Arduino 基礎",
-      "blurb": "引腳、計時、串列埠列印和文字：日常的 Arduino 工具箱。"
+      "blurb": "腳位、計時、串列埠列印和文字：日常的 Arduino 工具箱。"
     },
     "esp": {
       "title": "ESP32 晶片",

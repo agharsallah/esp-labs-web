@@ -1,7 +1,7 @@
 {
   "pages": {
     "home": "走進 ESP32-S3",
-    "pins": "引腳與供電",
+    "pins": "腳位與供電",
     "blocks": "外設圖鑑",
     "inside": "記憶體、時鐘與電源模式"
   },
@@ -97,7 +97,7 @@
       },
       "package": {
         "title": "封裝",
-        "text": "7 × 7 mm 的 QFN，有 56 個焊盤：你接在排針上的每個引腳，最後都通到其中一個焊盤。"
+        "text": "7 × 7 mm 的 QFN，有 56 個焊盤：你接在排針上的每個腳位，最後都通到其中一個焊盤。"
       },
       "die": {
         "title": "裸片",
@@ -133,12 +133,12 @@
     "spark": "{{value}} {{unit}}"
   },
   "pins": {
-    "kicker": "哪個引腳能做什麼",
+    "kicker": "哪個腳位能做什麼",
     "lead": "{{count}} 個 GPIO，每個都有好幾種用途。我們的實驗已經接過其中 {{used}} 個。",
-    "matrixTitle": "引腳功能",
-    "legend": "加粗強調的行是我們實驗用過的引腳；三角形表示這個引腳有隱患。",
+    "matrixTitle": "腳位功能",
+    "legend": "加粗強調的行是我們實驗用過的腳位；三角形表示這個腳位有隱患。",
     "matrix": "每個 GPIO 以及它能承擔的功能類別",
-    "filter": "顯示具有以下功能的引腳",
+    "filter": "顯示具有以下功能的腳位",
     "all": "全部",
     "kinds": {
       "adc": "ADC",
@@ -151,18 +151,18 @@
       "clock": "時鐘",
       "strap": "啟動配置"
     },
-    "pick": "選一個引腳",
-    "pickHint": "選一個引腳，檢視它的功能、啟動配置作用，以及適用於它的隱患。",
-    "pickLegend": "數字下面的橫條：我們的實驗用過。角上的三角形：引腳有隱患。虛線：沒有引到排針上。",
+    "pick": "選一個腳位",
+    "pickHint": "選一個腳位，檢視它的功能、啟動配置作用，以及適用於它的隱患。",
+    "pickLegend": "數字下面的橫條：我們的實驗用過。角上的三角形：腳位有隱患。虛線：沒有引到排針上。",
     "pin": "GPIO{{n}}",
     "used": "我們的實驗用到了",
     "offHeader": "沒有引到 DevKitC 的排針上：它屬於模組的 flash 或 PSRAM。",
     "strapping": "啟動配置：",
-    "strappingTitle": "啟動配置引腳",
-    "strappingLead": "晶片一離開復位，就會立刻讀取這些引腳。接到它們上面的東西，不能在上電時把它們拉向錯誤的電平。",
-    "gotchasTitle": "容易踩坑的引腳",
-    "gotchasLead": "有些引腳在你的程式碼執行之前就有任務，或者另有所屬。其餘規則對每個引腳都適用。",
-    "gotchasPins": "特定引腳",
+    "strappingTitle": "啟動配置腳位",
+    "strappingLead": "晶片一離開復位，就會立刻讀取這些腳位。接到它們上面的東西，不能在上電時把它們拉向錯誤的電平。",
+    "gotchasTitle": "容易踩坑的腳位",
+    "gotchasLead": "有些腳位在你的程式碼執行之前就有任務，或者另有所屬。其餘規則對每個腳位都適用。",
+    "gotchasPins": "特定腳位",
     "gotchasChip": "整顆晶片"
   },
   "block": {
@@ -251,9 +251,9 @@
     "kicker": "引擎蓋下面",
     "lead": "你的程式碼和資料住在哪裡，哪個時鐘驅動什麼，以及每種電源模式能省多少電。",
     "memory": {
-      "title": "地址對映",
-      "lead": "CPU 看到的是一整塊大地址空間：ROM、內部 SRAM、經過快取訪問的 flash 和 PSRAM，還有各外設的暫存器。",
-      "caption": "ESP32-S3 地址對映，低地址在上",
+      "title": "位址對映",
+      "lead": "CPU 看到的是一整塊大位址空間：ROM、內部 SRAM、經過快取存取的 flash 和 PSRAM，還有各外設的暫存器。",
+      "caption": "ESP32-S3 位址對映，低位址在上",
       "yours": "你的程式住在哪裡"
     },
     "clocks": {
@@ -300,7 +300,7 @@
       "fields": "所有欄位",
       "bits": "位",
       "field": "欄位",
-      "access": "訪問",
+      "access": "存取",
       "reset": "復位值",
       "description": "說明"
     },
@@ -308,7 +308,7 @@
       "enlarge": "放大：{{caption}}",
       "close": "關閉圖片"
     },
-    "pins": "開啟引腳",
+    "pins": "開啟腳位",
     "chart": {
       "untitled": "這張表裡的數值",
       "unit": "{{caption}}（{{unit}}）",

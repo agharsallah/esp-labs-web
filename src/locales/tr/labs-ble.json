@@ -1,0 +1,1349 @@
+{
+  "controls": {
+    "play": "▶ Oynat",
+    "pause": "❚❚ Duraklat",
+    "playAria": "Oynat",
+    "pauseAria": "Duraklat"
+  },
+  "kit": {
+    "previewCaption": "Örnek veriler, kartın çizdiği gibi çizildi. Düğmeler basmalı düğmenin, telefonunun ve seri monitörün yerini tutar.",
+    "galleryComing": "Bu deneyle birlikte gelecek.",
+    "previewComing": "Önizleme bu deneyle birlikte gelecek."
+  },
+  "journey": {
+    "aria": "Sekiz Bluetooth deneyi bir yol olarak: kart her birinde ne yapar ve veri hangi yöne akar.",
+    "stageLabel": "{{id}} {{title}}: {{what}}",
+    "stages": {
+      "B1": {
+        "title": "Dinle",
+        "role": "tarayıcı",
+        "what": "her cihazın yayınını duyar",
+        "caption": "B1 Dinle: kart tarayıcıdır ve her cihazın yayınını duyar. Veri karta akar."
+      },
+      "B2": {
+        "title": "Görün",
+        "role": "yayıncı",
+        "what": "kendi canlı verisini bağırarak yayar",
+        "caption": "B2 Görün: kart yayıncıdır ve kendi canlı verisini bağırarak yayar. Veri karttan dışarı akar."
+      },
+      "B3": {
+        "title": "Bağlan ve konuş",
+        "role": "çevre birimi",
+        "what": "telefonun okuduğu ve yazdığı bir karttır",
+        "caption": "B3 Bağlan ve konuş: kart çevre birimidir ve telefonun okuduğu ve yazdığı bir karttır. Veri iki yönde akar."
+      },
+      "B4": {
+        "title": "Eşleş ve güven",
+        "role": "çevre birimi + anahtarlar",
+        "what": "şifreleme, geçiş anahtarları ve bağlar ekler",
+        "caption": "B4 Eşleş ve güven: kart çevre birimi + anahtarlardır ve şifreleme, geçiş anahtarları ve bağlar ekler. Veri iki yönde akar."
+      },
+      "B5": {
+        "title": "Telefon uygulaması",
+        "role": "çevre birimi",
+        "what": "Web Bluetooth üzerinden kendi web uygulamanla konuşur",
+        "caption": "B5 Telefon uygulaması: kart çevre birimidir ve Web Bluetooth üzerinden kendi web uygulamanla konuşur. Veri iki yönde akar."
+      },
+      "B6": {
+        "title": "Klavye ve medya",
+        "role": "HID çevre birimi",
+        "what": "yazar ve sesi değiştirir",
+        "caption": "B6 Klavye ve medya: kart HID çevre birimidir ve yazar ve sesi değiştirir. Veri karttan dışarı akar."
+      },
+      "B7": {
+        "title": "Müzik",
+        "role": "MIDI çevre birimi",
+        "what": "GarageBand'de nota çalar",
+        "caption": "B7 Müzik: kart MIDI çevre birimidir ve GarageBand'de nota çalar. Veri iki yönde akar."
+      },
+      "B8": {
+        "title": "Ana cihaz",
+        "role": "merkez",
+        "what": "klavyenin karta yazmasına izin verir",
+        "caption": "B8 Ana cihaz: kart merkezdir ve klavyenin karta yazmasına izin verir. Veri karta akar."
+      }
+    }
+  },
+  "radio": {
+    "window": "dinleme penceresi",
+    "windowAria": "Tarama penceresi, aralığın yüzdesi olarak",
+    "percent": "{{value, number}} %",
+    "mode": "Tarama modu",
+    "passive": "pasif tarama",
+    "active": "aktif tarama",
+    "aria": "40 Bluetooth kanalı ve üç Wi-Fi kanalıyla 2,4 GHz bandı. Altında, 37, 38 ve 39. kanallardaki yayın paketlerinin ve tarayıcının dinleme pencerelerinin bir zaman çizelgesi.",
+    "caption": "Kart zamanın {{value, number}} %'sini dinler, her 100 ms'de bir kanal. Her cihaz her paketi üç kez, kanal başına bir kez gönderir. Bu yüzden dinleyici hangi kanalda olursa olsun paketi duyar.",
+    "activeNote": "Aktif: taranabilir bir cihazdan duyulan her pakete bir tarama isteği döner ve cihaz ikinci bir paketle yanıt verir (daha fazla ad, daha fazla veri).",
+    "passiveNote": "Pasif: kart hiçbir zaman yayın yapmaz.",
+    "devices": {
+      "phone": "telefon",
+      "speaker": "hoparlör",
+      "keyboard": "klavye"
+    },
+    "draw": {
+      "band": "2,4 GHz bandı: 40 Bluetooth LE kanalı, her biri 2 MHz",
+      "listening": "dinliyor",
+      "channel": "kanal {{ch}}",
+      "tally": "duyulan yayın olayları {{heard, number}} · kaçan {{missed, number}} · {{caught, number}} % yakalandı",
+      "slowed": "zaman 20 kat yavaşlatıldı"
+    }
+  },
+  "anatomy": {
+    "device": "Hangi cihaz",
+    "previous": "Önceki alan",
+    "next": "Sonraki alan",
+    "bytes": "Paket baytları",
+    "used": "31 veri baytının {{used, number}} tanesi kullanıldı",
+    "position": "{{at, number}}/{{n, number}} · {{what}}",
+    "samples": {
+      "phone": "bir iPhone",
+      "jbl": "bir JBL hoparlör",
+      "keyboard": "bir BLE klavye",
+      "bench": "B2 sinyal vericin"
+    },
+    "pdu": {
+      "0": "ADV_IND (bağlanabilir, taranabilir)",
+      "2": "ADV_NONCONN_IND (yalnızca yayın)",
+      "6": "ADV_SCAN_IND (taranabilir)"
+    },
+    "field": {
+      "preamble": "ön bölüm",
+      "preambleWhat": "Ön bölüm AAh: 10101010. Alıcı bit zamanlamasını bununla yakalayabilsin diye. Her yayın paketi böyle başlar.",
+      "access": "erişim adresi",
+      "accessWhat": "Erişim adresi 8E89BED6h (küçük uçtan gönderilir): tüm yayınlar için sabit değer. Bağlantı daha sonra kendi rastgele değerini alır.",
+      "header": "başlık",
+      "headerWhat": "PDU başlığı: tür {{pdu}} = {{pduName}}, TxAdd {{txAdd}} = {{kind}}. Ardından uzunluk gelir: {{length}} bayt (6 adres + {{data}} veri).",
+      "random": "rastgele adres",
+      "public": "genel adres",
+      "advaWhat": "Yayıncının adresi {{address}}, tersten gönderilir (küçük uçtan). {{kind}}",
+      "addressResolvable": "Üst bitler 01: yaklaşık 15 dakikada bir değişen çözümlenebilir özel bir adres.",
+      "addressRandom": "Rastgele bir adres.",
+      "addressPublic": "Fabrikada yazılmış genel bir adres.",
+      "ad": "AD {{n}}",
+      "adWhat": "AD yapısı: uzunluk {{length}}, tür {{type}}. {{meaning}}",
+      "crcWhat": "Başlık, adres ve veri üzerinden CRC-24: alıcı bunu yeniden hesaplar ve bir bit bozulduysa paketi atar. (Havada, erişim adresinden sonraki her bit ayrıca “beyazlatılır”: uzun sıfır dizilerini önlemek için kanala bağlı bir desenle karıştırılır.)"
+    },
+    "ad": {
+      "discoverable": {
+        "general": "genel olarak bulunabilir",
+        "limited": "sınırlı süreyle bulunabilir (eşleştirme modu gibi, bir süre için)",
+        "none": "bulunamaz"
+      },
+      "flagsLeOnly": "Bayraklar {{value}}: {{mode}}, yalnızca LE (klasik Bluetooth yok).",
+      "flagsClassic": "Bayraklar {{value}}: {{mode}}, klasik Bluetooth da var.",
+      "name": "Tam ad: “{{name}}”. Düz ASCII, sonda sıfır yok: uzunluk baytı adın nerede bittiğini söyler.",
+      "tx": "TX gücü {{dbm}} dBm: kartın ne kadar güçlü yayın yaptığı. Dinleyici bununla uzaklığı kestirebilir.",
+      "appearance": "Görünüm {{value}}h (küçük uçtan {{bytes}}): 03C1 = klavye. Kategori en üstteki 10 bittir.",
+      "services": "16 bitlik hizmetlerin tam listesi: {{value}}h = HID, klavye ve fare hizmeti. Ana cihaz bu yayından yazabildiğini anlar.",
+      "apple": "Üretici verisi, şirket 004Ch = Apple ({{bytes}} olarak yazılır, küçük uçtan). Ardından tür {{type}} = Yakın bilgi, {{count}} bayt durum (ekran açık, Wi-Fi açık, şifrelenmiş bir ipucu). iPhone'lar birbirini böyle bulur.",
+      "jbl": "Üretici verisi, şirket 0057h = Harman (JBL). Gerisi JBL'in uygulaması için kendi biçimi: model, renk, pil, PartyBoost durumu. Bu biçimi JBL'den başka kimse belgelemez.",
+      "bench": "Üretici verisi, şirket FFFFh = test kimliği. B2 sinyal vericimiz kullanır: sürüm 01, basış sayısı {{presses, number}}, sıcaklık {{celsius, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} °C, çalışma süresi {{uptime, number}} s. Hepsi küçük uçtan.",
+      "maker": "Üretici verisi."
+    }
+  },
+  "timing": {
+    "sliders": {
+      "adv": {
+        "label": "yayın aralığı",
+        "aria": "Yayın aralığı, ms cinsinden"
+      },
+      "si": {
+        "label": "tarama aralığı",
+        "aria": "Tarama aralığı, ms cinsinden"
+      },
+      "win": {
+        "label": "pencere",
+        "aria": "Tarama penceresi, tarama aralığının yüzdesi olarak"
+      }
+    },
+    "ms": "{{value, number}} ms",
+    "delay": "0-10 ms arasında rastgele advDelay",
+    "aria": "Zaman çizelgesi: kartın 37, 38 ve 39. kanallardaki yayın olayları, tarayıcının dinleme pencereleri. Yakalanan paketler yeşil, kaçanlar gri.",
+    "count": "{{caught, number}} / {{total, number}}",
+    "rest": "duyulan yayın olayları ({{pct, number}} %). Tarayıcı her tarama aralığında bir kanal olmak üzere zamanın {{listen, number}} %'sini dinler.",
+    "restFirst": "duyulan yayın olayları ({{pct, number}} %). Tarayıcı her tarama aralığında bir kanal olmak üzere zamanın {{listen, number}} %'sini dinler. İlk kez {{first, number}} ms sonra duyuldu.",
+    "stuck": "Rastgele gecikme yok ve aralıklar birbirinin tam katı:",
+    "stuckWhy": "iki saat adım adım aynı kalır, aynı paketler sonsuza dek kaçar. advDelay'in önlediği şey budur.",
+    "longer": "Aralık uzadıkça şans azalır: telefon kartı daha geç fark eder, ama pil daha uzun gider.",
+    "draw": {
+      "now": "şimdi",
+      "span": "{{ms, number}} ms gösteriliyor, gerçek hızın dörtte biriyle",
+      "listening": "tarayıcı dinliyor",
+      "caught": "yakalandı",
+      "missed": "kaçtı (o kanalda kimse dinlemiyor)"
+    }
+  },
+  "builder": {
+    "preset": "mod {{name}}",
+    "presetB3": "B3'ün yayını",
+    "field": "Alan",
+    "bytes": "Baytlar",
+    "goesIn": "Nereye girer",
+    "where": "{{name}} nereye gider",
+    "place": {
+      "none": "dışarıda bırakıldı",
+      "adv": "yayın",
+      "rsp": "tarama yanıtı"
+    },
+    "name": "Ad",
+    "nameAria": "Cihaz adı",
+    "url": "URL",
+    "urlAria": "Eddystone URL",
+    "aria": "Her alanın kendi renginde olduğu, yayın ve tarama yanıtı olmak üzere iki satır, her biri 31 baytlık hücreler. 31'i aşan hücreler kırmızı: sığmıyorlar.",
+    "row": "{{label}}: 31 bayttan {{count, number}}",
+    "rowOver": "{{label}}: 31 bayttan {{count, number}} · {{over, number}} fazla",
+    "empty": "boş: tarama yanıtı gönderilmez",
+    "detail": "<b>{{name}}</b> ({{length, number}} + 2 bayt): {{why}}",
+    "badUrl": "<b>Bu URL kodlanamıyor:</b> http(s):// ile başlamalı ve bundan sonra en fazla 17 bayt olmalı.",
+    "fields": {
+      "flags": {
+        "name": "Bayraklar",
+        "why": "02 01 06: LE genel olarak bulunabilir, klasik desteklenmiyor. Telefonlar bulunabilir olmayan yayınları atlar."
+      },
+      "name": {
+        "name": "Ad",
+        "why": "Tam yerel ad: insanların listede okuduğu şey. Her harf bir bayt."
+      },
+      "tx": {
+        "name": "TX gücü",
+        "why": "Kartın gönderdiği güç (+9 dBm). Telefon bunu ölçtüğü RSSI ile karşılaştırıp uzaklığı kestirir."
+      },
+      "app": {
+        "name": "Görünüm",
+        "why": "0540 = genel sensör. Telefonlar bundan bir simge seçer (0x03C1 olsaydı klavye olurdu)."
+      },
+      "svc16": {
+        "name": "16 bitlik hizmet",
+        "why": "180F, Pil hizmeti, küçük uçtan. Standart hizmetler 2 bayta sığar."
+      },
+      "svc128": {
+        "name": "128 bitlik hizmet",
+        "why": "Bench hizmetinin UUID'si: kendi hizmetlerimiz tam 16 bayt ister, bu da bütçenin yarısından fazlası. B3 bunu buraya koyar ki uygulamalar buna göre süzebilsin."
+      },
+      "maker": {
+        "name": "Üretici FFFF",
+        "why": "Üretici verisi: 2 bayt şirket kimliği (FFFF = test), sonra istediğin her şey. B2'nin sürümü, basışlar, sıcaklık ve çalışma süresi gibi."
+      },
+      "ibeacon": {
+        "name": "iBeacon",
+        "why": "Apple'ın üretici verisi: 4C 00 02 15, UUID, major, minor ve 1 m'deki güç. 27 bayt: bayraklardan başka hiçbir şey sığmaz."
+      },
+      "url": {
+        "name": "Eddystone-URL",
+        "why": "FEAA için hizmet verisi: çerçeve 10, 0 m'deki güç, şema baytı, sonra URL. .com/ gibi parçalar tek bayt olarak yazılır."
+      }
+    }
+  },
+  "legend": {
+    "b3": "radyo paketi veya çağrı (turuncu: bu adım)",
+    "b4": "SMP veya bağlantı katmanı paketi (turuncu: bu adım)",
+    "b4Wait": "bir kişiyi bekliyor",
+    "b5": "çağrı, olay veya radyo paketi (turuncu: bu adım)",
+    "b8": "havadaki paket (turuncu: bu adım)",
+    "b8Wait": "kart seni bekliyor"
+  },
+  "table": {
+    "aria": "Solda telefon, sağda kartın GATT tablosu. Seçilen işlem için bir paket ikisi arasında gider.",
+    "phone": "telefon",
+    "service": "Bench hizmeti ba5e0000-… (kart)",
+    "operations": "İşlemler",
+    "toPhone": "kart → telefon",
+    "toBoard": "telefon → kart",
+    "what": ": {{what}}.",
+    "value": "Değer: {{value}}",
+    "ops": {
+      "read": {
+        "action": "{{name}} oku",
+        "what": "Read Request (0A) + tanıtıcı (handle) → Read Response (0B) + değer"
+      },
+      "write": {
+        "action": "{{name}} yaz",
+        "what": "Write Request (12) + tanıtıcı + değer → Write Response (13)"
+      },
+      "subscribe": {
+        "action": "{{name}} bildirimlerine abone ol",
+        "what": "CCCD tanımlayıcısına bir Write Request (tanıtıcı + 1): 01 00 = bildirimler açık"
+      },
+      "notify": {
+        "action": "{{name}} bildir",
+        "what": "Handle Value Notification (1B) + tanıtıcı + değer, yanıt yok"
+      }
+    },
+    "show": {
+      "cccd": "CCCD = bildirimler açık",
+      "gesture": "hareket {{gesture}} ({{name}}), sayı {{count, number}}",
+      "celsius": "{{value, number}} °C",
+      "seconds": "{{value, number}} s"
+    }
+  },
+  "matrix": {
+    "phone": "telefon (eşleştirmeyi başlatır)",
+    "phoneAria": "Telefonun IO yeteneği",
+    "board": "kart",
+    "boardAria": "Kartın IO yeteneği",
+    "mitm": "MITM koruması istendi",
+    "aria": "Telefon ve kart: seçilen yeteneklere göre numarayı kim gösterir, kim yazar ya da onaylar.",
+    "initiator": "telefon (başlatan)",
+    "responder": "kart (yanıtlayan)",
+    "unchecked": "şifreli, ama kimse kontrol etmedi: MITM koruması yok",
+    "checked": "bir kişi kontrol ediyor: ortadaki adama karşı korumalı",
+    "methodTitle": "{{method}}.",
+    "corner": "telefon ↓ · kart →",
+    "sixDigits": "⌨ 6 rakam",
+    "methods": {
+      "J": "Just Works",
+      "N": "Numeric Comparison",
+      "PI": "Passkey Entry",
+      "PR": "Passkey Entry",
+      "PB": "Passkey Entry (ikisi de yazar)"
+    },
+    "short": {
+      "J": "Just Works",
+      "N": "Numeric Comparison",
+      "PI": "Passkey · kart gösterir",
+      "PR": "Passkey · telefon gösterir",
+      "PB": "Passkey (ikisi de)"
+    },
+    "roles": {
+      "nothing": "yapacak bir şey yok",
+      "tapYes": "aynı mı? evet'e dokun",
+      "pressYes": "aynı mı? evet'e bas",
+      "types": "yazar",
+      "shows": "gösterir",
+      "typeSame": "aynısını yazarsın",
+      "onBoth": "ikisinde de"
+    },
+    "why": {
+      "JNoMitm": "İki taraf da MITM koruması istemedi. Bu yüzden yığın, ekranların ne yapabileceğinden bağımsız olarak kolay yolu seçer.",
+      "JNoInput": "Bir taraf ne gösterebilir ne de girebilir (ya da ikisi yalnızca gösterebilir). Yani bir kişinin karşılaştırabileceği bir şey yok. Bağlantı dinleyicilere karşı şifrelidir, ama iki tarafı da aktaran bir saldırgan aynısını yapabilirdi. B4'ün Vault'u bunu reddeder: kimlik doğrulama ister.",
+      "N": "İki tarafın da ekranı var ve evet diyebilir. Her biri değiş tokuş edilen açık anahtarlardan altı rakam hesaplar. Ortadaki bir adamın anahtarları farklı olur, bu yüzden rakamlar da farklı çıkar. Yalnızca LE Secure Connections ile.",
+      "PI": "Kart altı rastgele rakam gösterir. Sen bunları telefona yazarsın. İki taraf, anahtarlar üzerinde anlaşmadan önce aynı passkey'i bildiklerini bit bit kanıtlar.",
+      "PR": "Telefon rakamları gösterir, kart bunları yazar. B4'ün kartı yazamaz. Bu yüzden bunu laboratuvarda hiç göremezsin. Klavyelerin eşleşme biçimi budur (B8).",
+      "PB": "İki tarafın da ekranı yok: altı rakam uydurup iki klavyeye de yazarsın."
+    }
+  },
+  "throughput": {
+    "sliders": {
+      "mtu": {
+        "label": "MTU",
+        "aria": "MTU, bayt cinsinden"
+      },
+      "interval": {
+        "label": "Bağlantı aralığı",
+        "aria": "Bağlantı aralığı, ms cinsinden"
+      },
+      "cap": {
+        "label": "Merkezin olay başına izin verdiği radyo paketi",
+        "aria": "Bağlantı olayı başına paket"
+      }
+    },
+    "mtuValue": "{{mtu, number}} B ({{data, number}} B veri)",
+    "ms": "{{value, number}} ms",
+    "count": "{{value, number}}",
+    "longOn": "uzun paketler: açık (251 B)",
+    "longOff": "uzun paketler: kapalı (27 B)",
+    "aria": "Zaman çizelgesinde üç bağlantı olayı. Her radyo paketi ölçekli çizilmiş.",
+    "event": "olay {{n, number}} · {{ms, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} ms",
+    "data": "kart → merkez: bildirim paketleri",
+    "acks": "merkez → kart: boş onaylar (çizginin altında)",
+    "shown": "{{ms, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} ms gösteriliyor · boşluklarda radyolar uyur",
+    "result_one": "<b>{{kBps, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} kB/s</b> = olay başına {{count, number}} bildirim × {{data, number}} B ÷ {{interval, number}} ms.",
+    "result_other": "<b>{{kBps, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} kB/s</b> = olay başına {{count, number}} bildirim × {{data, number}} B ÷ {{interval, number}} ms.",
+    "frags_one": "Her bildirim {{count, number}} radyo paketi ({{ms, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} ms onaylarla birlikte).",
+    "frags_other": "Her bildirim {{count, number}} radyo paketi ({{ms, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} ms onaylarla birlikte).",
+    "limit": {
+      "cap": "Merkezin olay başına paket sınırıyla sınırlı.",
+      "time": "Hava süresiyle sınırlı: olay dolu."
+    },
+    "nothing": "<b>Hiçbiri sığmıyor:</b> olay başına paketi artır ya da MTU'yu küçült."
+  },
+  "sound": {
+    "keys": "Medya tuşları",
+    "key": {
+      "play": "oynat/duraklat",
+      "next": "sonraki parça",
+      "down": "ses −",
+      "up": "ses +"
+    },
+    "directButton": "Kart hoparlöre doğrudan mı?",
+    "aria": "Kart, medya tuşunu Bluetooth LE üzerinden telefona gönderir. Telefon sesi klasik Bluetooth üzerinden hoparlöre akıtır",
+    "start": "Bir medya tuşuna bas.",
+    "sent": "Kart küçük bir HID raporu ({{usage}} kullanımı) ve bırakma olayını gönderir. Gerisini telefon yapar: kendi müziğini değiştirir, hoparlöre giden ses akışı da buna uyar.",
+    "direct": "S3'ün radyosu yalnızca Bluetooth LE konuşur. Hoparlör sesi klasik Bluetooth'u (BR/EDR) kullanır. Bu başka bir modülasyon ve protokoldür, bu yüzden kart JBL'in ses tarafını bile göremez. Özgün ESP32'de klasik Bluetooth var ve akış yapabilir (A2DP). LE Audio ve Auracast'li yeni hoparlörler Bluetooth 5.2 ister. S3'te 5.0 var.",
+    "draw": {
+      "leOnly": "yalnızca LE",
+      "phone": "telefon",
+      "orMac": "ya da Mac",
+      "playing": "▶ çalıyor",
+      "paused": "❚❚ duraklatıldı",
+      "volume": "ses {{value, number}}",
+      "speaker": "JBL hoparlör",
+      "classic": "Klasik BT ses",
+      "reports": "2-8 baytlık raporlar",
+      "rate": "~ 300 kbit/s, durmadan",
+      "fail": "✕ farklı radyo: LE paketleri bir A2DP alıcısı için bir anlam taşımaz"
+    }
+  },
+  "report": {
+    "layouts": "Düzenler",
+    "boardLayout": "kartın <code>layout</code> düzeni",
+    "boardAria": "Kart düzeni",
+    "computer": "bilgisayar şu şekilde ayarlı",
+    "computerAria": "Bilgisayar düzeni",
+    "us": "US",
+    "de": "Almanca",
+    "text": "Yazılacak metin",
+    "type": "yaz",
+    "clear": "temizle",
+    "aria": "Kartın karakter tablosundan bilgisayarın düzen tablosuna, 8 baytlık bir rapor olarak yolculuk eden bir tuş basışı",
+    "mismatchUs": "Kart karakterleri kendi {{board}} tablosunda arar, ama bilgisayar tuş numaralarını US düzeniyle okur: y ile z yer değiştirir, noktalama işaretleri başka yere düşer. Çözüm: layout {{host}}.",
+    "mismatchDe": "Kart karakterleri kendi {{board}} tablosunda arar, ama bilgisayar tuş numaralarını Almanca düzeniyle okur: y ile z yer değiştirir, noktalama işaretleri başka yere düşer. Çözüm: layout {{host}}.",
+    "agree": "İki taraf anlaşıyor, bu yüzden her karakter yolculuktan sağ çıkıyor.",
+    "agreeSkipped": "İki taraf anlaşıyor, bu yüzden her karakter yolculuktan sağ çıkıyor. Atlandı (AltGr/Option gerektirir): {{skipped}}",
+    "draw": {
+      "board": "kart",
+      "report": "8 baytlık rapor",
+      "overLe": "Bluetooth LE üzerinden",
+      "computer": "bilgisayar",
+      "setUs": "US olarak ayarlı",
+      "setDe": "Almanca olarak ayarlı",
+      "noShift": "mod 00 = Shift yok",
+      "typed": "sen yazdın",
+      "shows": "bilgisayar gösterir"
+    }
+  },
+  "packet": {
+    "options": "Paket seçenekleri",
+    "running": "çalışma durumu",
+    "collect": "şunun için topla",
+    "interval": "Bağlantı aralığı",
+    "ms": "{{value, number}} ms",
+    "slow": "300 ms (yavaş, paketlemeyi görmek için)",
+    "hear": "dinle",
+    "keyboard": "Mini klavye",
+    "keyAria": "{{name}} (tuş {{key}})",
+    "notes": {
+      "C": "C",
+      "D": "D",
+      "E": "E",
+      "F": "F",
+      "G": "G",
+      "A": "A",
+      "B": "B"
+    },
+    "aria": "Son BLE-MIDI paketinin baytları, rollerine göre renkli",
+    "start": "Bir nota çal.",
+    "built_one": "Tek pakette {{count, number}} nota, {{real, number}} bayt.",
+    "built_other": "Tek pakette {{count, number}} nota, {{real, number}} bayt.",
+    "builtSaved_one": "Tek pakette {{count, number}} nota, {{real, number}} bayt: çalışma durumu {{saved, number}} tasarruf etti.",
+    "builtSaved_other": "Tek pakette {{count, number}} nota, {{real, number}} bayt: çalışma durumu {{saved, number}} tasarruf etti.",
+    "timestamps": "Her nota kendi zaman damgasını taşır, böylece synth onları çaldığın gibi aralıklarla çalabilir. Nota kapatma da aynı biçimde 300 ms sonra gider (durum 80).",
+    "empty": "Birkaç nota çal: tek bir pakette toplanırlar.",
+    "legend": {
+      "header": "başlık: en üst bit 1, sonra saatin yüksek bitleri",
+      "ts": "zaman damgası: en üst bit 1, ms saatinin alt 7 biti",
+      "status": "durum: ne + kanal (90 = nota açık, kanal 1)",
+      "note": "nota numarası (60 = orta C)",
+      "vel": "hız (ne kadar sert)"
+    }
+  },
+  "latency": {
+    "group": "Aralık ve ritim",
+    "play": "çal",
+    "rhythm": "Ritim",
+    "rhythms": {
+      "sixteenths": "240 bpm'de on altılıklar (62,5 ms)",
+      "trill": "hızlı bir tril (40 ms)",
+      "eighths": "240 bpm'de sekizlikler (125 ms)"
+    },
+    "aria": "Çalınan notalar, onları taşıyan bağlantı olayları ve iki tür synth'in bunları ne zaman çaldığı",
+    "lanes": {
+      "play": "sen çalarsın",
+      "events": "radyo olayları",
+      "arrival": "synth: geldiği anda",
+      "timestamps": "synth: zaman damgaları"
+    },
+    "caption": "Aralık {{interval, number}} ms: her nota bir sonraki radyo olayını 0 ile {{interval, number}} ms arasında bekler. Notaları geldikleri anda çalan bir synth, aralarındaki boşlukları en fazla {{err, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} ms kaydırır (kırmızı). Zaman damgalarıyla çalan synth ise zamanlamanı tam korur, ama her şeyi {{interval, number}} ms geç çalar (yeşil)."
+  },
+  "decoder": {
+    "keyboardScreen": "Kartın klavye görünümü: {{text}}▌",
+    "empty": "(boş)",
+    "mouseScreen": "Kartın fare görünümü: imleç {{x}}, {{y}}, fırça {{brush}}.",
+    "pressKey": "Bir tuşa bas: aşağı inerken bir rapor, yukarı çıkarken bir rapor.",
+    "drag": "Pad üzerinde sürükle: her hareket bir rapordur.",
+    "backspace": "geri sil",
+    "enter": "enter",
+    "char": "“{{c}}”",
+    "keyUs": "{{code}} kodlu tuş, {{mods}} değiştiriciyle → US düzeninde {{typed}}",
+    "keyDe": "{{code}} kodlu tuş, {{mods}} değiştiriciyle → Almanca düzeninde {{typed}}",
+    "releaseKey": "bırakma: her tuş yuvası yine 00, hiçbir şey yazılmadı",
+    "media": "medya tuşu {{usage}}: {{name}}",
+    "mediaName": {
+      "up": "ses artır",
+      "down": "ses azalt",
+      "play": "oynat/duraklat"
+    },
+    "releaseMedia": "bırakma: 00 00",
+    "mouse": "düğmeler {{buttons}} · X {{dx}} · Y {{dy}} · tekerlek {{wheel}}",
+    "group": "Rapor haritası ve düzen",
+    "map": "Rapor haritası",
+    "maps": {
+      "combo": "Klavye + medya tuşları",
+      "boot": "Önyükleme klavyesi (HID belirtimi)",
+      "mouse": "5 düğmeli fare, 12 bit X/Y"
+    },
+    "layout": "Düzen",
+    "layoutAria": "Klavye düzeni",
+    "german": "Almanca düzen: kodu 1C olan tuş artık z yazar, 2D ise ß. Klavye aynı kodları gönderir.",
+    "us": "US düzeni.",
+    "usOption": "US (QWERTY)",
+    "deOption": "Almanca (QWERTZ)",
+    "aria": "Cihazdan karta giden raporu, baytları ve bitleriyle. Her alan sırayla yanar",
+    "keyboard": "Klavye",
+    "keyAria": "tuş kodu {{code}}: {{c}}",
+    "nothing": "hiçbiri",
+    "space": "Boşluk (2C)",
+    "mediaKey": {
+      "down": "ses − (EA)",
+      "up": "ses + (E9)",
+      "play": "oynat (CD)"
+    },
+    "field": {
+      "padding": "dolgu",
+      "modifier": "değiştirici",
+      "keys_one": "tuş kodları ({{count, number}} yuva)",
+      "keys_other": "tuş kodları ({{count, number}} yuva)",
+      "button": "düğme {{n}}",
+      "x": "X (göreli)",
+      "y": "Y (göreli)",
+      "wheel": "tekerlek",
+      "media": "medya tuşu (tüketici kullanımı)",
+      "other": "diğer"
+    },
+    "draw": {
+      "keyboard": "klavye",
+      "mouse": "fare",
+      "board": "kart",
+      "reportId": "rapor kimliği {{id}} (2908'den, baytlarda yok)",
+      "bits": "bitler, her baytta 0. bit önce (parlak = 1)",
+      "field_one": "{{name}}: {{count, number}} bit, başlangıç bit {{bit}} = {{value}}",
+      "field_other": "{{name}}: {{count, number}} bit, başlangıç bit {{bit}} = {{value}}"
+    }
+  },
+  "pad": {
+    "aria": "Fare pedi: sürükleyerek taşı, basarak tıkla, kaydırarak tekerleği kullan ya da ok tuşlarını kullan",
+    "hint": "burada sürükle = taşı · bas = sol düğme · kaydır = tekerlek",
+    "left": "sol tıklama",
+    "right": "sağ tıklama",
+    "wheelUp": "tekerlek +1",
+    "wheelDown": "tekerlek −1"
+  },
+  "items": {
+    "title": "Rapor Haritası öğeleri",
+    "size": "{{bytes, number}} bayt · {{fields, number}} giriş alanı"
+  },
+  "screens": {
+    "b1": {
+      "captions": {
+        "0": "Her cihaz bir nokta: merkeze yakın olan daha güçlü sinyal verir. Renk türünü gösterir (mavi telefon, kehribar ses, turkuaz klavye, mercan etiket). Sağda, mesafe tahminiyle en yakın altı cihaz.",
+        "1": "En güçlü cihazlar, adları ya da üreticileriyle, adres türüyle (rpa = özel bir adresin ardına saklanan telefon), sinyalleriyle ve ne kadar önce duyulduklarıyla. Seçilen cihaz vurgulanır.",
+        "2": "Seçilen cihazın yayını ve tarama yanıtı, 31 küçük hücre olarak, her bayt için bir tane, AD yapısına göre renkli. Her yapı altta çözümlenmiş.",
+        "3": "Son bir dakikadaki saniyedeki paket sayısı (çubuklar) ve menzildeki cihazlar (çizgi), tarama modu ve görev oranı, adres türlerinin karışımı."
+      },
+      "actions": {
+        "phoneCloser": "telefon: yaklaş",
+        "phoneWalkAway": "telefon: uzaklaş",
+        "doubleClickNext": "çift tıkla: sonraki",
+        "longPressScan": "uzun bas: tara"
+      }
+    },
+    "b2": {
+      "captions": {
+        "0": "Yayın ve tarama yanıtı, her biri 31 hücre olarak, AD yapısı başına bir renk (uzunluk ve tür baytları daha koyu), altta çözümlenmiş. Yeni değişen baytlar beyaz yanıp söner: her saniye çalışma süresi, çift tıklamada basışlar.",
+        "1": "Zamanlama, ayarlardan çizilmiş: her aralıkta bir olay artı rastgele 0-10 ms (+n etiketleri). Her olay, 37, 38 ve 39. kanallarda bir pakettir. Bir olay tetiklendiğinde halkalar karttan çıkar. Köşedeki kutu bir olayı büyütülmüş gösterir (paket başına yaklaşık 0,3 ms).",
+        "2": "Bu ayarlarla bir düğme pil işaret çipi için tahmin: akım nereye gider, ortalama, bir CR2032 ile ömür ve aralığa göre ömür (kehribar nokta = şimdi). Bu kart kendisi yaklaşık 80 mA çeker.",
+        "3": "Etkinlik günlüğü: mod değişiklikleri, basışlar, reddedilen ayarlar."
+      },
+      "actions": {
+        "buttonDoubleClickPress": "düğme: çift tıkla (bas)",
+        "modeNext": "mod: sonraki",
+        "connectableOnOff": "bağlanabilir açık/kapalı",
+        "interval1001000": "aralık 100 / 1000"
+      }
+    },
+    "b3": {
+      "captions": {
+        "0": "Bench hizmeti bir tablo olarak: ad, özellikler (R okuma, W yazma, N bildirim) ve geçerli değer. Bir işlem satırını yakar: okuma turkuaz, yazma mavi, bildirim mor, abone olma kehribar. Sağdaki telefona ya da telefondan bir nokta gider. Zil, abone olunduğunu gösterir.",
+        "1": "Telefondan yazılan son mesaj, 12 pt'de satır sarılmış ve LED'in rengi parlayan bir disk olarak.",
+        "2": "Canlı bağlantı: merkez kim, bağlantı olayları tıkırdıyor (20 kat yavaşlatılmış), aralık, MTU, gecikme, zaman aşımı, PHY, RSSI, güvenlik ve trafik sayaçları.",
+        "3": "Etkinlik günlüğü, en yeni en altta: < telefondan alınan, > ona gönderilen, + iyi haberler, ! uyarılar."
+      },
+      "actions": {
+        "phoneConnect": "telefon: bağlan",
+        "phoneWriteLedFf5000": "telefon: LED FF5000 yaz",
+        "phoneWriteMessage": "telefon: Message yaz",
+        "phoneSubscribeButton": "telefon: Button'a abone ol",
+        "boardClick": "kart: tıkla"
+      }
+    },
+    "b4": {
+      "captions": {
+        "0": "Eşleştirme töreni bir çizgide sekiz aşama olarak: dolu = NimBLE bildirdi, halka = çıkarıldı (sonraki bir aşama için olmuş olmalı), kehribar atım = seni bekliyor, mercan çarpı = nerede ve neden başarısız olduğu. Mor = şifreli ve bağ kurulmuş.",
+        "1": "Kimlik adresine göre bağ kurulmuş cihazlar ve gizlilik numarası: telefonun havadaki adresi sürekli değişir. Bağ kurarken alınan IRK hepsini aynı telefona çözümler.",
+        "2": "B3'ün gatt görünümü ve Vault satırı. Reddedilen bir Vault okuması mercan renkte yanıp söner.",
+        "3": "Canlı bağlantı. Güvenlik satırı artık şifreli, + MITM, + bağ kurulmuş diyor.",
+        "4": "Etkinlik günlüğü: geçiş anahtarları, ENC_CHANGE sonuçları, kimlikler, reddetmeler."
+      },
+      "actions": {
+        "phoneConnect": "telefon: bağlan",
+        "phoneReadVault": "telefon: Vault oku",
+        "phoneTypeThePasskeyTapYes": "telefon: passkey'i yaz / evet'e dokun",
+        "boardClickYes": "kart: tıkla (evet)"
+      }
+    },
+    "b5": {
+      "captions": {
+        "0": "Uygulamanın çizdiği, her karede durum çubuğunun altına kopyalanan şey (kart bunu kendi 320 × 128 tamponunda tutar). Altta, kaç komut, yazma ve bayt geldiğini gösterir. DROPPED, 16 yazmalık kuyruğun dolu olduğu anlamına gelir.",
+        "1": "Uygulamanın grafiğe döktüğü dört değer, son 12 sn üzerinde küçük çizgi grafikler olarak: sıcaklık, GPIO 1'deki dokunma, boş bellek, bağlantı RSSI. Sağ altta: uygulama abone oldu mu ve kaç bildirim gitti.",
+        "2": "Bir çalıştırma sürerken: telefona uçan paketler, bir ilerleme çubuğu ve beklemeler (yığının tamponları dolmuştu). Sonra her çalıştırma için bir çubuk: kB/s, MTU, aralık ve PHY.",
+        "3": "B3'ün Bench hizmeti, değişmeden: uygulama okuduğunda, yazdığında ya da abone olduğunda satırlar yanar. B5'in kendi dört özelliği burada görünmez. Diğer görünümler onları gösterir.",
+        "4": "Canlı bağlantı: aralık, MTU, PHY ve RSSI. Hız sekmesinin Link düğmeleri daha hızlı bir aralık ya da 2M PHY istediğinde bunların değiştiğini izle.",
+        "5": "Etkinlik günlüğü: < uygulamadan, > uygulamaya, + her hız çalıştırması gibi sonuçlar."
+      },
+      "actions": {
+        "appConnect": "uygulama: bağlan",
+        "appDrawAStroke": "uygulama: bir çizgi çiz",
+        "appSubscribeSensors": "uygulama: Sensors'a abone ol",
+        "touchTheWireOnGpio1": "GPIO 1'deki kabloya dokun",
+        "appSpeed50Kb": "uygulama: hız 50 kB",
+        "appFast2m": "uygulama: hızlı + 2M"
+      }
+    },
+    "b6": {
+      "captions": {
+        "0": "Mod: düğme kumandadır. Bastığın simge dalgalanır. Nokta kart → telefon → hoparlör yönünde ilerler.",
+        "1": "Mod: bir slayt destesi. Tıklama = sağ ok, çift = sol ok, basılı tut = b (siyah ekran).",
+        "2": "`type` komutunun gönderdikleri: düzen, ilerleme, kod parçası ve bilgisayarın Caps/Num ışıkları, bize geri gönderilen.",
+        "3": "Son raporlar bayt olarak: değiştirici bitleri, tuş numaraları, her basışın yazdığı ve hepsi sıfır olan bırakma.",
+        "4": "Bağlantı: aralık, MTU, güvenlik (klavye bağlantısı her zaman şifrelidir).",
+        "5": "Havada olan her şey."
+      },
+      "actions": {
+        "phonePairBenchB6": "telefon: Bench B6'yı eşleştir",
+        "buttonClick": "düğme: tıkla",
+        "typeYes": "yaz, evet"
+      }
+    },
+    "b7": {
+      "captions": {
+        "0": "Beş dokunmatik tuş ve iki oktavlık bir piyano: mor = bu kartın çaldığı notalar, mavi = synth'ten gelen notalar.",
+        "1": "Davul makinesi: 10. kanalda 4 davul × 16 adım, oynatma başı tempoda ilerler.",
+        "2": "Son 6 saniyenin piyano rulosu, iki yönde, kaç notanın bir pakette paylaştığıyla birlikte.",
+        "3": "Notalar neden bekler: her biri bir sonraki bağlantı olayında çıkar.",
+        "4": "Havada olan her şey."
+      },
+      "actions": {
+        "macConnectInAudioMidiSetup": "Mac: Audio MIDI Setup'ta bağlan",
+        "buttonClickANote": "düğme: tıkla (bir nota)",
+        "synthPlayE4": "synth: E4 çal",
+        "seqOnOff": "dizi aç/kapat"
+      }
+    },
+    "b8": {
+      "captions": {
+        "0": "Yalnızca bağlanabilir cihazlar, en güçlüsü önce. Klavye simgesi ve HID, klavyeleri ve fareleri işaretler. Bir anahtar, karta bağ kurulmuş cihazları işaretler. Vurgulanan satır seçilen satırdır.",
+        "1": "Bağlı cihazın GATT tablosu: hizmetler (mavi), R/W/N/I ile özellikler ve okunan genel değerler (turkuaz), tanımlayıcılar (gri). HID değerleri eşleşene kadar kilitli kalır.",
+        "2": "Senin klavyen, karta yazıyor: yanıp sönen imleçle metin, sekiz değiştirici tuş (basılıyken kehribar), tutulan tuş kodları, düzen ve protokol.",
+        "3": "Farenin bir boyama oyuncağı olarak: sol düğme çizer, sağ rengi değiştirir, orta temizler, tekerlek fırçayı ayarlar. İz, imlecin hemen önce nerede olduğunu gösterir.",
+        "4": "Ham giriş raporları, en yeni en altta: her bayt Rapor Haritası alanına göre renkli (kehribar değiştiriciler ve düğmeler, turkuaz tuşlar, mavi X, mor Y, mercan tekerlek), altta çözümlenmiş.",
+        "5": "Merkez tarafından canlı bağlantı: kart yönetir, klavye her bağlantı olayında yanıt verir. Aralık, MTU, PHY, sinyal ve güvenlik.",
+        "6": "Olan her şey, sırayla: kartın gönderdiği (>), aldığı (<) ve sonuçlar."
+      },
+      "actions": {
+        "keyboardPairingModeConnectHost": "klavye: eşleştirme modu, bağlan, ana cihaz",
+        "typeHelloBench": "“Hello bench” yaz",
+        "mediaVolumeUp": "medya: ses artır",
+        "mouseConnectDraw": "fare: bağlan + çiz",
+        "exploreTheJbl": "JBL'i keşfet",
+        "disconnect": "bağlantıyı kes"
+      }
+    }
+  },
+  "flows": {
+    "b3": {
+      "discover": {
+        "label": "Bağlan ve keşfet",
+        "lanes": [
+          [
+            "telefon",
+            "merkez"
+          ],
+          [
+            "NimBLE",
+            "kart, çevre birimi"
+          ],
+          [
+            "loop()",
+            "ekran ve LED"
+          ]
+        ],
+        "steps": {
+          "0": {
+            "msg": "ADV_IND + SCAN_RSP",
+            "title": "Kart yayın yapar",
+            "text": "Yayında bayraklar ve 128 bitlik Bench hizmet UUID'si, tarama yanıtında ise ad var. Telefonun tarayıcısı Bench B3'ü gösterir."
+          },
+          "1": {
+            "msg": "CONNECT_IND",
+            "title": "Telefon bağlanır",
+            "text": "Bir yayına yanıt olarak telefon bağlantının ayarlarını gönderir: yeni bir rastgele erişim adresi, 37 veri kanalı üzerinde atlama deseni, aralık ve zaman aşımı. Bundan sonra her aralıkta buluşurlar."
+          },
+          "2": {
+            "msg": "onConnect",
+            "title": "Kart not alır",
+            "text": "NimBLE, ServerLink::onConnect'i kendi görevinde çağırır. Yalnızca paylaşılan bağlantı durumunu ve etkinlik günlüğünü günceller. İki halkayı loop() çizer ve satırı yazdırır."
+          },
+          "3": {
+            "msg": "Exchange MTU 517",
+            "title": "Bir paket ne kadar büyük olabilir?",
+            "text": "Varsayılan olarak bir ATT paketi 23 bayt taşır. Telefon daha fazlasını önerir, kart alabildiği kadarını yanıtlar (255). İkisi de küçük olanı kullanır."
+          },
+          "4": {
+            "msg": "Read By Group Type",
+            "title": "Hangi hizmetler var?",
+            "text": "Telefon, 0001 ile FFFF tanıtıcıları arasındaki tüm birincil hizmetleri (UUID 2800) sorar. Kart her hizmetin ilk tanıtıcısını, son tanıtıcısını ve UUID'sini yanıtlar."
+          },
+          "5": {
+            "msg": "Read By Type 2803",
+            "title": "…ve hangi karakteristikler var?",
+            "text": "Her hizmet için karakteristik tanımları: özellikler (bir bit alanı), değerin tanıtıcısı ve UUID. 0A = okuma + yazma, 12 = okuma + bildirim."
+          },
+          "6": {
+            "msg": "Find Information",
+            "title": "…ve tanımlayıcıları",
+            "text": "Tanımlayıcılar bir değerin hemen ardında durur: 2902 (CCCD, abone olduğun yer), 2901 (uygulamaların gösterdiği ad), 2904 (sayı biçimi: sint16, ×10^-2, °C)."
+          },
+          "7": {
+            "msg": "Write CCCD 01 00",
+            "title": "Düğmeye abone ol",
+            "text": "Bildirim simgesine dokunmak, Button'ın CCCD'sine 0001 yazar. NimBLE onSubscribe'ı çağırır: satırda bir zil belirir."
+          }
+        }
+      },
+      "write": {
+        "label": "LED'i yaz",
+        "lanes": [
+          [
+            "telefon",
+            "nRF Connect"
+          ],
+          [
+            "NimBLE",
+            "onWrite()"
+          ],
+          [
+            "loop()",
+            "tick() → LED"
+          ]
+        ],
+        "steps": {
+          "0": {
+            "msg": "Write Request",
+            "title": "Üç bayt",
+            "text": "İşlem kodu 12 (Write Request), tanıtıcı 0010 (LED değeri), sonra FF 50 00. Bir sonraki bağlantı olayını bekler: en fazla bir aralık kadar."
+          },
+          "1": {
+            "msg": "onWrite",
+            "title": "Geri çağırma NimBLE'ın görevinde çalışır",
+            "text": "Tam 3 bayt olduğunu kontrol eder, spinlock altında kopyalar ve bir bayrak kaldırır. LED'e dokunmaz: onu yalnızca tek bir görev sürer."
+          },
+          "2": {
+            "msg": "Write Response",
+            "title": "Telefon onayını alır",
+            "text": "İşlem kodu 13. “Yanıtsız yazma” (işlem kodu 52) ile hiç yanıt yoktur: daha hızlı, ama telefon gittiğini asla öğrenmez."
+          },
+          "3": {
+            "msg": "takeLed()",
+            "title": "loop() ışığı yakar",
+            "text": "Sonraki loop() bayrağı görür, LED'i durum ekranından alır ve rengi GPIO 48'deki WS2812'ye yazar. gatt satırı mavi yanıp söner."
+          }
+        }
+      },
+      "notify": {
+        "label": "Tıklamayı bildir",
+        "lanes": [
+          [
+            "telefon",
+            "abone"
+          ],
+          [
+            "NimBLE",
+            "yığın"
+          ],
+          [
+            "loop()",
+            "düğme"
+          ]
+        ],
+        "steps": {
+          "0": {
+            "msg": "click",
+            "title": "Tıklarsın",
+            "text": "Button sınıfı sıçramayı önler ve bir Click bildirir. Deneyin hareket kancası bunu Bench hizmetine verir, sonra kabuk bir sonraki görünüme geçer."
+          },
+          "1": {
+            "msg": "notify()",
+            "title": "Değeri ayarla, bildir",
+            "text": "Hareket 1, sayı 7 (küçük uçtan). notify() bunu bir sonraki bağlantı olayı için kuyruğa alır. Hiçbir şey yanıt beklemez."
+          },
+          "2": {
+            "msg": "Handle Value Notification",
+            "title": "Havada",
+            "text": "İşlem kodu 1B, tanıtıcı, değer. Yanıt yok: bildirimler “gönder, unut” türündedir. (Indication'lar, 1D, bir 1E onayı bekler.)"
+          }
+        }
+      }
+    },
+    "b4": {
+      "passkey": {
+        "label": "Passkey Entry",
+        "lanes": [
+          [
+            "telefon",
+            "merkez"
+          ],
+          [
+            "kart",
+            "güvenlik yöneticisi"
+          ],
+          [
+            "sen",
+            "bir kişi"
+          ]
+        ],
+        "steps": {
+          "0": {
+            "msg": "Read Vault",
+            "title": "Telefon Vault'a dokunur",
+            "text": "Vault tanıtıcısının düz bir ATT okuması. NimBLE karakteristiğin izinlerini (READ_ENC + READ_AUTHEN) kontrol eder ve reddeder."
+          },
+          "1": {
+            "msg": "Pairing Request",
+            "title": "Aşama 1: ne yapabilirsin?",
+            "text": "Telefon eşleşmeyi başlatır (SMP, kendi L2CAP kanalı üzerinden, CID 0006). Bir ekranı ve klavyesi olduğunu söyler. Bağlanmak, MITM koruması ve Secure Connections istediğini bildirir."
+          },
+          "2": {
+            "msg": "Pairing Response",
+            "title": "Kart yanıtlar: DisplayOnly",
+            "text": "Kendi yetenekleri, eşleştirme komutuyla ayarlanmış. İki yanıttan her taraf, yukarıdaki matristen aynı yöntemi bulur."
+          },
+          "3": {
+            "msg": "Public Key",
+            "title": "Aşama 2: eliptik eğri anahtarları",
+            "text": "Her taraf yeni bir P-256 açık anahtarı (64 bayt: X ve Y) gönderir. Her biri karşısındakinin açık anahtarını kendi özel anahtarıyla çarpar. İkisi de aynı DHKey'i elde eder ve bu anahtar asla yolculuk etmez."
+          },
+          "4": {
+            "msg": "show 482915",
+            "title": "Kart altı rakam gösterir",
+            "text": "onPassKeyDisplay rastgele bir passkey döndürür. Kabuk bunu mevcut görünümün üzerine çizer."
+          },
+          "5": {
+            "msg": "type 482915",
+            "title": "Rakamları telefona yazarsın",
+            "text": "30 saniyelik saat işler. Yazmak, iki ekranı da gördüğünü kanıtlar: ortadaki bir saldırgan numarayı bilmez."
+          },
+          "6": {
+            "msg": "Confirm + Random ×20",
+            "title": "20 tur, passkey'in her biti için bir tur",
+            "text": "Passkey 20 bittir. Her bit için iki taraf bir değere bağlanır (Confirm), sonra onu açıklar (Random). Yanlış bir rakam kendi bitinde başarısız olur, diğerlerini ele vermeden."
+          },
+          "7": {
+            "msg": "DHKey Check",
+            "title": "Aşama 2 biter: aynı DHKey'i kanıtla",
+            "text": "Her taraf, DHKey'den, iki rastgele değerden ve iki adresten hesaplanmış (f6) bir kontrol değeri gönderir. Yalnızca aynı DHKey'e sahip biri bunu üretebilir."
+          },
+          "8": {
+            "msg": "LL_ENC_REQ",
+            "title": "Şifrelemeyi aç",
+            "text": "Bağlantı katmanı, LTK ile AES-CCM'i başlatır. Bir sonraki paketten itibaren dinleyici yalnızca gürültü görür. NimBLE ENC_CHANGE bildirir: törenin şifreli aşaması."
+          },
+          "9": {
+            "msg": "Identity Information",
+            "title": "Aşama 3: hatırlanacak anahtarlar",
+            "text": "Artık şifreli. İkisi de IRK'sını ve kimlik adresini verir. IRK, kartın telefonu sonra o gün hangi özel adresi kullanırsa kullansın tanımasını sağlar."
+          },
+          "10": {
+            "msg": "bond saved",
+            "title": "Bağlandı ve doğrulandı",
+            "text": "Anahtarlar NVS'te. Telefon Vault'u yeniden okur ve alır. Bir dahaki sefere: kayıtlı LTK ile hemen şifreli, tören yok."
+          }
+        }
+      },
+      "compare": {
+        "label": "Numeric Comparison",
+        "lanes": [
+          [
+            "telefon",
+            "merkez"
+          ],
+          [
+            "kart",
+            "güvenlik yöneticisi"
+          ],
+          [
+            "sen",
+            "bir kişi"
+          ]
+        ],
+        "steps": {
+          "0": {
+            "msg": "Read Vault",
+            "title": "Telefon Vault'a dokunur",
+            "text": "Vault tanıtıcısının düz bir ATT okuması. NimBLE karakteristiğin izinlerini (READ_ENC + READ_AUTHEN) kontrol eder ve reddeder."
+          },
+          "1": {
+            "msg": "Pairing Request",
+            "title": "Aşama 1: ne yapabilirsin?",
+            "text": "Telefon eşleşmeye başlar (SMP, kendi L2CAP kanalı üzerinden, CID 0006). Bir ekranı ve klavyesi olduğunu söyler. Bağlanmak, MITM koruması ve Secure Connections istediğini bildirir."
+          },
+          "2": {
+            "msg": "Pairing Response",
+            "title": "Kart yanıtlar: DisplayYesNo",
+            "text": "Kartın kendi yetenekleri, eşleştirme komutuyla ayarlanmış. İki yanıttan her taraf, yukarıdaki matristen aynı yöntemi bulur."
+          },
+          "3": {
+            "msg": "Public Key",
+            "title": "Aşama 2: eliptik eğri anahtarları",
+            "text": "Her taraf yeni bir P-256 açık anahtarı (64 bayt: X ve Y) gönderir. Her biri karşısındakinin açık anahtarını kendi özel anahtarıyla çarpar. İkisi de aynı DHKey'i elde eder ve bu anahtar asla yolculuk etmez."
+          },
+          "4": {
+            "msg": "Confirm",
+            "title": "Kart taahhüt eder",
+            "text": "Kart önce kendi rastgele sayısının bir taahhüdünü gönderir. Böylece telefonun sayısını gördükten sonra onu değiştiremez."
+          },
+          "5": {
+            "msg": "Random ×2",
+            "title": "İkisi de rastgele sayılarını açar",
+            "text": "Artık ikisi de g2(PKa, PKb, Na, Nb) mod 1.000.000 hesaplar: iki açık anahtara da bağlı altı rakam."
+          },
+          "6": {
+            "msg": "same 731406?",
+            "title": "İki ekran da numarayı gösterir",
+            "text": "onConfirmPassKey: TFT, NUMERIC COMPARISON gösterir. Telefonda aynı numarayı gördüğünü kontrol et, telefonda evet'e dokun ve kartın düğmesine tıkla (uzun basış = hayır)."
+          },
+          "7": {
+            "msg": "DHKey Check",
+            "title": "Aşama 2 biter: aynı DHKey'i kanıtla",
+            "text": "Her taraf, DHKey'den, iki rastgele değerden ve iki adresten hesaplanmış (f6) bir kontrol değeri gönderir. Yalnızca aynı DHKey'e sahip biri bunu üretebilir."
+          },
+          "8": {
+            "msg": "LL_ENC_REQ",
+            "title": "Şifrelemeyi aç",
+            "text": "Bağlantı katmanı, LTK ile AES-CCM'i başlatır. Bir sonraki paketten itibaren dinleyici yalnızca gürültü görür. NimBLE ENC_CHANGE bildirir: törenin şifreli aşaması."
+          },
+          "9": {
+            "msg": "Identity Information",
+            "title": "Aşama 3: hatırlanacak anahtarlar",
+            "text": "Artık şifreli. İkisi de IRK'sını ve kimlik adresini verir. IRK, kartın telefonu sonra o gün kullandığı özel adres ne olursa olsun tanımasını sağlar."
+          },
+          "10": {
+            "msg": "bond saved",
+            "title": "Bağlandı ve doğrulandı",
+            "text": "Anahtarlar NVS'te. Telefon Vault'u yeniden okur ve alır. Bir dahaki sefere: kayıtlı LTK ile hemen şifreli, tören yok."
+          }
+        }
+      },
+      "justworks": {
+        "label": "Just Works",
+        "lanes": [
+          [
+            "telefon",
+            "merkez"
+          ],
+          [
+            "kart",
+            "güvenlik yöneticisi"
+          ],
+          [
+            "sen",
+            "bir kişi"
+          ]
+        ],
+        "steps": {
+          "0": {
+            "msg": "Read Vault",
+            "title": "Telefon Vault'a dokunur",
+            "text": "Vault tanıtıcısının düz bir ATT okuması. NimBLE karakteristiğin izinlerini (READ_ENC + READ_AUTHEN) kontrol eder ve reddeder."
+          },
+          "1": {
+            "msg": "Pairing Request",
+            "title": "Aşama 1: ne yapabilirsin?",
+            "text": "Telefon eşleşmeye başlar (SMP, kendi L2CAP kanalı üzerinden, CID 0006). Bir ekranı ve klavyesi olduğunu söyler. Bağlanmak, MITM koruması ve Secure Connections istediğini bildirir."
+          },
+          "2": {
+            "msg": "Pairing Response",
+            "title": "Kart yanıtlar: NoInputNoOutput",
+            "text": "Kartın kendi yetenekleri, eşleştirme komutuyla ayarlanmış. İki yanıttan her taraf, yukarıdaki matristen aynı yöntemi bulur."
+          },
+          "3": {
+            "msg": "Public Key",
+            "title": "Aşama 2: eliptik eğri anahtarları",
+            "text": "Her taraf yeni bir P-256 açık anahtarı (64 bayt: X ve Y) gönderir. Her biri karşısındakinin açık anahtarını kendi özel anahtarıyla çarpar. İkisi de aynı DHKey'i elde eder ve bu anahtar asla yolculuk etmez."
+          },
+          "4": {
+            "msg": "Confirm + Random",
+            "title": "Kimse dahil değil",
+            "text": "Sayısal karşılaştırmayla aynı değiş tokuş, ama hiçbir ekran numarayı göstermez: ortadaki bir adamı kimse fark edemez."
+          },
+          "5": {
+            "msg": "DHKey Check",
+            "title": "Aşama 2 biter: aynı DHKey'i kanıtla",
+            "text": "Her taraf, DHKey'den, iki rastgele değerden ve iki adresten hesaplanmış (f6) bir kontrol değeri gönderir. Yalnızca aynı DHKey'e sahip biri bunu üretebilir."
+          },
+          "6": {
+            "msg": "LL_ENC_REQ",
+            "title": "Şifrelemeyi aç",
+            "text": "Bağlantı katmanı, LTK ile AES-CCM'i başlatır. Bir sonraki paketten itibaren dinleyici yalnızca gürültü görür. NimBLE ENC_CHANGE bildirir: törenin şifreli aşaması."
+          },
+          "7": {
+            "msg": "Identity Information",
+            "title": "Aşama 3: hatırlanacak anahtarlar",
+            "text": "Artık şifreli. İkisi de IRK'sını ve kimlik adresini verir. IRK, kartın telefonu sonra o gün kullandığı özel adres ne olursa olsun tanımasını sağlar."
+          },
+          "8": {
+            "msg": "bond saved",
+            "title": "Bağlandı, ama doğrulanmadı",
+            "text": "Anahtarlar NVS'te, bağlantı şifreli, ama kimse doğrulamadı. Güvenlik seviyesi “encrypted, no MITM”. Vault yine reddeder. Kilit etkin olsa bile LED ve Message çalışır."
+          }
+        }
+      }
+    },
+    "b5": {
+      "write": {
+        "label": "Renk değişimi",
+        "lanes": [
+          [
+            "uygulama (JS)",
+            "ble-app"
+          ],
+          [
+            "tarayıcı",
+            "Chrome'un GATT istemcisi"
+          ],
+          [
+            "NimBLE",
+            "kart, onWrite()"
+          ],
+          [
+            "loop()",
+            "GPIO 48'deki LED"
+          ]
+        ],
+        "steps": {
+          "0": {
+            "msg": "requestDevice()",
+            "title": "Kişiden bir kart seçmesini iste",
+            "text": "Bir sayfa kendi kendine tarayamaz ya da bağlanamaz. requestDevice() tarayıcının seçicisini açar. Seçici, Bench hizmeti olan kartlarla, adı “Bench” ile başlayanlarla ya da BLE-MIDI'li kartlarla süzülür. Yalnızca burada listelenen hizmetlere (artı optionalServices) erişilebilir."
+          },
+          "1": {
+            "msg": "CONNECT_IND",
+            "title": "Tarayıcı bağlanır",
+            "text": "device.gatt.connect(): işletim sisteminin Bluetooth yığını merkez olur. Uygulama radyo paketlerini hiç görmez, yalnızca GATT nesnelerini görür."
+          },
+          "2": {
+            "msg": "discover services",
+            "title": "Keşif (nRF Connect ile aynı)",
+            "text": "getPrimaryServices() ve getCharacteristics(), B3'teki ATT keşfini perde arkasında çalıştırır. Uygulama, UUID ile bildiği her karakteristik için bir tanıtıcı tutar."
+          },
+          "3": {
+            "msg": "writeValueWithResponse()",
+            "title": "Tekerlek hareket etti",
+            "text": "Kontrol sekmesi ton, doygunluk ve parlaklığı kırmızı, yeşil ve maviye çevirir: 80 ms'de en fazla bir kez, ve her seferinde tek bir yazma kuyruğa alır. GATT aynı anda tek işleme izin verir. Bu yüzden her çağrı uygulamanın kuyruğunda sırasını bekler."
+          },
+          "4": {
+            "msg": "Write Request",
+            "title": "Havada",
+            "text": "İşlem kodu 12, tanıtıcı 0010, üç bayt. Bir sonraki bağlantı olayında yola çıkar: en fazla bir aralık sonra."
+          },
+          "5": {
+            "msg": "onWrite",
+            "title": "NimBLE'ın görevi onu alır",
+            "text": "BenchService::onWrite uzunluğu kontrol eder, rengi spinlock altında kopyalar ve bir bayrak kaldırır. LED'i kendisi sürmez: yalnızca loop() sürer."
+          },
+          "6": {
+            "msg": "Write Response",
+            "title": "Söz yerine gelir",
+            "text": "İşlem kodu 13 bir sonraki olayda döner. Tarayıcı uygulamanın await'ini çözer. Reddedilen bir yazma ise bunun yerine ATT hatasıyla reddedilirdi."
+          },
+          "7": {
+            "msg": "takeLed()",
+            "title": "loop() LED'i yakar",
+            "text": "Bir sonraki kare bayrağı görür, LED'i radyo durumundan alır ve WS2812'yi yazar. gatt satırı mavi yanıp söner."
+          }
+        }
+      },
+      "notify": {
+        "label": "Sensör akışı",
+        "lanes": [
+          [
+            "uygulama (JS)",
+            "Canlı sekmesi"
+          ],
+          [
+            "tarayıcı",
+            "GATT istemcisi"
+          ],
+          [
+            "NimBLE",
+            "kart"
+          ],
+          [
+            "loop()",
+            "her 200 ms tick()"
+          ]
+        ],
+        "steps": {
+          "0": {
+            "msg": "startNotifications()",
+            "title": "Abone ol",
+            "text": "Canlı sekmesi Sensors üzerinde startNotifications() çağırır. Tarayıcı bizim için CCCD'ye 01 00 yazar."
+          },
+          "1": {
+            "msg": "Write CCCD 01 00",
+            "title": "CCCD yazması havada",
+            "text": "İşlem kodu 12, değerin hemen ardındaki tanımlayıcıya (tanıtıcı + 1). NimBLE Extras::onSubscribe'ı çağırır: bundan sonra tick() gönderir."
+          },
+          "2": {
+            "msg": "notify()",
+            "title": "Her 200 ms'de",
+            "text": "tick() çipin sıcaklığını, touchRead(1)'i, boş belleği ve bağlantının RSSI'sini okur, 12 bayta paketler ve bildirir."
+          },
+          "3": {
+            "msg": "Handle Value Notification",
+            "title": "Havada, yanıt yok",
+            "text": "İşlem kodu 1B, tanıtıcı, 12 bayt. Bildirimler GATT düzeyinde asla onaylanmaz: saniyede beş tane telefona neredeyse hiçbir şey maliyet getirmez."
+          },
+          "4": {
+            "msg": "characteristicvaluechanged",
+            "title": "Sayfada bir olay",
+            "text": "Tarayıcı, değeri bir DataView olarak taşıyan bir olay tetikler. decodeSensors() onu küçük uçtan okur. Sıra numarası bir boşluk varsa bunu gösterir."
+          },
+          "5": {
+            "msg": "chart",
+            "title": "React çizgiyi çizer",
+            "text": "Örnek, son 150 (30 sn) değere eklenir ve dört grafik yeniden çizilir. Kabloya dokun: bir sonraki paket sıçramayı zaten taşır."
+          }
+        }
+      }
+    },
+    "b8": {
+      "first": {
+        "label": "İlk eşleştirme",
+        "lanes": [
+          [
+            "ESP32-S3",
+            "merkez (bu kart)"
+          ],
+          [
+            "klavye",
+            "çevre birimi"
+          ],
+          [
+            "sen",
+            "klavyenin başında"
+          ]
+        ],
+        "steps": {
+          "0": {
+            "msg": "ADV_IND (ch 37, 38, 39)",
+            "title": "Klavye yayın yapar",
+            "text": "Eşleştirme modunda klavye, üç yayın kanalında her 20-30 ms'de bir bağırır. HID hizmeti (1812) ve görünümü (03C1 = klavye) ne olduğunu söyler: kartın tarayıcısı onu HID olarak işaretler."
+          },
+          "1": {
+            "msg": "CONNECT_IND",
+            "title": "Kart bağlanır: zamanlamayı şimdi o belirler",
+            "text": "Bir yayından 150 µs sonra kart aynı kanalda yanıt verir. Buradan itibaren iki radyo, 37 veri kanalı üzerinde birlikte atlar. Merkez olarak kart aralığı, gecikmeyi ve zaman aşımını seçti."
+          },
+          "2": {
+            "msg": "Exchange MTU: 255",
+            "title": "Bir paket ne kadar büyük olabilir?",
+            "text": "Varsayılan ATT paketi 23 bayt. Kart 255 önerir. Klavye yapabildiğiyle yanıt verir."
+          },
+          "3": {
+            "msg": "MTU 65",
+            "title": "Küçük olanı üzerinde anlaşırlar",
+            "text": "65 bayt: paket başına 62 bayt veri. Bu bol: bir tuş basışı 8 bayt."
+          },
+          "4": {
+            "msg": "Read By Group Type (services)",
+            "title": "Keşif: ne sunuyorsun?",
+            "text": "Kart her birincil hizmeti, sonra her birinin karakteristiklerini ve tanımlayıcılarını ister. Henüz şifreleme gerekmez: içindekiler tablosu herkese açıktır."
+          },
+          "5": {
+            "msg": "1800 1801 180A 180F 1812",
+            "title": "Beş hizmet",
+            "text": "Generic Access ve Attribute (her cihazda var), Device Information, Battery ve Report Map ile Report karakteristikleriyle birlikte HID. Keşif görünümü bu ağacı gösterir. HID değerleri kilitlidir: şifreli bir bağlantı isterler."
+          },
+          "6": {
+            "msg": "Pairing Request",
+            "title": "ana cihaz: güvenlik iste",
+            "text": "Kart ne yapabildiğini söyler: rakamları gösterebilir ama yazamaz. Bağ ister (anahtarları hatırla), MITM koruması ve LE Secure Connections."
+          },
+          "7": {
+            "msg": "Pairing Response",
+            "title": "Klavye yalnızca yazabilir",
+            "text": "Yalnızca gösterme (kart) + yalnızca klavye (klavye) = passkey girişi. Ekranı olan taraf altı rakam gösterir, tuşları olan taraf onları yazar. Sonra ikisi açık anahtarları (ECDH P-256) değiş tokuş eder."
+          },
+          "8": {
+            "msg": "shows 482915",
+            "title": "TFT'de altı rakam",
+            "text": "Passkey'in kendisi havadan hiç geçmez. Kart onu gösterilen görünümün üzerine büyük çizer ve 30 saniyeye kadar bekler."
+          },
+          "9": {
+            "msg": "types 4 8 2 9 1 5 ⏎",
+            "title": "Rakamları klavyede yazarsın",
+            "text": "Klavye, yazdığını gösterecek bir bilgisayara bağlı değil. Tuş basışları eşleştirmeye gider, bir uygulamaya değil."
+          },
+          "10": {
+            "msg": "20 confirm rounds + DHKey check",
+            "title": "Her seferinde bir bit kanıt",
+            "text": "Passkey'in 20 bitinin her biri için iki taraf bir taahhüt, sonra arkasındaki rastgele değeri değiş tokuş eder. Dinleyen kimse işine yarayacak bir şey öğrenmez. Ortadaki biri ise passkey'e ihtiyaç duyardı."
+          },
+          "11": {
+            "msg": "LL_ENC_REQ",
+            "title": "Şifreleme açık, anahtarlar kayıtlı",
+            "text": "Artık her paket şifrelenir (AES-CCM). Uzun vadeli anahtar (LTK) ve klavyenin kimlik anahtarı (IRK) kartın NVS'inde saklanır: bağ budur."
+          },
+          "12": {
+            "msg": "Read Blob 2A4B",
+            "title": "Report Map'i oku",
+            "text": "Klavyenin raporlarını kendi tarifi. Bir paketten uzun olduğu için birkaç Read Blob turunda gelir."
+          },
+          "13": {
+            "msg": "Report Map, 72 bytes",
+            "title": "Her bit neyi anlatır?",
+            "text": "Rapor 1: 8 değiştirici biti, bir dolgu baytı, 6 tuş kodu. Rapor 3: bir 16 bitlik medya tuşu. kit/lib/ble-kit/src/hid_report.h bu baytları alanlara çevirir. Bir sonraki panelde dene."
+          },
+          "14": {
+            "msg": "Read 2908 → 01 01",
+            "title": "Hangi rapor hangisi?",
+            "text": "Her Report karakteristiğinin bir Report Reference tanımlayıcısı var: rapor kimliği ve türü (1 giriş, 2 çıkış, 3 özellik). Rapor kimliği bildirimlerin içinde hiç gitmez. Yaşadığı tek yer burası."
+          },
+          "15": {
+            "msg": "Write CCCD 01 00",
+            "title": "Abone ol",
+            "text": "Her giriş raporunun CCCD'sine (tanımlayıcı 2902) 01 00 yazmak şu demek: bana bildirim gönder. Her giriş raporu için yapılır."
+          },
+          "16": {
+            "msg": "presses h",
+            "title": "h tuşuna basarsın",
+            "text": "Klavye tuş matrisini tarar, 0B konumundaki tuşu bulur ve bir sonraki bağlantı olayı için bir rapor kuyruğa alır."
+          },
+          "17": {
+            "msg": "Notify 00 00 0B 00 00 00 00 00",
+            "title": "Bir tuş basışı, 8 bayt",
+            "text": "Değiştirici yok (00), ayrılmış bir bayt (00) ve ilk tuş yuvasında 0B tuş kodu. Kart önceki raporla karşılaştırır: 0B yeni, yani bu bir tuş basışı. 0B hem US hem Almanca klavyelerde h'dir."
+          },
+          "18": {
+            "msg": "Notify 00 00 00 00 00 00 00 00",
+            "title": "Bırakma",
+            "text": "Bıraktığında bir rapor daha: tüm tuş yuvaları boş. Bir tuşu basılı tutmak başka bir şey göndermez. Kart, tuşun son rapordan beri hâlâ basılı olduğunu bilir."
+          }
+        }
+      },
+      "back": {
+        "label": "Geri dönüş (bağ kurulmuş)",
+        "lanes": [
+          [
+            "ESP32-S3",
+            "merkez (bu kart)"
+          ],
+          [
+            "klavye",
+            "çevre birimi"
+          ],
+          [
+            "sen",
+            "klavyenin başında"
+          ]
+        ],
+        "steps": {
+          "0": {
+            "msg": "presses any key",
+            "title": "Uyandır",
+            "text": "Güç döngüsünden sonra kart yeniden tarar. Klavye, bir tuşa basana kadar uyur."
+          },
+          "1": {
+            "msg": "ADV_IND / ADV_DIRECT_IND",
+            "title": "Klavye ana cihazını çağırır",
+            "text": "Bağlanmış bir klavye çoğu zaman yönlendirilmiş yayın kullanır: yalnızca karta yöneltilmiş bir paket. Kartın tarama geri çağırması adresi, NVS'teki bağlarıyla karşılaştırır."
+          },
+          "2": {
+            "msg": "CONNECT_IND",
+            "title": "Bağlan",
+            "text": "İlk seferdeki gibi: zamanlamayı kart belirler."
+          },
+          "3": {
+            "msg": "LL_ENC_REQ (stored LTK)",
+            "title": "Kayıtlı anahtarla şifrele",
+            "text": "Eşleştirme yok, passkey yok: iki taraf da bağdan kalan uzun vadeli anahtara sahip. Biri unuttuysa bu, “PIN or key missing” hatasıyla başarısız olur: unut ve yeniden eşleştir."
+          },
+          "4": {
+            "msg": "Report Map + CCCD 01 00",
+            "title": "Yine ana cihaz",
+            "text": "Kart Report Map'i yeniden okur ve abone olur. (Bağlanmış bir cihaz abonelikleri hatırlar, ama kart buna güvenmez.)"
+          },
+          "5": {
+            "msg": "Notify …",
+            "title": "Yazmaya devam et",
+            "text": "Uyandırmak için bastığın ilk tuş genellikle kaybolur. Sonrakiler gelir."
+          }
+        }
+      },
+      "jbl": {
+        "label": "JBL'ini keşfetmek",
+        "lanes": [
+          [
+            "ESP32-S3",
+            "merkez (bu kart)"
+          ],
+          [
+            "JBL hoparlör",
+            "BLE tarafı"
+          ],
+          [
+            "telefon",
+            "müziği çalar"
+          ]
+        ],
+        "steps": {
+          "0": {
+            "msg": "audio (Classic Bluetooth, A2DP)",
+            "title": "Müzik hiç BLE'ye dokunmaz",
+            "text": "Telefonun sesi hoparlöre klasik Bluetooth üzerinden akar (BR/EDR, A2DP profili). ESP32-S3'te yalnızca Düşük Enerji radyosu var: buna katılamaz."
+          },
+          "1": {
+            "msg": "ADV_IND",
+            "title": "Ama hoparlör de BLE konuşur",
+            "text": "Birçok hoparlör, telefon uygulaması için BLE üzerinden de yayın yapar: ayarlar, yazılım güncellemeleri, hoparlörleri birbirine bağlama."
+          },
+          "2": {
+            "msg": "CONNECT_IND + discovery",
+            "title": "Keşfet",
+            "text": "connect <n>: kart bağlanır ve sunduğu şeyleri listeler."
+          },
+          "3": {
+            "msg": "Read 2A00 (device name)",
+            "title": "Yalnızca herkese açık temeller",
+            "text": "Kart, bir hoparlörün herkese gösterdiği standart değerleri okur. Satıcı hizmetindeki hiçbir şeyi okumaz: o, JBL uygulamasının kendi protokolüdür."
+          },
+          "4": {
+            "msg": "verdict",
+            "title": "Neden ses hizmeti yok",
+            "text": "1812 yok, standart bir ses hizmeti yok: yalnızca uygulamanın kendi hizmeti var. Kart bunu keşif görünümünde söyler ve dokunmaz."
+          }
+        }
+      }
+    }
+  }
+}

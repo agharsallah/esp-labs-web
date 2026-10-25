@@ -1,0 +1,1029 @@
+{
+  "rfidSeq": {
+    "legend": {
+      "msg": "SPI erişimi ya da radyo çerçevesi (turuncu: bu adım)",
+      "wait": "okuyucu görevi bekliyor (IRQ teli ya da yoklama)"
+    },
+    "lanes": {
+      "names": [
+        "okuyucu görevi",
+        "MFRC522",
+        "kart"
+      ],
+      "subs": [
+        "ESP32 çekirdek 0",
+        "okuyucu çip",
+        "pil yok"
+      ]
+    },
+    "flows": {
+      "wake": {
+        "label": "Uyandır (WUPA → ATQA)",
+        "steps": [
+          {
+            "title": "Çerçeveyi çipe yükle",
+            "text": "Okuyucu görevi, SPI üzerinden WUPA (52h) komutunu çipin 64 baytlık FIFO belleğine yazar. Çipe yalnızca 7 bit göndermesini söyler: kısa bir çerçeve."
+          },
+          {
+            "title": "Gönder, sonra dinle",
+            "text": "Tek bir komut çipin FIFO'yu göndermesini, ardından almaya geçmesini sağlar. Bundan sonra okuyucu görevi bekler: IRQ telini izleyerek ya da ComIrqReg'i tekrar tekrar okuyarak."
+          },
+          {
+            "title": "%100 ASK: alan duraklar",
+            "text": "Çip kendi 13,56 MHz alanını kendisi değiştirir: bir bitin başında (Z) ya da ortasında (X) yaklaşık 3 µs'lik bir duraklama, ya da hiç duraklama (Y). Kart enerjisini bu aynı alandan alır, duraklamalar sırasında da."
+          },
+          {
+            "msg": "uyandırma · 86 µs bekle",
+            "title": "Kart uyanır ve sırasını bekler",
+            "text": "Kartın çipi alandan enerji alıp açılır, WUPA'yı çözer, sonra yanıt vermeden önce sabit bir süre bekler. Her kart tam aynı süreyi bekler. Bu yüzden hepsi aynı anda yanıt verir: çakışmaların mümkün olmasının nedeni budur."
+          },
+          {
+            "title": "Yük modülasyonu: kart yanıt verir",
+            "text": "Kart iletim yapamaz. Bobinindeki bir yükü 847 kHz'de (fc/16) açıp kapatır, okuyucunun anteni de kendi alanının titrediğini hisseder. Manchester kodlu, 2 bayt."
+          },
+          {
+            "title": "Çip “bitti” der",
+            "text": "Çip ComIrqReg içinde RxIRq ve IdleIRq bitlerini ayarlar. IRQ teli varsa pin aşağı iner ve okuyucu görevini hemen uyandırır. IRQ teli yoksa görev bu sürede ComIrqReg'i SPI üzerinden yoklamıştır (R6 bunun maliyetini sayar)."
+          },
+          {
+            "msg": "FIFO'yu oku",
+            "title": "Yanıtı topla",
+            "text": "Hata yok, 2 bayt bekliyor, son bayt tam. Sürücü ATQA'yı protokol katmanına iletir."
+          }
+        ]
+      },
+      "select": {
+        "label": "Seç (UID → SAK)",
+        "steps": [
+          {
+            "title": "Sen kimsin?",
+            "text": "SEL 93h = kaskad kademe 1. NVB 20h = 2 bayt gönderildi, ek bit yok: “UID'nin 32 bitinin hepsini bana söyle”."
+          },
+          {
+            "title": "UID + BCC",
+            "text": "Kart 4 UID baytını ve dördünün XOR'unu veren bir kontrol baytını gönderir. İki kart varsa, bitleri tam bu noktada çakışır (R3)."
+          },
+          {
+            "msg": "BCC'yi kontrol et · CRC_A",
+            "title": "Kontrol et, sonra CRC ekle",
+            "text": "Sürücü BCC'yi denetler, sonra SELECT çerçevesine 2 baytlık CRC_A ekler (R6, çipin CRC birimini ESP32'nin aynı hesabıyla yarıştırır)."
+          },
+          {
+            "title": "BU kartı seç",
+            "text": "NVB 70h: 7 tam bayt izler. Yalnızca bu tam UID'ye sahip kart yanıt verir, diğerleri sessizleşir."
+          },
+          {
+            "title": "SAK: ne tür kart",
+            "text": "08h: MIFARE Classic 1K. Bit 2 temiz, yani UID tamamdır. Bit 2 1 olsaydı, UID kaskad kademe 2'de (95h) devam ederdi."
+          },
+          {
+            "title": "HLTA: uykuya geç",
+            "text": "Yoklamamız kartı hemen durdurur. Durdurulmuş kart REQA'yı yok sayar ama WUPA ile uyanır. Bu yüzden bir sonraki yoklama (80 ms sonra) kartı yeniden bulur: kart görünümü, kartın hâlâ orada olduğunu bu sayede bilir."
+          }
+        ]
+      },
+      "read": {
+        "label": "Doğrula ve 4 numaralı bloğu oku",
+        "steps": [
+          {
+            "title": "Anahtarı çipe ver",
+            "text": "FIFO'ya 12 bayt: A anahtarıyla AUTH (60h), blok 4, 6 baytlık anahtar, UID'nin son 4 baytı. Sonra MFAuthent komutu: işin geri kalanını çip kendisi yapar."
+          },
+          {
+            "title": "1. geçiş: hangi sektör, hangi anahtar",
+            "text": "Çip karttan, 4. bloğun sektörünü (sektör 1) A anahtarıyla açmasını ister."
+          },
+          {
+            "msg": "sınama nT",
+            "title": "2. geçiş: kartın sınaması",
+            "text": "Kart, 4 baytlık rastgele bir sayıyla yanıt verir."
+          },
+          {
+            "msg": "nR + yanıt",
+            "title": "3. geçiş: okuyucu anahtarı olduğunu kanıtlar",
+            "text": "Çip kendi rastgele sayısını ve kartın sınamasına verdiği yanıtı gönderir. İkisi de anahtarla hesaplanır. Bundan sonra Crypto1 her çerçeveyi şifreler."
+          },
+          {
+            "msg": "kartın yanıtı",
+            "title": "Kart da kanıtlar",
+            "text": "Kartın yanıtı aynı anahtarı bildiğini gösterir. Çip Status2Reg içinde MFCrypto1On bitini ayarlar, sürücü bunu denetler."
+          },
+          {
+            "msg": "30 04 + CRC (şifreli)",
+            "title": "4. bloğu OKU",
+            "text": "FIFO düz baytları tutar, çip bunları dışarı çıkarken şifreler. Dinleyici bu çerçeveleri “havada şifreli” diye işaretler."
+          },
+          {
+            "msg": "16 bayt + CRC",
+            "title": "Blok",
+            "text": "18 bayt geri gelir, çip bunları şifreden çözer."
+          },
+          {
+            "msg": "18 bayt → ESP32",
+            "title": "CRC'yi kendimiz denetleriz",
+            "text": "Sürücü FIFO'dan 18 bayt okur ve ilk 16 üzerinden CRC_A'yı denetler. Yanlış CRC, bozulmuş bir çerçeve demektir: R6'daki stres testi bunun ne sıklıkla olduğunu sayar."
+          }
+        ]
+      },
+      "credits": {
+        "label": "Kredi harca: 3",
+        "steps": [
+          {
+            "title": "Değeri yükle",
+            "text": "Kart, 8. bloğun geçerli bir değer bloğu olduğunu denetler (değer, ters değer, değer, adres ×4) ve bunu iç yazmacına yükler. Biçim bozuksa NAK."
+          },
+          {
+            "title": "Yedeğe kaydet",
+            "text": "TRANSFER, yazmacı 9. bloğa yazar. Yedek artık değişiklikten önceki değeri tutar."
+          },
+          {
+            "title": "Kartın üzerinde çıkar",
+            "text": "Kart 8. bloğu yükler ve yazmacındaki işleneni ondan çıkarır. 8. blok henüz değişmez."
+          },
+          {
+            "title": "Onayla",
+            "text": "Bu TRANSFER gerçekleşene kadar 8. blok hâlâ 50 der. Kart 16 baytlık bloğun tamamını ya da hiçbirini yazar: yarıda çekilen bir kart 50 ya da 47 bırakır, asla bozuk bir sayı bırakmaz."
+          },
+          {
+            "msg": "8 ve 9'u oku",
+            "title": "Kartın şimdi ne dediğini kontrol et",
+            "text": "Yazılım iki bloğu da geri okur ve çözer."
+          }
+        ]
+      }
+    }
+  },
+  "doorSeq": {
+    "legend": {
+      "msg": "HTTP, WebSocket ya da radyo (turuncu: bu adım)",
+      "wait": "uygulama geliştirme kartını bekliyor"
+    },
+    "lanes": {
+      "names": [
+        "React uygulaması",
+        "Vite sunucusu",
+        "web sunucusu",
+        "okuyucu görevi",
+        "kart"
+      ],
+      "subs": [
+        "tarayıcın",
+        "Mac'inde",
+        "geliştirme kartı, çekirdek 1",
+        "geliştirme kartı, çekirdek 0",
+        "etiketin"
+      ]
+    },
+    "flows": {
+      "tap": {
+        "label": "Bir okutma",
+        "steps": [
+          {
+            "title": "Kart kim olduğunu söyler",
+            "text": "Uyandırma, çakışma önleme ve seçme, R2'deki gibi: kartın katkısı yalnızca UID'dir."
+          },
+          {
+            "msg": "listeden karar ver",
+            "title": "Kararı geliştirme kartı kendi listesinden verir",
+            "text": "registry.tap() UID'yi arar ve kuralları sırayla denetler: engellenmiş mi, kilit modu, saat ayarlı mı, bitiş tarihi, saat aralığı, kalan kullanım hakkı. Kartta hiçbir şey okunmaz ya da güvenilmez."
+          },
+          {
+            "title": "Kapı açılır",
+            "text": "Ekrandaki asma kilit açılır, LED yeşile döner ve 5 saniyelik geri sayım başlar. Reddedilen okutmalarda 2 sn boyunca DENIED ve nedeni görünür, LED kırmızı olur."
+          },
+          {
+            "msg": "olay JSON",
+            "title": "Günlük için bir olay",
+            "text": "Okuyucu görevi çıkış kutusuna bir JSON mesajı koyar. Diğer çekirdekteki loop() bunu her WebSocket istemcisine gönderir."
+          },
+          {
+            "msg": "WebSocket gönderimi",
+            "title": "Uygulama hemen duyar",
+            "text": "Vite'ın proxy'si üzerinden tarayıcıya ulaşır: erişim günlüğüne yeni bir satır, kapı panelinde yeşil. Her saniye bir durum mesajı gelir."
+          }
+        ]
+      },
+      "block": {
+        "label": "Uygulamadan engelleme",
+        "steps": [
+          {
+            "title": "Engelle düğmesine basarsın",
+            "text": "Uygulama yalnızca değişeni gönderir. Uygulamada token yok: tarayıcı token'ı hiç tutmaz."
+          },
+          {
+            "title": "Geliştirme sunucusu token'ı ekler",
+            "text": "Vite'ın proxy'si, Mac'inde door-app/.env dosyasındaki başlığı ekler ve isteği Wi-Fi üzerinden iletir."
+          },
+          {
+            "msg": "denetle, güncelle, kaydet",
+            "title": "Geliştirme kartı önce her şeyi denetler",
+            "text": "Token sabit sürede karşılaştırılır, her alan doğrulanır, ardından registry.update() kartı mutex kilidi altında değiştirir ve listeyi NVS'ye kaydeder."
+          },
+          {
+            "msg": "200 + kart",
+            "title": "Yanıt, bir okutmanın şimdi ne yapacağıyla birlikte",
+            "text": "Kart yeni durumuyla geri gelir ve bir WebSocket 'cards' mesajı açık olan her uygulamayı günceller."
+          },
+          {
+            "msg": "sonraki okutma",
+            "title": "Sonraki okutma",
+            "text": "Aynı kart, aynı UID: kartta hiçbir şey değişmedi."
+          },
+          {
+            "msg": "engelli → DENIED",
+            "title": "Engel önce gelir",
+            "text": "“Listede mi?” sorusundan hemen sonra gelen kural “engellenmiş mi?” sorusudur. Kartın başka izinleri olsa da fark etmez: DENIED · blocked, LED kırmızı."
+          }
+        ]
+      },
+      "copy": {
+        "label": "Bir kartı kopyala",
+        "steps": [
+          {
+            "title": "Bu kartı bir başkasına kopyala",
+            "text": "Beyaz kart okuyucunun üzerinde durur. Proxy üzerinden, token ile; web sunucusu bir iş kuyruğa alır ve hemen yanıt verir."
+          },
+          {
+            "title": "Kaynağı sektör sektör oku",
+            "text": "1. sektör için fabrika A anahtarı, sonra 4, 5 ve 6. blokları OKU (her biri 16 bayt, CRC_A ile). 2. sektör için de aynısı. Sektörlerin son blokları kopyalanmaz: anahtarlar ve erişim bitleri yerinde kalır."
+          },
+          {
+            "msg": "başka bir kart bekle",
+            "title": "Geliştirme kartı ikinci kartı bekler",
+            "text": "Ekranda COPY: 2ND CARD görünür ve LED mor yanıp söner. Orada duran kaynak sayılmaz; onu kaldırıp yeniden koymak da sayılmaz."
+          },
+          {
+            "title": "Anahtar etiketini koyarsın",
+            "text": "Farklı bir UID: bu hedeftir."
+          },
+          {
+            "msg": "WRITE 4 … 10, geri OKU",
+            "title": "Her bloğu yaz, geri oku",
+            "text": "WRITE iki adımdır (komut → ACK, 16 bayt → ACK). Sonra READ, kartın bloğu gerçekten tuttuğunu denetler. Yalnızca hedef kartın erişim bitlerinin A anahtarıyla yazmaya izin verdiği bloklara yazılır; açılmayan bir sektör atlanır."
+          },
+          {
+            "msg": "iş 9 tamam",
+            "title": "6 blokun 6'sı kopyalandı",
+            "text": "Sonuç uygulamaya kısa bir bildirim olarak ulaşır, günlüğe de “veri buraya kopyalandı” satırı eklenir. Anahtar etiketini şimdi okut: Key tag olarak açılır, çünkü kapı UID'sine bakar ve UID değişmedi."
+          }
+        ]
+      },
+      "enroll": {
+        "label": "Bir kart ekle",
+        "steps": [
+          {
+            "title": "Ad ve rol",
+            "text": "Proxy üzerinden, token ile. Web sunucusu yalnızca okuyucu görevine bir iş kuyruğa alır (çip başına tek sahip) ve hemen yanıt verir."
+          },
+          {
+            "msg": "7. iş posta kutusunda",
+            "title": "Bir iş, bir bekleme değil",
+            "text": "HTTP isteği zaten yanıtlanmıştır; sonuç sonra WebSocket üzerinden gelir. Ağ işleyicileri hiçbir zaman bloke olmamalıdır."
+          },
+          {
+            "msg": "20 sn bekle, mavi LED",
+            "title": "Geliştirme kartı, daha önce görmediği bir kartı bekler",
+            "text": "Ekranda ADD A CARD görünür ve LED mavi yanıp söner. Listede zaten olan bir kart, adıyla birlikte reddedilir."
+          },
+          {
+            "title": "Anahtar etiketini koyarsın",
+            "text": "Listede yoksa yeni kart olur. Misafirler 5 kullanım hakkıyla başlar."
+          },
+          {
+            "msg": "7. iş tamam + kartlar",
+            "title": "Sonuç uygulamaya ulaşır",
+            "text": "Kimliği 7 olan bir 'job' mesajı, uygulamanın beklediği promise'i çözer (bir kısa bildirim) ve bir 'cards' mesajı listeyi günceller."
+          }
+        ]
+      }
+    }
+  },
+  "friendsSeq": {
+    "lanes": {
+      "names": [
+        "friends-app",
+        "Vite sunucusu",
+        "web sunucusu",
+        "okuyucu görevi",
+        "kart"
+      ],
+      "subs": [
+        "tarayıcı / tablet",
+        "Mac'inde",
+        "geliştirme kartı, çekirdek 1",
+        "geliştirme kartı, çekirdek 0",
+        "etiketin"
+      ]
+    },
+    "flows": {
+      "tap": {
+        "label": "Kart 1'i okut",
+        "steps": [
+          {
+            "title": "Kart kim olduğunu söyler",
+            "text": "Uyandırma, çakışma önleme ve seçme, R2'deki gibi. R8, kartta başka hiçbir şeyi okumaz: blok yok, anahtar yok."
+          },
+          {
+            "msg": "burada kim yaşıyor?",
+            "title": "Geliştirme kartı UID'ye bakar",
+            "text": "friends::List::tap() 1. kartı bulur, ziyareti sayar ve listeyi NVS'ye kaydeder. Arkadaş yalnızca bir kimlik metnidir."
+          },
+          {
+            "msg": "Foxy fırlar",
+            "title": "Geliştirme kartının kendi ekranı",
+            "text": "Sahne görünümünde Foxy karttan büyüyerek çıkar, taşar, yıldızlar kendi renklerinde uçuşur, sonra zıplar: “Hi again! Foxy · card 1 · 5 visits”. LED turuncu yanıp söner."
+          },
+          {
+            "msg": "okutma JSON",
+            "title": "Her uygulama için bir mesaj",
+            "text": "Okuyucu görevi bunu çıkış kutusuna koyar; diğer çekirdekteki loop() bunu WebSocket üzerinden gönderir."
+          },
+          {
+            "msg": "WebSocket gönderimi",
+            "title": "3B sahne oynar",
+            "text": "Uygulama Foxy'yi sahneye koyar: bir toz bulutu, 1. karttan fırlama, çifte dönüş, altın yıldızlar, gökyüzü gün batımına döner ve melodisi çalar. Şimdi 2. kartı okut: Bolt dans ederek katılır."
+          }
+        ]
+      },
+      "newcard": {
+        "label": "Yeni kart bir arkadaş alır",
+        "steps": [
+          {
+            "title": "Geliştirme kartının hiç görmediği bir kart",
+            "text": "Her zamanki gibi seçilir, ama bu UID listede yok."
+          },
+          {
+            "msg": "2. kart olarak ekle, henüz kimse yok",
+            "title": "Kendini ekler",
+            "text": "En fazla 12 kart. character = \"\": ekranda sallanan bir “?” kartı görünür: “New card! Give it a friend”."
+          },
+          {
+            "title": "Uygulama bir arkadaş ister",
+            "text": "Balon “Yeni kart 2! Burada kim yaşıyor?” der ve 2. kartın kutucuğu dikkat çeker."
+          },
+          {
+            "title": "Bolt'u 2. karta sürüklersin",
+            "text": "Ya da önce Bolt'a, sonra karta dokunursun. Tarayıcının token'ı yok."
+          },
+          {
+            "title": "Geliştirme sunucusu token'ı ekler",
+            "text": "Vite'ın proxy'si bunu friends-app/.env dosyasından ekler (W2 ve R7 ile aynı token)."
+          },
+          {
+            "msg": "kimliği denetle, kaydet",
+            "title": "Kart kimliği denetler",
+            "text": "Yalnızca characters.h içindeki kimlikler kabul edilir (GET /api/cast bunları listeler). Kart listesi mutex kilidi altında değişir ve NVS'ye yazılır."
+          },
+          {
+            "title": "Hemen göster",
+            "text": "Uygulama, geliştirme kartından 2. kartı göstermesini ister (bu bir ziyaret sayılmaz): Bolt ekranda ve 3B sahnede aynı anda fırlar."
+          }
+        ]
+      }
+    }
+  },
+  "controls": {
+    "back": "◀ Geri",
+    "next": "İleri ▶",
+    "play": "▶ Oynat",
+    "pause": "❚❚ Duraklat",
+    "playback": "Oynatma",
+    "turn": "Döndür",
+    "stepOf": "adım {{step}} / {{count}}"
+  },
+  "spi": {
+    "register": "Yazmaç",
+    "readOrWrite": "Okuma ya da yazma",
+    "read": "oku",
+    "write": "yaz 03h",
+    "fault": "Simüle edilecek arıza",
+    "faults": {
+      "none": "doğru bağlandı",
+      "miso": "MISO teli gevşek",
+      "power": "3,3 V yok",
+      "ss": "SDA (çip seçimi) teli gevşek"
+    },
+    "prevBit": "Önceki bit",
+    "nextBit": "Sonraki bit",
+    "pause": "Duraklat",
+    "play": "Oynat",
+    "playShort": "▶ Oynat",
+    "diagram": "Tek bir SPI aktarımının mantık analizörü görünümü: 16 saat darbesi boyunca çip seçimi, saat, MOSI ve MISO.",
+    "dontCare": "önemsiz",
+    "dontCareWrite": "önemsiz (yazma)",
+    "byte0": "bayt 0 · MOSI {{hex}}h",
+    "byte1Miso": "bayt 1 · MISO {{hex}}h",
+    "byte1Mosi": "bayt 1 · MOSI {{hex}}h",
+    "regs": {
+      "VersionReg": "92h = MFRC522 sürüm 2.0",
+      "ComIrqReg": "Sıfırlamadan sonra 14h: IdleIRq + LoAlertIRq",
+      "TxControlReg": "83h: iki anten sürücüsü de açık (bit 1-0)",
+      "RFCfgReg": "40h: alıcı kazancı 100b = 33 dB (sıfırlamadan hemen sonra 48h)"
+    },
+    "bits": {
+      "rwRead": {
+        "key": "adres baytının 7. biti:",
+        "text": "1 = oku. Önce en anlamlı bit; veri saat düşen kenarında değişir, yükselen kenarında okunur (SPI mod 0)."
+      },
+      "rwWrite": {
+        "key": "adres baytının 7. biti:",
+        "text": "0 = yaz. Önce en anlamlı bit; veri saat düşen kenarında değişir, yükselen kenarında okunur (SPI mod 0)."
+      },
+      "addrRead": {
+        "key": "6-1. bitler:",
+        "text": "{{a}}h yazmaç adresi = {{bits}}, saat darbesi başına bir bit. Yani {{name}}, {{addr}}h olarak okunur."
+      },
+      "addrWrite": {
+        "key": "6-1. bitler:",
+        "text": "{{a}}h yazmaç adresi = {{bits}}, saat darbesi başına bir bit. Yani {{name}}, {{addr}}h adresine yazılır."
+      },
+      "zero": {
+        "key": "0. bit:",
+        "text": "her zaman 0. Çipte 64 yazmaç var, 6 bit yeter."
+      },
+      "write": {
+        "key": "bayt 1:",
+        "text": "yazılacak değer, {{data}}h. Yazma sırasında MISO'da işe yarar bir şey taşınmaz."
+      },
+      "answer": {
+        "key": "MISO üzerinde bayt 1:",
+        "text": "{{answer}}h. {{what}}. Bu sırada MOSI 00 gönderir (ya da bir dizideki sonraki adres)."
+      },
+      "power": {
+        "key": "MISO üzerinde bayt 1:",
+        "text": "00h. Enerjisiz çip MISO'yu yükseğe çekemez: her yazmaç 00 okunur. Kart yazılımı “nothing (MISO stuck low?)” yazar: 3.3V ve GND'yi kontrol et."
+      },
+      "float": {
+        "key": "MISO üzerinde bayt 1:",
+        "text": "FFh (genellikle). MISO'yu kimse sürmez, yüksek seviyede asılı kalır: her yazmaç FF okunur. Çip yanıt verir ama yanıt hiç ulaşmaz."
+      },
+      "floatSs": {
+        "key": "MISO üzerinde bayt 1:",
+        "text": "FFh (genellikle). MISO'yu kimse sürmez, yüksek seviyede asılı kalır: her yazmaç FF okunur. SDA teli gevşekken çip hiç seçilmez ve sessiz kalır."
+      }
+    }
+  },
+  "anticoll": {
+    "steps": {
+      "identical": {
+        "title": "Aynı UID'ler",
+        "text": "Hiçbir iki kart aynı UID'yi taşımaz (işte bunun için var). Bir baytı değiştir."
+      },
+      "wake": {
+        "title": "WUPA: iki kart da uyanır",
+        "text": "İkisi de aynı anda ATQA 04 00 ile yanıt verir. Üst üste binen aynı bitler tek kart gibi görünür, bu yüzden henüz çakışma yok."
+      },
+      "all": {
+        "title": "93 20: “hepiniz, UID'nizi gönderin”",
+        "text": "İki kart 32 biti aynı anda gönderir. 1–{{shared}} bitleri aynıdır ve temiz ulaşır. {{p}}. bitte bir kart 0, diğeri 1 gönderir: okuyucu bitin iki yarısını birden duyar, bu bir çakışmadır. CollReg, CollPos = {{p}} der. Ondan sonraki bitler 0 okunur (ValuesAfterColl = 0)."
+      },
+      "pick": {
+        "title": "{{p}}. bitte 1'i seç, yeniden sor",
+        "text": "Okuyucu, şimdi bildiği {{p}} biti gönderir ve 1 ile biter: SEL 93, NVB {{nvb}}h ({{bytes}} tam bayt + {{bits}} bit). {{p}}. bit, UID baytı {{byte}} içindeki {{bitIn}}. bittir. Kart {{loser}} orada 0 taşır, bu yüzden bir sonraki REQA ya da WUPA'ya kadar yanıt vermeyi keser."
+      },
+      "rest": {
+        "title": "Yalnızca kart {{winner}} kalanı yanıtlar",
+        "text": "Kart {{winner}}, {{after}}–32. bitleri ve BCC'sini gönderir. Çakışma yok: okuyucu artık tam UID'yi {{winnerUid}} biliyor ve BCC {{bcc}} doğru çıkıyor."
+      },
+      "select": {
+        "title": "SELECT {{winnerUid}} → SAK 08",
+        "text": "93 70 + UID + BCC + CRC_A. Kart {{winner}} artık AKTİF, kimlik doğrulamaya ve okumaya hazır. Tarama bir çakışmada her zaman 1'i seçer; bu yüzden hep aynı kart kazanır."
+      },
+      "halt": {
+        "title": "Kart {{winner}} için HLTA, sonra yeniden REQA",
+        "text": "Kart {{winner}} HALT durumuna geçer ve REQA'yı yok sayar. Kart {{loser}} yalnızca bekliyordu (READY → yeniden IDLE), bu yüzden tek başına REQA'ya yanıt verir."
+      },
+      "second": {
+        "title": "93 20 → yalnız kart {{loser}}: {{loserUid}}",
+        "text": "Bu sefer çakışma yok. SELECT, SAK, HLTA. Bir sonraki REQA hiç yanıt almaz: envanter 2 kart buldu. Kart yazılımının envanter komutu bunu yazar."
+      }
+    },
+    "tree": {
+      "label": "Taramanın izlediği ikili ağaç: önce ortak bitler, ilk çakışmada bir dal.",
+      "shared": "bit 1–{{last}}: ortak ({{count}} bit)",
+      "collision": "bit {{p}}: çakışma",
+      "zero": "bit = 0",
+      "one": "bit = 1, önce alınır",
+      "card": "kart {{name}}",
+      "foundFirst": "kart {{name}} ✓ önce bulundu",
+      "foundSecond": "kart {{name}} ✓ sonra bulundu"
+    },
+    "uidA": "A kartının UID'si",
+    "uidB": "B kartının UID'si",
+    "uidAHint": "A kartının UID'si, hex olarak 4 bayt",
+    "uidBHint": "B kartının UID'si, hex olarak 4 bayt",
+    "random": "Rastgele çift",
+    "grid": "İki kartın UID bitleri ve okuyucunun duyduklarının, iletildikleri sırayla listesi.",
+    "rowCard": "kart {{name}} {{uid}}",
+    "rowHears": "okuyucu duyar",
+    "rowBit": "bit #"
+  },
+  "access": {
+    "data": {
+      "c0": "anahtar A ya da B ile oku ve yaz; artır, azalt (taşıma ayarı)",
+      "c1": "A ya da B ile oku, azalt; yazma yok (yalnızca aşağı inebilen bir değer)",
+      "c2": "A ya da B ile oku; bir daha yazılmaz",
+      "c3": "yalnızca anahtar B ile oku ve yaz",
+      "c4": "A ya da B ile oku, B ile yaz",
+      "c5": "yalnızca anahtar B ile oku; hiç yazılmaz",
+      "c6": "A ya da B ile oku; B ile yaz ve artır; A ya da B ile azalt (değer bloğu)",
+      "c7": "hiçbir şey, asla"
+    },
+    "trailer": {
+      "c0": "Anahtar A her iki anahtarı yazar; erişim bitleri sabit; anahtar B okunabilir (yani anahtar olamaz)",
+      "c1": "Anahtar A anahtarları ve erişim bitlerini yazar (taşıma ayarı)",
+      "c2": "Artık hiçbir şey değişemez; anahtar B okunabilir",
+      "c3": "Anahtar B anahtarları ve erişim bitlerini yazar",
+      "c4": "Anahtar B anahtarları yazar; erişim bitleri sabit",
+      "c5": "Anahtar B erişim bitlerini yazar; anahtarlar sabit",
+      "c6": "Artık hiçbir şey değişemez",
+      "c7": "Artık hiçbir şey değişemez"
+    },
+    "presets": {
+      "factory": "fabrika FF 07 80",
+      "values": "değer blokları",
+      "readOnly": "salt okunur, sonsuza dek"
+    },
+    "typeBytes": "ya da tür baytları 6–8",
+    "colBlock": "Blok",
+    "colAllows": "İzin verdikleri",
+    "rowTrailer": "son blok",
+    "rowBlock": "blok {{n}}",
+    "theTrailer": "son blok",
+    "bitOf": "{{block}} bloğunun C{{n}}",
+    "invertedBitOf": "{{block}} bloğunun ters C{{n}}",
+    "byte": "bayt {{n}}",
+    "byteNote": "{{bits}} · her yarı: bloklar 3 2 1 0",
+    "inconsistent": "<b>Tutarsız:</b> ters kopyalar uyuşmuyor. Kart böyle bir son bloğu reddeder ya da sektörü kilitler.",
+    "locked": "<b>Bunu asla bir karta yazma.</b> Son blok ayarı {{bits}} ile hiçbir anahtar bu sektörün anahtarlarını bir daha değiştiremez. Bu deneyin kart yazılımı son blokları hiç yazmaz."
+  },
+  "value": {
+    "value": "Değer",
+    "address": "Adres baytı",
+    "add": "10 ekle",
+    "use": "3 harca",
+    "block": "Bir MIFARE değer bloğunun 16 baytı: {{bytes}}",
+    "legend": {
+      "value": "değer, küçük uç önce (0–3 ve 8–11. baytlar)",
+      "inverted": "değerin tersi (4–7)",
+      "address": "adres",
+      "addressInverted": "adresin tersi"
+    },
+    "refused": "Kredi yetersiz: kart yazılımı, karttan azaltmasını istemeden önce bakiyeyi denetler.",
+    "explain": "{{value}} = {{bytes}} (önce en düşük bayt). Üç kez saklanır, biri tersiyle: kopyalar uyuşmayan bir blokta kart INCREMENT, DECREMENT ve RESTORE komutlarını reddeder. Adres baytı sana kalmış (biz blok numarasını oraya koyduk)."
+  },
+  "field3d": {
+    "stage": "3B görünüm: anten bobinli RC522 modülü, çevresindeki manyetik alan çizgileri ve üstünde tutulan bir kart. Döndürmek için sürükle.",
+    "fallback": "Aşağıdaki grafik ve kontroller yine çalışır.",
+    "height": "Kartın antenin üstündeki yüksekliği",
+    "gain": "Alıcı kazancı (RFCfgReg)",
+    "send": "▶ WUPA gönder",
+    "slice": "Bir dilim",
+    "powered": "kart enerjili",
+    "unpowered": "kartın enerjisi yok",
+    "nothingToHear": "okuyucu duymuyor: duyulacak bir şey yok",
+    "heard": "okuyucu duyuyor",
+    "unheard": "okuyucu duyamıyor",
+    "range": "{{db}} dB'de menzil: yaklaşık {{mm}} mm",
+    "air": "Şu an havada olan",
+    "symbols": {
+      "start": "başlangıç",
+      "bit": "bit {{bit}} = {{value}}",
+      "end0": "bitiş 0",
+      "end": "bitiş"
+    },
+    "labels": {
+      "coil": "anten bobini · 13,56 MHz",
+      "chip": "MFRC522",
+      "pins": "8 pin → ESP32",
+      "cardCoil": "kart bobini: enerji + anten",
+      "cardChip": "kart çipi (pil yok)"
+    },
+    "captions": {
+      "field": {
+        "title": "Alan",
+        "text": "Anten, modül üzerinde düz bir bobindir. Saniyede 13,56 milyon kez akımı tersine döner, etrafındaki manyetik alan da onunla birlikte döner: çizgiler bobinin merkezinden çıkar, kıvrılır ve geri döner. Burada her 2 saniyede bir tersine döner."
+      },
+      "send": {
+        "title": "Okuyucu WUPA gönderiyor",
+        "text": "%100 ASK: her bit için çip alanını yaklaşık 3 µs kapatır; bu bitin başında (Z), ortasında (X) ya da hiç kapatmaz (Y). 7 bit ile başlangıç ve bitiş yaklaşık 85 µs sürer; burada her biri üçte bir saniye. Kart, aralıklarda enerjisini korur."
+      },
+      "wake": {
+        "title": "Kart uyanır ve bekler",
+        "text": "Çipi alandan enerjilenip WUPA'yı çözdü. Her kart yanıt vermeden önce tam olarak aynı süreyi (yaklaşık 86 µs) bekler, bu yüzden alandaki tüm kartlar aynı anda yanıt verir."
+      },
+      "dark": {
+        "title": "Kart karanlıkta kalır",
+        "text": "Bu yükseklikte alan, kartın çipini çalıştıracak kadar zayıf. Kazancı artırmak burada yardımcı olmaz: kazanç okuyucuyu daha iyi bir dinleyici yapar, daha fazla güç göndermez."
+      },
+      "answer": {
+        "title": "Kart yanıt verir: ATQA 04 00",
+        "text": "Kart iletim yapamaz. Bobininde küçük bir yükü saniyede 847.000 kez açıp kapatır (fc/16); okuyucunun anteni kendi alanının titrediğini hisseder ve 2 bayt çözer. Çip RxIRq bitini yükseltir, IRQ teli iner, okuyucu görevi uyanır."
+      },
+      "quiet": {
+        "title": "Kart yanıt verir… çok silik",
+        "text": "Kart enerjili ve yanıt veriyor, ama bu kazançta okuyucu küçücük yük değişimlerini gürültüden ayıramaz. Kazancı artır ya da kartı yaklaştır."
+      }
+    },
+    "chart": {
+      "label": "Kartta alan gücünün yüksekliğe göre logaritmik ölçekte grafiği; kartın uyanması için gereken seviye ve okuyucunun yanıtını duyması için gereken seviye ile birlikte.",
+      "x": "kartın antenin üstündeki yüksekliği (mm)",
+      "y": "alan",
+      "wakes": "kart bunun üstünde uyanır",
+      "hears": "okuyucu bunun üstünde duyar ({{db}} dB)",
+      "works": "çalışır: 0–{{mm}} mm",
+      "nothing": "hiçbir şey çalışmaz"
+    }
+  },
+  "memory3d": {
+    "legend": {
+      "keyA": "anahtar A (00 olarak okunur)",
+      "access": "erişim bitleri",
+      "user": "kullanıcı baytı",
+      "keyB": "anahtar B · değer",
+      "uid": "UID + BCC",
+      "text": "senin metnin"
+    },
+    "kinds": {
+      "maker": "üretici",
+      "empty": "boş",
+      "data": "veri",
+      "value": "değer",
+      "trailer": "son blok"
+    },
+    "captions": {
+      "auth": {
+        "title": "3 geçişli kimlik doğrulama",
+        "text": "Çip karttan {{sector}}. sektörü anahtar A ile ister; kart rastgele bir sınama gönderir, çip kendininkiyle yanıt verir ve ikisi de anahtarı hiç göndermeden bildiklerini kanıtlar. Bundan sonra Crypto1 her çerçeveyi şifreler."
+      },
+      "open": {
+        "title": "{{sector}}. sektör, açık",
+        "text": "Anahtar A ile doğrulandı (fabrika anahtarı FF FF FF FF FF FF). {{first}}–{{last}} blokları okunabilir. Anahtar A 00 olarak geri okunur: kart onu asla açıklamaz. Son bloğun 6–8. baytları erişim bitleridir; 9. bayt serbesttir."
+      },
+      "locked": {
+        "title": "{{sector}}. sektör, kilitli",
+        "text": "{{first}}–{{last}} blokları, okuyucu bu sektörün anahtarını bildiğini kanıtlayana kadar okunamaz: Doğrula düğmesine bas."
+      }
+    },
+    "labels": {
+      "maker": "sektör 0 · blok 0 = üretici",
+      "trailer": "son blok: anahtarlar + erişim bitleri",
+      "last": "sektör 15"
+    },
+    "stage": "3B görünüm: kartın 16 sektörü, her biri 4 bloklu dolaplar halinde; her dolabın en üst bloğu, kilitli sektör son bloğu. Açmak için bir sektöre tıkla.",
+    "fallback": "Aşağıdaki bayt tablosu yine çalışır.",
+    "after": "R5'ten sonra",
+    "sector": "Sektör",
+    "sectorN": "sektör {{n}}",
+    "authenticate": "🔑 Bu sektörü doğrula",
+    "byte": "bayt {{n}}",
+    "lockedNote": "Kilitli: her sektörün kendi anahtarları var, bu yüzden sektör 1'i açmak sektör 2'yi açmaz."
+  },
+  "edge": {
+    "experiments": {
+      "spi": {
+        "label": "SPI saat hızı",
+        "unit": "% bayt hatalı",
+        "xTitle": "SPI saat hızı (MHz)",
+        "what": "Çipin FIFO'suna gönderilen ve geri okunan 64 rastgele bayt, her saat hızında 20 kez; ayrıca VersionReg iki kez okunur.",
+        "look": "MFRC522 10 Mbit/s için derecelendirilmiştir. Bu sınırın ötesinde jumper kablolarınız belirler: uzun ya da gevşek kablolar saat kenarlarını yumuşatır ve MISO (çipin zayıf çıkışı) genellikle ilk bozulan olur. Varsayılan 4 MHz'de tam 0 olmalı.",
+        "markText": "veri sayfası üst sınırı"
+      },
+      "gain": {
+        "label": "Kazanç ve mesafe",
+        "unit": "% bulundu",
+        "xTitle": "alıcı kazancı (dB)",
+        "what": "Kart sabit tek bir yükseklikte tutulurken, her alıcı kazancında 30 uyandırma ve seçme denemesi.",
+        "look": "Kazanç okuyucuyu daha iyi bir dinleyici yapar; karta daha fazla güç vermez. Yakında her kazanç çalışır. Uzaklaştıkça düşük kazançlar önce başarısız olur. Sonunda 48 dB bile yardımcı olamaz, çünkü kartta artık güç kalmamıştır (R2'deki 3B görünüm nedenini gösterir).",
+        "markText": "varsayılan"
+      },
+      "timeout": {
+        "label": "Kartın yanıt süresi",
+        "unit": "% WUPA yanıtlandı",
+        "xTitle": "çip zamanlayıcısı (µs, ms yazılmadıkça)",
+        "what": "Çipin zamanlayıcısı, çerçevemizden sonra yanıt için ne kadar bekleneceğini belirler. Test zamanlayıcıyı adım adım küçültür ve her biri 20 deneme olmak üzere WUPA yanıtlarını sayar.",
+        "look": "ISO 14443, bir kartın okuyucunun son bitinden yaklaşık 86 µs sonra yanıt verdiğini söyler. Zamanlayıcı 25 µs'lik adımlarla sayar: yanıtların 100 ile 75 µs arasında kesilmesini bekle. Varsayılan 25 ms, bir kartın ihtiyacının 250 katı kadar uzundur; boş bir yoklamanın bedeli budur.",
+        "betweenText": "ISO: ~86 µs"
+      },
+      "timing": {
+        "label": "Adım başına süre",
+        "unit": "µs, ortalama",
+        "xTitle": "protokol adımı",
+        "what": "WUPA, son SELECT çerçevesi, kimlik doğrulama ve tek blok okumadan oluşan 40 tam döngü; her biri komutun başından sonuna kadar zamanlanır.",
+        "look": "Kesikli çizgi, 106 kbit/s'deki saf hava süresidir. Onun üstündeki her şey SPI trafiği ve ESP32'nin kendi işidir. Kimlik doğrulama çip içinde üç alışverişten oluşur, bu yüzden en yavaş olanın o olmasını beklersin.",
+        "ghostText": "yalnızca hava süresi"
+      },
+      "irq": {
+        "label": "Yoklama ya da IRQ",
+        "unit": "WUPA başına SPI erişimi",
+        "xTitle": "okuyucu görevi nasıl bekler",
+        "what": "SPI üzerinden ComIrqReg'i yoklarken 30 WUPA, sonra IRQ teli tetiklenene kadar uyurken 30 WUPA. Komut başına SPI erişimleri sayılır.",
+        "look": "Kart varken ikisi de hızlı biter, ama yoklama beklerken veriyolunu meşgul tutar. Kartsız tekrar çalıştır: artık her WUPA 25 ms zamanlayıcının bitmesini bekler. Yoklamanın sayısı fırlar, IRQ'nunki aynı kalır."
+      },
+      "crc": {
+        "label": "CRC: çip mi, işlemci mi",
+        "unit": "µs çerçeve başına",
+        "xTitle": "CRC_A'yı kim hesaplar",
+        "what": "300 rastgele çerçeve: CRC_A, çipin yardımcı işlemcisinden (baytlar SPI üzerinden gidip gelir) ve ESP32'den (rfid_format.h'deki aynı beş satır) hesaplanır.",
+        "look": "İkisi her çerçevede aynı sonucu vermeli: 0 uyuşmazlık. Yardımcı işlemci kendisi hızlıdır, ama SPI gidiş-dönüşü, ESP32'nin hesabından çok daha pahalıdır. Burada işi çipe devretmek kaybettirir."
+      },
+      "stress": {
+        "label": "Stres testi",
+        "unit": "döngü",
+        "xTitle": "her uyandırma → seçme → doğrulama → okuma döngüsünün sonucu",
+        "what": "Arka arkaya yüzlerce tam döngü: uyandırma, seçme, doğrulama, 4. bloğu oku, durdur. Her sonuç sayılır.",
+        "look": "Kart sabit ve yakınken %99 ya da daha iyisini bekle. Çalışırken kartı yavaşça kaldır ya da eğ: kaçırmalar önce “absent” (yanıt yok) olarak başlar, sonra menzilin tam kenarında CRC ve protokol hataları çıkar."
+      }
+    },
+    "tabs": "Deney",
+    "solid_one": "Dolu: senin {{count}} satırın. Her çubuğun yanında ince dış çizgi: örnek.",
+    "solid_other": "Dolu: senin {{count}} satırın. Her çubuğun yanında ince dış çizgi: örnek.",
+    "noRows": "Hiç satır tanınmadı: tablonun başlığının altındaki satırları yapıştır.",
+    "example": "Örnek sayılar (15 cm jumper kablolu tipik bir RC522), senin kartın değil. Aşağıya kendi tablonu yapıştırırsan bunların yerine geçer.",
+    "paste": "Seri monitördeki tabloyu yapıştır (zaman damgaları kalabilir):",
+    "placeholder": "ör.   1     0.0 %        0 / 20",
+    "chart": {
+      "label": "{{name}}: {{x}} başına {{unit}}. {{values}}",
+      "bar": "{{name}}: {{value}} {{unit}}",
+      "barWithExample": "{{name}}: {{value}} {{unit}} (örnek {{example}})",
+      "dashed": "kesikli: {{text}}"
+    }
+  },
+  "screens": {
+    "chip": {
+      "when": "Kabloları taktıktan sonra ilk bakılacak görünüm (R1). Çift tıklama kendi kendine testi çalıştırır.",
+      "parts": [
+        "Çip. Çip yanıt verirken ortası turkuaz parlar; VersionReg 00h ya da FFh okunursa parlayamaz.",
+        "VersionReg: 92h = MFRC522 v2.0, 91h = v1.0, diğer değerler = klon. 00h ya da FFh, hiçbir şeyin yanıt vermediği anlamına gelir: bağlantıyı kontrol et.",
+        "Kendi kendine test: sen selftest yazana (ya da çift tıklayana) kadar “not run” görünür. Sonra “passed” (NXP çipi, veri sayfası ile uyumlu), “consistent” (klon, iki koşu aynı sonucu verdi), “not supported” (bunu desteklemeyen bir klon) ya da “FAILED” çıkar.",
+        "SPI saat hızı: varsayılan 4 MHz. Çipin 10 MHz derecesinin üstüne çıkınca sarıya döner (spi <MHz>).",
+        "Okuyucu görevinin çipi nasıl beklediği: “IRQ wire”, ya da IRQ bağlı değilse “polling”. Kart yazılımı bunu kendisi seçer ve söyler.",
+        "Alıcı kazancı, 18 ile 48 dB arası (gain <0-7>); varsayılan 33 dB.",
+        "Veri yolu sayaçları: SPI erişimleri ve komutlar. Saniyede yaklaşık 12 yoklamayla sürekli artarlar: okuyucu görevi çalışıyor demektir.",
+        "Kart noktası: bir kart alandayken halkalı turkuaz. Her görünümde aynıdır.",
+        "Alt bilgi, solda: bu görünümde çift tıklamanın ne yaptığı.",
+        "Alt bilgi, sağda: son sonuç. Turkuaz = iyi, mercan = sorun, büyüyen çizgili kehribar = meşgul."
+      ]
+    },
+    "card": {
+      "when": "Geliştirme kartının açıldığı görünüm. Şu an alanda olan kartı gösterir. Çift tıklama envanter çalıştırır.",
+      "parts": [
+        "Anten ve alanı: kart olsun ya da olmasın, her zaman hareket eder.",
+        "Alanda bir kart olduğunda burada görünür; küçük kare, çipidir.",
+        "UID: kartın seri numarası, çakışma önlemenin okuduğu hali.",
+        "Kart türü, SAK'tan çözülür.",
+        "ATQA (00 04) ve SAK (08): kartın uyandırmaya ve seçmeye verdiği yanıtlar. UID boyu: 4, 7 ya da 10 bayt.",
+        "Okuma oranı: son 20 yoklamanın kaçında kart bulundu. %100 = sağlam; kehribar ya da mercan = menzilin kenarı.",
+        "Okuyucuda yalnızca iki kart varsa: UID'lerinin ilk farklılaştığı bit (R3)."
+      ]
+    },
+    "trace": {
+      "when": "Dinleyici (sniffer): son kart uyandırmasının ya da komutun çerçeveleri. Çift tıklama açar ya da kapatır.",
+      "parts": [
+        "Bu alışverişin ilk çerçevesinden bu yana geçen süre, ms cinsinden.",
+        "> okuyucudan karta (kehribar), < karttan okuyucuya (turkuaz).",
+        "Havadaki baytlar. Gri baytlar havada şifrelenmişti (kimlik doğrulamadan sonra); sen düz metni görürsün.",
+        "Çerçevenin ne olduğu: WUPA, ATQA, ANTICOLL, SELECT, SAK, HLTA, READ…"
+      ]
+    },
+    "memory": {
+      "when": "Son döküm, blok blok. Çift tıklama dump çalıştırır (kartı sabit tut).",
+      "parts": [
+        "Her sektör için bir sütun, 0'dan 15'e.",
+        "0. blok (kehribar): üreticinin bloğu, UID ile. Salt okunur.",
+        "Veri blokları: koyu = hepsi sıfır, yeşil = bir şey yazılmış, mavi = bir değer bloğu (kredi).",
+        "En alttaki satır: her sektörün son bloğu (anahtarlar + erişim bitleri), mercan. Deney bunları hiç yazmaz.",
+        "Bu dökümün hangi karttan geldiği."
+      ]
+    },
+    "credits": {
+      "when": "8. ve 9. bloklardaki kredi sayacı (R5). Çift tıklama 1 kredi ekler.",
+      "parts": [
+        "Her 10 kredi için bir madeni para (en fazla 8).",
+        "8. bloktaki değer, kartın hesapladığı haliyle.",
+        "9. bloktaki yedek: son değişiklikten önceki değer."
+      ]
+    },
+    "edge": {
+      "when": "Son sınır deneyi, çubuk grafik olarak (R6). Çift tıklama bir sonraki deneyi çalıştırır.",
+      "parts": [
+        "Hangi deney.",
+        "Denenen her ayar için bir çubuk, hepsi tek bir ölçekte; değer her çubuğun üstüne yazılır.",
+        "Çizgili çubuk referansı gösterir: veri sayfası sınırı ya da varsayılan.",
+        "Sonuç tek satırda, tam tabloyla birlikte monitöre de yazdırılır."
+      ]
+    }
+  },
+  "views": {
+    "chip": "çip",
+    "card": "kart",
+    "trace": "iz",
+    "memory": "bellek",
+    "credits": "kredi",
+    "edge": "sınır",
+    "cards": "kartlar",
+    "stage": "sahne",
+    "door": "kapı",
+    "log": "günlük"
+  },
+  "screen": {
+    "tabs": "Ekran görünümü",
+    "tab": "{{n}} · {{view}}",
+    "example": "{{view}} görünümünün örneği. Aşağıdaki liste numaralı her parçayı açıklar."
+  },
+  "preview": {
+    "field": {
+      "card": "kartı koy",
+      "tag": "etiketi koy",
+      "both": "ikisi de",
+      "none": "kaldır"
+    },
+    "button": "Basmalı düğme: tıklayınca sonraki görünüm, çift tıklayınca bu görünümün eylemi, basılı tutunca yoklama duraklar",
+    "views": "Görünümler",
+    "status": "{{view}} görünümü · yoklanıyor",
+    "statusPaused": "{{view}} görünümü · duraklatıldı",
+    "cards": "Okuyucudaki kartlar",
+    "screen": "Simüle edilmiş geliştirme kartı ekranı: {{view}} görünümü",
+    "example": "Örnek veri: UID'ler, zamanlamalar ve sayılar uydurma. Senin kartın kendi değerlerini yazdırır.",
+    "quick": "Hızlı komutlar"
+  },
+  "friends": {
+    "cast": {
+      "fox": {
+        "what": "hızlı küçük bir tilki",
+        "move": "zıplarken iki kez döner",
+        "fx": "altın yıldızlar",
+        "sky": "gün batımı"
+      },
+      "robot": {
+        "what": "dans eden bir robot",
+        "move": "kollarını sallayarak dans eder",
+        "fx": "kıvılcımlar",
+        "sky": "koyu turkuaz"
+      },
+      "dragon": {
+        "what": "minik bir ejderha",
+        "move": "bir halka çizerek uçar",
+        "fx": "ateş",
+        "sky": "volkan turuncusu"
+      },
+      "penguin": {
+        "what": "kayan bir penguen",
+        "move": "karnının üstünde daire çizerek kayar",
+        "fx": "kar",
+        "sky": "kış mavisi"
+      },
+      "alien": {
+        "what": "dost canlısı bir uzaylı",
+        "move": "ışınlanır ve döner",
+        "fx": "halkalar",
+        "sky": "uzay moru"
+      },
+      "cat": {
+        "what": "sevimli bir kedi",
+        "move": "mutlu bir kıvrılma",
+        "fx": "kalpler",
+        "sky": "şeker pembesi"
+      },
+      "frog": {
+        "what": "zıplayan bir kurbağa",
+        "move": "takla atarak yükseğe sıçrar",
+        "fx": "baloncuklar",
+        "sky": "gölet"
+      },
+      "unicorn": {
+        "what": "sihirli bir tek boynuzlu at",
+        "move": "sağa sola dörtnalla koşar",
+        "fx": "gökkuşağı yıldızları",
+        "sky": "pastel"
+      }
+    },
+    "chosen": "<b>{{name}}</b>, kimlik <code>{{id}}</code> (geliştirme kartının kart için sakladığı tek şey). Uygulamada: <b>{{move}}</b>, {{fx}}, {{sky}} bir gökyüzü ve kendi melodisi. Seri monitörde <code>give 1 {{id}}</code> yazarak 1. karta verebilirsin, ya da uygulamada sürükle.",
+    "pick": "Bir arkadaşa bas: zıplar ve ne yaptığını geliştirme kartının ekranında ve 3B uygulamada görürsün.",
+    "taps": "Okutmalar",
+    "tapWhite": "okutma: Beyaz kart",
+    "tapTag": "okutma: Anahtar etiketi",
+    "tapNew": "okutma: yeni bir kart",
+    "app": "Uygulama ve basmalı düğme",
+    "move": "uygulama: <friend/> arkadaşını <card/> kartının üstüne taşı",
+    "whichFriend": "Hangi arkadaş",
+    "whichCard": "Hangi kart",
+    "moveIn": "Taşı",
+    "nextView": "düğme: sonraki görünüm",
+    "screen": "Simüle edilmiş arkadaşlar ekranı: {{view}} görünümü",
+    "example": "Örnek veri. Geliştirme kartı aynı şekilleri çizer (characters.h); uygulama onları 3B gösterir."
+  },
+  "door": {
+    "taps": "Okutmalar",
+    "tap": {
+      "white": "okutma: Beyaz kart (sakin)",
+      "tag": "okutma: Anahtar etiketi (misafir)",
+      "stranger": "okutma: listede olmayan bir kart"
+    },
+    "app": "Uygulama ve basmalı düğme",
+    "block": "uygulama: Beyaz kartı engelle",
+    "lockdown": "uygulama: kilit modu",
+    "open": "uygulama: 5 sn için aç",
+    "copy": "uygulama: Beyaz kartı Anahtar etiketine kopyala",
+    "nextView": "düğme: sonraki görünüm",
+    "screen": "Simüle edilmiş kapı ekranı: {{view}} görünümü",
+    "example": "Örnek veri. Deneyde “uygulama:” eylemlerini uygulama yapar, okutmaları sen yaparsın."
+  },
+  "doorRules": {
+    "tappedAt": "okutulduğu kapı",
+    "front": "ön kapı",
+    "adminRoom": "yönetici odası",
+    "listed": "listede",
+    "role": "rol",
+    "roles": {
+      "resident": "sakin",
+      "guest": "misafir",
+      "maintenance": "bakım",
+      "admin": "yönetici"
+    },
+    "blocked": "engellenmiş",
+    "endDate": "bitiş tarihi",
+    "until": {
+      "none": "yok",
+      "future": "gelecek hafta",
+      "past": "dün"
+    },
+    "hoursFrom": "saat aralığı, başlangıç",
+    "to": "bitiş",
+    "uses": "kullanım hakkı",
+    "unlimited": "sınırsız",
+    "usesLeft_one": "{{count}} kaldı",
+    "usesLeft_other": "{{count}} kaldı",
+    "lockdown": "kilit modu",
+    "synced": "geliştirme kartının internet saati var",
+    "timeNow": "şu anki saat",
+    "rules": {
+      "unknown": {
+        "name": "Listede mi?",
+        "says": "unknown card"
+      },
+      "blocked": {
+        "name": "Engellenmiş mi?",
+        "says": "blocked"
+      },
+      "admin": {
+        "name": "Yönetici odası: yönetici kartı mı?",
+        "says": "admins only"
+      },
+      "lockdown": {
+        "name": "Kilit modu (bakım ve yönetici hâlâ açık)",
+        "says": "lockdown"
+      },
+      "clock": {
+        "name": "Saate ihtiyacı var mı, ve bir saati var mı?",
+        "says": "no clock yet"
+      },
+      "expired": {
+        "name": "Bitiş tarihinden önce mi?",
+        "says": "expired"
+      },
+      "hours": {
+        "name": "Saat aralığının içinde mi?",
+        "says": "outside hours"
+      },
+      "uses": {
+        "name": "Kullanım hakkı var mı?",
+        "says": "no uses left"
+      }
+    },
+    "trail": {
+      "skip": "denetlenmedi",
+      "pass": "evet",
+      "stop": "hayır → {{says}}"
+    },
+    "allPassed": "Hepsi geçti",
+    "openNote": "OPEN (misafirin kullanım hakkı bir azalır)",
+    "denied": "<now>DENIED · {{says}}</now> “hayır” diyen ilk kural kazanır; kalanlara bakılmaz.",
+    "granted": "<now>OPEN</now> her kural geçti."
+  },
+  "copy": {
+    "zeros": "sıfırlar",
+    "value": "değer {{n}}",
+    "keys": "anahtarlar",
+    "closed": "açılmıyor",
+    "quoted": "“{{text}}”",
+    "cell": "blok {{n}}: {{text}}",
+    "rest": "sektör 3-15: dokunulmadı",
+    "save": "Beyaz kartı kaydet",
+    "copy": "Beyaz kartı Anahtar etiketine kopyala",
+    "again": "Baştan başla",
+    "otherKey": "Anahtar etiketinin 2. sektöründe başka bir anahtar var",
+    "legend": {
+      "uid": "0. blok: UID + üretici verisi, hiç yazılmaz",
+      "lab": "deney blokları: kaydedilir ve kopyalanır",
+      "trailer": "son blok: anahtarlar + erişim bitleri, hiç yazılmaz",
+      "sector0": "0. sektör verisi: deney alanının dışında"
+    },
+    "read": "Önce beyaz kartı oku: 6 blokun 6'sı.",
+    "saved": "<now>6 blokun 6'sı kaydedildi</now>Geliştirme kartında “Beyaz kart” anlık görüntüsü (NVS). 0. blok ve son bloklar buna dahil değil.",
+    "copied": "6 blokun {{done}} tanesi kopyalandı",
+    "skipped": "2. sektör fabrika anahtarıyla açılmadı, bu yüzden 8-10. bloklar atlandı: geliştirme kartı bir sektörü asla zorlamaz.",
+    "allCopied": "Her blok yazıldı ve geri okundu.",
+    "uidStays": "UID hâlâ <b>{{uid}}</b>: anahtar etiketiyle yapılan bir okutma, Beyaz kart olarak değil <b>Key tag</b> olarak aranır. Kapı UID'ye bakar ve UID değişmedi."
+  }
+}

@@ -113,7 +113,7 @@ A lab with a screen, buttons and a serial monitor (like the RFID, BLE and sound 
 
 Translations live in `src/locales/<lang>/` and nowhere else. Interface text is in one JSON file per namespace; lessons, the phrasebook and the code tours are in `content/`. Any file can be partial: missing text shows in English, so a half-done translation is safe to merge.
 
-- Keep the guide's voice: short sentences, plain words, second person, informal (`tu`, `du`, `tú`, `ty` in Polish), です/ます in Japanese. See [Translation style](docs/I18N.md#translation-style).
+- Keep the guide's voice: short sentences, plain words, second person, informal (`tu`, `du`, `tú`, `ty` in Polish, `sen` in Turkish), です/ます in Japanese. See [Translation style](docs/I18N.md#translation-style).
 - Keep the markup (`<b>`, `<code>`, `{{placeholders}}`) exactly as in English, and give each plural form your language needs. `pnpm check` tells you when one is off.
 - Code, commands, pin names and what the board prints stay in English.
 - **A new language**: four steps in [docs/I18N.md](docs/I18N.md#adding-a-language).

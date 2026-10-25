@@ -1,0 +1,1214 @@
+{
+  "R1": {
+    "title": "Bağla ve konuş",
+    "heading": "Okuyucuyu bağla ve çipiyle konuş",
+    "goal": "Bu deneyin kendi yazılımı var: rfid-lab-r1. Sürücü de bize ait: kit/lib/rfid-kit. RFID kütüphanesi kullanmıyoruz, bu yüzden her baytı sen de görebilirsin. Sekiz kablo RC522'yi S3'ün ikinci SPI veri yoluna bağlar. Ekranla hiç paylaşmaz. İlk konuşma bir kartla değil, çipin kendisiyle olur. Sürüm yazmacını okuruz, veri sayfasındaki kendi kendine testi çalıştırırız ve 3.200 baytı FIFO'su üzerinden gönderip geri alırız.",
+    "goalLine": "Kart işin içine girmeden önce ESP32 ile okuyucu çipin SPI üzerinden güvenilir konuştuğunu kanıtla. Kartı ve etiketi şimdilik uzak tut.",
+    "goalCheck": [
+      "Monitör <code>VersionReg 0x92: MFRC522 v2.0</code> (ya da 0x91, ya da bir klonun değeri) yazmalı. 0x00 ya da 0xFF olmamalı.",
+      "Gerçek bir NXP çipinde (91h/92h) <code>selftest</code> <code>self-test passed: 64/64 bytes match</code> ile biter. FM17522 (88h/B2h) gibi bir klonda ise <code>self-test consistent: 2 runs, same 64 bytes</code> yazar.",
+      "<code>loopback</code> <code>0 of 3200 bytes wrong</code> yazar.",
+      "<b>Çip</b> görünümünde kare turkuaz renkte parlar. Veri yolu sayaçları artmaya devam eder."
+    ],
+    "learn": [
+      "SPI adres baytı",
+      "yazmaçlar",
+      "FIFO",
+      "veri sayfasındaki kendi kendine test",
+      "iki SPI veri yolu",
+      "veri yolu arızasını okumak"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "RC 3.3V"
+      },
+      "2": {
+        "role": "BLK"
+      },
+      "3": {
+        "role": "RES"
+      },
+      "4": {
+        "role": "DC"
+      },
+      "5": {
+        "role": "CS"
+      },
+      "6": {
+        "role": "SDA"
+      },
+      "7": {
+        "role": "SCL"
+      },
+      "8": {
+        "role": "GND"
+      },
+      "9": {
+        "role": "RC SDA"
+      },
+      "10": {
+        "role": "RC SCK"
+      },
+      "11": {
+        "role": "MOSI"
+      },
+      "12": {
+        "role": "MISO"
+      },
+      "13": {
+        "role": "RC RST"
+      },
+      "14": {
+        "role": "IRQ"
+      },
+      "15": {
+        "role": "RC GND"
+      },
+      "16": {
+        "role": "BTN"
+      },
+      "17": {
+        "role": "BOOT"
+      }
+    },
+    "wiring": {
+      "title": "RC522 bağlantısı (8 yeni kablo, ekran olduğu gibi kalır)",
+      "head": [
+        "RC522 pini",
+        "ESP32-S3",
+        "Görevi"
+      ],
+      "rows": [
+        [
+          "SDA",
+          "GPIO 15",
+          "SPI modunda çip seçimi (NSS), I2C verisi değil"
+        ],
+        [
+          "SCK",
+          "GPIO 16",
+          "SPI saati, ESP32'den gelir"
+        ],
+        [
+          "MOSI",
+          "GPIO 17",
+          "veri ESP32'den çipe"
+        ],
+        [
+          "MISO",
+          "GPIO 18",
+          "veri çipten ESP32'ye"
+        ],
+        [
+          "IRQ",
+          "GPIO 13",
+          "isteğe bağlı: çip “bitti” dediğinde haber verir"
+        ],
+        [
+          "GND",
+          "GND",
+          "sağdaki başlığın en üst pini"
+        ],
+        [
+          "RST",
+          "GPIO 14",
+          "sıfırlama. LOW olunca güç kesilir"
+        ],
+        [
+          "3.3V",
+          "3V3",
+          "ikinci 3V3 pini. Asla 5V"
+        ]
+      ]
+    },
+    "commands": {
+      "0": {
+        "does": "R1 deneyinin yazılımını derler ve geliştirme kartına yazar. Yeni indirme yok: yalnızca zaten sahip olduğun ekran kütüphanelerini kullanır.",
+        "see": "<code>Hard resetting via RTS pin…</code>. Ekran <b>kart</b> görünümünde açılır: halkalar ve “Hold a card or tag”.",
+        "fix": "“Failed to connect”: BOOT'u basılı tut, RST'ye dokun, BOOT'u bırak ve yeniden çalıştır."
+      },
+      "1": {
+        "does": "Seri monitörü açar. Açınca kart yeniden başlar, böylece açılış satırlarını görürsün.",
+        "see": "<code>RC522 on SPI3: SS 15 SCK 16 MOSI 17 MISO 18 RST 14 IRQ 13 · 4 MHz</code> satırı, ardından <code>VersionReg 0x92: MFRC522 v2.0</code> ve komut listesi.",
+        "fix": "<code>0x00</code>: çipe güç gelmiyor ya da MISO düşükte takılı kalmış. 3.3V, GND ve RST'yi kontrol et. <code>0xFF</code>: MISO'yu kimse sürmüyor. MISO (18) ve SDA (15)'i kontrol et."
+      },
+      "2": {
+        "does": "VersionReg (37h) değerini bir kez daha okur: yukarıda gösterilen 2 baytlık transfer, canlı.",
+        "see": "Açılıştaki satırla aynı (<code>0x92</code> ya da örneğin <code>0xB2: FM17522 (clone)</code>). Birkaç kez çalıştır. Kartı oynatıp tekrar dene: değer hiç değişmemeli.",
+        "fix": "Değer değişiyor ya da okuyucuya dokunduktan sonra 00h/FFh oluyorsa kablo gevşektir. RC522'nin başlığını yerine it ya da lehimle. Sonra <code>reset</code> yaz."
+      },
+      "3": {
+        "does": "RST kablosuna darbe verir (çipe sert sıfırlama), çipi yeniden kurar ve VersionReg'i okur. Yazılım ayrıca her 2 saniyede bir VersionReg'i kendisi denetler. Çip sessizleşirse bunu kendiliğinden yapar.",
+        "see": "<code>hard reset: VersionReg 0x92</code> (ya da klonunun değeri). Çip sessizleşmişse: <code>chip back after a hard reset</code> çip takılmıştı demek. <code>still 0x00 after a reset</code> ise bir kabloya işaret eder.",
+        "fix": "Hâlâ 00h/FFh ise gücü kapat, başlık pinlerini yerine it ya da lehimle. 3.3V, GND, MISO (18) ve SDA (15)'i kontrol et."
+      },
+      "4": {
+        "does": "Veri sayfasındaki dijital kendi kendine test (bölüm 16.1.1): Çipi sıfırlar ve sabit bir 64 baytlık dizi hesaplatır. Gerçek bir NXP çipi (91h/92h) veri sayfasındaki tabloyla karşılaştırılır. Klonların tablosu olmadığı için test iki kez çalışır ve iki sonuç karşılaştırılır. Test sürerken yoklama duraklar, kartı yerinde kalabilir.",
+        "see": "Dört satır, her satırda 16 bayt ve hiç <code>!</code> işareti yok. Ardından NXP çipte <code>self-test passed: 64/64 bytes match</code>, klonda <code>self-test consistent: 2 runs, same 64 bytes</code>. Çip görünümü <b>passed</b> ya da <b>consistent</b> yazar.",
+        "fix": "<code>self-test skipped: chip silent (0x00)</code>: çip test başlamadan yanıt vermiyordu. Bu bir kablo sorunu, <code>reset</code> komutuna bak. <code>!</code> işaretleri farklı baytlar demek. SCK, MOSI ve MISO'yu yeniden tak, sonra tekrar çalıştır. <code>doesn't run the self-test</code>: bazı klonlarda kendi kendine test yoktur. O zaman önemli olan loopback testidir."
+      },
+      "5": {
+        "does": "64 baytlık desenleri çipin FIFO'suna yazar ve geri okur. Bunu 50 kez yapar: her yönde 3.200 bayt.",
+        "see": "<code>FIFO loopback: 0 of 3200 bytes wrong at 4 MHz</code> ekranın sağ altında turkuaz renkte görünür.",
+        "fix": "4 MHz'de hata varsa SCK, MOSI ya da MISO'da kötü bir temas vardır. Ya da kablolar 20 cm'den çok uzundur."
+      },
+      "6": {
+        "does": "15 yazmacı bitleriyle ve anlamlarıyla birlikte yazdırır.",
+        "see": "<code>VersionReg 92h</code>, <code>TxControlReg 83h</code> (anten açık), <code>RFCfgReg 40h</code> (33 dB kazanç), <code>TPrescalerReg A9h</code> ve <code>TReloadReg 03 E8</code> (25 ms'lik zamanlayıcı: 25 µs'lik 1.000 tik).",
+        "fix": "TxControlReg 80h = anten kapalı. Çip bizim ayarımız olmadan sıfırlanmış. Kartı çıkarıp yeniden tak."
+      },
+      "7": {
+        "does": "İsteğe bağlı: sınır deneyine kısa bir bakış. Veri yolunu 20 MHz'de çalıştırır. Bu, çipin değerinin iki katıdır. Sonra varsayılan hıza döner.",
+        "see": "20 MHz'de birkaç yanlış bayt olabilir, hiç olmayabilir. Bu kablolarına bağlıdır. Çip görünümündeki SPI saati 10'un üstünde kehribar renge döner.",
+        "fix": "Her zaman <code>spi 4</code> ile bitir. R6 sınır deneyi bunu düzgün ölçer."
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Tek bir yazmaç okuması, bit bit",
+        "intro": "Bu derste her komut buna benzer transferlerle yapılır. Bir lojik analizör, ESP32 bir yazmaç okurken dört SPI kablosunda bunu gösterirdi: 16 saat vuruşu, iki bayt. İlk bayt MOSI üzerinden çıkar. <b>Hangi</b> yazmacın ve <b>okuma mı yazma mı</b> olduğunu söyler. İkinci baytta çip MISO üzerinden cevap verir. <code>chip</code> komutu VersionReg ile tam olarak bunu yapar. ◀ ▶ ile bit bit ilerleyebilirsin. Başka bir yazmaç da seçebilirsin. Ya da bir arıza seçip gevşek bir kablonun cevabı nasıl değiştirdiğine bakabilirsin. Monitörde 00h ya da FFh gördüğünde ne olduğunu böyle anlarsın."
+      },
+      "1": {
+        "title": "Ekranda neler var",
+        "intro": "Geliştirme kartının ekranında altı görünüm var. Basmalı düğmeye (ya da BOOT'a) tıklayınca sıradaki görünüme geçersin. Çift tıklama, sol altta yazan eylemi çalıştırır. Uzun basış kart yoklamasını duraklatır. Bir görünüm seç, her parçanın ne anlama geldiğini gör. Numaralar aşağıdaki listedekilerle eşleşir."
+      }
+    },
+    "steps": [
+      "USB'yi çek. Ekranı 03 numaralı derste olduğu gibi bağlı bırak. RC522'yi tablodaki gibi 8 dişi-erkek jumper kabloyla ekle. SDA, SCK, MOSI ve MISO'yu 15, 16, 17 ve 18'e bağla. Modüldeki sırayla, yan yana.",
+      "İki kez kontrol et. Modülün 3.3V'si <b>3V3</b>'e gider, asla 5V'a gitmez. MFRC522 2,5–3,6 V ile çalışır ve pinleri 5 V'a dayanmaz.",
+      "Karta yükle, sonra monitörü aç (yukarıdaki ilk iki komut). <b>Kontrol noktası 1:</b> VersionReg 0x92 (ya da 0x91, ya da bir klon değeri).",
+      "<code>selftest</code> yaz. <b>Kontrol noktası 2:</b> “passed” (NXP çipi) ya da “consistent” (klon).",
+      "<code>loopback</code> yaz, sonra <code>regs</code>. <b>Kontrol noktası 3:</b> 0 bayt yanlış ve tablodaki yazmaç değerleri.",
+      "<b>Çip</b> görünümüne geç ve “Ekranda neler var” bölümüyle karşılaştır: turkuaz kare, passed, 4 MHz, sayaçlar yükseliyor. Hedef budur. Kartı bir saniyeliğine okuyucuya koy. Bu, R2'nin bir ön izlemesi: Geliştirme kartı üzerindeki LED parlak yeşil yanıp söner ve kart okuyucuda durduğu sürece yeşil kalır."
+    ],
+    "note": "Geliştirme kartı üzerindeki RGB LED okuyucunun neyi gördüğünü söyler: Her kartı okunduğunda parlak yeşil bir yanıp sönme, kart okuyucunun üstünde dururken sabit yeşil, okuyucu çipi cevap vermeyi bırakırsa kırmızı (bir kablo), aksi halde kapalı. Birçok RC522 modülü başlığı gevşek gelir. Takma pinler temasını kaybeder. Lehimle ya da sıkıca it. IRQ isteğe bağlıdır. Yoksa kart yazılımı yoklar ve çip görünümü “polling” yazar (R6 ikisini karşılaştırır). Kartının konumu R1 sonuçlarını değiştirmez. Ama kartı okuyucunun yanında oynatmak, gevşek başlık pinlerinin temasını kesebilir. VersionReg bundan sonra 00h/FFh olursa kart yazılımı 2 saniye içinde fark eder, sert sıfırlamayı dener ve takıldığını mı yoksa bir kabloyu mu gösterdiğini söyler."
+  },
+  "R2": {
+    "title": "Bir kartı uyandır",
+    "heading": "Alan ve ilk merhaba",
+    "goal": "Okuyucunun anteni 13,56 MHz'lik bir manyetik alan üretir. Kartının pili yoktur. Bobini bu alandan enerji toplar, çipi uyanır ve okuyucunun duyabileceği bir ritimle alanı yükleyerek cevap verir. Önce 3B modelde, sonra kare kare, en sonunda sniffer'da gerçek veriyle izlersin.",
+    "goalLine": "Bir kartının uyanıp cevap verdiğini gör, kimliğini oku ve okuyucunun menzilini bul.",
+    "goalCheck": [
+      "Kart görünümünde kendi kartının UID'si, “MIFARE Classic 1K”, ATQA 00 04 ve SAK 08 yazar.",
+      "İz görünümünde uyandırma çerçeveleri listelenir: WUPA, ATQA, ANTICOLL, UID + BCC, SELECT, SAK, HLTA.",
+      "Okuma oranının düşmeye başladığı yüksekliği kabaca bilirsin. Bu senin menzilin."
+    ],
+    "learn": [
+      "13,56 MHz yakın alan",
+      "endüktif bağlaşım",
+      "%100 ASK duraklamaları",
+      "yük modülasyonu",
+      "REQA · WUPA · ATQA",
+      "bir yoklama görevi",
+      "çerçeveleri dinlemek"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "RC 3.3V"
+      },
+      "2": {
+        "role": "BLK"
+      },
+      "3": {
+        "role": "RES"
+      },
+      "4": {
+        "role": "DC"
+      },
+      "5": {
+        "role": "CS"
+      },
+      "6": {
+        "role": "SDA"
+      },
+      "7": {
+        "role": "SCL"
+      },
+      "8": {
+        "role": "GND"
+      },
+      "9": {
+        "role": "RC SDA"
+      },
+      "10": {
+        "role": "RC SCK"
+      },
+      "11": {
+        "role": "MOSI"
+      },
+      "12": {
+        "role": "MISO"
+      },
+      "13": {
+        "role": "RC RST"
+      },
+      "14": {
+        "role": "IRQ"
+      },
+      "15": {
+        "role": "RC GND"
+      },
+      "16": {
+        "role": "BTN"
+      },
+      "17": {
+        "role": "BOOT"
+      }
+    },
+    "commands": {
+      "0": {
+        "does": "R2 deneyinin kendi yazılımını yükler: R1'deki her şey, üstüne poll ve trace komutları ile iz görünümü. <code>help</code> bu deneyin komutlarını tam olarak listeler.",
+        "see": "<code>rfid-lab-r2: reader task started</code>, ardından bu deneyin komut listesi ve görünümleri.",
+        "fix": "“Failed to connect”: BOOT'u basılı tut, RST'ye dokun, BOOT'u bırak ve yeniden çalıştır."
+      },
+      "1": {
+        "does": "Basmalı düğmeye ya da BOOT'a bir tıklama sıradaki görünüme geçirir. Üstteki noktalar hangisinde olduğunu gösterir.",
+        "see": "Anten etrafında halkalar ve “Hold a card or tag flat on the reader”. Bir de şu ana kadarki okutma sayısı.",
+        "fix": ""
+      },
+      "2": {
+        "does": "Okuyucu görevi saniyede yaklaşık 12 kez yoklar. Kartı bulan ilk yoklama onu uyandırır, UID'sini okur ve sonra durdurur.",
+        "see": "Geliştirme kartı üzerindeki LED parlak yeşil yanıp söner, kart durdukça yeşil kalır. Kart görünümü UID'yi, türü, ATQA/SAK'ı ve okuma oranını gösterir. Okuma oranı %100'e dolana kadar dolar. Monitör <code>card 9C:4F:… · MIFARE Classic 1K · ATQA 0004 SAK 08</code> satırını ve çerçeveleri basar.",
+        "fix": "Hiçbir şey yok mu? R1'deki <code>chip</code> komutunu yeniden çalıştır. Sonra kartı anten ortasında düz tut."
+      },
+      "3": {
+        "does": "Alan yükseklikle zayıflar. Yoklamalar ıskalamaya başlar.",
+        "see": "Okuma oranı önce kehribar, sonra mercan rengine döner. Art arda 3 kaçırıştan sonra (~0,3 s) monitör <code>card removed</code> yazar.",
+        "fix": ""
+      },
+      "4": {
+        "does": "Sniffer: son uyandırmanın çerçeveleri, ms cinsinden zamanlarıyla.",
+        "see": "<code>&gt; 52 WUPA</code>, <code>&lt; 04 00 ATQA</code>, <code>&gt; 93 20 ANTICOLL CL1</code>, <code>&lt; UID + BCC</code>, <code>&gt; SELECT CL1</code>, <code>&lt; SAK</code>, <code>&gt; HLTA</code>.",
+        "fix": "“Sniffer off” yazıyorsa <code>trace on</code> yaz."
+      },
+      "5": {
+        "does": "Sniffer varsayılan olarak açıktır ve her yeni kartının çerçevelerini monitöre yazar. Kapatırsan monitör ile iz görünümü susar.",
+        "see": "Sağ altta <code>sniffer off</code> / <code>sniffer on</code>.",
+        "fix": ""
+      },
+      "6": {
+        "does": "Alıcı kazancı 18 dB (0), 48 dB (7), varsayılan 33 dB (4). Her biri için kartı menzilinin kenarında tut.",
+        "see": "Aynı yükseklikte okuma oranı kazanca göre değişir, ama bir noktaya kadar. Uzakta kartın enerjisi yetmez, kazanç ne olursa olsun.",
+        "fix": "<code>gain 4</code> ile bitir."
+      },
+      "7": {
+        "does": "Kart yoklamasını duraklatır ve yeniden başlatır.",
+        "see": "Kart görünümü “polling paused” yazar. Yeni kartlar, <code>poll on</code> yazana kadar yok sayılır.",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Alan, 3B'de",
+        "intro": "Okuyucunun ve kartın bir modeli. Çevirmek için sürükle, kartı yukarı aşağı oynat, kazancı değiştir ve bir uyandırmayı izlemek için WUPA gönder'e bas. Altındaki grafik, menzilin neden orada bittiğini gösterir."
+      },
+      "1": {
+        "title": "Bir uyandırmayı adım adım izle",
+        "intro": "Bir kart geldikten sonraki ilk milisaniyede olanlar: ESP32'nin SPI yazmalarından kartın cevabına kadar. Aynı çerçeveler sniffer'ında da görünür."
+      },
+      "2": {
+        "title": "Ekranda neler var",
+        "intro": "Geliştirme kartının ekranında altı görünüm var. Basmalı düğmeye (ya da BOOT'a) tıklayınca sıradaki görünüme geçersin. Çift tıklama, sol altta yazan eylemi çalıştırır. Uzun basış kart yoklamasını duraklatır. Bir görünüm seç, her parçanın ne anlama geldiğini gör. Numaralar aşağıdaki listedekilerle eşleşir."
+      }
+    },
+    "steps": [
+      "R1 ile aynı bağlantı. <code>rfid-lab-r2</code> yazılımını yükle (yukarıdaki komut), sonra <b>kart</b> görünümüne geç.",
+      "Beyaz kartı okuyucunun üstüne düz koy. <b>Kontrol noktası:</b> LED parlak yeşil yanıp söner ve yeşil kalır. UID, MIFARE Classic 1K ve okuma oranı %100 olmalı.",
+      "<b>İz</b> görünümüne geç ve 7 çerçeveyi bul. Yukarıdaki adım adım diyagramla karşılaştır.",
+      "Kartı yavaşça kaldır ve okuma oranının düştüğü yüksekliği not et. Bu senin menzilin.",
+      "Menzilin kenarında <code>gain 0</code> ve <code>gain 7</code> ile tekrarla, sonra <code>gain 4</code> ile. Sonucu 3B modelin tahminiyle karşılaştır.",
+      "Anahtar etiketini dene: Kendi UID'si, aynı tür."
+    ],
+    "note": "Okuyucu, kendi görevinde, çekirdek 0 üzerinde saniyede yaklaşık 12 kez yoklar. Bu yüzden ekran hiç beklemez. Bir kartı ancak art arda 3 kaçırılan yoklamadan (~0,3 s) sonra çıkmış sayılır. Böylece menzilin kenarındaki zayıf bir yoklama yüzünden kart yanıp sönmez. 3B model bilerek sadeleştirilmiştir. Gerçek menzilini R6'da ölç."
+  },
+  "R3": {
+    "title": "Orada kim var?",
+    "heading": "İki kart aynı anda: çakışma önleme",
+    "goal": "Kartı ve etiketi birlikte okuyucunun üstüne koy. İkisi de aynı anda, bit bit cevap verir. UID'leri farklılaştığı yerde okuyucu bir çakışma duyar. Çakışma önleme, bitlerde ikili bir ağaç gibi gezinir: Bir dal seç, o önekle yeniden sor, kalan kartı seç, durdur ve kimse cevap vermeyene kadar tekrarla.",
+    "goalLine": "İki kartı aynı anda bul ve UID'lerinin çakıştığı tam biti göster.",
+    "goalCheck": [
+      "<code>inventory</code> iki kartı, iki UID'siyle birlikte listeler.",
+      "Çakışan biti adlandırır. Yukarıdaki gezinti, kendi iki UID'nle aynı bite varır."
+    ],
+    "learn": [
+      "bit çakışmaları",
+      "ikili ağaçta gezinti",
+      "NVB",
+      "BCC",
+      "kaskad seviyeleri",
+      "SAK",
+      "HALT · WUPA"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "RC 3.3V"
+      },
+      "2": {
+        "role": "BLK"
+      },
+      "3": {
+        "role": "RES"
+      },
+      "4": {
+        "role": "DC"
+      },
+      "5": {
+        "role": "CS"
+      },
+      "6": {
+        "role": "SDA"
+      },
+      "7": {
+        "role": "SCL"
+      },
+      "8": {
+        "role": "GND"
+      },
+      "9": {
+        "role": "RC SDA"
+      },
+      "10": {
+        "role": "RC SCK"
+      },
+      "11": {
+        "role": "MOSI"
+      },
+      "12": {
+        "role": "MISO"
+      },
+      "13": {
+        "role": "RC RST"
+      },
+      "14": {
+        "role": "IRQ"
+      },
+      "15": {
+        "role": "RC GND"
+      },
+      "16": {
+        "role": "BTN"
+      },
+      "17": {
+        "role": "BOOT"
+      }
+    },
+    "commands": {
+      "0": {
+        "does": "R3 deneyinin kendi yazılımını yükler: R2'deki her şey, üstüne inventory komutu. Kart görünümünde çift tıklama da bunu çalıştırır. <code>help</code> bu deneyin komutlarını tam olarak listeler.",
+        "see": "<code>rfid-lab-r3: reader task started</code>, ardından bu deneyin komut listesi ve görünümleri.",
+        "fix": "“Failed to connect”: BOOT'u basılı tut, RST'ye dokun, BOOT'u bırak ve yeniden çalıştır."
+      },
+      "1": {
+        "does": "İki kart da aynı WUPA ile uyanır. Yoklama çakışmayı çözer ve kartlardan birini seçer.",
+        "see": "Kart görünümü tek bir UID gösterir (her zaman aynı olan) ve kehribar renkli bir satır: <code>collision at bit 23</code>. Senin bitin farklı olacak.",
+        "fix": "Yalnızca bir kart mı bulundu? Kartları daha çok üst üste koy. İkisi de anten halkasının içinde olmalı."
+      },
+      "2": {
+        "does": "Her kartın yeniden başlaması için alanı 10 ms kapatır. Sonra REQA → select → halt yapar. Kimse cevap vermeyene kadar tekrarlar.",
+        "see": "<code>#1 9C:4F:6A:0D … collision at level 1 bit 23 -&gt; chose 1</code>, <code>#2 9C:4F:2A:1B …</code>, sonra <code>inventory: 2 cards in the field</code>.",
+        "fix": "<code>select failed (collision)</code>: Kartları biraz oynat ve yeniden çalıştır."
+      },
+      "3": {
+        "does": "Aynı gezinti. Çözülecek bir şey yok.",
+        "see": "Çakışma satırı olmadan <code>1 card</code>, sonra <code>0 cards</code>.",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Çakışma önleme: bitlerde bir gezinti",
+        "intro": "İki satır, iki kartın UID bitleridir. Gittikleri sırayla dizilmişlerdir: 0. baytın en düşük anlamlı biti ilk. Adım adım ilerle. Bitlerin farklı olduğu yerde okuyucu bir çakışma duyar, 1'i seçer ve yalnızca eşleşen kart cevap vermeye devam eder. Monitörden kendi UID'lerini gir."
+      },
+      "1": {
+        "title": "Ekranda neler var",
+        "intro": "Geliştirme kartının ekranında altı görünüm var. Basmalı düğmeye (ya da BOOT'a) tıklayınca sıradaki görünüme geçersin. Çift tıklama, sol altta yazan eylemi çalıştırır. Uzun basış kart yoklamasını duraklatır. Bir görünüm seç, her parçanın ne anlama geldiğini gör. Numaralar aşağıdaki listedekilerle eşleşir."
+      }
+    },
+    "steps": [
+      "<code>rfid-lab-r3</code> yazılımını yukarıdaki komutla yükle. Bağlantı R1 ile aynı. <code>help</code> bu deneyin komutlarını gösterir.",
+      "Kartı ve etiketi okuyucunun üstüne birlikte, üst üste koy.",
+      "Kart görünümünü izle: Tek bir UID ve kehribar renkli çakışma biti.",
+      "<code>inventory</code> yaz (ya da kart görünümünde çift tıkla). <b>Kontrol noktası:</b> 2 kart ve çakışma biti.",
+      "İki UID'yi yukarıdaki gezinti bölümüne gir ve 2. adıma geç. Çakışma aynı bite düşer.",
+      "İkisini de okuyucuda bırak. Kart görünümü hep aynı kartı gösterir. Gezinti bir çakışmada her zaman 1'i seçer, bu yüzden her seferinde aynı kart kazanır."
+    ],
+    "note": "Bitler en düşük anlamlıdan başlayarak gider. Bu yüzden “bit 23”, üçüncü UID baytının 6. bitidir. Sürücümüz iki kartla aynı anda test edildi. Üç ya da daha fazla kartta, ilk daldan sonra çipin çakışma konumuna güvenmek zorlaşır. 7 baytlık UID'ler iki kaskad seviyesi kullanır. İlk parça 88h ile başlar. Bu kaskad etiketidir."
+  },
+  "R4": {
+    "title": "Kartın içinde",
+    "heading": "Kartın belleğini aç",
+    "goal": "Bir MIFARE Classic 1K 1.024 bayt tutar: 16 sektör × 4 blok × 16 bayt. Her sektörün kendi kilidi vardır, buna son blok (trailer) denir. İçinde iki anahtar ve her bloğu kimin okuyup yazabileceğini söyleyen erişim bitleri bulunur. Kendi kartının her sektörünü fabrika anahtarıyla aç ve dökümünü al.",
+    "goalLine": "Kendi kartının tüm belleğinin dökümünü al. Blok 0'ı ve bir sektörün son bloğunu bayt bayt açıkla.",
+    "goalCheck": [
+      "<code>dump</code> komutu <code>dump: 16 sectors read</code> ile biter. Bellek görünümü tümüyle renkli olur, gri “closed” sektör olmaz.",
+      "Dökümde blok 0'daki UID'yi ve bir son bloktaki <code>FF 07 80 69</code>'u gösterebilirsin. Yukarıdaki çözücü, FF 07 80'in neye izin verdiğini açıklar."
+    ],
+    "learn": [
+      "sektörler ve bloklar",
+      "sektörlerin son blokları",
+      "erişim bitleri (iki kez saklanır)",
+      "3 geçişli kimlik doğrulama",
+      "şifreli çerçeveler",
+      "üretici bloğu"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "RC 3.3V"
+      },
+      "2": {
+        "role": "BLK"
+      },
+      "3": {
+        "role": "RES"
+      },
+      "4": {
+        "role": "DC"
+      },
+      "5": {
+        "role": "CS"
+      },
+      "6": {
+        "role": "SDA"
+      },
+      "7": {
+        "role": "SCL"
+      },
+      "8": {
+        "role": "GND"
+      },
+      "9": {
+        "role": "RC SDA"
+      },
+      "10": {
+        "role": "RC SCK"
+      },
+      "11": {
+        "role": "MOSI"
+      },
+      "12": {
+        "role": "MISO"
+      },
+      "13": {
+        "role": "RC RST"
+      },
+      "14": {
+        "role": "IRQ"
+      },
+      "15": {
+        "role": "RC GND"
+      },
+      "16": {
+        "role": "BTN"
+      },
+      "17": {
+        "role": "BOOT"
+      }
+    },
+    "commands": {
+      "0": {
+        "does": "R4 deneyinin kendi yazılımını yükler: R3'teki her şey, üstüne bellek görünümü, dump ve read. <code>help</code> bu deneyin komutlarını tam olarak listeler.",
+        "see": "<code>rfid-lab-r4: reader task started</code>, ardından bu deneyin komut listesi ve görünümleri.",
+        "fix": "“Failed to connect”: BOOT'u basılı tut, RST'ye dokun, BOOT'u bırak ve yeniden çalıştır."
+      },
+      "1": {
+        "does": "16 sektörün her biri için: Fabrika anahtarı A ile kimlik doğrula, 4 bloğunu oku, son bloğu çöz. Yaklaşık 1,5 s sürer. Kartı sabit tut.",
+        "see": "64 satır (blok, 16 bayt, ASCII, anlamı), sonra <code>dump: 16 sectors read</code>. Bellek görünümünde Blok 0 kehribar, boş bloklar koyu, son bloklar mercan renkli olur.",
+        "fix": "Gri “closed” sektörler: Bu sektörlerin anahtarı fabrika anahtarı değil (birinin kurduğu bir kart). Deney onlara dokunmaz. “no card”: Kart kıpırdadı. Yeniden çalıştır."
+      },
+      "2": {
+        "does": "Yalnızca sektör 0'ı doğrulayıp blok 0'ı okur.",
+        "see": "UID (4 bayt), BCC, sonra 08 04 00 (SAK, ATQA), sonra üreticinin baytları.",
+        "fix": ""
+      },
+      "3": {
+        "does": "Blok 1 için aynısı. Sniffer çerçeveleri gösterir.",
+        "see": "Çipin içinde tamamlandı olarak işaretlenen <code>AUTH key A</code>, sonra <code>READ</code> ve 16 bayt. İkisi de “[encrypted on air]”.",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Kartın belleği, 3B'de",
+        "intro": "Her dolap bir sektör, her levha bir blok. En üstteki levha, kilidiyle birlikte son bloktur. Bir sektöre tıkla, sonra “Bu sektörü doğrula” düğmesine bas. Ancak o zaman bloklarını okuyabilirsin."
+      },
+      "1": {
+        "title": "Erişim bitleri çözücüsü",
+        "intro": "Her son bloğun 6–8. baytları, o sektörde kimin neyi yapabileceğine karar verir. Bitleri işaretle ya da dökümündeki üç baytı yaz."
+      },
+      "2": {
+        "title": "Kimlik doğrula ve oku, adım adım",
+        "intro": "Tek bir <code>read 4</code> komutunun veri yolunda ve havada ne yaptığı."
+      },
+      "3": {
+        "title": "Ekranda neler var",
+        "intro": "Geliştirme kartının ekranında altı görünüm var. Basmalı düğmeye (ya da BOOT'a) tıklayınca sıradaki görünüme geçersin. Çift tıklama, sol altta yazan eylemi çalıştırır. Uzun basış kart yoklamasını duraklatır. Bir görünüm seç, her parçanın ne anlama geldiğini gör. Numaralar aşağıdaki listedekilerle eşleşir."
+      }
+    },
+    "steps": [
+      "<code>rfid-lab-r4</code> yazılımını yukarıdaki komutla yükle. Bağlantı R1 ile aynı. <code>help</code> bu deneyin komutlarını gösterir.",
+      "Beyaz kartı okuyucunun üstüne koy ve sabit tut. <code>dump</code> yaz (ya da bellek görünümünde çift tıkla). <b>Kontrol noktası:</b> 16 sektör okundu.",
+      "Dökümde blok 0'ı oku: UID, BCC, SAK, ATQA, üreticinin baytları.",
+      "Bir son blok bul (blok 3, 7, 11…). Anahtar A 00 olarak okunur, çünkü kart onu asla açıklamaz. Sonra <code>FF 07 80 69</code> gelir, ardından anahtar B.",
+      "Yukarıdaki erişim bitleri çözücüsüne <code>FF 07 80</code> gir. Veri blokları 000, son blok 001.",
+      "İz görünümü açıkken <code>read 1</code> yaz. AUTH'u ve şifreli READ'i gör."
+    ],
+    "note": "Kimlik doğrulama MFRC522'nin içinde çalışır (MFAuthent komutu). ESP32 anahtarı verir ve el sıkışmayı hiç görmez. Anahtar da izlemeye hiç girmez. Kart yazılımı yalnızca fabrika anahtarını kullanır, yalnızca sana ait kartlarda ve blok 0'ı ya da bir son bloğu asla yazmaz. Bozuk erişim bitleri olan bir son blok, sektörünü kalıcı olarak kilitler."
+  },
+  "R5": {
+    "title": "Yaz ve say",
+    "heading": "Karta yazı yaz, kredi sayacı tut",
+    "goal": "Veri bloğuna kendi 16 baytını yaz ve geri oku. Sonra MIFARE'in yerleşik aritmetiğini kullan: Bir değer bloğu bir sayıyı üç kez saklar (biri ters çevrilmiş). Kart kendisi toplar ya da çıkarır, sonra sonucu tek adımda kaydeder. Bir yedek blok, önceki değeri tutar.",
+    "goalLine": "Karta yazı yaz ve üzerinde, kartın kendisinin güncellediği bir kredi sayacı tut.",
+    "goalCheck": [
+      "<code>write 4 hello bench</code> “written and read back” der.",
+      "<code>credits init 50</code> ve <code>credits use 3</code> komutlarından sonra kredi görünümü, yedek 50 ile birlikte 47 gösterir.",
+      "<code>dump</code> blok 4'ü veri, blok 8 ve 9'u değer blokları olarak gösterir."
+    ],
+    "learn": [
+      "blok yazmaları · ACK / NAK",
+      "geri okuma denetimleri",
+      "değer bloğu biçimi",
+      "INCREMENT · DECREMENT · TRANSFER",
+      "yedek bloklar",
+      "güvenlik önlemleri"
+    ],
+    "commands": {
+      "0": {
+        "does": "R5 deneyinin kendi yazılımını yükler: R4'teki her şey, üstüne kredi görünümü, write ve credits. <code>help</code> bu deneyin komutlarını tam olarak listeler.",
+        "see": "<code>rfid-lab-r5: reader task started</code>, ardından bu deneyin komut listesi ve görünümleri.",
+        "fix": "“Failed to connect”: BOOT'u basılı tut, RST'ye dokun, BOOT'u bırak ve yeniden çalıştır."
+      },
+      "1": {
+        "does": "Sektör 1'i açar, Anahtar A ile yazmaya izin veren erişim bitlerini denetler, 16 bayt yazar (metin sıfırlarla doldurulur) ve geri okur.",
+        "see": "Blok 4'ün baytları, <code>|hello bench.....|</code> ve <code>written and read back</code>.",
+        "fix": "<code>READ BACK DIFFERS</code>: Kart yazma sırasında kıpırdadı. Yeniden çalıştır."
+      },
+      "2": {
+        "does": "Bir sektörün son bloğuna yazmayı dener.",
+        "see": "Hiçbir şey gönderilmeden reddedilir: <code>not writable here (block 0 and trailers are off limits)</code>.",
+        "fix": ""
+      },
+      "3": {
+        "does": "Blok 8'e değer bloğu olarak 50 yazar. Aynısını yedek olan blok 9'a da yazar.",
+        "see": "Kredi görünümü: 50, yedek 50 ve bir madeni para yığını.",
+        "fix": ""
+      },
+      "4": {
+        "does": "Değeri yedeğe kopyalar. Sonra kart çıkarır (ya da ekler) ve TRANSFER ile kaydeder.",
+        "see": "47, yedek 50. Sonra 57, yedek 47.",
+        "fix": "<code>no credits on this card yet</code>: Önce credits init çalıştır."
+      },
+      "5": {
+        "does": "Kart yazılımı önce bakiyeyi kontrol eder.",
+        "see": "<code>only 57 credits, can't use 999</code>: Karta hiçbir şey gönderilmez.",
+        "fix": ""
+      },
+      "6": {
+        "does": "Blok 8 ve 9'u okur ve çözer.",
+        "see": "Güncel değer ve yedek.",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Bir değer bloğu, bayt bayt",
+        "intro": "Kart, bir sayıyı kendi kendini denetleyebileceği biçimde nasıl saklar? Değeri değiştir ve hangi baytların hareket ettiğine bak."
+      },
+      "1": {
+        "title": "credits use 3, adım adım",
+        "intro": "Tek bir <code>credits use 3</code> komutunun arkasındaki dört kart komutu."
+      },
+      "2": {
+        "title": "Ekranda neler var",
+        "intro": "Geliştirme kartının ekranında altı görünüm var. Basmalı düğmeye (ya da BOOT'a) tıklayınca sıradaki görünüme geçersin. Çift tıklama, sol altta yazan eylemi çalıştırır. Uzun basış kart yoklamasını duraklatır. Bir görünüm seç, her parçanın ne anlama geldiğini gör. Numaralar aşağıdaki listedekilerle eşleşir."
+      }
+    },
+    "steps": [
+      "<code>rfid-lab-r5</code> yazılımını yukarıdaki komutla yükle. Bağlantı R1 ile aynı. <code>help</code> bu deneyin komutlarını gösterir.",
+      "Kartı okuyucuya koy. <code>write 4 hello bench</code> yaz. <b>Kontrol noktası:</b> written and read back.",
+      "<code>write 3 test</code> yaz: Reddedilir, çünkü o bir son blok. Blok 0 da öyle.",
+      "<code>credits init 50</code>, sonra <code>credits use 3</code> yaz. <b>Kontrol noktası:</b> 47, yedek 50.",
+      "<code>credits add 10</code> yaz: 57, yedek 47. Yukarıdaki diyagramda ilerle ve dört kart komutunu gör.",
+      "<code>dump</code> komutunu yeniden çalıştır. Blok 4 veri, blok 8 ve 9 değer bloklarıdır."
+    ],
+    "note": "MIFARE Classic üzerindeki krediler bir öğrenme oyuncağıdır, para değildir. Anahtarı olan herkes bloğu yeniden yazabilir. Ödeme ve toplu taşıma sistemleri modern şifrelemeli kartlar kullanır (MIFARE DESFire gibi) ve her işlemi bir sunucuda denetler.",
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "RC 3.3V"
+      },
+      "2": {
+        "role": "BLK"
+      },
+      "3": {
+        "role": "RES"
+      },
+      "4": {
+        "role": "DC"
+      },
+      "5": {
+        "role": "CS"
+      },
+      "6": {
+        "role": "SDA"
+      },
+      "7": {
+        "role": "SCL"
+      },
+      "8": {
+        "role": "GND"
+      },
+      "9": {
+        "role": "RC SDA"
+      },
+      "10": {
+        "role": "RC SCK"
+      },
+      "11": {
+        "role": "MOSI"
+      },
+      "12": {
+        "role": "MISO"
+      },
+      "13": {
+        "role": "RC RST"
+      },
+      "14": {
+        "role": "IRQ"
+      },
+      "15": {
+        "role": "RC GND"
+      },
+      "16": {
+        "role": "BTN"
+      },
+      "17": {
+        "role": "BOOT"
+      }
+    }
+  },
+  "R6": {
+    "title": "Sınır deneyi",
+    "heading": "Kendi tezgâhında sınırları bul",
+    "goal": "Her biri bir ayarı, bir şey bozulana kadar zorlayan yedi deney: SPI saat hızı, alıcı kazancının mesafeyle ilişkisi, kartın ne kadar hızlı cevap verdiği, her adımın ne kadar sürdüğü, IRQ kablosuna karşı yoklama, çipin CRC birimiyle ESP32'nin hesabı ve art arda yüzlerce okuma. Her biri ekranda bir grafik çizer ve altına yapıştırabileceğin bir tablo yazdırır.",
+    "goalLine": "Kendi tezgâhında nerede bozulduğunu ölç ve veri sayfasıyla karşılaştır.",
+    "goalCheck": [
+      "0 hatayla çalışabilen en yüksek SPI saatini, kartının cevap süresini ve kart sabitken okuma başarı oranını bilirsin.",
+      "Tabloların, yukarıdaki Deneyler panelinde örneğin yanına yapıştırılmıştır."
+    ],
+    "learn": [
+      "ölçülen ve veri sayfası",
+      "SPI sinyal bütünlüğü",
+      "zaman aşımları ve cevap süresi",
+      "IRQ ve yoklama",
+      "yükü devretme",
+      "güvenilirlik istatistikleri"
+    ],
+    "commands": {
+      "0": {
+        "does": "R6 deneyinin kendi yazılımını yükler: R5'teki her şey, üstüne sınır görünümü ve yedi sınır deneyi. <code>help</code> bu deneyin komutlarını tam olarak listeler.",
+        "see": "<code>rfid-lab-r6: reader task started</code>, ardından bu deneyin komut listesi ve görünümleri.",
+        "fix": "“Failed to connect”: BOOT'u basılı tut, RST'ye dokun, BOOT'u bırak ve yeniden çalıştır."
+      },
+      "1": {
+        "does": "1'den 40 MHz'e kadar FIFO loopback, sonra çip sıfırlaması. Yaklaşık 1 s.",
+        "see": "MHz başına yüzde yanlış değerlerini gösteren bir tablo ve bir çubuk grafik. 10 MHz çubuğunun çerçevesi çizilir (veri sayfası sınırı).",
+        "fix": ""
+      },
+      "2": {
+        "does": "Çip ve ESP32, 300 sağlama toplamını ayrı ayrı hesaplar.",
+        "see": "0 uyumsuzluk. Çip çok daha yavaş (SPI gidiş dönüşleri yüzünden).",
+        "fix": ""
+      },
+      "3": {
+        "does": "30 WUPA yoklama, 30 kez IRQ kablosunda uyuma. Önce kartı koyarak, sonra kaldırarak çalıştır.",
+        "see": "Her biri için komut başına SPI erişimi. Kart yokken fark çok büyür.",
+        "fix": "“IRQ never fired”: IRQ kablosu (13) gevşek."
+      },
+      "4": {
+        "does": "Çipin bekleme zamanlayıcısını 25 ms'den 40 µs'ye indirir. Yaklaşık 5 s.",
+        "see": "%100, ~100 µs'ye kadar düşer, sonra %0. Bu, kartın cevap süresidir.",
+        "fix": "Hepsi %0: Kart okuyucunun üstünde değildi."
+      },
+      "5": {
+        "does": "40 tam döngü, her adım zamanlanır.",
+        "see": "WUPA, SELECT, AUTH ve READ için en az / ortalama / en çok µs.",
+        "fix": "“no complete cycle”: Kartı sabit tut."
+      },
+      "6": {
+        "does": "Tek bir yükseklikte her kazanç adımında 30 deneme. Önce yakından, sonra yaklaşık 3 cm'de çalıştır.",
+        "see": "Kazanç başına bulunma yüzdesi: Yakında hepsi %100. Düşük kazançlar daha uzakta önce başarısız olur.",
+        "fix": ""
+      },
+      "7": {
+        "does": "500 tam okuma döngüsü (~10 s). Çalışırken kartı yavaşça kaldır ya da eğ.",
+        "see": "Sonuç başına sayılar: ok, absent, CRC, protocol… ve saniyedeki okuma sayısı.",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Deneyler",
+        "intro": "Her deney için bir sekme: Neyi zorladığı, nelere bakman gerektiği, örnek sonuç ve kendi tablon için bir kutu."
+      },
+      "1": {
+        "title": "Ekranda neler var",
+        "intro": "Geliştirme kartının ekranında altı görünüm var. Basmalı düğmeye (ya da BOOT'a) tıklayınca sıradaki görünüme geçersin. Çift tıklama, sol altta yazan eylemi çalıştırır. Uzun basış kart yoklamasını duraklatır. Bir görünüm seç, her parçanın ne anlama geldiğini gör. Numaralar aşağıdaki listedekilerle eşleşir."
+      }
+    },
+    "steps": [
+      "<code>rfid-lab-r6</code> yazılımını yukarıdaki komutla yükle. Bağlantı R1 ile aynı. <code>help</code> bu deneyin komutlarını gösterir.",
+      "Kartı okuyucuya koy ve sabit tut. Üstüne bir kitap koymak yardımcı olur. <b>Sınır</b> görünümüne geç: Orada çift tıklama sıradaki deneyi çalıştırır.",
+      "<code>edge spi</code>, <code>edge crc</code> ve <code>edge irq</code> yaz. Kart üzerindeyken, sonra kaldırarak.",
+      "Kart sabitken <code>edge timeout</code> ve <code>edge timing</code> yaz. <b>Kontrol noktası:</b> kartının cevap süresi.",
+      "Yakında <code>edge gain</code> yaz, sonra yaklaşık 3 cm'de tekrarla.",
+      "Kartı yavaşça kaldırırken <code>edge stress 500</code> yaz.",
+      "Her tabloyu yukarıdaki ilgili sekmeye yapıştır."
+    ],
+    "note": "Sınır görünümünde çift tıklama sıradaki deneyi çalıştırır. edge spi, hızlı ve bozuk bir yazma bir ayarı değiştirmiş olabilir diye, sonrasında çipi sıfırlar. IRQ kablosunu çekip edge irq'yu çalıştır: Kart yazılımı fark eder ve yoklamaya döner.",
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "RC 3.3V"
+      },
+      "2": {
+        "role": "BLK"
+      },
+      "3": {
+        "role": "RES"
+      },
+      "4": {
+        "role": "DC"
+      },
+      "5": {
+        "role": "CS"
+      },
+      "6": {
+        "role": "SDA"
+      },
+      "7": {
+        "role": "SCL"
+      },
+      "8": {
+        "role": "GND"
+      },
+      "9": {
+        "role": "RC SDA"
+      },
+      "10": {
+        "role": "RC SCK"
+      },
+      "11": {
+        "role": "MOSI"
+      },
+      "12": {
+        "role": "MISO"
+      },
+      "13": {
+        "role": "RC RST"
+      },
+      "14": {
+        "role": "IRQ"
+      },
+      "15": {
+        "role": "RC GND"
+      },
+      "16": {
+        "role": "BTN"
+      },
+      "17": {
+        "role": "BOOT"
+      }
+    }
+  },
+  "R7": {
+    "title": "Kart yöneticisi",
+    "heading": "Kartlarını bir React uygulamasıyla yönet",
+    "goal": "Kendi yazılımı (rfid-lab-r7) tezgâhı, Wi-Fi üzerinden küçük bir React uygulamasıyla (esp-labs/apps/door-app) yönettiğin bir kapıya çevirir. Geliştirme kartı kart listesini kendi flash belleğinde tutar ve her okutmaya kendisi karar verir. Kart yalnızca UID'sini getirir. Uygulamadan kart eklersin, adlandırırsın, rol verirsin, engellersin ve saatlerle, bitiş tarihiyle ya da kullanım sayısıyla sınırlarsın. Bir kartın kurallarını başka bir karta kopyalar, kaybolan kartı değiştirir, kartlara ad etiketi yazarsın. Deneylerin yazdığı verileri silersin. Bir kartın verisini kaydeder, geri yazar ya da başka bir karta kopyalarsın. Kapıyı uzaktan açar, kilit modunu açar ve her okutmayı canlı izlersin. İki simüle kilit var, ekran ve LED: Her rol için ön kapı ve yalnızca yönetici kartları için yönetici odası. Tek okuyucu bir seferde bunlardan birine takılır.",
+    "goalLine": "İki RFID etiketini küçük bir erişim sistemi gibi çalıştır: bir sakin, bir misafir. Her kuralın bir okutmaya nasıl karar verdiğini gör.",
+    "goalCheck": [
+      "Uygulama <b>live</b> gösterir ve iki etiket de listededir: Beyaz kart sakin olarak, anahtar etiketi misafir olarak.",
+      "Beyaz kartı okutunca ekranda ve uygulamada OPEN çıkar. <b>Block</b>'tan sonra aynı okutma DENIED · blocked gösterir.",
+      "Misafir etiketinin kullanım hakkı her okutmada azalır. 0 olunca “no uses left” ile reddedilir.",
+      "Her okutma ve her değişiklik erişim günlüğünde, geliştirme kartının günlük görünümünde ve uygulamada görünür.",
+      "Beyaz kartın verisi kaydedilir, anahtar etiketine kopyalanır ve karşılaştırılır: Veri aynıdır, anahtar etiketi hâlâ <b>Key tag</b> olarak açılır. Çünkü kopya UID'yi hiçbir zaman taşımaz."
+    ],
+    "learn": [
+      "REST API + WebSocket",
+      "sunucu tarafında karar",
+      "kural sırası",
+      "şüphede reddet",
+      "NVS depolama",
+      "geliştirme proxy'si üzerinden yönetici token'ı",
+      "React + zod",
+      "yedekle, geri yükle, doğrula",
+      "kopya, klon değildir"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "RC 3.3V"
+      },
+      "2": {
+        "role": "BLK"
+      },
+      "3": {
+        "role": "RES"
+      },
+      "4": {
+        "role": "DC"
+      },
+      "5": {
+        "role": "CS"
+      },
+      "6": {
+        "role": "SDA"
+      },
+      "7": {
+        "role": "SCL"
+      },
+      "8": {
+        "role": "GND"
+      },
+      "9": {
+        "role": "RC SDA"
+      },
+      "10": {
+        "role": "RC SCK"
+      },
+      "11": {
+        "role": "MOSI"
+      },
+      "12": {
+        "role": "MISO"
+      },
+      "13": {
+        "role": "RC RST"
+      },
+      "14": {
+        "role": "IRQ"
+      },
+      "15": {
+        "role": "RC GND"
+      },
+      "16": {
+        "role": "BTN"
+      },
+      "17": {
+        "role": "BOOT"
+      }
+    },
+    "commands": {
+      "0": {
+        "does": "Kapı yazılımını yükler. İlk derleme, W2'nin zaten kullandığı web kütüphanelerini (ESPAsyncWebServer, AsyncTCP, ArduinoJson) esp-labs/.pio içine kopyalar.",
+        "see": "Ekranda <b>DOOR door</b>, LOCKED, “0 cards in the list” yazar. Wi-Fi bağlanınca alt kısımda <code>http://bench.local</code> görünür.",
+        "fix": "“no Wi-Fi saved: run W1 once”: R7, W1 ve W2'nin kaydettiği ağı kullanır. W1'i yükle, <code>join</code> yaz, sonra R7'yi yeniden yükle."
+      },
+      "1": {
+        "does": "Yönetici token'ını yazdırır (W2 ile paylaşılır). Uygulamadaki her değişiklik buna ihtiyaç duyar.",
+        "see": "<code>Admin token: 3f…</code> ve token'ı nereye koyacağın.",
+        "fix": "Sohbetlerden ve Git'ten uzak tut. <code>token new</code> yenisiyle değiştirir."
+      },
+      "2": {
+        "does": "Uygulamanın ayar dosyasını oluşturur: <code>BENCH_URL=http://bench.local</code> (ya da <code>status</code> çıktısındaki IP) ve <code>BENCH_TOKEN=</code> token'ı.",
+        "see": "package.json'ın yanında bir .env dosyası. Git tarafından yok sayılır.",
+        "fix": ""
+      },
+      "3": {
+        "does": "Uygulamayı kurar (React 19, Vite 8, zod: pano ile aynı sürümler) ve başlatır. Vite, /api ve /ws isteklerini geliştirme kartına iletir ve token'ı yolda ekler. Böylece tarayıcı token'ı hiç tutmaz.",
+        "see": "<code>http://localhost:5174</code> adresini aç: Kapı panelinde <b>live</b> yazar, çip B2h · FM17522 (senin klonun) gösterir, saat zamanı gösterir.",
+        "fix": "“connecting…” sonsuza kadar sürüyor mu? Geliştirme kartı Wi-Fi'da mı (ekranın alt kısmı)? <code>http://bench.local/api</code> tarayıcıda açılıyor mu? FRITZ!Box: Wi-Fi cihazlarının birbirine erişmesine izin ver (W2)."
+      },
+      "4": {
+        "does": "Geliştirme kartı, listede olmayan bir kartı 20 s bekler. Ekran ADD A CARD yazar ve LED mavi yanıp söner. Sonra beyaz kartı okuyucuya okut.",
+        "see": "“White card added” bildirimi, listede <b>opens now</b> yazan kart ve günlükte bir “enrolled” satırı.",
+        "fix": "“already in the list”: Bu kart zaten kayıtlı. Başka bir kart okut ya da önce bunu sil."
+      },
+      "5": {
+        "does": "Anahtar etiketi için aynısı. Misafirler 5 kullanım hakkıyla başlar.",
+        "see": "Key tag · guest · <b>5 uses left</b>.",
+        "fix": ""
+      },
+      "6": {
+        "does": "Geliştirme kartı, kendi listesine bakarak karar verir: OPEN 5 s (yeşil LED, asma kilit açılır) ya da DENIED 2 s (kırmızı LED, sebebiyle birlikte).",
+        "see": "Uygulamadaki kapı paneli ve günlük bir saniye içinde güncellenir. Misafirin kullanım hakkı 5 → 4 → 3 diye azalır.",
+        "fix": "Hiçbir şey olmuyor ya da “card can't be read”: Uygulamanın <b>Reader chip</b> hücresine ve altındaki bandrole bak. “settings restored”, RC522'nin 3,3 V'u düştüğünde kendini sıfırladığı anlamına gelir (çoğu zaman Wi-Fi gönderirken). Kısa kablolar kullan, 3.3V pinine. Başlık pinlerini sıkıca it ya da lehimle. “IRQ wire stays quiet” zararsızdır: Kart bunun yerine yoklar. Seri port: <code>status</code> aynısını yazdırır."
+      },
+      "7": {
+        "does": "En hızlı kural: Engellenen bir kart, başka hiçbir şey kontrol edilmeden reddedilir.",
+        "see": "Kartta <b>blocked</b> yazar. Bir sonraki okutması DENIED · blocked gösterir.",
+        "fix": ""
+      },
+      "8": {
+        "does": "Office hours (08-18), Night shift (22-06, gece yarısını aşar), Weekend guest (Pazar 20:00'ye kadar 10 kullanım), One visit (1 kullanım, 24 h), Lost card (blocked). Save yalnızca değişeni gönderir.",
+        "see": "Kartın kural satırı ve “opens now” çipi hemen değişir.",
+        "fix": "“no clock yet”: Tarihli ya da saatli kartlar, geliştirme kartı internet saatini alana kadar reddedilir (şüphede reddet)."
+      },
+      "9": {
+        "does": "Dördüncü bir rol: Yönetici kartları, ön kapıyı sakin gibi açar. Yönetici odasını açan tek kartlar da bunlardır. Kilit modundayken da açarlar.",
+        "see": "Kartın satırında <b>front door ✓</b> ve <b>admin room ✓</b> yazar. Sakininkinde <b>admin room · admins only</b> yazar.",
+        "fix": ""
+      },
+      "10": {
+        "does": "Tezgâhta tek okuyucu var, bu yüzden bir seferde bir kilide takılı olur (geliştirme kartında saklanır). Seri port: <code>at admin</code>, <code>at front</code>.",
+        "see": "Yönetici odası kutucuğu turkuaz kenarlık ve “reader here” alır. Ekran asma kilidin üstünde ADMIN ROOM yazar.",
+        "fix": ""
+      },
+      "11": {
+        "does": "Aynı kart, aynı liste, farklı kilit: Rol kontrolü “blocked”tan hemen sonra gelir, saat ya da tarihlerden önce.",
+        "see": "Yönetici kartı: yönetici odası OPEN 5 s. Sakin kartı: DENIED · <b>admins only</b>, “admin room” ile günlüğe yazılır. Okuyucuyu geri taşı: Sakin ön kapıyı yeniden açar.",
+        "fix": "Sakin için hâlâ OPEN mi? Hangi kutucukta “reader here” yazdığına bak."
+      },
+      "12": {
+        "does": "Uygulamadan ya da seri porttan, yakındaki kart ne olursa olsun bir kilidi açar. Yalnız <code>open</code> ön kapıdır.",
+        "see": "O kutucuk 5 s yeşil olur. Günlük, kilitle birlikte “opened from the app” yazar.",
+        "fix": ""
+      },
+      "13": {
+        "does": "Yalnızca bakım ve yönetici kartları açar. LED boştayken kehribar renkte yanar.",
+        "see": "Ekranda LOCKDOWN yazar. Her sakin ve misafir okutması DENIED · lockdown olur.",
+        "fix": ""
+      },
+      "14": {
+        "does": "Adı 4. bloğa, rolü 5. bloğa yazar (yalnızca sektör 1, fabrika anahtarıyla). Sonra ikisini geri okur.",
+        "see": "“label written”. Kartı okuyucuda oku: 4. blok adını gösterir.",
+        "fix": "Kapı etiketi yine yok sayar: Kendi listesine göre karar verir. Oraya istediğin adı yaz, hiçbir şey değişmez."
+      },
+      "15": {
+        "does": "İkinci tıklama ile onayla. Erişim bitlerinin izin verdiği yerlerde blok 4-6 ve 8-10 sıfıra döner (etiket ve R5'in kredileri). Anahtarlar, son bloklar ve blok 0 hiç dokunulmaz.",
+        "see": "“6 of 6 data blocks cleared”.",
+        "fix": ""
+      },
+      "16": {
+        "does": "İkinci tıklama ile onayla. Geliştirme kartı kartı unutur. Kartın kendisine dokunulmaz.",
+        "see": "Bir sonraki okutması: DENIED · unknown card.",
+        "fix": ""
+      },
+      "17": {
+        "does": "Formu başka bir kartın rolü, saatleri, bitiş tarihi ve kullanım haklarıyla doldurur. Adı ve engel durumu alınmaz. Save yalnızca değişeni gönderir.",
+        "see": "İki kartın da artık aynı kural satırı var.",
+        "fix": ""
+      },
+      "18": {
+        "does": "Blokları 4-6 ve 8-10 fabrika anahtarıyla okur ve geliştirme kartında adlandırılmış bir anlık görüntü olarak saklar (NVS'te en çok 8 tane). Seri port: <code>save White</code>, <code>saved</code>.",
+        "see": "“6 of 6 blocks saved as …” ve altı hücresiyle bir anlık görüntü: metin, değerler (R5'in kredileri), sıfırlar.",
+        "fix": "“no lab block opens”: Bu kartın 1-2. sektörleri başka bir anahtar kullanıyor. Kaydedilecek bir şey yok."
+      },
+      "19": {
+        "does": "Anlık görüntüyü Mac'ine JSON dosyası olarak indirir. Import, böyle bir dosyayı geliştirme kartına geri koyar (yalnızca deney blokları, hem uygulama hem geliştirme kartı iki kez denetler).",
+        "see": "Bir <code>card-data-….json</code> dosyası. İçe aktarmadan sonra “from a file” anlık görüntüsü.",
+        "fix": ""
+      },
+      "20": {
+        "does": "Kartı okuyucuda okur. Ekran COPY: 2ND CARD yazar ve LED mor yanıp söner. Kartı kaldır ve 20 s içinde öbür kartı okut: Her blok yazılır ve geri okunur. Seri port: <code>copy</code>, <code>cancel</code>.",
+        "see": "“6 of 6 blocks copied from White card onto 9C4F6A0D”, günlükte “data copied here” satırı.",
+        "fix": "Aynı kartı tekrar okutmak bir şey yapmaz, çünkü farklı bir kart bekler. Cancel hiçbir şey yazmaz."
+      },
+      "21": {
+        "does": "Kartı okuyucuda okur ve blok blok bir anlık görüntüyle karşılaştırır.",
+        "see": "Kopyalanan her blok için <b>same</b>. Şimdi anahtar etiketini okut: Yine <b>Key tag</b> olarak açılır.",
+        "fix": ""
+      },
+      "22": {
+        "does": "İkinci tıklama ile onayla. Anlık görüntüyü geldiği karta geri yükler (restore), örneğin R5 kredilerini harcadıktan sonra. Ya da başka bir karta. Seri port: <code>restore 1</code>.",
+        "see": "“… written to 9C4F2A1B (the card it came from)”.",
+        "fix": ""
+      },
+      "23": {
+        "does": "Kayıp ya da kırık bir kart için: Okuttuğun bir sonraki yeni kart, eskisinin adını, rolünü ve kurallarını devralır. Eski kart listede kalır, engellenmiş ve “… old” adıyla.",
+        "see": "İki kayıt: Yeni kart açılır, eski kart ortaya çıkarsa DENIED · blocked gösterir.",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Hangi kural karar veriyor?",
+        "intro": "Geliştirme kartı kuralları bu sırayla denetler ve “hayır” diyen ilk kural kazanır. Bir kartı, saat ve kilit modunu ayarla, hangi kuralın karar verdiğine bak. Sıra, kit/lib/door-rules/src/access_rules.h dosyasındakiyle aynıdır (Mac'te test edildi)."
+      },
+      "1": {
+        "title": "Bir okutmayı, bir bloğu, yeni bir kartı, bir kopyayı izle",
+        "intro": "Kablolardan ve Wi-Fi üzerinden geçenler. Uygulama okuyucuyla hiç doğrudan konuşmaz. Kart ise hiçbir şeye karar vermez."
+      },
+      "2": {
+        "title": "Bir kopya neyi taşır",
+        "intro": "Beyaz kartın verisini kaydet, anahtar etiketine kopyala ve hangi blokların taşındığını izle. Blok 0 (UID) ve sektörlerin son blokları (anahtarlar, erişim bitleri) hiçbir zaman taşınmaz. Fabrika anahtarıyla açılmayan sektör atlanır, zorlanmaz."
+      }
+    },
+    "steps": [
+      "R1 ile aynı bağlantı. <code>rfid-lab-r7</code> yazılımını yükle. Geliştirme kartının kayıtlı W1/W2 Wi-Fi ağına ihtiyacı var.",
+      "Monitörde <code>token</code> yaz. Kopyala ve <code>esp-labs/apps/door-app/.env</code> dosyasına <code>BENCH_TOKEN=</code> olarak yapıştır.",
+      "esp-labs/apps/door-app klasöründe <code>pnpm install</code> ve <code>pnpm dev</code> çalıştır, sonra <code>http://localhost:5174</code> adresini aç. <b>Kontrol noktası:</b> live, çip B2h, bir saat.",
+      "Beyaz kartı sakin, anahtar etiketini misafir olarak ekle. <b>Kontrol noktası:</b> ikisi de listede, “opens now”.",
+      "İkisini birkaç kez okut: OPEN çıkar, misafirin kullanım hakkı azalır, her okutma günlüğe düşer.",
+      "Beyaz kartı engelle ve okut (DENIED · blocked), sonra engelini kaldır. Hazır ayarları ve kilit modunu dene. “Hangi kural karar veriyor?” panelinin sonucu nasıl onayladığını izle.",
+      "Bir karta etiket yaz, geri oku, sil. Sonra anahtar etiketini listeden çıkar ve okut: unknown card.",
+      "Beyaz kartın verisini kaydet, anahtar etiketine kopyala ve karşılaştır. <b>Kontrol noktası:</b> İkisinde de aynı veri var, ama her kart hâlâ kendi olarak açılır.",
+      "Anlık görüntüyü indir, beyaz kartı sil, anlık görüntüyü geri yaz ve karşılaştır: “restored”."
+    ],
+    "note": "Kartın değil, geliştirme kartının neden karar verdiği: Bir MIFARE Classic'in UID'si ve verisi, bir okuyucusu olan herkes tarafından okunabilir. Bu yüzden bunlar bir isim etiketi olarak işe yarar, kanıt olarak değil. Gerçek erişim sistemleri kararı bir sunucuda tutar ve modern şifrelemeli kartlar kullanır (ör. MIFARE DESFire). Bu deney, bunun sunucu tarafını öğretir. Wi-Fi'ndaki herkes API'yi okuyabilir. Her değişiklik token ister. Kart listesi geliştirme kartının NVS'inde durur ve yeniden yüklemeden sağ çıkar. R1-R6 deneylerinden ayrıdır. Kopyalama yalnızca veri taşır. Blok 0 fabrikada bir kez yazılır, bu yüzden kopya kendi UID'sini korur ve kapı onu başka bir kart gibi görür. Erişim bu yüzden hiçbir zaman veriye dayanmaz: Veri de kopyalanabilirdi."
+  },
+  "R8": {
+    "title": "Kart dostları",
+    "heading": "Her kartta bir dost yaşar",
+    "goal": "Çocuklar için bir deney, R7'nin parçalarından yapıldı. Kendi yazılımı (rfid-lab-r8), her kartı bir dostun evine çevirir: bir tilki, bir robot, bir ejderha, bir penguen, bir uzaylı, bir kedi, bir kurbağa ya da bir tek boynuzlu at. Bir kartı okut, dostu geliştirme kartının ekranında kendi renklerinde yıldızlarla fırlasın. Aynı dost, küçük bir React uygulamasında (esp-labs/apps/friends-app) 3B olarak da çıkar. Kendi hareketi, parıltıları, gökyüzü ve melodisi vardır. Kart 1 ve kart 2 farklı dostlar gösterir. İkisini de okutursan birlikte oynarlar. Yeni bir kart ilk okutmasında kendini ekler, sen de bir dostu üstüne sürüklersin. Uygulamada iki sekme var: Çocuklar için Play, büyükler için Setup (gerçek ya da simüle geliştirme kartı, okuyucunun sağlığı, kart listesi, ses, sakin hareket, gündüz ya da gece).",
+    "goalLine": "Beyaz karta ve anahtar etiketine birer dost ver, sonra okut ve iki dostun oynayışını izle.",
+    "goalCheck": [
+      "Uygulamanın Setup sekmesi <b>live</b> ve okuyucu çipi B2h gösterir. Yeni kartları okuttukça kart sayısı artar.",
+      "Yeni bir kart, ekranda sallanan bir <b>?</b> ve uygulamada “New card! Who lives here?” gösterir.",
+      "Bir dostu karta sürükleyince dost, aynı anda hem ekranda hem 3B'de fırlar.",
+      "Kart 1'i, sonra kart 2'yi okutursan 3B sahnede her biri kendi numaralı kartında iki farklı dost durur.",
+      "3B sahnedeki bir dostu dürtünce hareketini yeniden oynar."
+    ],
+    "learn": [
+      "UID anahtar olarak",
+      "otomatik kayıt",
+      "durum kartta, gösterim uygulamada",
+      "WebSocket ile itme",
+      "işaretçi olaylarıyla sürükle bırak",
+      "three.js toon gölgelendirme",
+      "Web Audio",
+      "erişilebilir alternatifler (dokunma, klavye)"
+    ],
+    "commands": {
+      "0": {
+        "does": "Dostlar yazılımını yükler. R7'nin web kütüphanelerini ve kayıtlı W1/W2 Wi-Fi ağını kullanır.",
+        "see": "<b>FRIENDS stage</b>, nefes alan bir kart çerçevesi ve “Tap a card!”. Wi-Fi bağlanınca alt kısımda <code>http://bench.local</code> görünür.",
+        "fix": "“no Wi-Fi saved: run W1 once”: W1'i yükle, <code>join</code> yaz, sonra R8'i yeniden yükle."
+      },
+      "1": {
+        "does": "Yönetici token'ını yazdırır (W2 ve R7'nin kullandığıyla aynı). Bir dostu karta sürüklemek için gerekir.",
+        "see": "<code>Admin token: 3f…</code>",
+        "fix": "Sohbetlerden ve Git'ten uzak tut."
+      },
+      "2": {
+        "does": "<code>BENCH_URL=http://bench.local</code> (ya da <code>status</code> çıktısındaki IP) ve <code>BENCH_TOKEN=</code> token'ı.",
+        "see": "package.json'ın yanında, Git tarafından yok sayılan bir .env dosyası.",
+        "fix": ""
+      },
+      "3": {
+        "does": "Uygulamayı 5175 portunda başlatır. door-app'in yanında çalışabilir. Vite, /api ve /ws isteklerini geliştirme kartına iletir ve token'ı ekler. Aynı Wi-Fi'daki bir tablet, Mac'in adresini kullanarak uygulamayı açabilir.",
+        "see": "<code>http://localhost:5175</code>: Play ve Setup sekmeleri, üstte “board live”.",
+        "fix": "Elinde geliştirme kartı yok mu? Setup → <b>Pretend board</b>, aynı kurallarla tarayıcıda oynar."
+      },
+      "4": {
+        "does": "Geliştirme kartı, onu sıradaki kart olarak ekler (en çok 12). Üstünde kimse yokken.",
+        "see": "Ekran: sallanan bir ? Kartı, “New card! Give it a friend”. Uygulama: Bir dost isteyen yeni bir kutucuk.",
+        "fix": "“12 cards!”: Setup'ta birini unut ya da seri porttan <code>forget 3</code> yaz."
+      },
+      "5": {
+        "does": "Ya da dostu, sonra kartı okut (ya da klavyede Enter, Enter). <code>PUT /api/card?uid=… {\"character\":\"robot\"}</code> gönderir ve sonra gösterir. Seri port: <code>give 2 robot</code>.",
+        "see": "Dost ekranda ve 3B sahnede fırlar. Kutucuk yüzünü gösterir.",
+        "fix": "401: BENCH_TOKEN eksik ya da eski. .env'i değiştirdikten sonra <code>pnpm dev</code>'i yeniden başlat."
+      },
+      "6": {
+        "does": "Her okutmada: dostun hareketi, parıltılar, gökyüzü ve melodi. 30 s içindeki iki kart birlikte oynar. En çok üç kart.",
+        "see": "Sahnede iki dost, her biri kendi numaralı kartının üstünde.",
+        "fix": "Ses yok mu? Sayfaya bir kez dokun (tarayıcılar bunu ister) ya da Setup → Sound'u kontrol et."
+      },
+      "7": {
+        "does": "Bu kartta bu dost için bir ad (en çok 15 düz karakter). Seri port: <code>name 1 Rusty</code>, geri dönmek için <code>name 1 -</code>.",
+        "see": "Ekranda ve konuşma balonunda “Hi again! Rusty”.",
+        "fix": ""
+      },
+      "8": {
+        "does": "Her kartı dostu ve ziyaret sayısıyla, bu yazılımın tanıdığı dostlarla birlikte listeler.",
+        "see": "<code>1  9C4F2A1B  fox  Foxy  taps 5</code>",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Kadroyla tanış",
+        "intro": "Sekiz dost, geliştirme kartının onları çizdiği biçimde çizilmiş: daireler ve üçgenler, flash'ta resim yok. Birine bas, ne yaptığını gör. Geliştirme kartı yalnızca kimliğini saklar. Uygulama hareketini, parıltılarını, gökyüzünü ve melodisini bilir."
+      },
+      "1": {
+        "title": "Bir okutmayı izle, yeni bir karta dost gelmesini izle",
+        "intro": "Kart yalnızca UID'sini getirir. Geliştirme kartı orada kimin yaşadığına karar verir, bunu kendi ekranında gösterir ve her uygulamaya bildirir."
+      }
+    },
+    "steps": [
+      "R1 ile aynı bağlantı. <code>rfid-lab-r8</code> yazılımını yükle. Geliştirme kartının kayıtlı W1/W2 Wi-Fi ağına ihtiyacı var.",
+      "Monitörde <code>token</code> yaz. Kopyala ve <code>esp-labs/apps/friends-app/.env</code> dosyasına <code>BENCH_TOKEN=</code> olarak yapıştır.",
+      "esp-labs/apps/friends-app klasöründe <code>pnpm install</code> ve <code>pnpm dev</code> çalıştır, sonra <code>http://localhost:5175</code> adresini aç. <b>Kontrol noktası:</b> Setup, live yazar ve çip B2h gösterir.",
+      "Beyaz kartı ve anahtar etiketini birer kez okut. <b>Kontrol noktası:</b> Play'de iki kutucuk var, her biri “Who lives here?” diye sorar.",
+      "Her karta bir dost sürükle. Geliştirme kartının ekranını ve 3B sahneyi birlikte izle.",
+      "Önce kart 1'i, sonra kart 2'yi okut: İki farklı dost birlikte oynar. Sahnedeki birini dürt.",
+      "Setup → Calm motion ve Night ayarlarını dene, sonra tableti bir çocuğa ver."
+    ],
+    "note": "Dost kartın üstünde değildir. Geliştirme kartı NVS'inde, friends ad alanında bir liste tutar (UID → dost kimliği). Bu liste, R7'nin kapı listesinden ayrıdır. Bu yüzden her kart çalışır, hatta yazamayacağın bir kart bile. Bir dostu taşımak da anında olur. Fikir R7 ile aynı: Kart yalnızca UID'sini getirir, sadece daha sevimli bir kostümle. 3B figürler kodda küreler, koniler ve kutularla, toon gölgelendirmeyle kurulur. Bu yüzden model dosyası yoktur. Geliştirme kartının ekranı aynı şekilleri 2B olarak çizer.",
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "RC 3.3V"
+      },
+      "2": {
+        "role": "BLK"
+      },
+      "3": {
+        "role": "RES"
+      },
+      "4": {
+        "role": "DC"
+      },
+      "5": {
+        "role": "CS"
+      },
+      "6": {
+        "role": "SDA"
+      },
+      "7": {
+        "role": "SCL"
+      },
+      "8": {
+        "role": "GND"
+      },
+      "9": {
+        "role": "RC SDA"
+      },
+      "10": {
+        "role": "RC SCK"
+      },
+      "11": {
+        "role": "MOSI"
+      },
+      "12": {
+        "role": "MISO"
+      },
+      "13": {
+        "role": "RC RST"
+      },
+      "14": {
+        "role": "IRQ"
+      },
+      "15": {
+        "role": "RC GND"
+      },
+      "16": {
+        "role": "BTN"
+      },
+      "17": {
+        "role": "BOOT"
+      }
+    }
+  }
+}

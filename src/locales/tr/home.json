@@ -1,0 +1,71 @@
+{
+  "hero": {
+    "kicker": "ESP32-S3 · N16R8 · tezgâh rehberi",
+    "title": "ESP32 <part>Labs</part>",
+    "motto": {
+      "wire": "Bağla",
+      "flash": "Yükle",
+      "watch": "İzle",
+      "read": "Kodu oku"
+    }
+  },
+  "hud": {
+    "title": "Deneyler çalışıyor",
+    "strip": "Her deney, konuya göre",
+    "works": "kartta çalışıyor",
+    "done": "sen tamamladın",
+    "built": "denemeye hazır"
+  },
+  "continue": {
+    "resumed": "Kaldığın yerden devam et",
+    "start": "Buradan başla",
+    "continue": "Deneye devam et",
+    "open": "Deneyi aç",
+    "code": "Kodunu oku"
+  },
+  "board": {
+    "title": "Kartla tanış",
+    "intro": "Deney deney kullanacağın altı parça. Kartı çevirmek için sürükle; bir parça seçince ışıklanır ve hangi deneylerde kullanıldığını gösterir.",
+    "model": "ESP32-S3 DevKitC-1'in 3B modeli: anteni olan modül, iki USB-C portu, BOOT ve RST düğmeleri, RGB LED ve iki sıra başlık pini. Çevirmek için sürükle.",
+    "fallback": "Her parça kartlarda anlatılıyor.",
+    "usedIn": "Kullanıldığı yerler: ",
+    "more_one": "+{{count}} deney",
+    "more_other": "+{{count}} deney",
+    "parts": {
+      "usb": {
+        "title": "USB-C portları",
+        "text": "COM kartı yükler ve seri monitörü taşır. USB, S3'ün kendi portudur."
+      },
+      "buttons": {
+        "title": "BOOT ve RST",
+        "text": "RST programını yeniden başlatır. BOOT ise GPIO 0'dır: kart çalıştığında serbest bir basmalı düğme."
+      },
+      "rgb": {
+        "title": "RGB LED",
+        "text": "GPIO 48'de bir WS2812: tek bir veri pininden 16 milyon renk."
+      },
+      "module": {
+        "title": "ESP32-S3 modülü",
+        "text": "Metal kutunun altında iki 240 MHz çekirdek, 16 MB flash bellek ve 8 MB PSRAM."
+      },
+      "antenna": {
+        "title": "PCB anteni",
+        "text": "Wi-Fi 4 ve Bluetooth 5 bu bakır zikzaktan çıkar: metalden uzak tut."
+      },
+      "headers": {
+        "title": "Pin başlıkları",
+        "text": "44 pin: 3V3, 5V, GND ve ekranları, okuyucuları ile mikrofonları bağlayacağın GPIO'lar."
+      }
+    },
+    "goInside": "Çipin içine gir"
+  },
+  "map": {
+    "title": "Tüm deneyler"
+  },
+  "track": {
+    "planned": "planlandı",
+    "working": "<b>{{working}}</b>/{{total}}<span> çalışıyor</span>",
+    "state": ", {{state}}",
+    "loading": "Yükleniyor…"
+  }
+}

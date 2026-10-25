@@ -1,0 +1,107 @@
+{
+  "page": {
+    "eyebrow": "Ayarlar",
+    "heading": "Rehberi kendine göre ayarla",
+    "lead": "Yalnızca bu tarayıcıda kaydedilir. Her değişiklik hemen uygulanır."
+  },
+  "language": {
+    "heading": "Dil",
+    "hint": "Dersler, açıklamalar ve arayüz. Kod, komutlar ve kartın yazdığı metinler İngilizce kalır."
+  },
+  "levels": {
+    "heading": "Ne kadar derine inilecek",
+    "beginner": {
+      "label": "Başlangıç",
+      "blurb": "Deneyin kendi dosyalarının kısa turu, sade sözcüklerle; yeni C++ sözcükleri teker teker tanıtılır."
+    },
+    "explorer": {
+      "label": "Kaşif",
+      "blurb": "Her deney dosyasının her durağı; ortak kütüphane kodu bir dokunuş uzakta."
+    },
+    "deep": {
+      "label": "Derinlemesine",
+      "blurb": "Her durağın ve her sözcüğün kesin hikâyesi dahil her şey: türler, zamanlama, bellek."
+    }
+  },
+  "views": {
+    "heading": "Kod okuyucu nasıl görünsün",
+    "simple": {
+      "label": "Sade",
+      "blurb": "Tek kart, tek düğme. Kod, açıklaması ve İleri: ekranda başka hiçbir şey yok."
+    },
+    "full": {
+      "label": "Tam",
+      "blurb": "Elinin altındaki her araç: dosyalar, harita, kod sözlüğü, ilerleme halkası, sözcük kartları, odak modu."
+    }
+  },
+  "learning": {
+    "heading": "Öğrenme",
+    "guessFirst": "Önce tahmin et",
+    "guessFirstHint": "Her tur durağı, kodun ne yaptığını sana anlatmadan önce sorar. Tahmin etmek akılda kalmasını sağlar.",
+    "hints": "C++ ipuçları",
+    "hintsHint": "Yeni sözcükler ilk karşılaşmada küçük bir kart çıkarır; bildiğin sözcükler altı çizili kalır.",
+    "hintChoices": {
+      "pop": "Her yeni sözcüğü tanıt",
+      "underline": "Yalnızca altını çiz",
+      "off": "Kapalı"
+    },
+    "pace": "Satır satır hız",
+    "paceHint": "“Oynat” her satırda ne kadar kalsın.",
+    "paces": {
+      "slow": "Yavaş",
+      "normal": "Normal",
+      "fast": "Hızlı"
+    }
+  },
+  "code": {
+    "heading": "Kod görünümü",
+    "size": "Yazı boyutu",
+    "sizeLabel": "Kod yazı boyutu",
+    "sizes": {
+      "s": "Küçük",
+      "m": "Orta",
+      "l": "Büyük"
+    },
+    "lineNumbers": "Satır numaraları",
+    "wrap": "Uzun satırları kaydır",
+    "wrapHint": "Telefonda işe yarar: yana kaydırma yok.",
+    "comments": "Yorumları yumuşat",
+    "commentsHint": "Programcının notlarını soluklaştırır; kodun kendisi öne çıkar.",
+    "fold": "Uzun verileri katla",
+    "foldHint": "Uzun tablolar ve gömülü web sayfaları, açana kadar tek satıra katlanır."
+  },
+  "look": {
+    "heading": "Görünüm ve hareket",
+    "theme": "Renk teması",
+    "motion": "Hareket",
+    "motionHint": "Sakin modda kayan ve atan animasyonlar her yerde durulur; simülatörler dahil.",
+    "motions": {
+      "system": "Cihazımı izle",
+      "calm": "Sakin"
+    }
+  },
+  "preview": {
+    "label": "Önizleme",
+    "code": "Kod görünümünün önizlemesi"
+  },
+  "progress": {
+    "heading": "İlerlemen",
+    "words_one": "<b>{{met}}</b> / {{count}} C++ sözcüğü tanındı",
+    "words_other": "<b>{{met}}</b> / {{count}} C++ sözcüğü tanındı",
+    "labs_one": "<b>{{count}}</b> deneyin kodu okundu",
+    "labs_other": "<b>{{count}}</b> deneyin kodu okundu",
+    "forgetReading": {
+      "label": "Okuduğum kodu unut",
+      "confirm": "Evet, okuduğum kodu unut"
+    },
+    "forgetWords": {
+      "label": "Tanıdığım sözcükleri unut",
+      "confirm": "Evet, tanıdığım sözcükleri unut"
+    },
+    "reset": {
+      "label": "Bu ayarları sıfırla",
+      "confirm": "Evet, bu ayarları sıfırla"
+    },
+    "keep": "Kalsın"
+  }
+}

@@ -1,0 +1,1041 @@
+{
+  "B1": {
+    "title": "Dinle",
+    "heading": "Etrafındaki her Bluetooth cihazını duy",
+    "goal": "Telefonlar, saatler, kulaklıklar, hoparlörler, klavyeler ve sinyal vericileri gün boyu kendini duyurur. Üç radyo kanalında, saniyede birkaç kez, kimse dinlesin ya da dinlemesin, kısa <b>yayın</b> paketleri gönderirler. B1 kartı bir dinleyiciye çevirir. Cihazları bir radarda gösterir, her birinin ne olduğunu tahmin eder ve bir paketi bayt bayt açar. Radyo, hafif bir Bluetooth yazılım yığını olan NimBLE'yi kullanır. Kartın yazılımı kendine aittir (<code>ble-lab-b1</code>). Ortak kod <code>kit/lib/ble-kit</code> içindedir.",
+    "goalLine": "Etrafındaki cihazların arasında kendi telefonunu bul, paketlerini bayt bayt oku ve ne sıklıkla yayın yaptığını ölç.",
+    "goalCheck": [
+      "<b>radar</b> görünümünde noktalar çıkar. Monitördeki <code>list</code> komutu, türleriyle (telefon, ses, klavye…) bir cihaz tablosu basar.",
+      "Kendi telefonunu seçtin. Telefonu yakına getir, en güçlü o olur. <code>bytes</code> onun AD yapılarını gösterir: önce Flags, sonra üretici verisi (Apple, Samsung, Google…).",
+      "<code>watch</code> telefonunun her paketi için bir satır basar. <code>+… ms</code> aralıklarından yayın aralığını okuyabilirsin.",
+      "<code>mode passive</code> yazınca tarama yanıtları (ve bazı adlar) kaybolur. <code>mode active</code> onları geri getirir."
+    ],
+    "learn": [
+      "yayın",
+      "kanallar 37 · 38 · 39",
+      "AD yapıları",
+      "aktif ve pasif tarama",
+      "RSSI → mesafe",
+      "özel adresler",
+      "tarama görev oranı"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "BLK"
+      },
+      "2": {
+        "role": "RES"
+      },
+      "3": {
+        "role": "DC"
+      },
+      "4": {
+        "role": "CS"
+      },
+      "5": {
+        "role": "SDA"
+      },
+      "6": {
+        "role": "SCL"
+      },
+      "7": {
+        "role": "GND"
+      },
+      "8": {
+        "role": "BTN"
+      },
+      "9": {
+        "role": "BOOT"
+      }
+    },
+    "commands": {
+      "0": {
+        "does": "Lab B1'i derler ve karta yazar. İlk derleme NimBLE-Arduino 2.5.1 kütüphanesini (Bluetooth yığınını) indirir.",
+        "see": "<code>Hard resetting via RTS pin…</code>. Ekranda dönen bir çizgiyle radar belirir.",
+        "fix": "“Failed to connect”: BOOT'u basılı tut, RST'ye dokun, BOOT'u bırak, sonra yeniden çalıştır."
+      },
+      "1": {
+        "does": "Seri monitörü açar. Kart yeniden başlar.",
+        "see": "<code>ble-lab-b1: NimBLE 2.5.1 up, address …</code> ve <code>+ active scan, 100/100 ms (100% listening)</code> satırları, ardından komut listesi.",
+        "fix": "<code>NimBLE … up</code> satırı yoksa yığın başlamamıştır. Kartın fişini çek, sonra yeniden tak."
+      },
+      "2": {
+        "does": "Son 30 saniyede duyulan her cihazı basar. En güçlüsü en üstte olur. Her satırda RSSI, bir mesafe tahmini, tür, adres ve adres türü, paket sayısı, ad ya da üretici yer alır.",
+        "see": "<code>1  -46  0.6  phone  5A:3C:…  private (RPA)  412  Apple</code> gibi bir tablo. Açık alanda on ile elli satır, evde daha az.",
+        "fix": "Tablo boşsa: Etrafında Bluetooth açık mı? Telefonlar genelde yalnızca ekranları açıkken ya da bir uygulama istediğinde yayın yapar."
+      },
+      "3": {
+        "does": "Telefonun en güçlü cihaz olur. Kilidini aç: iPhone'lar ekran açıkken daha sık yayın yapar.",
+        "see": "<b>radar</b> üzerinde bir nokta ortaya gelir. <b>list</b> görünümünde telefon 1. satıra çıkar ve yaklaşık −40 dBm gösterir.",
+        "fix": "Android telefonlar sessiz kalabilir. nRF Connect'i aç, Advertiser sekmesini kullan ya da Nearby Share / Quick Share'i kısa süre aç."
+      },
+      "4": {
+        "does": "1. satırı <b>inspect</b> görünümü için seçer. Yayını ve tarama yanıtını yapı yapı basar.",
+        "see": "<code>[02 01 | 1A] Flags</code>, <code>[0A FF | 4C 00 10 …] Manufacturer data</code> (Apple: Nearby info), belki <code>[02 0A | 0C] TX power</code>.",
+        "fix": "<code>no scan response</code>: Bazı cihazlar tarama yanıtı göndermez. Pasif modda kimse onu istemez."
+      },
+      "5": {
+        "does": "Seçilen cihazın her paketi için bir satır basar. Satırda bir önceki paketten bu yana geçen süre de yazar.",
+        "see": "<code>&lt; +  182 ms  -47 dBm  31 B</code> satırları. Bazı boşluklar kaçırılmış paketlerdir: telefon, kartın dinlemediği bir kanaldan göndermiştir. Tekrar eden en kısa boşluk, cihazın yayın aralığıdır.",
+        "fix": "<code>watch off</code> durdurur. Satır çok fazlaysa önce <code>near -60</code> yaz."
+      },
+      "6": {
+        "does": "Pasif: Kart yalnızca dinler. Aktif: Ayrıca taranabilir her cihaza bir tarama isteği gönderir ve ikinci bir paket, tarama yanıtı, geri alır.",
+        "see": "Pasif modda <b>inspect</b> görünümü <i>scan rsp</i> satırını kaybeder. Bazı adların yerini üretici adı alır. air görünümü modu gösterir.",
+        "fix": ""
+      },
+      "7": {
+        "does": "Her 100 ms'de 30 ms dinler (%30 görev oranı). Sürekli dinlemek yerine böyle yapar.",
+        "see": "<b>air</b> görünümündeki saniye başına paket sayısı yaklaşık üçte bire düşer. Telefonlar pil tasarrufu için böyle tarar. <code>timing 100 100</code> eski hâline döndürür.",
+        "fix": "Pencere, aralığa eşit ya da ondan küçük olmalı."
+      },
+      "8": {
+        "does": "Seçilen cihazın ortalama RSSI değerini, mesafe tahminleri için 1 metrelik referans olarak alır.",
+        "see": "<code>+ 1 m = -58 dBm now: distances use it</code>. Uzaklaş: nokta dışarı doğru kayar.",
+        "fix": "Mesafeler ±1 m zıplıyorsa bu RSSI'dan kaynaklanır. Vücut, duvarlar ve telefonun yönü sinyali 5–10 dB oynatır."
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Bluetooth konusu: dinlemekten ana cihaz olmaya",
+        "intro": "Sekiz deney, her biri kendi yazılımıyla. Kart saf bir dinleyici olarak başlar ve sonunda senin klavyeni yönetir. Bir deney seç, kartın rolünü ve verinin hangi yönde aktığını gör. Kilit simgesi, eşleştirme ve şifrelemenin önemli olduğu deneyleri işaretler."
+      },
+      "1": {
+        "title": "Üç kanal, çok sayıda bağırış",
+        "intro": "Bluetooth LE, 2,4 GHz bandını 2 MHz genişliğinde 40 kanala böler. Yayın yalnızca üçünü kullanır: 37, 38 ve 39. Bunlar, yaygın Wi-Fi kanalları 1, 6 ve 11 arasındaki boşluklara yerleştirilmiştir. Her yayın olayı aynı paketi üçünde de arka arkaya gönderir. Tarayıcı aynı anda yalnızca bir kanalı dinler. Bir paket, kendi kanalındaki dinleme penceresine denk gelirse sayılır. Pencere kaydırıcısını oynat ve kartın kaç paket yakaladığını izle. Aktif moda geçerek tarama isteğini ve yanıtını gör."
+      },
+      "2": {
+        "title": "Bir yayın paketi, bayt bayt",
+        "intro": "Radyonun gerçekte gönderdiği şey, ilk bitten sağlama toplamına kadar. Bir cihaz seç, sonra alanlar arasında ◀ ▶ ile gezin. Ortadaki AD yapıları, <b>inspect</b> görünümünün ve <code>bytes</code> komutunun gösterdiğinin aynısıdır."
+      },
+      "3": {
+        "title": "Ekranda ne görünür",
+        "intro": "Dört görünüm var. Basmalı düğmeye (ya da BOOT'a) tıklamak sonrakine geçirir. Çift tıklama, sol altta yazan eylemi çalıştırır. Uzun basış taramayı duraklatır ya da sürdürür. Sağ üstteki simge radyodur: tararken dönen bir radar gösterir."
+      }
+    },
+    "steps": [
+      "Ekranı 03 numaralı dersteki gibi bağla. Basmalı düğme isteğe bağlıdır. <code>ble-lab-b1</code> programını yükle ve monitörü aç. <b>Kontrol noktası 1:</b> <code>NimBLE 2.5.1 up</code> satırını ve dönen radarı gör.",
+      "<code>list</code> yaz. <b>Kontrol noktası 2:</b> türleriyle birlikte cihaz tablosunu gör. <i>audio</i> (JBL'in uygulaması için yayın yapar), <i>keyboard/mouse</i> ve Apple ya da Microsoft gibi üreticilere bak.",
+      "Kilidi açık telefonunu kartın yanına tut, <code>pick 1</code> yaz, sonra <b>inspect</b> görünümüne geçmek için tıkla. <b>Kontrol noktası 3:</b> baytları renkli AD yapılarında gör. Adres türü <i>private (RPA)</i> olmalı.",
+      "On saniye boyunca <code>watch</code> yaz, sonra <code>watch off</code> yaz. <b>Kontrol noktası 4:</b> telefonunun yayın aralığını söyleyebilirsin.",
+      "<b>air</b> görünümüne bakarken <code>mode passive</code> / <code>mode active</code> ve <code>timing 100 30</code> / <code>timing 100 100</code> komutlarını dene.",
+      "İsteğe bağlı: Telefonu 1 metre uzağa koyup <code>calib</code> yaz. Sonra odanın öbür tarafına geç ve radarı izle."
+    ],
+    "note": "Burada anlatılan her şey, cihazların herkese yayınladığı bilgidir. Kart bu cihazlara hiçbir zaman bağlanmaz. Yine de liste, komşularının cihazlarıdır. Adreslerini paylaşma. Onlar günlüklere kaydedilmez. Telefonlar özel adreslerini yaklaşık 15 dakikada bir değiştirir, bu yüzden aynı telefon iki kez görünebilir. Mesafeler sinyal gücünden yapılan tahminlerdir, iki kata kadar yanılabilir. ESP32-S3 yalnızca Bluetooth LE destekler. Klasik Bluetooth (çoğu ses akışı, eski klavyeler) bu kart için görünmezdir."
+  },
+  "B2": {
+    "title": "Görün",
+    "heading": "Kart kendi verisini bağırır",
+    "goal": "B1'de kart dinliyordu. Şimdi bir <b>sinyal vericisi</b> olur. Canlı değerleri (düğmeye basışlar, çipin sıcaklığı, çalışma süresi) kendi 31 baytlık yayınının içine koyar. Böylece yakındaki herhangi bir telefon, <i>bağlanmadan</i> bu değerleri okuyabilir. Aynı bütçe bir <b>iBeacon</b>, bir <b>Eddystone-URL</b> ya da yalnızca bir ad da taşıyabilir. Ne sıklıkla bağıracağını (aralık) ve ne kadar yüksek sesle (TX gücü) bağıracağını sen seçersin. Bunun düğme pilli bir sinyal vericisine neye mal olacağını da görürsün.",
+    "goalLine": "Kartın canlı değerlerini yayınlamasını sağla. Telefonun onlara hiç bağlanmadan okusun.",
+    "goalCheck": [
+      "nRF Connect, <b>Bench B2</b> adlı cihazı listeler. <b>Manufacturer data 0xFFFF</b> değeri her saniye değişir (çalışma süresi). Düğmeye çift tıklayınca da değişir (basış sayısı).",
+      "<b>packet</b> görünümü 31 baytın 24'ünü renkli yapılarda gösterir. Değişen baytlar beyaza yanıp söner.",
+      "<code>mode ibeacon</code> Android'de iBeacon olarak görünür. iPhone uygulamaları iBeacon'ları göremez. Bu iOS'un bir kısıtıdır, senin hatan değil. <code>mode url</code> ise nRF Connect'te Eddystone URL olarak görünür.",
+      "<code>connectable off</code> ve <code>scanresp off</code> ayarlarıyla paket görünümü <b>ADV_NONCONN_IND</b> yazar. nRF Connect artık Connect düğmesini göstermez. Aralık 100 ms'nin altına inemez.",
+      "<b>budget</b> görünümünden sinyal vericilerinin neden her 20 ms'de bir değil de 500–1000 ms'de bir yayın yaptığını açıklayabilirsin."
+    ],
+    "learn": [
+      "yayıncı rolü",
+      "31 baytlık bütçe",
+      "AD yapıları",
+      "üretici verisi",
+      "iBeacon ve Eddystone",
+      "ADV_IND · SCAN_IND · NONCONN",
+      "aralık ve advDelay",
+      "TX gücü ve pil"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "BLK"
+      },
+      "2": {
+        "role": "RES"
+      },
+      "3": {
+        "role": "DC"
+      },
+      "4": {
+        "role": "CS"
+      },
+      "5": {
+        "role": "SDA"
+      },
+      "6": {
+        "role": "SCL"
+      },
+      "7": {
+        "role": "GND"
+      },
+      "8": {
+        "role": "BTN"
+      },
+      "9": {
+        "role": "BOOT"
+      }
+    },
+    "commands": {
+      "0": {
+        "does": "Lab B2'yi derler ve karta yazar.",
+        "see": "<b>packet</b> görünümünde <code>bench ADV_IND every 100 ms</code> yazısını ve renkli hücrelerden iki satırı gör.",
+        "fix": "“Failed to connect”: BOOT'u basılı tut, RST'ye dokun, BOOT'u bırak, sonra yeniden çalıştır."
+      },
+      "1": {
+        "does": "Seri monitörü açar.",
+        "see": "<code>+ bench ADV_IND every 100 ms, 24+7 B</code> satırı ve komut listesi.",
+        "fix": ""
+      },
+      "2": {
+        "does": "Artık telefon tarayıcıdır, çünkü kart kendini duyamaz. Satıra dokunursan yayının ayrıntıları açılır.",
+        "see": "Complete Local Name <code>Bench B2</code>, Manufacturer data <code>0xFFFF 0x01…</code>. Son iki bayt (çalışma süresi) her saniye değişir. Tüm 24 baytı görmek için RAW'a dokun.",
+        "fix": "Listede yoksa: Aşağı çekip yenile ya da <code>adv on</code> yaz. iPhone'da Manufacturer data tek bir onaltılık metin olarak görünür. Baytlar aynıdır."
+      },
+      "3": {
+        "does": "Bir basışı pakete ekler. Kart, yayın verisini değiştirir. Denetleyici yeni baytları bir sonraki olaydan itibaren gönderir.",
+        "see": "<code>- presses 1: in the next packet</code>. Paket görünümünde iki hücre beyaza yanıp söner. nRF Connect'te manufacturer data'nın 4. ve 5. baytları <code>01 00</code> olur.",
+        "fix": ""
+      },
+      "4": {
+        "does": "İki paketi de yapı yapı basar.",
+        "see": "<code>[02 01 | 06] Flags</code>, <code>[09 09 | 42 65 6E 63 68 20 42 32] Name</code>, <code>[0A FF | FF FF 01 01 00 2E 10 2C 01] Manufacturer data</code>.",
+        "fix": ""
+      },
+      "5": {
+        "does": "Apple'ın düzeni: 4C 00 02 15, 16 baytlık bir UUID, major, minor ve 1 metredeki güç. 31 baytın 30'u kullanılır. Ad, tarama yanıtına taşınır.",
+        "see": "<code>+ ibeacon ADV_IND every 100 ms, 30+10 B</code>. Android'de nRF Connect: “iBeacon”, UUID BA5E0000-B1E5-…, Major 1, Minor 2. Başka bir kartta çalışan B1, sinyal verici türünü mor renkte gösterir.",
+        "fix": "iPhone'da hiçbir özel şey görünmez ya da sinyal vericisi görünmez. iOS, iBeacon çerçevelerini her uygulamanın taramasından çıkarır. Yalnızca Core Location (bölge izleme) bunları görür."
+      },
+      "6": {
+        "does": "Eddystone-URL: FEAA hizmet verisi ve sıkıştırılmış bir URL (https:// 1 bayt, .com/ 1 bayt).",
+        "see": "nRF Connect <b>Eddystone URL</b> https://github.com/ gösterir. URL çok uzunsa <code>x the URL doesn't fit…</code> çıkar ve eski URL kalır.",
+        "fix": "Android bunları eskiden bildirim olarak gösterirdi (Physical Web). 2018'den beri bu yok. Uygulamalar yine de çözer."
+      },
+      "7": {
+        "does": "Önce ADV_SCAN_IND (taranabilir, ama bağlanılamaz), sonra ADV_NONCONN_IND: Kimseye yanıt vermeyen saf bir yayın.",
+        "see": "Paket görünümünün başlığı değişir. nRF Connect'teki Connect düğmesi kaybolur. Tarama yanıtı satırı boşalır.",
+        "fix": "<code>interval</code> 100 ms'ye yükseltilir. Bu, bağlanamayan yayınlar için alt sınırdır (Bluetooth 4.x kuralı). 5.0 20'ye izin verir, sinyal vericileri 100 ve üzerinde kalır."
+      },
+      "8": {
+        "does": "Kartın ne sıklıkla bağırdığını belirler. Her değer için <b>air</b> ve <b>budget</b> görünümlerine tıkla.",
+        "see": "<code>+ … every 1000 ms</code>. nRF Connect'in aralık sütunu (Android) ya da RSSI grafiği daha yavaş güncellenir. Bütçedeki düğme pil ömrü haftalardan yıllara çıkar.",
+        "fix": "<code>interval 20</code> reddedilir, bağlanabilirlik kapalıyken. Önce connectable on yaz."
+      },
+      "9": {
+        "does": "TX gücü, dBm cinsinden (yerleşik komut). Düşük değer menzili kısaltır ve akımı azaltır.",
+        "see": "Aynı mesafede nRF Connect'teki RSSI yaklaşık 20 dB düşer. Ad modundaki TX power alanı da değişir.",
+        "fix": ""
+      },
+      "10": {
+        "does": "Yayını durdurur. Kart görünmez olur.",
+        "see": "<code>- advertising off: the board is invisible</code>. nRF Connect birkaç saniye sonra cihazı grileştirir.",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Bir yayın oluştur",
+        "intro": "Eklediğin her alan, verisine ek olarak 2 bayt harcar (uzunluk ve tür). Her alanı yayına, tarama yanıtına (yalnızca bir tarayıcı isterse gönderilir) koy ya da hiç ekleme. 31 baytlık bütçenin dolmasını izle. Kartın dört modu hazır ayarlardır."
+      },
+      "1": {
+        "title": "Tarayıcı ne zaman duyar?",
+        "intro": "Kart her yayın olayını 37, 38 ve 39 kanallarında arka arkaya gönderir. Her aralığa ek olarak rastgele 0–10 ms eklenir. Telefon her seferinde yalnızca bir kanalı dinler, her tarama aralığından bir pencere boyunca. Kaydırıcıları oynat ve neyin yakalandığını say. Rastgele gecikmeyi kapatıp neden var olduğunu gör."
+      },
+      "2": {
+        "title": "Ekranda ne görünür",
+        "intro": "Dört görünüm var. Tıklamak sonrakine geçirir. Ekranın herhangi bir yerinde çift tıklamak pakete bir basış ekler. Uzun basış yayını açar ya da kapatır."
+      }
+    },
+    "steps": [
+      "B1 ile aynı bağlantı. <code>ble-lab-b2</code> programını yükle ve monitörü aç. <b>Kontrol noktası 1:</b> <code>bench ADV_IND every 100 ms, 24+7 B</code> satırını gör.",
+      "Telefonuna nRF Connect (ya da LightBlue) yükle ve <b>Bench B2</b>'yi bul. Dokunup aç, bağlanma. <b>Kontrol noktası 2:</b> her saniye değişen baytlarla 0xFFFF üretici verisini gör.",
+      "Kartın düğmesine birkaç kez çift tıkla. <b>Kontrol noktası 3:</b> telefondaki basış sayacı bağlantı kurmadan değişir.",
+      "<code>mode ibeacon</code> (Android gösterir) ve <code>mode url</code> komutlarını dene. Yukarıdaki yapı oluşturucu ile karşılaştır: hangi alanlar tarama yanıtına geçti ve neden?",
+      "<code>connectable off</code> ve <code>scanresp off</code> yaz. <b>Kontrol noktası 4:</b> ADV_NONCONN_IND görünür ve telefonda Connect düğmesi yoktur.",
+      "<b>air</b> ve <b>budget</b> görünümlerine tıkla, sonra <code>interval 1000</code> ve <code>power -12</code> dene. <b>Kontrol noktası 5:</b> her birinin neye mal olduğunu ve ne kazandırdığını söyleyebilirsin."
+    ],
+    "note": "Yakındaki herkes kartın yayınladığı veriyi okuyabilir. Yayına asla özel bir şey koyma. 0xFFFF, Bluetooth SIG'in test için ayırdığı şirket kimliğidir. Bir tezgâhta sorun yok, ama bir ürün için uygun değildir. iPhone uygulamaları iBeacon çerçevelerini hiç göremez, çünkü iOS bunları taramalardan çıkarır. Bu modu Android'de ya da ikinci bir kartta B1 ile test et. Bütçe görünümü, tipik bir düğme pilli sinyal verici çipi için belirtilen varsayımlarla yapılmış bir tahmindir. Bu ESP32-S3 kartı ise ekran açıkken yaklaşık 80 mA çeker, bu da bir düğme pil için çok fazladır. Kart kendi yayınını duyamaz, bu yüzden bu derste tarayıcı telefondur."
+  },
+  "B3": {
+    "title": "Bağlan ve konuş",
+    "heading": "Telefonun bağlanır, okur ve yazar",
+    "goal": "Yayın bağırmaktır. <b>Bağlantı</b> ise özel bir konuşmadır. Telefon (<i>merkez</i>) karta (<i>çevre birimi</i>) bağlanır. Bundan sonra ikisi sabit bir ritimde buluşur: bağlantı aralığında, 37 veri kanalı arasında atlayarak. Kartta küçük bir veritabanı durur, <b>GATT</b> tablosu. Bu tabloda Bench hizmeti vardır: LED, Message, Button, Temperature ve Uptime. nRF Connect ya da LightBlue ile LED'in rengini yazarsın, ekrana bir mesaj koyarsın, çipin sıcaklığını okursun ve düğmeye abone olursun.",
+    "goalLine": "Kartı telefonundan Bluetooth ile kontrol et ve her işlemin gatt görünümüne ulaştığını gör.",
+    "goalCheck": [
+      "nRF Connect (ya da LightBlue) <b>Bench B3</b>'ü gösterir, bağlanır ve Bench hizmetini beş adlandırılmış karakteristiğiyle birlikte listeler. Buna Device Information ve Battery de eklenir.",
+      "<b>LED</b> alanına <code>FF5000</code> yazarsan kartın üstündeki LED turuncu yanar. gatt görünümünde LED satırı mavi yanıp söner.",
+      "<b>Message</b> alanına bir yazı yazarsan yazı, mesaj görünümünde büyük puntoyla çıkar.",
+      "<b>Button</b>'a abone olduktan sonra kartta her tıklama telefona bildirim olarak gelir. Temperature her 2 saniyede bir bildirir.",
+      "<b>link</b> görünümü bağlantı aralığını, MTU'yu ve RSSI'yı gösterir. <code>params slow</code> yazınca aralık gözle görülür biçimde değişir."
+    ],
+    "learn": [
+      "merkez ve çevre birimi",
+      "GATT: hizmetler ve karakteristikler",
+      "UUID'ler (16 ve 128 bit)",
+      "oku · yaz · bildirim",
+      "CCCD (abone olma)",
+      "MTU",
+      "bağlantı aralığı"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "BLK"
+      },
+      "2": {
+        "role": "RES"
+      },
+      "3": {
+        "role": "DC"
+      },
+      "4": {
+        "role": "CS"
+      },
+      "5": {
+        "role": "SDA"
+      },
+      "6": {
+        "role": "SCL"
+      },
+      "7": {
+        "role": "GND"
+      },
+      "8": {
+        "role": "BTN"
+      },
+      "9": {
+        "role": "BOOT"
+      }
+    },
+    "commands": {
+      "0": {
+        "does": "Lab B3'ü derler ve karta yazar.",
+        "see": "Beş satırlı <b>gatt</b> görünümü. Radyo simgesi halkalarla yayın yaptığını gösterir.",
+        "fix": "“Failed to connect”: BOOT'u basılı tut, RST'ye dokun, BOOT'u bırak, sonra yeniden çalıştır."
+      },
+      "1": {
+        "does": "Seri monitörü açar.",
+        "see": "<code>- advertising as \"Bench B3\"</code> satırı ve ardından komut listesi.",
+        "fix": ""
+      },
+      "2": {
+        "does": "Telefonun karta bağlanmasını sağlar. nRF Connect for Mobile (Nordic, ücretsiz, iPhone ve Android için) ya da LightBlue'yu yükle. iPhone'da Ayarlar → Bluetooth üzerinden asla bağlanma. Bağlantıyı uygulamalar kurar.",
+        "see": "Seri monitör: <code>+ connected: 5A:3C:…</code> ve <code>- interval 30.00 ms …</code>. Birazdan <code>- MTU 255: 252 bytes of data per packet</code> çıkar. Radyo simgesi iki halkaya döner, LED sürekli mavi yanar.",
+        "fix": "Bench B3 listede yoksa aşağı kaydır ya da adına göre “Bench” diye filtrele. Hâlâ yoksa <code>adv on</code> yaz."
+      },
+      "3": {
+        "does": "3 bayt yazar: kırmızı FF, yeşil 50, mavi 00.",
+        "see": "<code>&lt; write LED FF 50 00</code>. Kartın üstündeki LED turuncu yanar. LED satırı mavi yanıp söner ve renk örneğini gösterir.",
+        "fix": "<code>LED wants 3 bytes, got 1</code>: Text ya da UINT8 yerine Byte Array seç."
+      },
+      "4": {
+        "does": "UTF-8 metni yazar (en fazla 40 bayt).",
+        "see": "<code>&lt; write Message \"hello bench\"</code>. <b>message</b> görünümüne geç: büyük metin ve “written 3s ago”.",
+        "fix": "Türkçe harfler kutu olarak görünür. Ekranın yazı tipi yalnızca düz ASCII harflerini içerir."
+      },
+      "5": {
+        "does": "Abone olmak, Button'ın CCCD alanına 01 00 yazar. Her jest, sonra 3 baytlık bir değer gönderir: jest ve sayaç (2 bayt).",
+        "see": "<code>&lt; subscribe Button (CCCD = 1)</code>, sonra her tıklamada <code>&gt; notify Button: click #3</code>. Telefonda <code>01-03-00</code> görünür. Button satırında bir zil belirir.",
+        "fix": "Seri monitörde <code>(nobody subscribed)</code> görürsen önce abone ol."
+      },
+      "6": {
+        "does": "2 bayt okur (°C × 100, little-endian). 2904 tanımlayıcısı, uygulamalara bunu nasıl göstereceklerini söyler.",
+        "see": "nRF Connect <code>41.42 °C</code> gösterir (ham değer <code>2E-10</code>). Abone olunca her 2 saniyede bir güncellenir.",
+        "fix": ""
+      },
+      "7": {
+        "does": "Kart telefondan 100–200 ms aralık ister. Kartın 4 olayı atlamasına izin verilmesini de ister. Sonra 15–30 ms ister. Kararı telefon verir.",
+        "see": "<code>- new params: 112.50 ms, latency 4</code>. <b>link</b> görünümündeki nokta yavaşlar. Bildirimler artık partiler hâlinde gelir.",
+        "fix": "<code>params</code> reddedilir ya da yok sayılırsa: iPhone bazı değerleri kabul etmez. Birkaç saniye sonra yeniden dene."
+      },
+      "8": {
+        "does": "Bağlantıyı kapatır. Kart, kendiliğinden yeniden yayın yapar.",
+        "see": "<code>! disconnected 0x16: we hung up</code>. link görünümü nedenini saklar.",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Yayından konuşmaya, adım adım",
+        "intro": "nRF Connect'te Connect'e dokunduğunda, LED'i yazdığında ya da kart bir tıklamayı bildirdiğinde neler olur. Her adım gerçek ATT baytlarını gösterir. İlk bayt opcode'dur. Sonraki iki bayt tanıtıcıdır (handle), yani kartın tablosundaki satır numarası. Kalan baytlar değerdir."
+      },
+      "1": {
+        "title": "Bench hizmeti, canlı",
+        "intro": "Kartın GATT tablosu, nRF Connect'in gösterdiği biçimde. Bir işleme bas, gönderilsin. Paket karşıya geçer, kartın satırı gatt görünümündeki gibi yanar ve baytlar altta çözülür."
+      },
+      "2": {
+        "title": "Ekranda ne görünür",
+        "intro": "Dört görünüm var. Tıklamak sonrakine geçirir. Her hareket (tıklama, çift tıklama, uzun basış) abone olunmuş bir telefona Button bildirimi olarak da gönderilir. gatt ve message görünümlerinde çift tıklamak fazladan bir tıklama gönderir."
+      }
+    },
+    "steps": [
+      "B1 ile aynı bağlantı. <code>ble-lab-b3</code> programını yükle ve monitörü aç. <b>Kontrol noktası 1:</b> <code>advertising as \"Bench B3\"</code> satırını gör.",
+      "Telefonuna nRF Connect'i (ya da LightBlue'yu) yükle. <b>Bench B3</b>'ü bul ve bağlan. <b>Kontrol noktası 2:</b> monitörde <code>connected</code> yazsın. Telefonda LED, Message, Button, Temperature ve Uptime alanları olan Bench hizmetini gör.",
+      "LED'e <code>FF5000</code>, Message'a bir yazı yaz. <b>Kontrol noktası 3:</b> LED turuncu olur, mesaj ekranda görünür.",
+      "Button ve Temperature'a abone ol, sonra kartın düğmesine bas. <b>Kontrol noktası 4:</b> değerler telefona gelir, gatt görünümünde zil simgeleri belirir.",
+      "<b>link</b> görünümüne geç, <code>params slow</code> / <code>params fast</code> ve <code>phy 2m</code> komutlarını dene. <b>Kontrol noktası 5:</b> aralık ekranda değişir.",
+      "LED'i radyo durumuna geri vermek için <code>led auto</code> yaz, sonra <code>disconnect</code> yaz."
+    ],
+    "note": "Yakınındaki herkes Bench B3'e bağlanıp LED'i değiştirebilir. Henüz eşleştirme yok. Her şey düz metin olarak gider. Bunu B4'te çözeceğiz. iPhone'lar bir cihazın GATT tablosunu önbelleğe alır. Sonraki bir derste tablo değişir ve iPhone eski satırları gösterirse Bluetooth'u kapatıp aç. ESP32-S3'te tek bir radyo vardır. B3 Wi-Fi kullanmaz, bu yüzden birlikte çalışma (coexistence) diye bir sorun yoktur."
+  },
+  "B4": {
+    "title": "Eşleştir ve güven",
+    "heading": "Bağlantıyı özel yap, kimin izinli olduğunu hatırla",
+    "goal": "B3'te yakındaki herkes bağlanıp her baytı okuyabiliyordu. B4 bir <b>Vault</b> karakteristiği ekler. Kart bunu yalnızca <b>şifrelenmiş ve kimliği doğrulanmış</b> bir bağlantı üzerinden verir. Telefondan buna dokunduğunda <b>eşleştirme</b> başlar. Passkey TFT ekranda büyük görünür. Ya da iki ekranda aynı altı rakam çıkar ve sen düğmeyle onaylarsın. Sonra kart <b>bağ kurar</b>. Anahtarları flash bellekte tutar, değişen özel adresinin arkasındaki telefonunu tanır ve başkalarını reddedebilir.",
+    "goalLine": "Telefonunu üç yöntemden biriyle eşleştir, Vault'u oku ve kartı telefonuna kilitle.",
+    "goalCheck": [
+      "<code>pair passkey</code> ile telefonda Vault'u okuduğunda bir kod ekranı açılır. TFT altı rakam gösterir. Rakamları yazınca telefon <b>the bench's secret: 42</b> değerini okur.",
+      "<b>ceremony</b> görünümü aşama aşama dolar ve <b>bonded</b> aşamasına kadar gelir. Başlıkta mor bir kilit ve kehribar rengi bir anahtar belirir.",
+      "<code>forget all</code> yazıp telefonda kartı unuttuktan sonra <code>pair justworks</code> ile dene. Bağlantı şifrelenir ama Vault yine reddedilir. Nedenini açıklayabilirsin.",
+      "<code>pair compare</code> ile eşleşen sayıları kabul edersin: kartta bir tıklama, telefonda bir dokunuş.",
+      "<code>allow bonded</code> yazdıktan sonra telefonun hâlâ bağlanır. İkinci bir telefon (ya da kartı unuttuktan sonra aynı telefon) bağlanamaz."
+    ],
+    "learn": [
+      "eşleştirme ve bağ kurma",
+      "IO yetenekleri",
+      "Just Works · Passkey · Numeric Comparison",
+      "LE Secure Connections (ECDH)",
+      "MITM koruması",
+      "LTK ve IRK",
+      "özel adresler",
+      "filtre kabul listesi"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "BLK"
+      },
+      "2": {
+        "role": "RES"
+      },
+      "3": {
+        "role": "DC"
+      },
+      "4": {
+        "role": "CS"
+      },
+      "5": {
+        "role": "SDA"
+      },
+      "6": {
+        "role": "SCL"
+      },
+      "7": {
+        "role": "GND"
+      },
+      "8": {
+        "role": "BTN"
+      },
+      "9": {
+        "role": "BOOT"
+      }
+    },
+    "commands": {
+      "0": {
+        "does": "Lab B4'ü derler ve karta yazar.",
+        "see": "<b>ceremony</b> görünümü: “Waiting for a phone to connect...” yazar ve gri sekiz aşama belirir.",
+        "fix": "“Failed to connect”: BOOT'u basılı tut, RST'ye dokun, BOOT'u bırak, sonra yeniden çalıştır."
+      },
+      "1": {
+        "does": "Seri monitörü açar.",
+        "see": "<code>- pairing: Passkey · lock off · anyone may connect</code> satırı ve ardından komut listesi. Yöntem flash belleğe kaydedilir. B4'ü yeniden yüklesen de kalır.",
+        "fix": ""
+      },
+      "2": {
+        "does": "Vault, düz metin bağlantıyı “Insufficient Authentication” ile reddeder. Telefon bunun üzerine eşleştirmeyi başlatır.",
+        "see": "Telefon bir kod ister. TFT <b>PASSKEY ENTRY</b> ve altı rakam gösterir. Monitörde <code>! passkey 482915: type it on the other device</code> çıkar. ceremony görünümünde 1–5 arası aşamalar dolar ve “check” sarı renkte yanıp söner.",
+        "fix": "iPhone'da istem çıkmazsa Vault'u yeniden oku. Android'de istem bir bildirim olarak gelebilir."
+      },
+      "3": {
+        "does": "İki taraf passkey'i bit bit kontrol eder (20 tur onay ve rastgele değerlerle), sonra şifreler ve anahtarları değiştirir.",
+        "see": "<code>+ secured: authenticated, bonded, key 16 B</code>, <code>- identity: 4C:…</code>. Telefon <b>the bench's secret: 42</b> değerini okur. Başlıkta kilit ve anahtar simgeleri çıkar. ceremony aşamaları tamamlanır.",
+        "fix": "<code>x … confirm failed: wrong passkey</code>: Yazım hatası. Yeni bir kod için Vault'u yeniden oku."
+      },
+      "4": {
+        "does": "Bağ kurulmuş bir telefonda anahtarlar zaten vardır. Eşleştirme adımları atlanır, şifreleme hemen başlar.",
+        "see": "ceremony görünümünde <b>stored keys: bonded before, no ceremony</b> yazar. Bağlantıdan doğrudan şifrelemeye geçilir.",
+        "fix": ""
+      },
+      "5": {
+        "does": "Bağ kurulmuş cihazları kimlik adresine göre listeler. IRK, telefonun özel adresini bu kimliğe çözer.",
+        "see": "<code>1 bonded device …</code> ve <code>1  4C:…  random static</code>. iPhone'lar ve çoğu Android rastgele sabit bir kimlik kullanır. <b>bonds</b> görünümü onu “&lt;- here” diye işaretler.",
+        "fix": ""
+      },
+      "6": {
+        "does": "Kartta bağları siler. Telefonda hâlâ kendi yarısı durur. Cihazı Ayarlar → Bluetooth üzerinden unut. iPhone'da: ⓘ → Forget This Device. Android'de: dişli simgesi → Unpair. macOS'ta: sağ tık → Forget.",
+        "see": "<code>! forgot every bond</code>, <code>- now forget \"Bench B4\" on the phone too</code>. Telefon kısmını atlarsan: <code>x ENC_CHANGE failed 0x206: key missing: one side forgot the bond</code>.",
+        "fix": ""
+      },
+      "7": {
+        "does": "Kart artık “no input, no output” der: kimse bir şeyi kontrol edemez. Bağlantı şifrelenir, ama kimliği doğrulanmaz.",
+        "see": "<code>+ secured: Just Works, bonded</code>. Mor bir kilit görünür, ama Vault okuma yine “Insufficient Authentication” ile başarısız olur. Vault, MITM korumasını şart koşar.",
+        "fix": "Ders şu: Just Works dinleyicileri durdurur, ama ortadaki adam saldırısını durdurmaz."
+      },
+      "8": {
+        "does": "İki ekran aynı altı rakamı gösterir. Kartta tıklamak evet der, uzun basış hayır. Telefonun kendi düğmesi vardır.",
+        "see": "TFT'de <b>NUMERIC COMPARISON</b>, telefonda aynı sayı. İkisi de evet deyince: <code>+ secured: authenticated, bonded</code>.",
+        "fix": "Uzun basış (hayır) <code>numbers didn't match: said no</code> ile biter."
+      },
+      "9": {
+        "does": "Yalnızca bağ kurulmuş kimlikler filtre kabul listesine girer. Denetleyici her özel adresi kayıtlı IRK'lerle çözer ve gerisini reddeder.",
+        "see": "<code>+ only bonded phones may connect (saved)</code>. Senin telefonun bağlanır. Başka bir telefon, ya da kartı unuttuktan sonra senin telefonun, hiç bağlantı kuramaz.",
+        "fix": "Kendini dışarıda bıraktıysan seri üzerinden <code>allow anyone</code> yaz."
+      },
+      "10": {
+        "does": "LED ve Message da şifreli bağlantı ister. İzinler GATT tablosunun parçasıdır ve açılışta bir kez kurulur. Bu yüzden kart ayarı kaydeder ve yeniden başlar.",
+        "see": "<code>lock on saved. … the board restarts now...</code>. Sonrasında eşleşmemiş bir telefondan LED'i yazmak da eşleştirmeyi tetikler.",
+        "fix": "iPhone eski izinleri gösterirse Bluetooth'u kapatıp aç. Tablo önbelleğe alınmıştır."
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Hangi eşleştirme yöntemi? İki tarafa bağlı",
+        "intro": "Eşleştirmenin başında her taraf neler yapabildiğini söyler: bir sayı göstermek, bir sayı yazmak, evet ya da hayır demek ya da hiçbir şey yapamamak. İki yanıt yöntemi belirler. Telefonun ve kartın yeteneklerini seç. Kartınkileri <code>pair</code> ayarlar. Kimin gösterdiğini ve kimin yazdığını gör."
+      },
+      "1": {
+        "title": "Tek bir eşleştirme, paket paket",
+        "intro": "Telefon Vault'u okuduğunda havada gidip gelen Security Manager Protocol (SMP) mesajları, gerçek baytlarıyla. Yöntemler yalnızca ortada ayrılır: İnsan, arada kimsenin olmadığını nasıl kanıtlar?"
+      },
+      "2": {
+        "title": "Ekranda ne görünür",
+        "intro": "Beş görünüm var. Tıklamak sonrakine geçirir. Çift tıklamak alttaki eylemi çalıştırır (secure, bonds, press). Sayılar karşılaştırma beklerken düğme bunun yerine yanıt verir: tıklama evet, uzun basış hayır."
+      }
+    },
+    "steps": [
+      "B3 ile aynı bağlantı. <code>ble-lab-b4</code> programını yükle ve monitörü aç. <b>Kontrol noktası 1:</b> açılış satırlarında <code>pairing: Passkey</code> yazısını gör.",
+      "nRF Connect'ten bağlan ve <b>Vault</b>'u oku. TFT'deki altı rakamı yaz. <b>Kontrol noktası 2:</b> telefon sırrı okur, ceremony görünümü tamamlanır, başlıkta kilit ve anahtar çıkar.",
+      "Bağlantıyı kes ve yeniden bağlan. <b>Kontrol noktası 3:</b> “stored keys” yazar. Bu sefer passkey sorulmaz.",
+      "<code>forget all</code> yaz, telefonda kartı unut. <code>pair justworks</code> yaz ve Vault'u oku. <b>Kontrol noktası 4:</b> bağlantı şifreli, ama yine reddedildi. Neden?",
+      "İki tarafta da yeniden unut. <code>pair compare</code> yaz, Vault'u oku ve tıklayarak onayla. <b>Kontrol noktası 5:</b> kimliği doğrulanmış ve bağ kurulmuş.",
+      "<code>allow bonded</code> yaz. <b>Kontrol noktası 6:</b> telefonun bağlanır. Kartı telefonda unuttuktan sonra bağlanamaz. Bitirmek için <code>allow anyone</code> yaz."
+    ],
+    "note": "Eşleştirmenin iki yarısı vardır. Kartta <code>forget</code> yaptığında telefonda da kartı unut. iPhone'da: Ayarlar → Bluetooth → ⓘ → Forget This Device. Android'de: Bluetooth → dişli simgesi → Unpair. macOS'ta: Sistem Ayarları → Bluetooth → sağ tık → Forget. Unutmazsan bir sonraki bağlantı “key missing” hatasıyla başarısız olur. Yalnızca telefon unutursa NimBLE yeni eşleştirmeyi kabul eder ve eski bağı kendiliğinden değiştirir (yinelenen eşleştirme). Yöntem, kilit ve izin ayarları flash bellekte (namespace b4) saklanır ve yeniden başlatmalarda kalır. NimBLE özellikleri, yöntemi ve anahtar değişimi aşamalarını tek tek bildirmez. ceremony görünümü, sonraki bir aşama bunların gerçekleştiğini kanıtlayana kadar onları çıkarım olarak (bir halkayla) çizer. Kart “the bench's secret: 42” sırrıyla gelir. <code>vault &lt;text&gt;</code> bu sırrı bir sonraki yeniden başlatmaya kadar değiştirir."
+  },
+  "B5": {
+    "title": "Telefon uygulaması",
+    "heading": "Kendi uygulaman, doğrudan karta",
+    "goal": "nRF Connect bir tornavidadır. Şimdi kendi aracını yapıyorsun. <b>esp-labs/apps/ble-app</b>, <b>Web Bluetooth</b> kullanan küçük bir React uygulamasıdır. Tarayıcının kendisi GATT istemcisi olur. Böylece Mac'inde ya da telefonunda açılan bir web sayfası, Wi-Fi, sunucu ve uygulama mağazası olmadan karta bağlanır. Kart B3'teki Bench hizmetini korur ve dört karakteristik ekler: Telefondan üzerine çizebileceğin bir <b>Canvas</b>, saniyede beş kez veri akıtan <b>Sensors</b>, radyonun izin verdiği kadar hızlı bildirim gönderen bir <b>Speed</b> (Hız) testi ve sen hızın değişimini izlerken bağlantıyı değiştirebileceğin <b>Link</b> denetimleri.",
+    "goalLine": "Bir web sayfasından kartı kontrol et, üzerine çiz ve bağlantının gerçekte saniyede kaç bayt taşıdığını ölç.",
+    "goalCheck": [
+      "Uygulamanın Connect (Bağlan) sekmesi, LED … Uptime alanlarıyla birlikte Bench hizmetini ve Canvas, Sensors, Speed ile Link'i (ba5e0010-0013) listeler. Bayt günlüğü her işlemi gösterir.",
+      "Sketch (Çizim) sekmesinde çizdiğin bir çizgi, saniyenin küçük bir kesrinde kartın <b>sketch</b> görünümünde belirir.",
+      "Live (Canlı) sekmesi dört çizgi çizer. GPIO 1'e takılı bir jumper kabloya dokunursan dokunma çizgisi sıçrar.",
+      "50 kB'lık hız testi uygulamada kB/s değeriyle biter. Aynı test kartın <b>speed</b> görünümünde bir çubuk olur. <b>Fast interval</b> ya da <b>2M PHY</b> ayarından sonra bir sonraki test gözle görülür biçimde hızlanır. Hızlanmazsa nedenini açıklayabilirsin."
+    ],
+    "learn": [
+      "Web Bluetooth",
+      "JavaScript'te GATT istemcisi",
+      "yanıtsız yazma (write without response)",
+      "ikili protokoller",
+      "bildirim akışları",
+      "veri hızı = MTU × paket ÷ aralık",
+      "2M PHY ve uzun paketler"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "BLK"
+      },
+      "2": {
+        "role": "RES"
+      },
+      "3": {
+        "role": "DC"
+      },
+      "4": {
+        "role": "CS"
+      },
+      "5": {
+        "role": "SDA"
+      },
+      "6": {
+        "role": "SCL"
+      },
+      "7": {
+        "role": "GND"
+      },
+      "8": {
+        "role": "BTN"
+      },
+      "9": {
+        "role": "BOOT"
+      }
+    },
+    "commands": {
+      "0": {
+        "does": "Lab B5'i derler ve karta yazar.",
+        "see": "<b>sketch</b> görünümü: “Open the ble-app, connect”. Radyo simgesi halkalarla, <b>Bench B5</b> adıyla yayın yaptığını gösterir.",
+        "fix": "“Failed to connect”: BOOT'u basılı tut, RST'ye dokun, BOOT'u bırak, sonra yeniden çalıştır."
+      },
+      "1": {
+        "does": "Uygulamayı bir kez kurar (React, Vite, TypeScript, sabit sürümler) ve <code>http://localhost:5177</code> adresinde sunar. Sunucu kodu yoktur: Vite sayfayı yalnızca tarayıcıya verir.",
+        "see": "<code>➜ Local: http://localhost:5177/</code>",
+        "fix": "Port doluysa başka bir deneyin uygulaması çalışıyordur. Onu durdur ya da <code>pnpm dev --port 5178</code> yaz."
+      },
+      "2": {
+        "does": "Tarayıcının kendi cihaz seçici penceresi açılır. Bir sayfa kendi başına asla bağlanamaz. Pencere, Bench hizmeti olan ya da adı “Bench” ile başlayan kartları ya da BLE-MIDI enstrümanlarını listeler.",
+        "see": "<b>Bench B5</b>'i seç. Connect sekmesinde GATT gezgini açılır. Monitör <code>+ connected: …</code> basar. İlk seferde macOS, Chrome'un Bluetooth kullanmasına izin vermeni ister.",
+        "fix": "“Web Bluetooth isn't available here”: Chrome ya da Edge kullan. Adres olarak localhost'u kullan, 127.0.0.1 ya da Mac'in IP adresi değil."
+      },
+      "3": {
+        "does": "Her hareket LED'e 3 bayt yazar. Yazma 80 ms'de bir ile sınırlıdır. Gönder düğmesi Message'a en fazla 40 bayt UTF-8 yazar.",
+        "see": "LED parmağını izler. Monitörde <code>&lt; write LED 1F 5C 99</code> satırları ve uygulamanın air şeridinden geçen mavi paketler görünür.",
+        "fix": "<code>led auto</code> yazdıktan sonra LED yerinde kalır. Tekerleği yeniden hareket ettir, kart LED'i geri alır."
+      },
+      "4": {
+        "does": "Çizgiler, <b>yanıtsız yazma</b> olarak Canvas (ba5e0010) karakteristiğine gider: her 50 ms'de bir, noktası başına <code>02 cc cc w n</code> ve 3 bayt. Kart bunları NimBLE görevinde sıraya koyar ve loop() içinde çizer.",
+        "see": "Kartın <b>sketch</b> görünümünde aynı satırlar. Altta <code>412 cmds 96 writes 9120 B</code> yazar.",
+        "fix": "Kartta <code>DROPPED</code> görürsen 16 sıralı yazmadan daha hızlı çizdin. Hiçbir şey bozulmaz, birkaç çizgi eksik kalır. <code>sketch: a command was cut off</code> çıkarsa uygulama 20 baytlık yazmalara geri döndü (MTU 23)."
+      },
+      "5": {
+        "does": "Sensors'a abone olur: her 200 ms'de 12 bayt (sıcaklık, dokunma, boş bellek, RSSI ve bir sıra numarası).",
+        "see": "Uygulamada dört hareketli çizgi ve kartın <b>live</b> görünümünde aynı dört kısa grafik belirir. “notifying the app: 230 sent” yazar. Kablonun serbest ucuna dokunmak dokunma değerini binlerce sıçratır.",
+        "fix": "GPIO 1'e kablo takılı değilse çizgi düz kalır. Herhangi bir jumper kablo olur. Çıplak metal uç sensördür."
+      },
+      "6": {
+        "does": "Speed'e abone olur ve <code>01 50 C3 00 00</code> yazar. Karttaki küçük bir görev, (MTU − 3) baytlık paketlerle 50.000 bayt bildirir. Yığının tamponları dolunca bekler, sonra devam eder. En sonda 15 baytlık bir özet gönderir.",
+        "see": "Monitör: <code>&lt; write Speed: start 50000 bytes</code>, sonra <code>+ speed: 50000 B in 2310 ms = 21.6 kB/s</code>. Uygulama, aynı büyüklük mertebesinde bir çubuk gösterir.",
+        "fix": "<code>speed: subscribe to Speed (ba5e0012) first</code>: Seri üzerinden çalıştırmadan önce Speed sekmesini bir kez aç."
+      },
+      "7": {
+        "does": "Link'e 1, 3 ve 5 yazar. Kart merkezden 7,5–15 ms aralık, 2M PHY ve 251 baytlık radyo paketleri ister.",
+        "see": "<code>- new params: 15.00 ms …</code>, <code>- PHY now 2M / 2M</code>. Sonraki test daha hızlıdır. Kartın <b>speed</b> görünümü her test için bir çubuk tutar ve MTU, aralık ile PHY'yi gösterir.",
+        "fix": "Değişiklik olmazsa karar merkezde verilir. macOS çoğu zaman 15 ms'de kalır ve 2M'e izin verir. Bazı telefonlar 7,5 ms ya da 2M'i reddeder. Ders şu: Çevre birimi yalnızca isteyebilir."
+      },
+      "8": {
+        "does": "Bir cloudflared hızlı tüneli, uygulamaya bir <code>https://…trycloudflare.com</code> adresi verir. Çünkü telefonlar Web Bluetooth'a yalnızca https üzerinden izin verir.",
+        "see": "Android: Chrome adresi açar ve aynı seçici pencere çıkar. iPhone: Adresi ücretsiz <b>Bluefy</b> tarayıcısında aç. Safari'de Web Bluetooth yoktur.",
+        "fix": "Bluefy “sayfa güvenli değil” diyorsa http yerine https adresini kullan."
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Tek bir renk değişimi: JavaScript'ten LED'e",
+        "intro": "Uygulamada <code>navigator.bluetooth.requestDevice()</code> çağrısı ile LED'in renk değiştirmesi arasında neler olur. Bir bildirimin nasıl bir grafiğe geri döndüğünü de görürsün. Her adım gerçek çağrıyı ya da havadaki gerçek baytları gösterir. Bir akış seç, sonra ◀ ▶ ile ilerle."
+      },
+      "1": {
+        "title": "Ne kadar hızlı gidebilir?",
+        "intro": "Veri hızını dört sayı belirler. Birincisi, her paketin ne kadar büyük olabileceği (MTU). İkincisi, iki radyonun ne sıklıkla buluştuğu (bağlantı aralığı). Üçüncüsü, bir buluşmaya kaç paketin sığdığı. Dördüncüsü, bitlerin ne kadar hızlı uçtuğu (PHY). Kaydırıcıları oynat. Zaman çizelgesi üç bağlantı olayını ve her paketi ölçekli çizer. Sonuç, Speed sekmesinin ölçtüğü formülün aynısıdır."
+      },
+      "2": {
+        "title": "Ekranda ne görünür",
+        "intro": "Altı görünüm var. Tıklamak sonrakine geçirir. Çift tıklama, sketch görünümünde çizimi temizler. speed görünümünde 50 kB'lık bir test başlatır. gatt görünümünde bir Button tıklaması gönderir. Her hareket, B3'te olduğu gibi uygulamaya Button bildirimi olarak da ulaşır."
+      }
+    },
+    "steps": [
+      "B1 ile aynı bağlantı (ekran, düğme isteğe bağlı). İsteğe bağlı: GPIO 1'e bir jumper kablo tak, serbest ucu boşta kalsın. Bu senin dokunma sensörün olur.",
+      "<code>ble-lab-b5</code> programını yükle. <b>Kontrol noktası 1:</b> sketch görünümünü ve yayın halkalarını gör.",
+      "Uygulamayı başlat (bir kez <code>pnpm install</code>, sonra <code>pnpm dev</code>). Chrome'da <code>http://localhost:5177</code> adresini aç ve Bench B5'e bağlan. <b>Kontrol noktası 2:</b> GATT gezgini dokuz Bench karakteristiği listeler.",
+      "Renk tekerleğini çevir, bir mesaj yaz, sonra Sketch sekmesinde bir şey çiz. <b>Kontrol noktası 3:</b> çizimin kartın üstünde görünür.",
+      "Live sekmesini aç ve kabloya dokun. <b>Kontrol noktası 4:</b> dokunma çizgisi hem uygulamada hem kartta sıçrar.",
+      "Speed: 50 kB çalıştır, sonra Fast interval + 2M PHY + Long packets seçip yeniden çalıştır. <b>Kontrol noktası 5:</b> iki çubuk olmalı. Her iki kB/s değerini ve her testin kullandığı aralığı not et.",
+      "İsteğe bağlı: <code>pnpm tunnel</code> yaz ve aynısını telefonundan tekrarla (Android'de Chrome, iPhone'da Bluefy). Hızını Mac'inin hızıyla karşılaştır."
+    ],
+    "note": "Hâlâ eşleştirme yok. Yakındaki herkes bağlanıp çizebilir ve sensörleri okuyabilir. B4'ün kilidini de eklersen burada aynı şekilde çalışır. Uygulama yalnızca tarayıcının seçicisinde seçtiğin kartları görür. Tarayıcı, bazı standart hizmetleri kasıtlı olarak web sayfalarından gizler. iPhone'lar ve Mac'ler bir cihazın GATT tablosunu adresine göre önbelleğe alır. Gezgin B3'ün eski satırlarını gösteriyorsa Bluetooth'u kapatıp aç. Veri hızı büyük ölçüde merkeze bağlıdır. Aynı kart, bir Mac ile bir telefona göre çoğu zaman 2–4 kat daha hızlıdır."
+  },
+  "B6": {
+    "title": "Klavye ve medya",
+    "heading": "Bir Bluetooth klavye ve müziğin için bir kumanda",
+    "goal": "Kart gerçek bir Bluetooth klavyeye dönüşür. Her kablosuz klavyede bulunan aynı HID hizmetini kullanır. Böylece telefonlar, Mac'ler ve PC'ler de kendi sürücüleriyle onu kullanır. Düğmesi bir kumandaya dönüşür. Telefonundaki müziği (JBL hoparlöründe çalıyor olabilir) başlatır, duraklatır ve atlatır, sesi değiştirir, slaytlarda gezinir ya da seri monitörden gönderdiğin metni yazar. Bilgisayara baytlarımızın ne anlama geldiğini söyleyen Report Map'i yazarsın. Klavyenin neden harf değil yalnızca tuş numarası gönderdiğini de görürsün.",
+    "goalLine": "Kartı klavye olarak eşleştir, müziğini düğmeyle kontrol et ve metni doğru düzende yaz.",
+    "goalCheck": [
+      "Telefonun ya da Mac'in <b>Bench B6</b>'yı bağlı bir klavye olarak listeler. Ekrandaki durum çubuğunda kilit (şifreli) ve anahtar (bağ kurulmuş) görünür.",
+      "Medya görünümünde bir tıklama müziği duraklatır ve sürdürür. Çift tıklama parçayı atlatır. GPIO 2'ye dokunmak sesi açar.",
+      "<code>type yes</code> “yes” yazar, “zes” değil. Bunun için <code>layout</code> bilgisayarın klavye ayarıyla eşleşmelidir.",
+      "keys görünümünde bir basışı bayt olarak okuyabilirsin: değiştirici bitler, tuş numarası ve ardından gelen hepsi sıfır olan bırakma."
+    ],
+    "learn": [
+      "GATT üzerinden HID",
+      "rapor haritası (report map)",
+      "tuş numaraları ve karakterler",
+      "klavye düzenleri",
+      "tüketici kontrolü",
+      "bağ kurma",
+      "medya kumandası"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "BLK"
+      },
+      "2": {
+        "role": "RES"
+      },
+      "3": {
+        "role": "DC"
+      },
+      "4": {
+        "role": "CS"
+      },
+      "5": {
+        "role": "SDA"
+      },
+      "6": {
+        "role": "SCL"
+      },
+      "7": {
+        "role": "GND"
+      },
+      "8": {
+        "role": "BTN"
+      },
+      "9": {
+        "role": "BOOT"
+      }
+    },
+    "commands": {
+      "0": {
+        "does": "Lab B6'yı derler ve karta yükler. Yeni bir indirme yok: NimBLE, B1 ile geldi.",
+        "see": "<code>ble-lab-b6: NimBLE 2.5.1 up</code>, <code>advertising as keyboard \"Bench B6\"</code> ve komut listesi. Ekran medya görünümüyle açılır: “pair me: Bluetooth settings &gt; Bench B6”.",
+        "fix": "“Failed to connect”: BOOT'u basılı tut, RST'ye dokun, BOOT'u bırak, sonra yeniden çalıştır."
+      },
+      "1": {
+        "does": "Telefonun ya da Mac'in karta bağlanır, Report Map'i okur, eşleşme ister (HID şifreleme ister) ve bir bağ kaydeder. Böylece bir dahaki sefere kendiliğinden yeniden bağlanır.",
+        "see": "<code>+ connected</code>, sonra <code>+ secured: Just Works, bonded, key 16 B</code>. Durum çubuğunda bağlantı halkaları, mor bir kilit ve bir anahtar görünür. Mac, Keyboard Setup Assistant'ı açabilir. Kapat, ya da istediği tuşa basıp ISO (Almanca) ya da ANSI (ABD) seç.",
+        "fix": "Listede var ama bağlanmıyorsa: Burada <code>forget</code> yaz ve telefonda “Forget This Device” seçeneğini kullan. Sonra yeniden eşleştir. Bağın yalnızca bir tarafta kalması en yaygın nedendir."
+      },
+      "2": {
+        "does": "Müziği telefonda başlat (hoparlörüne, kulaklığına ya da JBL'ine). Tıklama = oynat/duraklat, çift tıklama = sonraki parça, 2 saniyeden kısa basılı tutma = sessize al. GPIO 2'deki kabloya dokunmak sesi açar, GPIO 1'dekine dokunmak kısar. Önce <code>touch on</code> yaz.",
+        "see": "Simge dalgalanır, bir nokta kart → telefon → hoparlör yönünde kayar ve müzik tepki verir. Monitör <code>&gt; media key: play/pause (usage 0CD)</code> basar.",
+        "fix": "Hiçbir şey olmuyor mu? Uygulamanın ses odağı olmalı. Önce bir şey çal. Mac'te Music ve Spotify tepki verir, tarayıcı sekmesi vermeyebilir."
+      },
+      "3": {
+        "does": "Eşleştirilmiş cihazdaki bir metin alanına yazar. Kart her karakter için 2 rapor (basış ve bırakma) sıraya koyar. Her seferinde 6 rapor gönderir, aralarında 8 ms olur.",
+        "see": "“hello bench” telefonda ya da Mac'te görünür. typer görünümü ilerleme çubuğunu doldurur, sonra <code>typed 11 keys</code> yazar.",
+        "fix": "<code>not paired yet</code> yazıyorsa önce eşleş. Harfler yanlış çıkıyorsa <code>layout</code> komutuna bak."
+      },
+      "4": {
+        "does": "Kartın, BİLGİSAYARIN hangi düzene ayarlı olduğunu söyler. Böylece her karakter için doğru tuşu seçer. NVS'e kaydedilir.",
+        "see": "<code>layout German (QWERTZ) (saved)</code>. Artık Almanca ayarlı bir Mac'te <code>type yes</code> “yes” yazar. Düzenin AltGr ya da Option ile yazdığı karakterler (@ [ ] { } \\ | ~) bir uyarıyla atlanır.",
+        "fix": "Hâlâ y ve z yer değiştiriyorsa bilgisayarın düzeni başkadır. Mac'in menü çubuğundaki giriş menüsüne bak."
+      },
+      "5": {
+        "does": "Tek bir tuş ya da bir kombinasyon: değiştiriciler (cmd, ctrl, alt, shift) ile bir tuş (enter, tab, esc, ok tuşları, f1–f12, bir harf).",
+        "see": "Mac'te Spotlight açılır. Klavyeli bir iPhone'da arama açılır. keys görünümü değiştirici baytı <code>08</code> (sol GUI) ve <code>2C</code> tuşunu (boşluk) gösterir.",
+        "fix": "Windows'ta: <code>key win+r</code> Çalıştır'ı açar, <code>key ctrl+alt+delete</code> güvenlik ekranını açar."
+      },
+      "6": {
+        "does": "Bir metni NVS'e kaydeder. Typer görünümünde çift tıklamak (ya da yalnızca <code>snippet</code>) metni yazar. Küçük bir makro tuş takımı gibidir.",
+        "see": "<code>snippet saved</code> ve typer görünümünde metin.",
+        "fix": ""
+      },
+      "7": {
+        "does": "Bir sunum aç (Keynote, PowerPoint, Google Slides sunum modunda). Tıklama = sağ ok (sonraki), çift tıklama = sol ok, 2 saniyeden kısa basılı tutma = b tuşu (siyah ekran).",
+        "see": "Ekrandaki slayt, hareket ettirdiğin yönden kayarak gelir. Bilgisayardaki sunum da onu izler.",
+        "fix": ""
+      },
+      "8": {
+        "does": "Son raporlar bayt bayt: değiştirici bitler, tuş numaraları ve her basışın kartın düzeniyle neyi yazdığı.",
+        "see": "Büyük A için <code>down mod 02 key 04 types 'A'</code>, ardından <code>up all zero</code>.",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Bir tuş basışı: düğmeden harfe",
+        "intro": "Kutuya yaz ya da aşağıdaki bir tuşa bas ve izle. Kart karakteri kendi düzen ayarıyla bir tuş numarasına çevirir ve 8 bayt gönderir. Bilgisayar numarayı kendi düzeniyle tekrar karaktere çevirir. İki düzeni farklı ayarla ve <code>yes</code> yaz. İşte <code>layout de</code>'nin düzelttiği hata budur."
+      },
+      "1": {
+        "title": "Kart neden hoparlörüne çalamaz?",
+        "intro": "JBL'in müziği Classic Bluetooth ses üzerinden çalar. ESP32-S3 yalnızca Bluetooth LE destekler. Bu yüzden ona akış yapamaz, ama onu çalan telefonun kumandası olabilir. Bir medya tuşuna basıp takip et ya da doğrudan yolu deneyip nerede takıldığını gör."
+      },
+      "2": {
+        "title": "Ekranda ne görünür",
+        "intro": "Altı görünüm var. Medya ve slaytlar birer moddur. Orada düğme kumandadır: tıklama, çift tıklama, basılı tutma. 2 saniyelik basılı tutma, slayt moduna geçirir. Diğer görünümlerde tıklama her zamanki gibi sonrakine geçirir."
+      }
+    },
+    "steps": [
+      "Aynı ekran bağlantısı. İsteğe bağlı: GPIO 1 ve GPIO 2'ye iki jumper kablo tak, öbür uçları boş kalsın (ses için dokunma tuşları). <code>ble-lab-b6</code> programını yükle.",
+      "Telefonunda ya da Mac'inde Bluetooth ayarlarını aç ve <b>Bench B6</b>'yı eşleştir. <b>Kontrol noktası 1:</b> durum çubuğunda kilit ve anahtar görünür, monitörde <code>secured: Just Works, bonded</code> yazar.",
+      "Telefonda müzik çal (istersen JBL'inden). Medya görünümünde tıkla, çift tıkla. <b>Kontrol noktası 2:</b> müzik duraklar, sürer ve atlar.",
+      "<code>touch on</code> yaz (kablolara elini sürme), sonra GPIO 2'deki kabloya dokun. <b>Kontrol noktası 3:</b> ses artar.",
+      "Notlar'ı aç, <code>layout</code> komutunu bilgisayarınla eşleşecek şekilde ayarla ve <code>type yes, this is the bench</code> yaz. <b>Kontrol noktası 4:</b> tam olarak bu metin çıkar.",
+      "Slayt moduna geçmek için düğmeyi 2 saniye basılı tut, bir sunum aç ve içinde gez.",
+      "Keys görünümüne geç ve bir basışı oku: değiştirici bitleri, tuş numarasını, sonra bırakmayı."
+    ],
+    "note": "Bir iPhone ya da iPad donanım klavyesine bağlıyken kendi ekran klavyesi gizlenir. Geri almak için kartın bağlantısını kes ya da Bluetooth'u kapat. Eşleştirmeyi kaldırmak için kartı iki tarafta da unut (burada <code>forget</code>, telefonda “Forget This Device”). ESP32-S3 yalnızca Bluetooth LE destekler. Hoparlöre ya da kulaklığa ses akışı yapamaz. Bu, Classic Bluetooth'un (A2DP) işidir. Kart telefonu kontrol eder, telefon da JBL'ine çalar. Ses ve parça tuşları, ses odağına sahip uygulamaya gider. Bilgisayarlar, Option ve AltGr karakterlerinin nerede olduğu konusunda anlaşmaz. Bu yüzden Almanca tablo, Mac ve Windows'ta aynı şekilde yazılabilen karakterleri yazar."
+  },
+  "B7": {
+    "title": "Müzik",
+    "heading": "Bluetooth MIDI enstrümanı",
+    "goal": "Kart, Bluetooth LE üzerinden bir MIDI enstrümanına dönüşür. GarageBand, Ses MIDI Kurulumu, Android synth uygulamaları ve Chrome'un hepsinin anladığı standart BLE-MIDI hizmetini kullanır. MIDI nota taşır, ses taşımaz. Sesi karşı taraftaki synth üretir (ve istersen JBL'ine gönderir). Düğmeyle, beş dokunma kablosuyla, seri komutlarla ve 16 adımlık bir davul makinesiyle çalarsın. Karşı taraftan çalınan notalar kartın piyano şeridini ve LED'ini yakar. Notaların zaman damgalarıyla nasıl paketlendiğini ve gecikmeyi bağlantı aralığının neden belirlediğini görürsün.",
+    "goalLine": "Karttan bir synth'e nota çal ve synth'in notalarını kartta gör.",
+    "goalCheck": [
+      "GarageBand (ya da ble-app'in Music (Müzik) sekmesi) <b>Bench B7</b>'yi listeler ve düğmeye tıkladığında ses çıkar.",
+      "<code>tune twinkle</code> melodiyi çalar. <code>beat house</code> ile <code>seq on</code> yazınca 10. kanalda davulları çalar.",
+      "Synth'in klavyesinde çaldığın notalar kartın piyano şeridini mavi yakar. LED her notanın rengini alır.",
+      "link görünümü bağlantı aralığını gösterir. Bir notanın radyo için ne kadar bekleyebileceğini söyleyebilirsin."
+    ],
+    "learn": [
+      "MIDI mesajları",
+      "BLE-MIDI paketleri",
+      "zaman damgaları",
+      "running status",
+      "bağlantı aralığı = gecikme",
+      "kapasitif dokunma",
+      "Genel MIDI davulları"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "BLK"
+      },
+      "2": {
+        "role": "RES"
+      },
+      "3": {
+        "role": "DC"
+      },
+      "4": {
+        "role": "CS"
+      },
+      "5": {
+        "role": "SDA"
+      },
+      "6": {
+        "role": "SCL"
+      },
+      "7": {
+        "role": "GND"
+      },
+      "8": {
+        "role": "BTN"
+      },
+      "9": {
+        "role": "BOOT"
+      }
+    },
+    "commands": {
+      "0": {
+        "does": "Lab B7'yi derler ve karta yükler.",
+        "see": "<code>advertising as MIDI instrument \"Bench B7\"</code>, komut listesi, beş tuşlu keys görünümü ve bir piyano şeridi.",
+        "fix": "“Failed to connect”: BOOT'u basılı tut, RST'ye dokun, BOOT'u bırak, sonra yeniden çalıştır."
+      },
+      "1": {
+        "does": "macOS kartı bir MIDI cihazı olarak bağlar. Eşleşme isteyebilir. Kabul et. Sonra bir yazılım enstrümanıyla GarageBand'i aç. GarageBand her MIDI cihazını duyar.",
+        "see": "<code>+ connected</code>, <code>asked for a 7.5-15 ms interval (low latency)</code>, <code>+ a synth is listening (subscribed)</code>. keys görünümü “synth listening” yazar.",
+        "fix": "iPhone/iPad: GarageBand → bir klavye aç → ayarlar (dişli) → Advanced → Bluetooth MIDI Devices → Bench B7. Android: BLE-MIDI uygulaması (örneğin “MIDI BLE Connect”) ve bir synth. Chrome: ble-app'in Music sekmesi."
+      },
+      "2": {
+        "does": "Gamın sıradaki notasını çalar (300 ms). Çift tıklama = akor. 2 saniyeden kısa basılı tutma = tüm notalar kapanır.",
+        "see": "GarageBand'den bir ses çıkar. Tuş, piyano şeridinde mor yanar. roll mor bir çubuk çizer.",
+        "fix": "“synth listening” yazıyor ama ses yoksa: GarageBand'de ses kaydı değil, bir yazılım enstrümanı parçası seç ve sesi aç."
+      },
+      "3": {
+        "does": "Tüm bir kamu malı melodiyi geçerli tempoda zamanlar. loop(), her notayı zamanı geldiğinde gönderir.",
+        "see": "<code>tune twinkle: 14 notes, 8.4 s</code> ve melodi synth'ten çalar.",
+        "fix": ""
+      },
+      "4": {
+        "does": "Davul makinesi: Genel MIDI'nin davulları tuttuğu 10. MIDI kanalında 4 davul, 16 adım. Davul sesleri: 36 bas davul, 38 trampet, 42 hi-hat, 39 el çırpma.",
+        "see": "sequencer görünümündeki oynatma çizgisi ızgarada ilerler. GarageBand davulları çalar (gerçek ses için bir davul seti parçası seç).",
+        "fix": "Davullar piyano notası gibi çalıyorsa parçanın enstrümanı bir davul seti değildir."
+      },
+      "5": {
+        "does": "GPIO 1, 2, 6, 13 ve 14'e takılı beş jumper kablo (serbest uçlar) pentatonik gamın tuşları olur. Kart taban değeri ölçerken ellerini uzak tut.",
+        "see": "<code>touch on: 5 keys, pentatonic from C4</code>. Bir kablonun ucuna dokunmak tuşunu yakar ve notayı çalar. Daha sert dokunuş, daha yüksek ses.",
+        "fix": "GPIO 13 ve 14, RFID dersindeki RC522'nin kablolarıdır. Okuyucuyu çıkar ya da ilk üç tuşu kullan."
+      },
+      "6": {
+        "does": "GarageBand (ya da ble-app piyanosu) MIDI'yi yazmalar olarak karta geri gönderir.",
+        "see": "Piyano şeridinde mavi tuşlar, roll üzerinde mavi çubuklar, notanın renginde LED ve <code>&lt; note E4 vel 96 ch 1</code> satırları.",
+        "fix": "Mac'te GarageBand MIDI cihazlarına göndermez. ble-app piyanosunu ya da MIDI çıkışı olan bir DAW kullan."
+      },
+      "7": {
+        "does": "Gecikmeyi açıklar: Notalar bir sonraki bağlantı olayını bekler.",
+        "see": "Senin aralığın (ana bilgisayar kabul ettiyse 7,5–15 ms, Apple cihazlarda çoğu zaman 11,25 ya da 15) ve bir basışın bir sonraki olaya kayması.",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Tek bir nota, bayt bayt",
+        "intro": "Küçük klavyeyi çal (tıklayarak ya da bilgisayarındaki A–K tuşlarıyla). Tek bir bağlantı olayı içinde basılan notalar aynı paketi paylaşır. Başlığa, zaman damgalarına, durum baytına ve tekrar eden durum baytlarını atlayan numaraya, yani running status'a bak."
+      },
+      "1": {
+        "title": "Notalar neden bekler: bağlantı aralığı",
+        "intro": "Bağlı bir cihaz yalnızca bağlantı olaylarında konuşabilir, her aralıkta bir kez. Bir aralık seç ve çal. Her nota bir sonraki olayı bekler. Sonra notaları geldikleri anda çalan synth ile zaman damgalarını kullanan bir synth'i karşılaştır."
+      },
+      "2": {
+        "title": "Ekranda ne görünür",
+        "intro": "Beş görünüm var. keys, sequencer ve roll görünümlerinde düğme enstrümandır. Bir nota için tıkla, bir akor için çift tıkla ya da davulları başlat/durdur. Tüm notaları kapatmak için basılı tut. Sonrakine geçmek için 2 saniye basılı tut."
+      }
+    },
+    "steps": [
+      "Aynı ekran bağlantısı. İsteğe bağlı: GPIO 1, 2, 6, 13 ve 14'e beş jumper kablo tak (önce RC522'yi çıkar). <code>ble-lab-b7</code> programını yükle.",
+      "GarageBand'den (iPhone/iPad), Ses MIDI Kurulumu ile GarageBand'den (Mac), bir BLE-MIDI uygulamasından (Android) ya da ble-app'in Music sekmesinden (Chrome) bağlan. <b>Kontrol noktası 1:</b> keys görünümünde “synth listening” yazsın.",
+      "Düğmeye birkaç kez tıkla, sonra çift tıkla. <b>Kontrol noktası 2:</b> synth'ten notalar ve bir akor gelsin.",
+      "<code>tune ode</code> yaz, sonra <code>beat funk</code> ve <code>seq on</code> yaz. <b>Kontrol noktası 3:</b> bir melodi ve bir davul ritmi duy.",
+      "Synth'in klavyesini çal. <b>Kontrol noktası 4:</b> kartta mavi tuşlar ve renkli bir LED gör.",
+      "link görünümünü aç ve aralığını oku. Davullarla <code>bpm 200</code> dene ve dinle. Hâlâ sıkı geliyor mu?"
+    ],
+    "note": "MIDI bir talimattır, ses değildir. Kartın hoparlörü yoktur, ses kendi başına çıkmaz. Synth'in sesi, telefonun ya da Mac'in kendi Bluetooth bağlantısıyla çalabildiği her yere gidebilir, JBL'in de dahil. Apple cihazları MIDI için genellikle 11,25–15 ms bağlantı aralığı verir. Bu yüzden bir nota en fazla bir aralık kadar bekler. Her paketin içindeki zaman damgaları, iyi bir synth'in yine de ritmi korumasını sağlar. Mac eşleşme isterse kabul et. Kart Just Works bağ kurmasına izin verir. Yerleşik melodiler yalnızca kamu malı eserlerdir."
+  },
+  "B8": {
+    "title": "Ana cihaz",
+    "heading": "Rolleri değiştir: klavyen karta yazar",
+    "goal": "Şimdiye kadar telefon ya da dizüstü bilgisayar merkezdi, kart yanıt veriyordu. Burada kart merkez olur. Dizüstü bilgisayarın yaptığı gibi bağlanabilir cihazları bulur, bağlanır ve GATT tablolarını keşfeder. Bu keşif salt okunurdur: Yalnızca ad, üretici ve pil gibi herkese açık temel bilgiler okunur. Sonra kendi BLE klavyeni ve farenı ana cihaz olarak yönetir. Kart eşleşir. Ekranda bir passkey gösterir ve sen onu klavyeden yazarsın. Klavyenin raporlarını nasıl tanımladığına dair kendi açıklamasını (Report Map) okur, abone olur ve ham baytları metne ve ekranda bir boyama imlecine çevirir.",
+    "goalLine": "Bluetooth klavyeni karta eşleştir, ekranına yaz ve klavyenin gönderdiği her baytı anla.",
+    "goalCheck": [
+      "<code>host</code> komutu, klavyeden passkey'i yazdıktan sonra <code>+ hosting: keyboard media keys</code> (ya da <code>mouse</code>) satırıyla biter.",
+      "Klavyede yazdığın şey <b>keyboard</b> görünümünde çıkar. Shift, Ctrl, Alt ve Cmd basılı tutulduğunda yanar. <code>layout de</code> Y ile Z'yi değiştirir ve ä ö ü ß harflerini gösterir.",
+      "<b>reports</b> görünümünde renkli her baytı adlandırabilirsin: değiştiriciler (kehribar), tuş kodları (turkuaz), fare X (mavi), Y (mor), tekerlek (mercan).",
+      "Kartın gücünü kesip açtıktan sonra kart, bağ kurulmuş klavyeye kendiliğinden yeniden bağlanır. Passkey gerekmez."
+    ],
+    "learn": [
+      "merkez rolü",
+      "hizmet keşfi",
+      "GATT üzerinden HID (HOGP)",
+      "Report Map çözümleme",
+      "merkez olarak passkey girişi",
+      "CCCD ile abone olma",
+      "tuş kodları ve düzenler",
+      "bağ kurma ve yeniden bağlanma"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "BLK"
+      },
+      "2": {
+        "role": "RES"
+      },
+      "3": {
+        "role": "DC"
+      },
+      "4": {
+        "role": "CS"
+      },
+      "5": {
+        "role": "SDA"
+      },
+      "6": {
+        "role": "SCL"
+      },
+      "7": {
+        "role": "GND"
+      },
+      "8": {
+        "role": "BTN"
+      },
+      "9": {
+        "role": "BOOT"
+      }
+    },
+    "commands": {
+      "0": {
+        "does": "Lab B8'i derler ve karta yazar. NimBLE-Arduino zaten indirilmiştir (B1).",
+        "see": "<code>ble-lab-b8: NimBLE 2.5.1 up, address …</code>, komut listesi ve dolmaya başlayan <b>devices</b> görünümü.",
+        "fix": "“Failed to connect”: BOOT'u basılı tut, RST'ye dokun, BOOT'u bırak, sonra yeniden çalıştır."
+      },
+      "1": {
+        "does": "Seri monitörü açar (kart yeniden başlar).",
+        "see": "<code>Bluetooth lab B8 Host (ble-lab-b8)</code> ve komutlar.",
+        "fix": ""
+      },
+      "2": {
+        "does": "Mac'inle zaten eşleşmiş bir klavye yalnızca Mac ile konuşur. Eşleştirme modu, klavyeyi herkese yayın yapar hâle getirir. Genelde Bluetooth ya da kanal tuşunu 3 saniye basılı tut, ışığı hızlı yanıp sönene kadar. Çok kanallı klavyelerde Mac'inin kullanmadığı bir kanal seç.",
+        "see": "<b>devices</b> görünümünde en üstte klavyen, klavye simgesi ve <b>HID</b> ile görünür.",
+        "fix": "Görünmüyorsa klavye hâlâ Mac'e bağlıdır. Kanalı değiştir ya da Mac'in Bluetooth ayarlarından kaldır. Apple Magic Keyboard'lar Classic Bluetooth kullanır, burada hiç görünmez."
+      },
+      "3": {
+        "does": "Bağlanabilir cihazları, en güçlüsü en üstte olacak şekilde basar. Beacon'lar dışarıda bırakılır, çünkü onlara bağlanılamaz.",
+        "see": "<code>  1   -48 dBm  keyboard/mouse  C4:7D:2A:91:0E:33  Bench Keys  [HID]</code>",
+        "fix": ""
+      },
+      "4": {
+        "does": "1 numaralı cihaza CONNECT_IND gönderir. Artık bağlantı zamanlamasını kart seçer. Sonra keşif yapar: her hizmeti, karakteristiği ve tanımlayıcıyı bulur ve herkese açık temel bilgileri okur.",
+        "see": "<code>&gt; CONNECT_IND to Bench Keys</code>, <code>+ connected: we are the central</code>, <code>+ 5 services, 19 characteristics in 820 ms</code>, <code>- it is a keyboard/mouse (1812): type host</code>. <b>explore</b> görünümü ağacı gösterir. HID değerleri “locked until paired” yazar.",
+        "fix": "<code>no answer from …</code>: Klavye yayını durdurmuş. Eşleştirme modu yaklaşık 60 saniye sonra zaman aşımına uğrar. Klavyeyi eşleştirme moduna yeniden al."
+      },
+      "5": {
+        "does": "Eşleşir (bağ, passkey ve Secure Connections), Report Map'i okur, her girdi raporunu 2908 tanımlayıcısıyla bulur ve abone olur (CCCD'sine 01 00 yazar).",
+        "see": "Ekranda altı büyük rakam ve <code>! type 482915 on the keyboard, then Enter</code>. Rakamları klavyeden yaz, sonra Enter'a bas: <code>+ secured: passkey, bonded, key 16 B</code>, <code>&lt; Report Map: 72 bytes, 11 input fields</code>, <code>&gt; CCCD 01 00: report 1 (keyboard)</code>, <code>+ hosting: keyboard media keys</code>. Görünüm <b>keyboard</b>'a atlar.",
+        "fix": "<code>pairing failed</code>: Klavye eşleştirme modundan çıkmış ya da kartla eski bir bağı var. <code>forget</code> yaz, klavyede de kartı kaldır (yeniden eşleştirme modunda), sonra <code>connect</code> ve <code>host</code> yaz."
+      },
+      "6": {
+        "does": "Her tuş basışı bir bildirimdir. Kart onu bir öncekiyle karşılaştırır ve yeni basılan tuşları ekler. Backspace siler, Enter yeni satır başlatır, Esc temizler.",
+        "see": "Yazdığın metin <b>keyboard</b> görünümünde, yanıp sönen bir imleçle. Shift, Ctrl, Alt ya da Cmd basılıyken değiştirici tuş göstergeleri kehribar renkte yanar. Medya tuşları mor bir bildirim kutusu gösterir.",
+        "fix": "Harfler yanlış mı (y ve z yer değiştiriyor)? Sonraki komuta bak."
+      },
+      "7": {
+        "does": "Tuş kodları harflerin değil, konumların numarasıdır. Kart bunları seçtiğin düzenle karaktere çevirir: ABD ya da Almanca.",
+        "see": "<code>- layout German (QWERTZ): the same keys, other letters</code>. Artık Z yazılı tuş z verir ve ä ö ü ß görünür.",
+        "fix": ""
+      },
+      "8": {
+        "does": "Ham giriş raporları, en yenisi altta olacak şekilde. Her bayt, ait olduğu Report Map alanına göre renklenir.",
+        "see": "<code>#1 kbd 02 00 0B 00 00 00 00 00</code>. 02 kehribar renkte (Left Shift), 0B turkuaz renkte (H tuşu) yanar. Altında çözülmüş satır görünür.",
+        "fix": ""
+      },
+      "9": {
+        "does": "Boot protokolü: Report Map'i okumadan her BIOS'un anladığı sabit 8 baytlık biçim. Rapor protokolüyle karşılaştır.",
+        "see": "<code>&gt; CCCD 01 00: report 0 (boot keyboard)</code> ve reports görünümünde <code>bootK</code> satırları. <code>boot off</code> geri alır.",
+        "fix": "<code>no Protocol Mode: this device has no boot mode</code>: Bazı klavyeler bunu sunmaz."
+      },
+      "10": {
+        "does": "Farenin tuşu ve ekranı yoktur, bu yüzden eşleştirme Just Works'e düşer (rakam yok). Report Map'i düğmeleri, X'i, Y'yi ve tekerleği istediği bit boyutlarıyla tanımlar.",
+        "see": "<code>+ secured: Just Works, bonded</code>, <code>+ hosting: mouse</code> ve <b>mouse</b> görünümü. Sol düğme çizer, sağ düğme rengi değiştirir, orta düğme temizler, tekerlek fırçayı ayarlar.",
+        "fix": "İmleç hızla kayıyorsa fare büyük adımlarla raporluyordur. Kart bunları zaten yarıya indirir."
+      },
+      "11": {
+        "does": "Bağ (tuş) NVS'e kaydedilir. Klavye yeniden yayın yaptığında (uyandırmak için bir tuşa bas) kart adresini tanır ve yeniden bağlanır.",
+        "see": "<code>+ bonded Bench Keys is back: reconnecting</code>, sonra passkey olmadan <code>+ secured: …</code> ve <code>+ hosting</code>.",
+        "fix": "Değişen özel adresin (RPA) arkasına saklanan klavyeler tanınmayabilir. O zaman elle <code>connect</code> ve <code>host</code> yaz."
+      },
+      "12": {
+        "does": "Klavye olmayan bir cihazı keşfeder. Yalnızca herkese açık temel bilgiler okunur, hiçbir şey yazılmaz.",
+        "see": "Birkaç hizmet, çoğunlukla uzun bir üretici UUID'si ve <code>- JBL app's own service only: audio uses Classic BT</code>. Bu hoparlörde ses hiçbir zaman BLE üzerinden gitmez. Bu çipte de Classic Bluetooth yoktur.",
+        "fix": "Listede yoksa: Hoparlör yalnızca JBL uygulaması bakarken ya da açıldıktan hemen sonra BLE yayını yapar."
+      },
+      "13": {
+        "does": "Karttaki her bağı siler.",
+        "see": "<code>- every bond deleted: pair again to use a keyboard</code>. Kartı klavyede de kaldır (eşleştirme modu), yoksa bir sonraki eşleştirmeyi reddeder.",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Taramadan tuş vuruşuna, adım adım",
+        "intro": "Klavyen yayın yaparken kartta bir <b>h</b> belirene kadar olan her şey, paket paket. Bir hikâye seç: ilk eşleştirme, gücü kesip açtıktan sonra geri dönme ya da JBL hoparlörünü keşfetme. ◀ ▶ ile gez ya da oynatmasını izle. Her adımın altındaki kutu gerçek baytları gösterir."
+      },
+      "1": {
+        "title": "Bir raporu kendin çöz",
+        "intro": "Klavye hiçbir zaman harf göndermez, yalnızca tuş konumlarını ve bitleri gönderir. Bir Report Map seç, sonra küçük klavyede tuşlara bas ya da fare pedinde kaydır. Rapor karta uçar ve her alan, onu tanımlayan Report Map öğesiyle birlikte sırayla yanar. ABD ile DE arasında geçiş yap: Aynı tuş kodu başka bir harf olur."
+      },
+      "2": {
+        "title": "Ekranda ne görünür",
+        "intro": "Yedi görünüm var. Tıklamak sonrakine geçirir. Çift tıklamak sol alttaki eylemi çalıştırır. Uzun basış bir sonraki adıma geçer: önce bağlan, sonra ana cihaz ol, sonra bağlantıyı kes."
+      }
+    },
+    "steps": [
+      "Her BLE dersindeki gibi bağla (ekran, basmalı düğme isteğe bağlı). <code>ble-lab-b8</code> programını yükle ve monitörü aç.",
+      "BLE klavyeni, Mac'in kullanmadığı bir kanalda eşleştirme moduna al. <b>Kontrol noktası 1:</b> <b>devices</b> görünümünde <b>HID</b> ile birlikte görünür.",
+      "<code>connect 1</code> yaz (ya da çift tıklayıp seç, sonra uzun bas). <b>Kontrol noktası 2:</b> <b>explore</b> görünümü 1800, 180A, 180F ve 1812 Human Interface Device ile Report karakteristiklerini listeler.",
+      "<code>host</code> yaz (ya da uzun bas). Klavyede altı rakamı yaz, sonra Enter'a bas. <b>Kontrol noktası 3:</b> <code>+ hosting: keyboard</code> satırını ve <b>keyboard</b> görünümünü gör.",
+      "Bir cümle yaz, Shift'i basılı tut, Backspace ve Enter'ı dene. Almanca klavyen varsa <code>layout de</code> yaz. <b>Kontrol noktası 4:</b> yazdığın metin TFT'de görünür, ä, ö ve ü harfleri dahil.",
+      "<b>reports</b> görünümüne geç, renkli her baytı adlandır ve yukarıdaki “Bir raporu kendin çöz” bölümüyle karşılaştır. Sonra <code>boot on</code> ve <code>host</code> yaz: 8 sabit bayt.",
+      "İsteğe bağlı: <code>disconnect</code> yaz, farenı aynı şekilde eşleştir ve <b>mouse</b> görünümünde çiz.",
+      "Kartın fişini çekip tak, sonra klavyede bir tuşa bas. <b>Kontrol noktası 5:</b> kart yeniden bağlanır ve passkey istemeden ana cihazlık yapar.",
+      "JBL hoparlörünü keşfet: <code>connect &lt;n&gt;</code>. Ses hakkında neden bir şey göstermediğini gör."
+    ],
+    "note": "Explore yalnızca seçtiğin cihazlara bağlanır ve yalnızca standart, herkese açık değerleri okur: ad, görünüm, üretici, model, yazılım sürümü, pil ve PnP ID. Bir cihaza asla yazmaz. Yazılan tek şey, ana cihazlık yaptığın klavye ya da farenin iki standart HID ayarıdır: abone olmak için CCCD ve açılış için Protocol Mode. Yalnızca kendi cihazlarına bağlan. Aynı anda tek bağlantı vardır. Bir sonraki cihaza bağlanmadan önce bağlantıyı kes. Karta bağ kurulmuş bir klavye, o kanalda Mac ile yeniden eşleştirilene kadar Mac ile çalışmayabilir. Klavye görünümü ekranın yerleşik yazı tipini kullanır. Bu yazı tipinde ä ö ü Ä Ö Ü ß vardır, € yoktur. BLE, rapor kimliğini bildirimin dışında tutar. Kimlik, Report Reference tanımlayıcısında (2908) durur. Bu yüzden reports görünümündeki baytlar veriyle başlar."
+  }
+}

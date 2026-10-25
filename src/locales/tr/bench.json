@@ -1,0 +1,35 @@
+{
+  "overview": {
+    "title": "Şu an tezgâhta",
+    "loading": "Tezgâh durumu yükleniyor"
+  },
+  "specs": {
+    "label": "Kart özellikleri",
+    "chip": "ESP32-S3 <b>N16R8</b>",
+    "cores": "<b>2×</b> Xtensa LX7, 240 MHz",
+    "flash": "<b>16 MB</b> flash bellek",
+    "psram": "<b>8 MB</b> octal PSRAM",
+    "radio": "<b>Wi-Fi 4</b> + BLE 5",
+    "logic": "<b>3,3 V</b> mantık"
+  },
+  "log": {
+    "title": "Tezgâh günlüğü",
+    "intro": "Yazılım kuran, karta bağlanan ya da karta yükleyen her komut, yanıtıyla birlikte. Claude her komutu önce duyurur. Karta dokunan ya da bir şey kuran her işlem senin onayını bekler.",
+    "filter": "Türe göre filtrele",
+    "timeline": "Günlük zaman çizelgesi",
+    "entryLabel": "{{n}} · {{types}} · {{title}}",
+    "key": "<flash></flash> yüklendi <failed></failed> başarısız <other></other> kurma, derleme, okuma, sıfırlama",
+    "response": "Yanıt",
+    "result": "Sonuç"
+  },
+  "types": {
+    "all": "hepsi",
+    "install": "kurulum",
+    "build": "derleme",
+    "read": "okuma",
+    "reset": "sıfırlama",
+    "flash": "yükleme",
+    "failed": "başarısız",
+    "observe": "gözlem"
+  }
+}

@@ -1,0 +1,723 @@
+{
+  "journey": {
+    "canvasLabel": "Sinyal yolu. Bir ses mikrofona ulaşır: KY-037'nin voltajı ADC'ye, ya da INMP441'in sayıları I2S üzerinden gelir. ESP32-S3 sinyali işler. Deney onu çoğu zaman hoparlörde bir sese çevirir.",
+    "optional": "{{part}} (isteğe bağlı)",
+    "output": "→ {{out}}",
+    "path": {
+      "noMic": "(mikrofon yok)",
+      "adcOrI2s": "ADC ya da I2S0",
+      "withSpeaker": "16.000/sn · I2S1 çıkışı"
+    },
+    "parts": {
+      "ky": "KY-037",
+      "inmp": "INMP441",
+      "mic": "KY-037 ya da INMP441",
+      "spk": "MAX98357A + hoparlör",
+      "wifi": "Wi-Fi (W1)"
+    },
+    "labs": {
+      "S1": {
+        "title": "Duy",
+        "what": "ham sinyal: scope, iki mikrofon yan yana, bias ya da bitler, comparator",
+        "out": "ekran"
+      },
+      "S2": {
+        "title": "Ses düzeyi",
+        "what": "bir seviye ölçer (INMP441 ile dB SPL), 10 dakikalık bir diary, bir alarm",
+        "out": "LED · ayar"
+      },
+      "S3": {
+        "title": "Alkışla kontrol",
+        "what": "konuşma değil, alkış. 1 ile 4 alkışlık kalıplar bir şeyleri değiştirir.",
+        "out": "LED · RGB · sesler"
+      },
+      "S4": {
+        "title": "Ses kaydedici",
+        "what": "sesle başlayan kayıt. Telefonundan ya da karttan dinle.",
+        "out": "Wi-Fi · WAV · hoparlör"
+      },
+      "S5": {
+        "title": "Spektrum",
+        "what": "kendi FFT'miz: bantlar, bir waterfall grafiği, referans tonlu bir tuner",
+        "out": "perde"
+      },
+      "S6": {
+        "title": "Ses oyunları",
+        "what": "bir vuruş kilidi, Clap Bird, ritme uyan bir party",
+        "out": "oyunlar · sesler"
+      },
+      "S7": {
+        "title": "Hoparlör",
+        "what": "bir synth: dalgalar, notalar, akorlar, zarflar, melodiler, oyun sesleri",
+        "out": "hoparlör"
+      },
+      "S8": {
+        "title": "Ses efektleri",
+        "what": "seni sincap ya da robot sesiyle tekrarlayan bir papağan. Canlı yankı.",
+        "out": "hoparlör"
+      }
+    }
+  },
+  "controls": {
+    "play": "▶ Oynat",
+    "pause": "❚❚ Duraklat",
+    "speed": "hız ×{{speed}}",
+    "restart": "↺ baştan başlat"
+  },
+  "sounds": {
+    "talk": "🗣 konuş",
+    "whistle": "〰 ıslık",
+    "clap": "👏 alkış",
+    "quiet": "🤫 sessiz"
+  },
+  "chain": {
+    "label": "Hava basıncından desibele sekiz aşamalı bir hat. Seçili aşama aşağıda canlı çizilir.",
+    "previous": "Önceki aşama",
+    "next": "Sonraki aşama",
+    "position": "{{at}} / {{total}}",
+    "steps": {
+      "air": {
+        "box": "hava",
+        "title": "1 · Ses havayı hareket ettirir",
+        "text": "Sesin hava moleküllerini saniyede yüzlerce kez birbirine yaklaştırıp uzaklaştırır. Konuşan biri 30 cm uzakta basıncı, havanın her zaman taşıdığı 101.325 Pa'ya ek olarak yaklaşık 0,02 Pa dalgalandırır. Mikrofonun aldığı tek şey bu küçük dalgalanmadır."
+      },
+      "capsule": {
+        "box": "kapsül",
+        "title": "2 · Kapsül bunu volta çevirir",
+        "text": "KY-037'nin gümüş rengi kutusu bir elektret kapsüldür. İçinde, metal bir levhanın önünde ince ve yüklü bir folyo (diyafram) vardır. Hava folyoyu hareket ettirir, aradaki boşluk değişir ve yük birkaç milivoltluk bir gerilim üretir. Bu modülde yükselteç yoktur. Elde bu kadar küçük bir sinyal kalır."
+      },
+      "ao": {
+        "box": "AO pini",
+        "title": "3 · AO pininde: sabit bir gerilimin üstünde küçük bir dalga",
+        "text": "Kapsül güç ister, bu yüzden çıkışı sabit bir DC gerilimin üstüne oturur. Bu gerilime <b>bias</b> denir. Burada yaklaşık 1,5 V'tur. S1 deneyindeki bias görünümü senin değerini gösterir. Ses, bunun üstünde birkaç mV'luk bir dalgalanmadır. Gerçek ölçekte bunu göremezsin. Yan pencere onu 100 kat büyütür."
+      },
+      "adc": {
+        "box": "ADC",
+        "title": "4 · ADC bunu saniyede 16.000 kez ölçer",
+        "text": "ADC gerilimi 0 ile 4095 arasında bir sayıya çevirir. 12 dB zayıflatmayla aralık 0-3,1 V olur. Bu yüzden bir adım yaklaşık 0,76 mV'tur ve fısıltı yalnızca birkaç adım yükseklik tutar. Daha az zayıflatma, daha küçük bir aralık ve daha ince adım demektir. S1 deneyindeki <code>atten</code> ayarıyla değiştirirsin."
+      },
+      "dma": {
+        "box": "DMA",
+        "title": "5 · DMA sonuçları işlemci olmadan toplar",
+        "text": "Sürekli modda ADC'nin kendi zamanlayıcısı her ölçümü başlatır. DMA (doğrudan bellek erişimi) her sonucu, 4 bayt olarak, kendi başına RAM'e yazar. 256 sonuçtan sonra (1 KB, 16 ms) çerçeveyi çekirdek 0'daki örnekleyici göreve verir. Çekirdek 1'deki ekran döngüsü onu hiç beklemez."
+      },
+      "ring": {
+        "box": "halka",
+        "title": "6 · 4 saniyelik bir örnek halkası",
+        "text": "Örnekleyici her örneği PSRAM'deki 65.536 yuvalık bir halkaya yazar. Her örneğin çalışan bir numarası vardır. Yuva, bu numaranın 65.536'ya bölümünden kalandır. Bu yüzden halka 4,1 sn'de bir kendi üstüne yazar. scope, FFT ve ses kaydedici, istedikleri zaman numaraya göre halkadan parçalar okur."
+      },
+      "bias": {
+        "box": "− bias",
+        "title": "7 · Bias'ı çıkar",
+        "text": "Çok yavaş bir ortalama bias'ı izler. Yerleşmesi yaklaşık çeyrek saniye sürer. Her örnekten bu ortalama çıkarılır. Geriye yalnız ses kalır: sıfır etrafında bir dalga. Potansiyometre, başka bir modül ya da sıcak bir oda bias'ı değiştirebilir. Ortalama onu yalnızca izler."
+      },
+      "db": {
+        "box": "int16 → dB",
+        "title": "8 · Ses programının anladığı sayılar",
+        "text": "×16, ADC adımlarını 16 bitlik ses birimlerine çevirir (−32.768 ile 32.767 arası, bir WAV dosyası gibi). Her 64 örnekte (4 ms) örnekleyici çerçevenin RMS değerini, yani ortalama gücünü ölçer. Seviye ölçer bunu desibele çevirir. Sonuç, ADC'nin tam ölçeğiyle (dBFS) ve odanın sessizliğiyle karşılaştırılır."
+      }
+    },
+    "air": {
+      "value": "sıkışık = basınç yukarı, seyrek = aşağı · şu an sessizlikten {{db, number(minimumFractionDigits: 0; maximumFractionDigits: 0)}} dB yukarıda"
+    },
+    "capsule": {
+      "diaphragm": "diyafram",
+      "plate": "levha",
+      "box": "kapsül çıkışı, son 40 ms (±30 mV kutusu)",
+      "value": "kapsül şimdi: {{mv, number(minimumFractionDigits: 2; maximumFractionDigits: 2; signDisplay: exceptZero)}} mV"
+    },
+    "ao": {
+      "bias": "bias {{v, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} V: dalga bu satırda, göremeyecek kadar küçük",
+      "zoom": "bias etrafında ×100 (±30 mV)",
+      "valuePlus": "AO şimdi: {{v, number(minimumFractionDigits: 4; maximumFractionDigits: 4)}} V = {{bias}} mV bias + {{mv, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} mV ses",
+      "valueMinus": "AO şimdi: {{v, number(minimumFractionDigits: 4; maximumFractionDigits: 4)}} V = {{bias}} mV bias − {{mv, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} mV ses"
+    },
+    "adc": {
+      "dots": "40 örnek = 2,5 ms · her 62,5 µs'de bir nokta · her çizgi bir ADC adımı = {{mv, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} mV",
+      "value": "ham değer şimdi: 0-4095 arasında {{raw}} · zayıflatma {{atten}}"
+    },
+    "dma": {
+      "frame": "DMA çerçevesi: 256 sonuç × 4 bayt",
+      "sampler": "örnekleyici",
+      "samplerCore": "görev, çekirdek 0",
+      "loopCore": "ekran, çekirdek 1",
+      "idle": "Çerçeve dolarken işlemci hiçbir şey yapmaz",
+      "value": "saniyede 62,5 çerçeve, her biri 16 ms · örnekleyici yalnızca bir çerçeve dolunca uyanır"
+    },
+    "ring": {
+      "write": "yaz",
+      "readers": {
+        "scope": "● scope: son 20 ms'yi okur",
+        "fft": "● FFT: son 512 örneği okur",
+        "recorder": "● recorder: yarım saniye geriye gider (ön kayıt payını okur)"
+      },
+      "size": "65.536 yuva · 128 KB PSRAM · bir tur = 4,1 sn",
+      "value": "yazılan = {{w, number}} · yuva = yazılan & 65535 = {{slot}}"
+    },
+    "bias": {
+      "raw": "ham değer (ADC adımları) ve yavaş ortalaması: {{dc, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}}",
+      "minus": "− ortalama  ↓",
+      "alone": "yalnız ses, sıfır civarında",
+      "value": "ham {{raw}} − ortalama {{dc, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} = {{diff, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} adım"
+    },
+    "db": {
+      "frames": "64 örnekten 8 çerçeve (her biri 4 ms) · ×16 = int16 birimleri",
+      "value": "hızlı {{fast, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} dBFS · taban {{floor, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} dBFS · sessizlikten {{above, number(minimumFractionDigits: 0; maximumFractionDigits: 0)}} dB yukarıda"
+    }
+  },
+  "mics": {
+    "label": "Üstte: KY-037'nin analog yolu ve INMP441'in dijital yolu. Altta: SCK, WS ve SD tellerindeki bir I2S çerçevesi, bitleri tek tek okuyan bir imleç ve örneğin 16 bitlik bir sayıya dönüşümü.",
+    "tickLabel": "Bir saat darbesi",
+    "tick": "darbe ▶",
+    "pressure": "ses basıncı",
+    "pressureLabel": "Örneğin değeri, tam ölçeğin bir payı olarak",
+    "output": "{{s24}} (24 bit)",
+    "caption": {
+      "reading": "SCK'nin her darbesinde mikrofon SD'ye bir bit koyar. ESP32 bitı yükselen kenarda okur. WS sıranın kimde olduğunu söyler: düşükse sol yuva.",
+      "shift": "Neden >> 8 değil de >> 6? En üstteki 16 biti almak, sessiz bir odayı sıfıra yakın bırakırdı. 6 bit daha fazla tutmak 12 dB kazanç demektir. Bir konuşma sayı aralığında rahatça yer alır. Yalnızca mikrofonun dibindeki bir alkış (yaklaşık 114 dB SPL) sınırı aşar."
+    },
+    "lane": {
+      "capsule": "kapsül",
+      "fewMv": "birkaç mV",
+      "plusBias": "+ bias",
+      "onAo": "AO'da ~1,5 V",
+      "adcBits": "12 bit, 0,76 mV",
+      "minusAverage": "− ortalama",
+      "dmaRing": "DMA, halka",
+      "ownAmp": "+ kendi yükselteci",
+      "adc24": "24 bit ADC",
+      "insideMic": "mikrofonun içinde",
+      "frames": "I2S çerçeveleri",
+      "sample24": "24 bit örnek"
+    },
+    "frame": {
+      "left": "sol yuva (L/R → GND: mikrofon burada konuşur)",
+      "right": "sağ yuva: kimse yok (sıfırlar)",
+      "firstBit": "önce bit 23 (işaret biti) … sonra bit 0",
+      "padding": "8 dolgu sıfırı"
+    },
+    "read": {
+      "soFar": "şimdiye kadar {{got}} / 24 bit okundu",
+      "level": "Bu {{dbfs, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} dBFS'tir. Sinüs için ≈ {{spl, number(minimumFractionDigits: 0; maximumFractionDigits: 0)}} dB SPL (dBFS + 111, veri sayfasındaki 94 dB SPL'de −26 dBFS değerinden).",
+      "clock": "SCK = 16.000 örnek × 2 yuva × 32 bit = 1,024 MHz. ESP32 (I2S0) sürer. Hoparlör I2S1'i kullanır."
+    }
+  },
+  "bias": {
+    "label": "0 ile 3,3 volt arasında bir cetvel. ADC'nin aralığı gölgeli, bias çizgisi ve mikrofonun dalgası görünür. Aralığın dışındaki kısımlar kırpılır.",
+    "bias": "bias",
+    "biasLabel": "Bias gerilimi, milivolt",
+    "sound": "ses",
+    "soundLabel": "Ne kadar yüksek: dalga yüksekliği",
+    "atten": "Zayıflatma",
+    "attenOption": "zayıflatma {{db}} dB",
+    "caption": "Bias {{bias}} mV, ses ±{{a}} mV, zayıflatma {{atten}}. İpucu, S1 deneyindeki bias görünümünün kartta yazdığı ipucunun aynısıdır.",
+    "range": "ADC aralığı 0-{{v, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} V",
+    "steps": "1 ADC adımı = {{mv, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} mV · bu dalga 4096 adımın {{steps}} tanesini kaplar",
+    "hint": {
+      "clipping": "KIRPILMA: dalga aralığın kenarına çarpıyor. Düz tepeler kaybolan sestir (turuncu). Kırmızı, kesilen kısımdır.",
+      "nearTop": "bias üste yakın: daha büyük bir zayıflatma kullan",
+      "try6": "0-1,75 V aralığına sığar: zayıflatma 6'yı dene (2 kat daha ince)",
+      "try25": "0-1,25 V aralığına sığar: zayıflatma 2,5'i dene",
+      "good": "dalga aralığa sığıyor: iyi"
+    }
+  },
+  "comparator": {
+    "label": "Son iki saniyedeki AO dalgası, potansiyometrenin eşik çizgisiyle birlikte. Altta DO çıkışı: dalga çizginin üstündeyken yüksektir.",
+    "potRange": "pot: bias'ın üstünde eşik",
+    "potLabel": "Bias'ın üstündeki karşılaştırıcı eşiği, milivolt",
+    "drag": "kesik çizgiyi de sürükleyebilirsin",
+    "caption": "Eşik, bias'ın {{pot}} mV üstünde. Kesik çizginin üstündeki her dalga tepesi, DO'da bir yükselen kenardır (turuncu). Bir alkış onlarcasını üretir. Bu yüzden S3 DO'yu değil AO'yu dinler.",
+    "axis": "AO eksi bias, son 4 sn (karekök ölçeği)",
+    "pot": "pot {{mv}} mV",
+    "perSecond": "{{n}}/sn",
+    "hint": {
+      "alwaysOn": "DO hep açık: potu ters yöne çevir",
+      "underLine": "alkış bile çizginin altında kalıyor: potu geri çevir",
+      "waiting": "Henüz yüksek ses yok: bir alkış gelecek",
+      "tuned": "DO yüksek anları izliyor: ayarlandı"
+    }
+  },
+  "ballistics": {
+    "label": "Bir ses sahnesinin tekrarı: anlık seviye, hızlı ve yavaş ölçerler, tepe tutma ve zamanla gürültü tabanı.",
+    "scene": "Sahne",
+    "scenes": {
+      "talk": "konuşma, sonra bir alkış",
+      "fan": "30 sn boyunca açılan bir vantilatör"
+    },
+    "legend": {
+      "inst": "anlık (4 ms)",
+      "fast": "hızlı 125 ms",
+      "slow": "yavaş 1 sn",
+      "floor": "taban",
+      "peak": "tepe tutma"
+    },
+    "now": "{{s, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} sn · sessizlikten {{db, number(minimumFractionDigits: 0; maximumFractionDigits: 0)}} dB yukarıda",
+    "caption": {
+      "fan": "Vantilatör sürekli bir uğultu ekler. Taban (turkuaz), uğultu yeni sessizlik olana kadar saniyede 0,5 dB yükselir. Bu yüzden S2 artık onu yüksek ses saymaz. Vantilatör durunca taban hemen düşer. Sondaki alkış yine öne çıkar.",
+      "talk": "Hızlı ölçer (pembe) heceleri izler. Yavaş ölçer (turuncu) konuşmanın ortalama şiddetini gösterir. Alkışın anlık seviyesi ikisinin de çok üstündedir. 4 ms'lik bir patlama, 1 sn'lik bir ortalamayı neredeyse oynatmaz. Tepe tutma (beyaz çizgiler) değeri 1,5 sn tutar, sonra saniyede 20 dB düşer."
+    }
+  },
+  "decibels": {
+    "label": "İki dalga: odanın sessizliği ve seçtiğin daha yüksek bir ses. Bir desibel cetveli, +6 dB'nin yüksekliği iki katına, +20 dB'nin ise on katına çıkardığını gösterir.",
+    "howLoud": "ne kadar yüksek",
+    "howLoudLabel": "Sessizliğin üstündeki desibel, on katı olarak",
+    "tooTall": "(çizmek için fazla yüksek: gerçekte {{px}} px)",
+    "legend": "gri = odanın sessizliği · pembe = bu ses",
+    "marks": {
+      "quiet": "sessizlik",
+      "rustle": "hışırtı",
+      "talking": "konuşma",
+      "clap": "alkış"
+    },
+    "caption": "Sessizlikten {{db, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} dB yukarıda: dalga {{ratio, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} kat daha yüksek (güç ×{{power, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}}). S2 buna \"{{like}}\" der. Her +6 dB yüksekliği iki katına çıkarır. +20 dB ise on katına çıkarır.",
+    "captionBig": "Sessizlikten {{db, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} dB yukarıda: dalga {{ratio, number(minimumFractionDigits: 0; maximumFractionDigits: 0)}} kat daha yüksek (güç ×{{power, number(minimumFractionDigits: 0; maximumFractionDigits: 0)}}). S2 buna \"{{like}}\" der. Her +6 dB yüksekliği iki katına çıkarır. +20 dB ise on katına çıkarır."
+  },
+  "clapMachine": {
+    "label": "1,2 saniyelik bir ses zarfı: yükselme ve bırakma eşikleri, bir imleç ve dedektörün üç durumu. Ayrıca o ana kadar ürettiği olaylar.",
+    "which": "Hangi ses",
+    "back": "Bir kare geri",
+    "on": "Bir kare ileri",
+    "rise": "yükselme",
+    "riseLabel": "Yükselme eşiği, dB",
+    "release": "bırakma",
+    "releaseLabel": "Bırakma eşiği, dB",
+    "sounds": {
+      "clap": "bir alkış",
+      "double": "iki alkış",
+      "soft": "yumuşak bir alkış",
+      "word": "bir kelime (“merhaba”)",
+      "whistle": "bir ıslık"
+    },
+    "result": {
+      "clap": "ALKIŞ ({{ms}} ms, {{db, number(minimumFractionDigits: 0; maximumFractionDigits: 0)}} dB)",
+      "long": "UZUN {{ms}} ms: alkış değil"
+    },
+    "caption": {
+      "done": "{{sound}}: {{results}}. Bir alkış 160 ms içinde biter. Konuşma ya da ıslık daha uzun süre yüksek kalır.",
+      "loud": "Yüksek ses {{ms}} ms önce başladı: bir başlangıç zaten tetiklendi (oyunlar bunu hemen kullanır). Alkış olacak kadar kısa mı? Bırakma eşiğinin altına inmesini bekle.",
+      "soft": "{{sound}}: henüz bir şey yok. Bu alkış yükselme çizgisine hiç ulaşmıyor. Yükselmeyi düşür ya da S3'ün kendi alkışlarından öğrenmesine izin verebilirsin.",
+      "nothing": "{{sound}}: henüz bir şey yok."
+    },
+    "states": {
+      "armed": "hazır",
+      "loud": "yüksek",
+      "quiet": "sessiz"
+    },
+    "arrows": {
+      "onset": "≥ yükselme: BAŞLANGIÇ",
+      "end": "< bırakma: ALKIŞ ya da UZUN",
+      "rearm": "40 ms sessizlik: yeniden hazır"
+    }
+  },
+  "recorder": {
+    "label": "Dokuz saniyelik bir ses: bir kapı çarpması ve bir cümle. Tetikleyici ve tutma çizgileri var. İmleç ilerledikçe ses kaydedicinin durumu da değişir: hazır, kayıt, ön kayıt ve tutulan ya da atılan klip.",
+    "back": "0,1 saniye geri",
+    "on": "0,1 saniye ileri",
+    "trigger": "tetikleyici",
+    "triggerLabel": "Sessizliğin üstünde tetikleyici seviyesi, dB",
+    "hold": "tutma",
+    "holdLabel": "Tutma süresi, milisaniye",
+    "start": "başlangıç",
+    "quiet": "sessiz",
+    "ring": "halka: son 4 sn her zaman oradadır (bu yüzden ön kayıt bedavadır)",
+    "holding": "Sessiz geçen {{quiet, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} sn, tutma süresi {{hold, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} sn: tutuluyor",
+    "loud": "yüksek: tutma baştan başlar",
+    "saved": "{{n}} numaralı klip kaydedildi: {{s, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} sn",
+    "dropped": "{{s, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} sn anındaki çarpma atıldı (çok kısa)",
+    "caption": {
+      "rec": "Kayıt yapılıyor. Klip tetikleyiciden yarım saniye önce başladı (turuncu). Halka tamponunda bu kısım hâlâ vardı. Tutma süresinden kısa bir duraklama, cümleyi tek parçada tutar.",
+      "saved": "Kaydedildi: parça, son yüksek andan yarım saniye sonra biter, tüm tutma süresinden sonra değil. Kapı çarpması da yüksekti ama 0,4 sn'den kısaydı: atıldı.",
+      "armed": "Hazır: dinliyor, halkadan başka bir şey tutmuyor. Başlangıç çizgisinden yüksek bir ses bir klip başlatır."
+    }
+  },
+  "getOut": {
+    "paths": {
+      "phone": {
+        "1": {
+          "title": "Sayfayı aç",
+          "text": "Telefonun <code>http://bench.local/</code> adresini açar. Sayfa açılır, ama içinde ses yoktur. Yönetici token'ını yapıştır (seri çıkıştaki <code>token</code>). Token yalnızca bu sekmenin sessionStorage alanında kalır."
+        },
+        "2": {
+          "title": "Kayıtları listele",
+          "text": "<code>Authorization: Bearer …</code> başlığıyla <code>GET /api/clips</code> isteğini gönder. Token yoksa 401 döner. Her ses yolu bunu kontrol eder."
+        },
+        "3": {
+          "title": "Bir kaydı akıt",
+          "text": "<code>GET /api/clip?n=3</code>: kart önce 44 baytlık başlığı gönderir, sonra örnekleri doğrudan PSRAM'den parçalar hâlinde yollar. Yolda ses yükseltilir (normalize edilir, en çok ×64). Hiçbir zaman RAM'de tek bir büyük metin tutulmaz."
+        },
+        "4": {
+          "title": "Çiz ve çal",
+          "text": "Sayfa WAV dosyasını çözer (WebAudio ile), şeklini bir canvas üzerine çizer ve hareket eden bir oynatma çizgisiyle çalar. Canlı seviye ve durum <code>/ws</code> WebSocket'inden gelir."
+        }
+      },
+      "board": {
+        "1": {
+          "title": "Bir kayıt seç",
+          "text": "<b>clips</b> görünümünde uzun basınca sıradaki kayıt seçilir. Ya da herhangi bir kayıt numarasıyla <code>play 3</code> yaz. Daha yavaş ve daha kalın ses için <code>play 3 0.7</code> yaz."
+        },
+        "2": {
+          "title": "Daha yüksek, ama fazla değil",
+          "text": "Kayıt, indirmedeki gibi yükseltilir. Ama en çok ×16. Aksi halde KY-037'deki bir fısıltı, tam sesle, çoğunlukla tıslama olarak çalardı."
+        },
+        "3": {
+          "title": "I2S1'den çıkış",
+          "text": "Örnekler MAX98357A'ya kendi hızlarının <code>speed</code> katıyla gider. 0,5 yarı hız demektir, bir oktav aşağı. Çalarken dedektörler duymaz (yankı koruması). <code>rec</code> önce oynatmayı durdurur. <code>play</code> ise kayıt sırasında reddedilir."
+        },
+        "4": {
+          "title": "Telefondan da",
+          "text": "Sayfada her kayıt için <b>Play on board</b> ve <b>Stop on board</b> düğmeleri ile bir hız seçimi vardır. Token ile <code>POST /api/play?n=3&speed=0.7</code> gönder. <code>/api/status</code>, <code>playing</code> ve <code>playProgress</code> alanlarını gösterir."
+        }
+      },
+      "usb": {
+        "1": {
+          "title": "Monitörü kapat",
+          "text": "Seri porta yalnızca bir program bağlanabilir. Önce <code>pio device monitor</code> programını kapat."
+        },
+        "2": {
+          "title": "n numaralı kaydı iste",
+          "text": "<code>uv run python tools/sound_pull.py /dev/cu.usbserial-A5069RR4 3</code> portu kartı yeniden başlatmadan açar ve <code>send 3</code> yazar."
+        },
+        "3": {
+          "title": "Base64 satırları",
+          "text": "Kart şunu yanıtlar: <code>WAV-BEGIN 3 102444 clip-3.wav</code>. Ardından tüm WAV, base64 metni olarak, satır başına 76 karakterle gelir (seri port bir metin borusudur). Sonra <code>WAV-END &lt;crc32&gt;</code> gelir. Aralarına başka hiçbir şey yazılmaz."
+        },
+        "4": {
+          "title": "Çöz ve kaydet",
+          "text": "Araç dosyayı çözer, bayt sayısını ve CRC-32 değerini karşılaştırır ve <code>clip-3.wav</code> dosyasını yazar. 115.200 baud'da 100 kB yaklaşık 12 sn sürer."
+        }
+      }
+    },
+    "label": "Kart, telefon ve Mac. Mevcut adımın mesajı aralarında hareket eder.",
+    "path": "Yol",
+    "choices": {
+      "phone": "📱 telefon (Wi-Fi)",
+      "usb": "🔌 USB (seri)",
+      "board": "🔈 kartın hoparlörü"
+    },
+    "previous": "Önceki adım",
+    "next": "Sonraki adım",
+    "position": "{{at}} / {{total}}",
+    "caption": "<b>{{n}}. {{title}}</b> {{text}}",
+    "msg": {
+      "chunks": "WAV, parça parça",
+      "cone": "I2S1 → D sınıfı → koni"
+    },
+    "boxes": {
+      "clips": "PSRAM'deki kayıtlar",
+      "you": "sen",
+      "serialOrButton": "seri ya da düğme",
+      "speaker": "+ hoparlör",
+      "phone": "telefon",
+      "browser": "tarayıcı"
+    },
+    "headline": {
+      "phone": "Her ses yolu token ister · kart, kimin başlattığına bakmadan REC gösterir",
+      "board": "Kart kendisi çalar: telefon yok, kablo yok",
+      "usb": "Wi-Fi gerekmez · kartın USB seri portu, 115.200 baud"
+    },
+    "wavLabel": "44 baytlık WAV başlığı",
+    "wav": {
+      "riff": "dosya türü",
+      "size": "102.436 = bundan sonra gelen her şey",
+      "wave": "bir wave dosyası",
+      "fmt": "biçim parçası",
+      "fmtLen": "uzunluğu",
+      "pcm": "PCM: yalın örnekler",
+      "channels": "tek kanal (mono)",
+      "rate": "saniyedeki örnek sayısı",
+      "byteRate": "saniyedeki bayt sayısı",
+      "align": "örnek başına bayt",
+      "bits": "örnek başına bit",
+      "data": "örnekler burada başlar",
+      "dataSize": "102.400 bayt = 3,2 sn"
+    }
+  },
+  "whistle": {
+    "label": "Örneklerden bir nota adına altı adım: örnekler, pencere, FFT kutuları, tepe kutusu, kutular arasındaki parabol ve sentli nota.",
+    "previous": "Önceki adım",
+    "next": "Sonraki adım",
+    "position": "{{at}} / {{total}}",
+    "whistle": "ıslık",
+    "whistleLabel": "Islık frekansı, Hz",
+    "title": "{{n}} · {{title}}",
+    "hump": "tümsek: iki ucunda 0",
+    "allBins": "256 kutunun tümü, 0-8 kHz · altta: tepenin etrafındaki 25 kutu",
+    "peakBin": "kutu {{k}} = {{hz, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} Hz · netlik {{clarity, number(minimumFractionDigits: 0; maximumFractionDigits: 0)}} dB",
+    "steps": {
+      "samples": {
+        "title": "512 örnek",
+        "text": "Halkadaki en yeni 512 örnek: yaklaşık 1.760 Hz civarında bir ıslıktan 32 ms, yaklaşık 56 dalga."
+      },
+      "window": {
+        "title": "× pencere",
+        "text": "Hann tümseğiyle çarpılır: iki ucunda sıfır olur. Böylece blok tekrar ettiğinde FFT bir sıçrama görmez."
+      },
+      "fft": {
+        "title": "FFT",
+        "text": "256 kutu, birbirinden 31,25 Hz uzakta. Çoğu taban seviyesine yakındır. 1.760 Hz civarındaki birkaçı yükselir."
+      },
+      "peak": {
+        "title": "tepe kutusu",
+        "text": "80 Hz ile 4 kHz arasındaki en yüksek kutu. Netliği (ortalamanın ne kadar üstünde olduğu) 12 dB'nin çok üstündedir: bu bir tondur, gürültü değil. Konuşma bu testten geçemez."
+      },
+      "parabola": {
+        "title": "parabol",
+        "text": "Gerçek perde kutuların arasında durur. Tepeden ve iki komşusundan geçen bir parabol onu aralarına yerleştirir. Bu, 31 Hz'den çok daha ince bir ölçümdür."
+      },
+      "note": {
+        "title": "Hz → nota",
+        "text": "midi = 69 + 12 × log2(Hz / 440). En yakın tam sayı nottur. Kalanın 100 katı sent değeridir. ±5 sent, akortta yeşil görünür."
+      }
+    }
+  },
+  "knock": {
+    "label": "Gizli ritim ve senin denemen, iki çizgide vuruşlar olarak. İkisi de aynı uzunluğa gerilir ve aradaki boşluklar karşılaştırılır.",
+    "intro": "2-12 vuruşluk bir ritim vur (düğme, ya da resim odaktayken Boşluk tuşu). 1,5 sn bekle: ritim gizli ritim olur. Sonra onu daha hızlı ya da daha yavaş tekrar vur.",
+    "recording": "kayıt: gizli ritim",
+    "trying": "açmaya çalışılıyor",
+    "knock": "👊 vur (ya da Boşluk)",
+    "startOver": "↺ baştan başla",
+    "tolerance": "tolerans",
+    "toleranceLabel": "Yüzde olarak tolerans",
+    "saved_one": "Gizli ritim kaydedildi: {{s, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} sn içinde {{count}} vuruş. Şimdi onu biraz daha hızlı ya da yavaş tekrar vur.",
+    "saved_other": "Gizli ritim kaydedildi: {{s, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} sn içinde {{count}} vuruş. Şimdi onu biraz daha hızlı ya da yavaş tekrar vur.",
+    "needTwo": "Gizli ritim en az 2 vuruş olmalı.",
+    "open": "AÇIK, puan {{score}}: her boşluk, hız ne olursa olsun gizli ritmin payının %{{pct}} içinde.",
+    "locked": "Kilitli: {{why}}.",
+    "lockedWorst": "Kilitli: {{why}} (en çok sapan boşluk %{{worst}} kaymış).",
+    "why": {
+      "noSecret": "henüz gizli ritim yok",
+      "tooFew": "çok az vuruş",
+      "tooMany": "çok fazla vuruş",
+      "off": "ritim tutmuyor"
+    },
+    "long": "{{s, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} sn uzunlukta",
+    "secret": "gizli ritim",
+    "noSecret": "henüz gizli ritim yok: bir tane vur",
+    "newSecret": "yeni gizli ritim…",
+    "knocking": "vuruyor…",
+    "pause": "1,5 sn sessizlik örüntüyü bitirir",
+    "yours": "senin vuruşun"
+  },
+  "fft": {
+    "label": "En çok üç sinüs dalgası artı gürültüden oluşan bir ses. Üstte örnekleri, altta FFT kutularını ve frekanslarını gösterir.",
+    "tone": "ton {{n}}",
+    "toneLabel": "Ton {{n}} frekansı, Hz (0 = kapalı)",
+    "off": "kapalı",
+    "noise": "gürültü",
+    "noiseLabel": "Gürültü miktarı",
+    "size": "FFT boyutu",
+    "hann": "Hann penceresi",
+    "caption": {
+      "windowed": "Pencereyle her ton dar bir tepe olur ve taban düşük kalır. N = 256'da 40 Hz arayla iki ton dene, sonra 1024'te. Daha ince kutular onları birbirinden ayırır, ama her cevap 16 ms yerine 64 ms ses ister.",
+      "raw": "Pencere olmadan örneklerin uçları birleşmez. Bu sıçrama her tonu bütün kutulara yayar (sızıntı). Hann penceresi kutusunu yeniden işaretle."
+    },
+    "samples": "{{n}} örnek = {{ms}} ms ses",
+    "samplesWindowed": "{{n}} örnek = {{ms}} ms ses × Hann penceresi (kesik çizgi)",
+    "bins": "kutular birbirinden {{apart, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} Hz uzakta · 8 kHz'e kadar {{bins}} kutu (Nyquist: 16.000'in yarısı) · en güçlü {{hz, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} Hz = {{note}} {{cents}} sent"
+  },
+  "speaker": {
+    "label": "I2S üzerinden MAX98357A'ya giden örnekler. Genişliği her örneği izleyen hızlı aç-kapa darbeler. Hoparlör konisi bunların ortalamasını izler. Ayrıca bir ses eğrisi ve hoparlör çalarken dedektörleri susturan yankı korumasının zaman çizelgesi.",
+    "volume": "ses",
+    "volumeLabel": "Ses 0 ile 100 arası",
+    "output": "{{vol}} → ×{{gain, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} ({{db, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} dB)",
+    "outputSilent": "{{vol}} → ×{{gain, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} (sessiz)",
+    "hear": "🔈 bu sesteyken 440 Hz'i duy",
+    "caption": "Ses {{vol}}: çıkmadan önce her örnek × {{gain, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}}. Yükselticinin darbeleri koniye göre çok hızlıdır. Koni bu yüzden ortalamalarını izler: dalga budur.",
+    "samples": "örnekler (16 bit)",
+    "classD": "MAX98357A: saniyede yaklaşık 300.000 kez açılıp kapanır",
+    "cone": "koni",
+    "squared": "ses → şiddet (kare: 50 = dörtte bir)",
+    "whySquared": "Ses seviyesinin karesi alınır, çünkü kulak oranları duyar. 100'den 50'ye inmek −12 dB'dir, yani gücün dörtte biri.",
+    "whyGuard": "Mikrofon ve hoparlör aynı odayı paylaşır. Hoparlör çalarken (ve 200 ms sonra) dedektörler hiç kare almaz. Bir bip asla alkış sayılmaz. S8'in canlı efektleri bunun yerine halkayı okur.",
+    "guard": {
+      "title": "yankı koruması: mikrofon kartın kendi bipini duyar",
+      "speaker": "hoparlör",
+      "mic": "mikrofon",
+      "lab": "deneye",
+      "muted": "susturuldu: bip + 200 ms",
+      "clap": "✓ alkış"
+    }
+  },
+  "synth": {
+    "label": "Dalganın şekli, 8 kHz'e kadar harmonikleri (16 kHz'de geri katlanan olanlar kırmızıyla) ve sürüklenecek dört tutamaklı ADSR zarfı.",
+    "wave": "Dalga",
+    "waves": {
+      "sine": "sinüs",
+      "square": "kare",
+      "triangle": "üçgen",
+      "saw": "testere"
+    },
+    "keys": "Keys: bir nota çal",
+    "periods": "dört periyot",
+    "harmonics": "harmonikler, 0-8 kHz (kartın 16 kHz sınırı)",
+    "adsr": "ADSR: atak, düşüş, sürdürme, bırakma",
+    "click": "Tam yükseklikte başlayan ya da biten bir nota koniyi sıçratır: bir tık sesi. Zarf sesi yavaşça açıp kapatır. Tutamakları sürükle →",
+    "what": {
+      "sine": "sinüs: tek bir frekans, saf",
+      "square": "kare: tek harmonikler 1, 3, 5…: içi boş, klarnet ya da eski bir oyun gibi",
+      "triangle": "üçgen: tek harmonikler, hızlı düşen: yumuşak, flüt gibi",
+      "saw": "testere: her harmonik: parlak, vızıltılı"
+    },
+    "caption": "{{what}}.",
+    "captionAliased_one": "{{what}}. Kartta {{count}} harmonik 8 kHz'in üstünde kalır ve yanlış bir nota olarak (kırmızı) geri katlanır: basit bir 16 kHz synth'in pürüzü.",
+    "captionAliased_other": "{{what}}. Kartta {{count}} harmonik 8 kHz'in üstünde kalır ve yanlış notalar olarak (kırmızı) geri katlanır: basit bir 16 kHz synth'in pürüzü."
+  },
+  "parrot": {
+    "label": "Üstte kayıt, altta papağanın çaldığı ses. Bir oynatma çizgisi var.",
+    "voice": "Ses",
+    "fx": {
+      "normal": "normal",
+      "chipmunk": "sincap",
+      "giant": "dev",
+      "robot": "robot",
+      "echo": "yankı",
+      "reverse": "ters"
+    },
+    "play": "▶ papağan söylesin",
+    "record": "🎙 mikrofonumla 3 sn kaydet",
+    "useExample": "örnek sesi kullan",
+    "intro": "Bir örnek ses yüklendi. Kendi sesin isteğe bağlı: mikrofon yalnızca kayda basınca açılır, 3 sn sonra durur ve ses hiçbir zaman bu sayfadan çıkmaz.",
+    "noAudio": "Bu tarayıcıda Web Audio yok.",
+    "recording": "Mikrofonundan 3 sn kayıt yapılıyor… (kırmızı nokta bunu gösterir)",
+    "recorded": "{{s, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} sn kaydedildi. Yalnızca bu sayfada tutulur (kartın yaptığı gibi yükseltildi). Bir ses seç ve ▶'ye bas.",
+    "example": "Örnek ses: ünlülere benzeyen harmoniklerden yapılmış iki hece.",
+    "failed": {
+      "unsupported": "Bu tarayıcıda mikrofona erişim yok: örnek ses aynı şekilde çalışır.",
+      "denied": "Mikrofona izin verilmedi (sen, tarayıcı ya da bu sayfanın sunucusu). Örnek ses aynı şekilde çalışır.",
+      "unreadable": "Bu kayıt okunamadı: örnek ses hâlâ burada."
+    },
+    "heard": "duyduğu",
+    "says": "papağanın söylediği ({{fx}})",
+    "saysSpeed": "papağanın söylediği ({{fx}}, ×{{speed}} hız)"
+  },
+  "kit": {
+    "hands": {
+      "clap": "👏 alkış",
+      "twoClaps": "👏👏 iki alkış",
+      "talk": "🗣 3 sn konuş",
+      "whistle": "〰 3 sn ıslık",
+      "silence": "🤫 sessizlik"
+    },
+    "previewCaption": "Kartın yaptığı gibi çizilmiş sahte bir mikrofon ve hoparlör. Düğmeler ellerinin, sesinin, basmalı düğmenin ve seri monitörün yerine geçer. Ekrana tıklamak bir alkıştır. Tarayıcı sesi, sen açana kadar kapalı kalır.",
+    "micToKy": "mikrofon: INMP441 → KY-037",
+    "micToInmp": "mikrofon: KY-037 → INMP441",
+    "browserOn": "🔈 tarayıcıda dinle: açık",
+    "browserOff": "🔈 tarayıcıda dinle: kapalı",
+    "tapHint": "Alkışlamak için tıkla ya da Boşluk tuşuna bas",
+    "previewSoon": "Önizleme bu deneyle birlikte gelecek.",
+    "screensSoon": "Bu deneyle birlikte gelecek."
+  },
+  "s1": {
+    "captions": {
+      "scope": "scope: son 20 ms ses, sabit bir ton yerinde dursun diye yükselen sıfır geçişine hizalanır. Ölçek dalgayı izler ve AO pininde milivolt cinsinden yazılır.",
+      "mics": "mics: iki mikrofon, biri diğerinin üstünde (INMP441 üstte). Her birinin sessizliği dBFS olarak ve ses şu an ondan ne kadar yukarıda. Bir de INMP441'in sesi kaç dB daha net duyduğu gösterilir. Yalnızca bir mikrofon mu bağlı? Diğerinin nasıl bağlanacağını gösterir (sonra RST'ye bas).",
+      "bias": "bias (KY-037): 0-3,3 V cetveli. Gölgeli alan bu zayıflatmadaki ADC aralığı, çizgi bias, bant ise dalganın son 0,1 sn'de ne kadar salındığı. İpucu, daha küçük bir aralığın sığıp sığmayacağını söyler. INMP441 ile burada 24 bitlik bir merdiven olur: ses kaç basamak kullanıyor (her biri 6 dB) ve ne kadar boş alan kaldı.",
+      "comparator": "comparator: DO lambası (modüldeki LED2 gibi), saniyedeki yükselen kenarlar ve üstte 6 sn'lik ses düzeyi, altta DO. Potu, DO yalnızca yüksek anlarda yanana kadar ayarla. INMP441'in DO'su yoktur: kart karşılaştırmayı yazılımda yapar (eşik, 3 dB histerezis).",
+      "numbers": "numbers: kaynak, örnekleyicinin gerçek hızı, kaybolan örnekler, dBFS cinsinden seviye (INMP441 ile dB SPL de), sessizlik, sessizlikten yukarıdaki dB ve boş PSRAM."
+    },
+    "actions": {
+      "attenNext": "sonraki zayıflatma",
+      "freeze": "dondur",
+      "potMoreSensitive": "pot: daha hassas",
+      "potLessSensitive": "pot: daha az hassas"
+    }
+  },
+  "s2": {
+    "captions": {
+      "meter": "meter: INMP441 ile büyük dB SPL (ağırlıksız, ±2 dB), 30-110 ölçeğinde: 30 fısıltı, 60 konuşma, 85 işitme riski, 100 yüksek. KY-037 ile odanın sessizliğinin üstündeki dB, bunun kabaca nasıl duyulduğu ve tepe tutma (beyaz çizgi) ile alarm çizgisi (kırmızı noktalı) olan bir çubuk.",
+      "minute": "minute: son 60 sn'nin her çeyrek saniyesinin en yüksek anı, ses düzeyine göre renkli. Noktalı çizgi alarm sınırıdır.",
+      "diary": "diary: on dakika, her biri 10 sn'lik 60 dilimde. En sessiz andan en yüksek ana ince bir çizgi, ortalamada bir blok ve alarmın çaldığı yerde kırmızı bir uç. Örnek bir geçmiş, bir de senin şu anki durumun.",
+      "alarm": "alarm: kurulu ya da çalıyor. Çok yüksek olduğu sürece sigorta dolar (varsayılan 1 sn). Alarm sayısı ve en yüksek seviye de burada. Herhangi bir düğmeye basmak onu susturur."
+    },
+    "actions": {
+      "loudMusic3S": "📢 yüksek müzik 3 sn",
+      "speedFastSlow": "hız hızlı/yavaş",
+      "buttonSilences": "düğme (susturur)"
+    }
+  },
+  "s3": {
+    "captions": {
+      "timeline": "timeline: son 4 sn'lik ses düzeyi, yükselme (noktalı beyaz) ve bırakma (noktalı gri) çizgileriyle. Bir alkış turkuaz bir bayrak alır. Uzun bir ses (bir kelime, bir ıslık) ise uzun diye işaretlenmiş turuncu bir çubuk. Sol üstte örüntü oluşurken, sonra da ne yaptığı görünür.",
+      "lamp": "lamp: GPIO 4'teki LED bir ampul olarak, RGB LED ise rengiyle bir küre olarak. Party için 4 kez alkışla.",
+      "patterns": "patterns: 1 ile 4 alkış, el çiftleri olarak ve her birinin çalıştırdığı işlem. Son eşleşen 3 sn boyunca yanar.",
+      "tune": "tune: çift tıkla, sonra normalde alkışladığın gibi 5 kez alkışla. Her çubuk bir alkıştır (sessizlikten ne kadar yukarıda, ne kadar çınladığı). Hassasiyet, en yumuşak alkışın %60'ına ayarlanır."
+    },
+    "actions": {
+      "threeClaps": "👏👏👏 üç alkış",
+      "n4Party": "👏×4 party",
+      "learn2xOnTune": "öğren (tune'da 2 kez)"
+    }
+  },
+  "s4": {
+    "captions": {
+      "recorder": "recorder: OFF, ARMED ya da REC, saniyeleriyle büyük. Başlangıç çizgisiyle son 3 sn'lik ses düzeyi: turuncu = halkadan bir klibin aldığı ön kayıt, kırmızı = klibe giren kısım.",
+      "clips": "clips: en fazla dört satır. Her klibin şekli, uzunluğu ve türü (ses ya da el) görünür. Sağda seçili klibin en yüksek anı, ne kadar yükseltildiği ve başlangıç zamanı. Çift tıklamak seçili klibi kartın hoparlöründen çalar. Buradaki uzun basış sıradaki kaydı seçer.",
+      "web": "web: sayfanın adresi (http://bench.local), IP, sinyal, açık sayfa sayısı ve token'ın nasıl alınacağı. Kayıtlı Wi-Fi yoksa W1'i ya da sound_pull.py'yi gösterir."
+    },
+    "actions": {
+      "armOnOff": "hazır aç/kapat",
+      "recStopLongPress": "kayıt / dur (uzun bas)",
+      "playPicked2xOn": "▶ seçileni çal (clips'te 2 kez)",
+      "talk2S": "🗣 2 sn konuş"
+    }
+  },
+  "s5": {
+    "captions": {
+      "bars": "çubuklar: logaritmik ölçekte 100 Hz ile 8 kHz arasında 24 bant (bir piyano gibi). Her bandın kendi sessizliğinin üstündeki dB olarak, düşen tepe uçlarıyla. Üstte en yüksek frekans ve notası. Sağda N, kutu başına Hz ve FFT'nin süresi.",
+      "waterfall": "waterfall: yaklaşık 6 sn'lik spektrum sola doğru kayar, düşük notalar altta. Gece → pembe → beyaz = sessizlikten 0 ile 40 dB yukarı arası. Kayan bir ıslık bir çizgi çizer.",
+      "tuner": "tuner: ıslık çal ya da mırıldan. Nota büyük (±5 sent içinde turkuaz), frekans, düzden diyeze bir ibre ve notanın etrafında perdenin 5 sn'lik izi.",
+      "steer": "steer: parlayan noktayı yükseltmek için daha yüksek, düşürmek için daha alçak ıslık çal (600-2500 Hz, logaritmik ölçek). Puan için bir saniye halkada tut. Sen ıslık çalarken RGB LED noktanın rengini alır."
+    },
+    "actions": {
+      "slideWhistle4S": "〰 kayan ıslık 4 sn",
+      "music3S": "🎵 müzik 3 sn",
+      "hold": "tut",
+      "ref2xOnTuner": "referans (tuner'da 2 kez)",
+      "sweep": "tarama"
+    }
+  },
+  "s6": {
+    "captions": {
+      "knock": "knock: asma kilit, üstte gizli ritim, altta senin son vuruşun. Her boşluk renkli: turkuaz yakın, turuncu neredeyse, mercan uzak. Çift tıkla, bir ritim vur, 1,5 sn bekle: gizli ritim budur. Açılınca asmanın halkası kalkar, GPIO 4'teki LED ile RGB LED 5 sn yeşil yanar.",
+      "bird": "bird: Clap Bird. Her alkış bir kanat çırpışıdır, boşluklardan uç. Bu önizlemede alkışlamak için Boşluk tuşuna bas ya da ekrana tıkla.",
+      "party": "party: mikrofonun yakınında müzik çal (buradaki 🎵 düğmesi). Her ritim yeni bir renk yakar, bir halka gönderir ve RGB LED'i yakar. Tempo, son 8 ritmin ortanca aralığıdır."
+    },
+    "actions": {
+      "music6S": "🎵 müzik 6 sn",
+      "knockSet": "gizli ritmi kaydet",
+      "knockTheSecret": "gizli ritmi vur (✊ ✊ ✊ … ✊ ✊)",
+      "knockPlay": "vuruşla dene"
+    }
+  },
+  "s7": {
+    "captions": {
+      "wave": "wave: bir notanın dalga biçimi (dört periyot) ve 0-8 kHz spektrumu. Aynı nota, farklı dalga = farklı tını. Altındaki satır nedenini söyler.",
+      "keys": "keys: iki oktav, C4'ten B5'e. Notalar çalarken yanar. Çift tıklamak gamın sonraki notasını, uzun basmak sonraki akoru çalar.",
+      "envelope": "envelope: ADSR eğrisi (atak, düşüş, sürdürme, bırakma). Tek bir nota çalarken üstünde bir nokta ilerler.",
+      "tunes": "tunes: solda liste, sağda turuncu oynatma çizgisinin önünden kayan bir piyano rulosu. Çift tıklamak seçili melodiyi çalar, uzun basmak sonrakini seçer.",
+      "fx": "fx: tariflerden yapılmış oyun sesleri (taramalar, gürültü, filtreler). Sonuncusunun tüm dalga biçimi ve bir oynatma çizgisi."
+    },
+    "actions": {
+      "waveNext": "sonraki dalga",
+      "tunePicked": "▶ seçili melodi",
+      "fxPicked": "▶ seçili efekt",
+      "longPressNext": "uzun bas (sonraki)"
+    }
+  },
+  "s8": {
+    "captions": {
+      "parrot": "parrot: bir şey söyle, seçilen sesle geri söyler. Dinlerken (yaylar gelir), kaydederken (geniş göz, REC), konuşurken (gaga hoparlörle hareket eder). Altta senin seviyen ve başlangıç çizgisi.",
+      "echo": "echo: canlı, mikrofon → gecikme hattı → hoparlör. Çubuklar tek bir alkışın neye dönüştüğünü gösterir. Her tekrar bir öncekinin geri besleme oranı kadar (×) sessizdir. Tekrarlar arasında gecikme vardır. Altta giriş ve çıkış seviyeleri ile gecikme.",
+      "robot": "robot: canlı, sesin yavaş bir sinüsle (taşıyıcı) çarpılır, üstüne 8 bitlik bir çatırtı eklenir. Ağız, çıkan sesle yanar.",
+      "scope": "scope: zincir mikrofon → efekt → hoparlör, içeri giren (turkuaz) ve dışarı çıkan (pembe) sinyallerle."
+    },
+    "actions": {
+      "saySomething2S": "🗣 bir şey söyle (2 sn)",
+      "fxNext": "sonraki efekt",
+      "again": "yeniden",
+      "echoOnOff": "yankı aç/kapat",
+      "robotOnOff": "robot aç/kapat"
+    }
+  }
+}

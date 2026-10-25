@@ -1,0 +1,16 @@
+{
+  "usb": {
+    "caption": "Gerçek sonucun. esptool, bu portun arkasında 8 MB PSRAM ve 16 MB flash bellekli bir ESP32-S3 rev v0.2 onayladı."
+  },
+  "hello": {
+    "caption": "Çizimdeki RGB LED, gerçeğinin yaptığı gibi renkleri değiştirir."
+  },
+  "led": {
+    "diagram": "Breadboard: GPIO 4'ten dirence, dirençten LED'e; LED'den GND'ye",
+    "gndRail": "GND rayı",
+    "legs": "LED: uzun bacak (+) solda, kısa bacak (−) GND'ye",
+    "duty": "görev oranı {{duty}} / 255",
+    "terminal": "$ uv run pio device monitor   (bir şey yazmayı dene)",
+    "quick": "Hızlı komutlar"
+  }
+}

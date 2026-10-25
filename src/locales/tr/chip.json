@@ -1,0 +1,381 @@
+{
+  "pages": {
+    "home": "ESP32-S3'ün içi",
+    "pins": "Pinler ve güç",
+    "blocks": "Çevre birimi atlası",
+    "inside": "Bellek, saatler ve güç modları",
+    "read": "Veri sayfasını oku"
+  },
+  "scenes": {
+    "descent": {
+      "model": "ESP32-S3 DevKitC, karttan kalıba kadar",
+      "fallback": "aşağıdaki düz plan",
+      "stepper": "Katmanlar",
+      "prev": "Önceki katman",
+      "next": "Sonraki katman",
+      "layer": "Katman {{n}} / {{count}}: {{caption}}"
+    },
+    "die": {
+      "model": "ESP32-S3 kalıbı: blok kareleri aileye göre gruplanmış, deneylerin ne kadar kullandığına göre yükseltilmiş",
+      "fallback": "blok listesi",
+      "list": "Kalıptaki bloklar",
+      "legend": "Blok aileleri ve renkleri",
+      "pick": "{{name}}, {{coverage}}"
+    },
+    "coverage": {
+      "done": "tamamlandı",
+      "works": "kartta çalışıyor",
+      "built": "derlendi, yüklenmedi",
+      "planned": "planlandı",
+      "none": "henüz kullanılmadı"
+    },
+    "families": {
+      "system": "Sistem",
+      "memory": "Bellek",
+      "security": "Güvenlik",
+      "connectivity": "Bağlantı",
+      "timing": "Zamanlama",
+      "analog": "Analog",
+      "radio": "Radyo"
+    },
+    "bus": {
+      "model": "{{name}} bloğu: CPU, sinyal hatları üzerinden onunla konuşur",
+      "cpu": "CPU",
+      "bus": "Veri yolu",
+      "peripheral": "Çevre birimi",
+      "fallback": "aşağıda listelenen sinyal hatları",
+      "lines": "Sinyal hatları"
+    },
+    "flat": {
+      "label": "Kalıp planı"
+    }
+  },
+  "nav": {
+    "label": "Çip sayfaları",
+    "pill": "{{title}}: {{total}} bloktan {{used}} tanesi deneylerde kullanılıyor"
+  },
+  "markers": {
+    "key": "Önemli bilgi",
+    "gotcha": "Tuzak",
+    "used": "Deneylerimizde kullanılıyor"
+  },
+  "source": {
+    "read": "Bu bölümün tamamını oku",
+    "cite": "{{doc}} §{{section}}",
+    "note": "Bu rehberin yazıldığı ESP32-S3 referansının kısmı",
+    "docs": {
+      "A": "Kart rehberi",
+      "M": "Modül veri sayfası",
+      "C": "Çip veri sayfası",
+      "T": "Teknik referans",
+      "X": "Ek"
+    }
+  },
+  "coverage": {
+    "none": "Henüz değil"
+  },
+  "gotchas": {
+    "seePin": "Bak: GPIO{{n}}",
+    "seeBlock": "Bloğa bak"
+  },
+  "home": {
+    "kicker": "Kartındaki çip",
+    "lead": "Wi-Fi ve Bluetooth'lu, parmak büyüklüğündeki bir kartın üstünde, 240 MHz çift çekirdekli bir bilgisayar.",
+    "numbers": "Sayılarla çip",
+    "layerStep": "Katman {{n}} / {{count}}",
+    "layers": {
+      "board": {
+        "title": "Kart",
+        "text": "DevKitC: USB portları, düğmeler, bir regülatör ve bir modülün etrafında iki sıra başlık pini."
+      },
+      "module": {
+        "title": "Modül",
+        "text": "WROOM modülü: çip, flash ve PSRAM belleği, kristal ve anten, tek bir metal kutunun altında."
+      },
+      "can": {
+        "title": "Metal kutunun altı",
+        "text": "Metal kalkanı kaldır, parçalar ortaya çıkar: ESP32-S3 paketi, belleğinin ve 40 MHz kristalinin yanında durur."
+      },
+      "package": {
+        "title": "Paket",
+        "text": "56 pad'li, 7 × 7 mm boyutunda bir QFN: başlıkta bağladığın her pin, bu padlerden birinde biter."
+      },
+      "die": {
+        "title": "Kalıp",
+        "text": "Silikonun kendisi, 32 blok olarak aileye göre çizilmiş. Deneylerinin kullandığı bloklar daha yüksek duruyor."
+      }
+    },
+    "progress": "Çipteki ilerlemen",
+    "ringCaption": "Çipin blokları, deneylerin onları ne kadar ilerlettiğine göre",
+    "ringCenter": "{{used}}/{{total}}",
+    "sentence": "Deneylerin {{total}} bloktan {{used}} tanesini kullandı.",
+    "next": "Açılacak sonraki bloklar",
+    "nextLesson": "{{id}} · {{title}}",
+    "nextNone": "Deneylerin ulaştığı her blok tamam. Gerisi yeni deneyleri bekliyor.",
+    "families": "Aileler",
+    "familyCount_one": "{{count}} blok",
+    "familyCount_other": "{{count}} blok",
+    "gotchas": "Canını yakabilecek beş şey"
+  },
+  "atlas": {
+    "kicker": "Kalıptaki her blok",
+    "lead": "Toplam {{count}} blok, ailelerine göre gruplu. Kalıptaki yükseklik ve her kartaki durum, deneylerin onları ne kadar ilerlettiğini gösterir.",
+    "filters": "Blokları filtrele",
+    "family": "Aile",
+    "all": "Tümü",
+    "usedLabel": "Deneylerde kullanılan",
+    "used": {
+      "all": "Tümü",
+      "yes": "Kullanılıyor",
+      "no": "Henüz değil"
+    },
+    "search": "Blok ara",
+    "results_one": "{{count}} blok gösteriliyor",
+    "results_other": "{{count}} blok gösteriliyor",
+    "count_one": "{{count}} blok",
+    "count_other": "{{count}} blok",
+    "spark": "{{value}} {{unit}}"
+  },
+  "pins": {
+    "kicker": "Hangi pin ne yapabilir",
+    "lead": "{{count}} GPIO, her birinin birden çok işi var. Deneylerimiz bunlardan {{used}} tanesini bağladı.",
+    "matrixTitle": "Pin işlevleri",
+    "legend": "Vurgulu satırlar: deneylerimizde kullanılan pinler. Üçgen, pin tehlikesini gösterir.",
+    "matrix": "Her GPIO ve alabileceği işlev türleri",
+    "filter": "Şunu yapabilen pinleri göster",
+    "all": "Tümü",
+    "kinds": {
+      "adc": "ADC",
+      "touch": "Dokunma",
+      "rtc": "RTC",
+      "uart": "UART",
+      "spi": "SPI",
+      "usb": "USB",
+      "jtag": "JTAG",
+      "clock": "Saat",
+      "strap": "Strapping"
+    },
+    "pick": "Bir pin seç",
+    "pickHint": "Bir pin seç, işlevlerini, strapping rolünü ve ona uygulanan tehlikeleri gör.",
+    "pickLegend": "Sayının altındaki çubuk: deneylerimizde kullanılıyor. Köşedeki üçgen: pin tehlikesi. Kesikli: başlıkta değil.",
+    "pin": "GPIO{{n}}",
+    "used": "Deneylerimizde kullanılıyor",
+    "offHeader": "DevKitC başlığında değil: modülün flash ya da PSRAM belleğine ait.",
+    "strapping": "Strapping:",
+    "strappingTitle": "Strapping pinleri",
+    "strappingLead": "Bu pinler, çip resetten çıktığı anda okunur. Bunlara ne bağlarsan bağla, açılışta onları yanlış yöne çekmemeli.",
+    "gotchasTitle": "Canını yakan pinler",
+    "gotchasLead": "Birkaç pinin, kodun çalışmadan önce bir işi vardır ya da başka bir şeye aittir. Geri kalan kurallar her pin için geçerli.",
+    "gotchasPins": "Belirli pinler",
+    "gotchasChip": "Tüm çip"
+  },
+  "block": {
+    "back": "Tüm bloklar",
+    "facts": "Önemli bilgiler",
+    "gotchas": "Tuzaklar",
+    "labs": "Deneylerimizde",
+    "labsNone": "Henüz hiçbir deney bu bloğu kullanmıyor.",
+    "labsLead_one": "Bu bloğu {{count}} deney kullanıyor. Konu sayısı: {{tracks}}. Görmek için bir konu aç.",
+    "labsLead_other": "Bu bloğu {{count}} deney kullanıyor. Konu sayısı: {{tracks}}. Görmek için bir konu aç.",
+    "labsCount_one": "{{count}} deney",
+    "labsCount_other": "{{count}} deney",
+    "registers": "Önemli yazmaçlar",
+    "offset": "ofset {{offset}}",
+    "bits": "Bitler",
+    "field": "Alan",
+    "does": "Ne yapar",
+    "pager": "Diğer bloklar",
+    "prev": "Önceki blok",
+    "next": "Sonraki blok",
+    "listedNote": "Yalnızca listelenmiş: birkaç satırda en önemli bilgiler. Tam bölüm bir bağlantı uzakta.",
+    "lines": {
+      "default": [
+        "Veri",
+        "Saat"
+      ],
+      "gpio": [
+        "IN",
+        "OUT",
+        "OE"
+      ],
+      "uart": [
+        "TX",
+        "RX",
+        "RTS",
+        "CTS"
+      ],
+      "i2c": [
+        "SDA",
+        "SCL"
+      ],
+      "spi": [
+        "SCK",
+        "MOSI",
+        "MISO",
+        "CS"
+      ],
+      "ledc": [
+        "PWM",
+        "Zamanlayıcı"
+      ],
+      "adc": [
+        "AIN",
+        "VREF"
+      ],
+      "touch": [
+        "TOUCH",
+        "Şarj"
+      ],
+      "i2s": [
+        "BCLK",
+        "WS",
+        "DIN",
+        "DOUT"
+      ],
+      "rmt": [
+        "TX",
+        "RX",
+        "Taşıyıcı"
+      ],
+      "wifi": [
+        "RF",
+        "MAC",
+        "Temel bant"
+      ],
+      "ble": [
+        "RF",
+        "Bağlantı",
+        "HCI"
+      ],
+      "usb-serial-jtag": [
+        "D+",
+        "D−"
+      ]
+    }
+  },
+  "inside": {
+    "kicker": "Kaputun altında",
+    "lead": "Kodunun ve verilerinin nerede yaşadığı, hangi saatin neyi sürdüğü ve her güç modunun ne kadar tasarruf ettiği.",
+    "memory": {
+      "title": "Adres haritası",
+      "lead": "CPU tek bir büyük adres alanı görür: ROM, dahili SRAM, önbellekler üzerinden flash ve PSRAM, bir de çevre birimlerinin yazmaçları.",
+      "caption": "ESP32-S3 adres haritası, düşük adresler üstte",
+      "yours": "Eskizin nerede yaşıyor"
+    },
+    "clocks": {
+      "title": "Saat ağacı",
+      "lead": "Tek bir 40 MHz kristal bir PLL'i besler. Bölücüler ondan CPU, APB ve çevre birimi saatlerini üretir. Uyku sırasında yavaş RC osilatörleri RTC'yi çalışır tutar.",
+      "caption": "Saat kaynakları, bölücüler ve sürdükleri bloklar",
+      "mhz": "{{value}} MHz"
+    },
+    "power": {
+      "title": "Güç modları",
+      "lead": "Merdivende her basamak daha fazla parçayı kapatır ve akım kat kat düşer.",
+      "caption": "Her güç modunda tipik akım (logaritmik ölçek) ve açık kalanlar",
+      "gain": "{{last}}, {{first}} ile karşılaştırıldığında {{gain}} kat az akım çeker."
+    }
+  },
+  "reader": {
+    "dialog": "Referans bölümü",
+    "close": "Referansı kapat",
+    "loading": "Bölüm açılıyor…",
+    "missing": "Bu bölüm referansta yok.",
+    "unavailable": "Referans bu sürümün parçası değil.",
+    "breadcrumb": "Bu bölümün yeri",
+    "minutes_one": "{{count}} dk okuma",
+    "minutes_other": "{{count}} dk okuma",
+    "related": "{{block}} bloğu hakkında",
+    "why": {
+      "title": "Neden buradasın",
+      "lead": "Rehber bu bölüme şu nedenle atıf yapıyor:",
+      "highlighted": "İlgili bölüm aşağıda vurgulandı.",
+      "jump": "Bana göster"
+    },
+    "key": {
+      "title": "Önemli bilgiler",
+      "numbers": "Sayılar",
+      "warnings": "Dikkat",
+      "jump": "Bu bölüme git: {{text}}"
+    },
+    "body": "Bölüm metni",
+    "warning": "Uyarı",
+    "table": {
+      "source": "Kaynak tabloyu göster",
+      "fallback": "Tablo"
+    },
+    "register": {
+      "fields": "Tüm alanlar",
+      "bits": "Bitler",
+      "field": "Alan",
+      "access": "Erişim",
+      "reset": "Sıfırlama",
+      "description": "Açıklama"
+    },
+    "figure": {
+      "enlarge": "Büyüt: {{caption}}",
+      "close": "Şekli kapat"
+    },
+    "pins": "Bir pin aç",
+    "chart": {
+      "untitled": "Bu tablodaki değerler",
+      "unit": "{{caption}} ({{unit}})",
+      "timing": "Zamanlama, {{unit}} cinsinden",
+      "parameter": "Parametre"
+    },
+    "foot": {
+      "nav": "Yakın bölümler",
+      "prev": "Önceki",
+      "next": "Sonraki",
+      "children": "Bu bölümde",
+      "back": "Kaldığın yere dön",
+      "pdf": "Espressif'in PDF'inde aç",
+      "book": "Veri sayfasının tamamında devam et"
+    },
+    "cite": {
+      "open": "{{doc}} §{{section}} bölümünü okuyucuda aç",
+      "pdf": "PDF",
+      "pdfLabel": "{{doc}} belgesini Espressif'in sitesinde aç (yeni sekme)"
+    },
+    "newTab": "(yeni sekmede açılır)"
+  },
+  "mode": {
+    "label": "Veri sayfasında nasıl ilerlenecek",
+    "explore": "Keşfet",
+    "read": "Oku"
+  },
+  "book": {
+    "kicker": "Veri sayfası, baştan sona",
+    "lead": "Rehberin arkasındaki beş Espressif belgesi tek bir kitapta: kart rehberi, modül ve çip veri sayfaları, teknik referans ve ekleri. Her bölümde okuyucudaki aynı grafikler, tablolar, önemli sayılar ve yazmaçlar var.",
+    "continue": "Devam et:",
+    "start": "Baştan başla",
+    "stats": {
+      "documents": "Belge",
+      "chapters": "Bölüm",
+      "reading": "Okuma süresi",
+      "read": "Şimdiye kadar okunan"
+    },
+    "hours_one": "{{count}} saat",
+    "hours_other": "{{count}} saat",
+    "chapters_one": "{{count}} bölüm",
+    "chapters_other": "{{count}} bölüm",
+    "min_one": "{{count}} dk",
+    "min_other": "{{count}} dk",
+    "parts": "Beş belge, tek kitap",
+    "about": {
+      "A": "DevKitC-1 kartı: başlıklar, güç seçenekleri, sipariş.",
+      "M": "WROOM-1 modülü: pinler, elektriksel ve RF değerleri, yerleşim.",
+      "C": "Çipe bir bakışta: pinler, açılış, işlevler, elektriksel sınırlar.",
+      "T": "Her çevre birimi ve yazmaçları, ayrıntılı.",
+      "X": "Sözlük, yazmaç kuralları ve kaynaklar."
+    },
+    "progress": "Bölümlerin {{read}} / {{total}} tanesi okundu",
+    "contents": "İçindekiler",
+    "closeContents": "İçindekileri kapat",
+    "read": "Oku",
+    "link": "§{{section}} bölümüne bağlantı",
+    "explore": "{{block}} bloğunu 3B'de keşfet",
+    "prev": "Önceki bölüm",
+    "next": "Sonraki bölüm",
+    "end": "Veri sayfasının tamamı bu kadar. İyi okumalar!"
+  }
+}

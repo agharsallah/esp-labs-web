@@ -1,0 +1,89 @@
+{
+  "00": {
+    "title": "Kurulum",
+    "heading": "Tak ve kartı bul",
+    "goal": "Araç setini çiple konuşturmak: bir veri kablosu, doğru USB portu ve Mac'inde bir seri port adı.",
+    "learn": [
+      "USB-C veri kablosu ile şarj kablosu",
+      "COM ile yerel USB portu",
+      "seri portlar",
+      "önyükleme modu"
+    ],
+    "steps": [
+      "Bir <b>veri</b> USB-C kablosunu <code>COM</code> (ya da <code>UART</code>) yazan porta tak.",
+      "Kırmızı güç LED'inin yandığını kontrol et.",
+      "Yukarıdaki komutu çalıştır. Yeni bir <code>/dev/cu.usbmodem…</code> ya da <code>/dev/cu.wchusbserial…</code> görünmeli.",
+      "Claude'a port adını ve kartında bir mi iki USB portu olduğunu söyle."
+    ],
+    "note": "Yükleme “Failed to connect” diyor mu? BOOT'a basılı tut, RST'ye dokun, BOOT'u bırak, sonra yeniden yükle."
+  },
+  "01": {
+    "title": "Merhaba",
+    "heading": "Kartla tanış",
+    "goal": "İlk programını karta yükle. Program, çipin kimlik kartını yazdırır ve karttaki RGB LED'i gökkuşağı renklerinde döndürür.",
+    "learn": [
+      "setup() ve loop()",
+      "Seri günlük",
+      "millis()",
+      "WS2812 RGB LED"
+    ],
+    "pins": {
+      "0": {
+        "role": "RGB"
+      }
+    },
+    "steps": [
+      "Bağlanacak bir şey yok. Kabloyu <code>COM</code> portunda bırak.",
+      "Komutu çalıştır. <code>Hard resetting via RTS pin…</code> satırını bekle.",
+      "Kimlik kartını oku: flash <b>16 MB</b> yazmalı, PSRAM yaklaşık <b>8 MB</b> olmalı.",
+      "Çipin yanındaki RGB LED'in renkler arasında geçişini izle.",
+      "Monitörden çıkmak için <code>Ctrl+C</code> bas."
+    ],
+    "note": "LED'de renk yok mu? Bazı kartlar LED'i GPIO 38'e bağlar. kit/include/pins.h içindeki PIN_RGB'yi değiştir."
+  },
+  "02": {
+    "title": "İlk devre",
+    "heading": "Breadboard'da bir LED",
+    "goal": "İlk devreni kur ve komutları yazarak kontrol et. Kart seni dinlerken LED animasyonuna devam eder.",
+    "learn": [
+      "breadboard sıraları",
+      "dirençler",
+      "PWM parlaklığı",
+      "durum makineleri"
+    ],
+    "pins": {
+      "0": {
+        "role": "LED +"
+      },
+      "1": {
+        "role": "LED −"
+      }
+    },
+    "wiring": {
+      "rows": [
+        [
+          "GPIO 4",
+          "direnç 220–330 Ω",
+          "ilk bacak"
+        ],
+        [
+          "direnç",
+          "LED'in uzun bacağı (+)",
+          "diğer bacak, aynı sırada"
+        ],
+        [
+          "LED'in kısa bacağı (−)",
+          "GND",
+          "mavi ray ya da GND pini"
+        ]
+      ]
+    },
+    "steps": [
+      "Bağlantı yapmadan önce USB'yi çek. Kartı breadboard'un ortasındaki boşluğun üstüne oturt.",
+      "GPIO 4 → direnç → LED'in uzun bacağını bağla. LED'in kısa bacağı → GND.",
+      "Tekrar tak ve komutu çalıştır. LED nefes almaya başlar.",
+      "<code>blink 200</code>, <code>sos</code>, <code>level 30</code>, <code>on</code>, <code>off</code> yaz."
+    ],
+    "note": "Henüz direnç yok mu? Kod, güvenlik ağı olarak en zayıf pin sürücüsünü (yaklaşık 5 mA) ayarlar. Yine de yakında bir tane ekle."
+  }
+}

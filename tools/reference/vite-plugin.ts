@@ -5,7 +5,7 @@ import type { SectionDoc } from "./ast.ts";
 import { buildReference, imagesOf, type Reference } from "./build.ts";
 
 // The reference reader's documents, built from Espressif's text at build time. That text is
-// copyrighted: it is never committed or bundled unless REFERENCE_FILE is present here.
+// Espressif's: it is never bundled into the JS, only emitted when REFERENCE_FILE is present here.
 //   reference/index.json             every section: title, parent, children, document, size
 //   reference/sections/<id>.json     one section as a typed document (tools/reference/ast.ts)
 //   reference/images/…               only the figures those sections show

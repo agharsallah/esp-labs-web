@@ -6,6 +6,11 @@ dist/
 !.env.example
 .DS_Store
 # Vendored framework docs (React, React Router, TanStack Query) for agents; fetched, not authored.
-docs-llm/
+# Espressif's reference and its figures are kept: the deploy builds the datasheet reader from them.
+docs-llm/*
+!docs-llm/esp32-s3/
+docs-llm/esp32-s3/*
+!docs-llm/esp32-s3/ESP32-S3_REFERENCE.md
+!docs-llm/esp32-s3/images/
 .vercel
 .env*

@@ -60,7 +60,7 @@ A citation opens that section of the reference in a side reader, and **Read** tu
 <p align="center"><img src="docs/media/datasheet.gif" alt="The Datasheet section: the chip at a glance, picking GPIO0 on the pin page, the peripheral atlas, the ADC block page, a citation opening the reference reader, then the Read mode's contents" width="800"></p>
 
 > [!NOTE]
-> Espressif's reference text is copyrighted, so it is never committed or bundled by default. Without it the curated pages work as usual and citations link to Espressif's official PDFs. To get the reader and the book locally, see `REFERENCE_FILE` under [Configuration](#configuration).
+> Espressif's reference (`docs-llm/esp32-s3/ESP32-S3_REFERENCE.md` and its `images/`) is in the repo, so a clone and the deploy get the reader and the book. Its text stays Espressif's and is never bundled into the JS: the build emits it as static files under `reference/`. Without the file (see `REFERENCE_FILE` under [Configuration](#configuration)) the curated pages work as usual and citations link to Espressif's official PDFs.
 
 ### In your language, on your phone
 
@@ -166,13 +166,17 @@ Copy `.env.example` to `.env` to override:
 ## Deploy to Vercel
 
 <details>
-<summary>Local prebuilt deploys, Web Analytics and Speed Insights</summary>
+<summary>Automatic production deploys, local prebuilt deploys, Web Analytics and Speed Insights</summary>
 
 <br>
 
 Configuration is in `vercel.json` (Vite preset, pnpm, cache and security headers). The app uses a hash router, so no rewrite rules are needed.
 
-The code reader bundles the firmware from the sibling `esp-labs` checkout at build time, and that checkout is not on Vercel's build servers. So the deploy builds **locally** (`vercel build`, using `../esp-labs`) and uploads the result with `--prebuilt`. Git-triggered builds are turned off in `vercel.json` for the same reason.
+The code reader bundles the firmware from the sibling `esp-labs` checkout at build time, and that checkout is not on Vercel's build servers. So Vercel never builds: the build runs elsewhere (`vercel build`, using `../esp-labs`) and the result is uploaded with `--prebuilt`. Git-triggered builds are turned off in `vercel.json` for the same reason.
+
+**Production deploys itself.** When CI passes on `main` (a merged PR or a push), the [Deploy](.github/workflows/deploy.yml) workflow checks out that commit and the firmware, runs `vercel build --prod` and uploads it. Run it again by hand from the Actions tab (**Deploy → Run workflow**). It needs, once (see [docs/MAINTAINING.md](docs/MAINTAINING.md#automatic-deploys)): a `VERCEL_TOKEN` secret and the `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID` variables.
+
+Preview deploys, and production from your machine if you need it:
 
 ```sh
 vercel login          # once

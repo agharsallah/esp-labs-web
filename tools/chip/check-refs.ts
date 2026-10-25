@@ -3,15 +3,15 @@ import { join } from "node:path";
 import { citedSections, headingIds, missingSections } from "./refs.ts";
 
 // `pnpm chip:refs`: checks that every SourceRef.section in src/content/chip names a heading of
-// docs-llm/esp32-s3/ESP32-S3_REFERENCE.md. docs-llm/ is git-ignored, so where it is absent (CI)
-// the check skips with a warning instead of failing.
+// docs-llm/esp32-s3/ESP32-S3_REFERENCE.md (committed; CI runs it). Where the file is absent, as
+// with a custom REFERENCE_FILE, the check skips with a warning instead of failing.
 
 const ROOT = join(import.meta.dirname, "..", "..");
 const REFERENCE = join(ROOT, "docs-llm", "esp32-s3", "ESP32-S3_REFERENCE.md");
 const CONTENT = join(ROOT, "src", "content", "chip");
 
 if (!existsSync(REFERENCE)) {
-  console.warn(`chip:refs skipped: ${REFERENCE} is not here (docs-llm/ is not in the repository).`);
+  console.warn(`chip:refs skipped: ${REFERENCE} is not here (see REFERENCE_FILE in .env.example).`);
   process.exit(0);
 }
 

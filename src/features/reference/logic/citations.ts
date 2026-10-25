@@ -58,6 +58,10 @@ export function relatedBlock(blocks: readonly ChipBlock[], sectionId: string): C
   return best?.block;
 }
 
+/** The blocks whose chapter is exactly this section (where the book offers their 3D pages). */
+export const blocksAt = (blocks: readonly ChipBlock[], sectionId: string): ChipBlock[] =>
+  blocks.filter((block) => sectionIdOf(block.chapter) === sectionId);
+
 export interface Neighbours {
   readonly trail: readonly IndexEntry[];
   readonly prev?: IndexEntry;

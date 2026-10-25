@@ -3,7 +3,8 @@
     "home": "Dentro del ESP32-S3",
     "pins": "Pines y alimentación",
     "blocks": "Atlas de periféricos",
-    "inside": "Memoria, relojes y modos de energía"
+    "inside": "Memoria, relojes y modos de energía",
+    "read": "Leer la hoja de datos"
   },
   "scenes": {
     "descent": {
@@ -333,7 +334,8 @@
       "next": "Siguiente",
       "children": "En esta sección",
       "back": "Volver donde estabas",
-      "pdf": "Abrir en el PDF de Espressif"
+      "pdf": "Abrir en el PDF de Espressif",
+      "book": "Seguir leyendo en la hoja de datos completa"
     },
     "cite": {
       "open": "Abrir {{doc}} §{{section}} en el lector",
@@ -341,5 +343,45 @@
       "pdfLabel": "Abrir {{doc}} en el sitio de Espressif (pestaña nueva)"
     },
     "newTab": "(se abre en una pestaña nueva)"
+  },
+  "mode": {
+    "label": "Cómo recorrer la hoja de datos",
+    "explore": "Explorar",
+    "read": "Leer"
+  },
+  "book": {
+    "kicker": "La hoja de datos, de principio a fin",
+    "lead": "Los cinco documentos de Espressif detrás de la guía, como un solo libro: la guía de la placa, las hojas de datos del módulo y del chip, el manual de referencia técnica y sus apéndices. Capítulo a capítulo, con los mismos gráficos, tablas, cifras clave y registros que el lector.",
+    "continue": "Continuar en",
+    "start": "Empezar desde el principio",
+    "stats": {
+      "documents": "Documentos",
+      "chapters": "Capítulos",
+      "reading": "Tiempo de lectura",
+      "read": "Leído hasta ahora"
+    },
+    "hours_one": "{{count}} hora",
+    "hours_other": "{{count}} horas",
+    "chapters_one": "{{count}} capítulo",
+    "chapters_other": "{{count}} capítulos",
+    "min_one": "{{count}} min",
+    "min_other": "{{count}} min",
+    "parts": "Cinco documentos, un libro",
+    "about": {
+      "A": "La placa DevKitC-1: conectores, alimentación, pedidos.",
+      "M": "El módulo WROOM-1: pines, valores eléctricos y de RF, diseño.",
+      "C": "El chip de un vistazo: pines, arranque, funciones, límites eléctricos.",
+      "T": "Cada periférico y sus registros, a fondo.",
+      "X": "Glosario, convenciones de registros y fuentes."
+    },
+    "progress": "{{read}} de {{total}} secciones leídas",
+    "contents": "Índice",
+    "closeContents": "Cerrar el índice",
+    "read": "Leído",
+    "link": "Enlace al §{{section}}",
+    "explore": "Explorar {{block}} en 3D",
+    "prev": "Capítulo anterior",
+    "next": "Capítulo siguiente",
+    "end": "Has leído toda la hoja de datos. ¡Bien hecho!"
   }
 }

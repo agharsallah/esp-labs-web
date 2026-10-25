@@ -3,7 +3,8 @@
     "home": "Inside the ESP32-S3",
     "pins": "Pins and power",
     "blocks": "Peripheral atlas",
-    "inside": "Memory, clocks and power modes"
+    "inside": "Memory, clocks and power modes",
+    "read": "Read the datasheet"
   },
   "scenes": {
     "descent": {
@@ -327,7 +328,8 @@
       "next": "Next",
       "children": "In this section",
       "back": "Back to where you were",
-      "pdf": "Open in Espressif's PDF"
+      "pdf": "Open in Espressif's PDF",
+      "book": "Read on in the full datasheet"
     },
     "cite": {
       "open": "Open {{doc}} §{{section}} in the reader",
@@ -335,5 +337,45 @@
       "pdfLabel": "Open the {{doc}} on Espressif's site (new tab)"
     },
     "newTab": "(opens in a new tab)"
+  },
+  "mode": {
+    "label": "How to go through the datasheet",
+    "explore": "Explore",
+    "read": "Read"
+  },
+  "book": {
+    "kicker": "The datasheet, cover to cover",
+    "lead": "The five Espressif documents behind the guide as one book: the board guide, the module and chip datasheets, the technical reference and its appendices. Chapter after chapter, with the same charts, tables, key numbers and registers as the reader.",
+    "continue": "Continue at",
+    "start": "Start from the beginning",
+    "stats": {
+      "documents": "Documents",
+      "chapters": "Chapters",
+      "reading": "Reading time",
+      "read": "Read so far"
+    },
+    "hours_one": "{{count}} hour",
+    "hours_other": "{{count}} hours",
+    "chapters_one": "{{count}} chapter",
+    "chapters_other": "{{count}} chapters",
+    "min_one": "{{count}} min",
+    "min_other": "{{count}} min",
+    "parts": "Five documents, one book",
+    "about": {
+      "A": "The DevKitC-1 board: headers, power options, ordering.",
+      "M": "The WROOM-1 module: pins, electrical and RF figures, layout.",
+      "C": "The chip at a glance: pins, boot, functions, electrical limits.",
+      "T": "Every peripheral and its registers, in depth.",
+      "X": "Glossary, register conventions and sources."
+    },
+    "progress": "{{read}} of {{total}} sections read",
+    "contents": "Contents",
+    "closeContents": "Close the contents",
+    "read": "Read",
+    "link": "Link to §{{section}}",
+    "explore": "Explore {{block}} in 3D",
+    "prev": "Previous chapter",
+    "next": "Next chapter",
+    "end": "That's the whole datasheet. Well read!"
   }
 }

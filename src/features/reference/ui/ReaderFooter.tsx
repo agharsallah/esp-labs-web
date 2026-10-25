@@ -1,13 +1,28 @@
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router";
 import { Icon } from "@/ui/Icon";
 import type { Neighbours } from "../logic/citations";
 import { OFFICIAL_DOCS } from "../docs-map";
+import { bookLink } from "../book/book-url";
 import type { RefDoc } from "../schema";
 import { SectionLinkTo } from "./SectionLinkTo";
 import styles from "./reader.module.css";
 
-/** Where to go next: the sections beside and under this one, back to the page, or Espressif's PDF. */
-export function ReaderFooter({ doc, nav, onClose }: { doc: RefDoc; nav: Neighbours; onClose: () => void }) {
+/**
+ * Where to go next: the sections beside and under this one, back to the page, on through the whole
+ * datasheet from here, or Espressif's PDF.
+ */
+export function ReaderFooter({
+  id,
+  doc,
+  nav,
+  onClose,
+}: {
+  id: string;
+  doc: RefDoc;
+  nav: Neighbours;
+  onClose: () => void;
+}) {
   const { t } = useTranslation("chip");
   return (
     <footer className={styles.footer}>
@@ -21,7 +36,7 @@ export function ReaderFooter({ doc, nav, onClose }: { doc: RefDoc; nav: Neighbou
               <li key={c.id}>
                 <SectionLinkTo id={c.id} className={styles.childLink}>
                   <span className={styles.secNum}>{c.id}</span>
-                  <span lang="en">{c.title}</span>
+                  <span lang="en" dir="ltr">{c.title}</span>
                 </SectionLinkTo>
               </li>
             ))}
@@ -35,7 +50,7 @@ export function ReaderFooter({ doc, nav, onClose }: { doc: RefDoc; nav: Neighbou
               <span className={styles.pageDir}>
                 <Icon name="back" size={14} /> {t("reader.foot.prev")}
               </span>
-              <span lang="en">
+              <span lang="en" dir="ltr">
                 <span className={styles.secNum}>{nav.prev.id}</span> {nav.prev.title}
               </span>
             </SectionLinkTo>
@@ -47,7 +62,7 @@ export function ReaderFooter({ doc, nav, onClose }: { doc: RefDoc; nav: Neighbou
               <span className={styles.pageDir}>
                 {t("reader.foot.next")} <Icon name="arrow" size={14} />
               </span>
-              <span lang="en">
+              <span lang="en" dir="ltr">
                 <span className={styles.secNum}>{nav.next.id}</span> {nav.next.title}
               </span>
             </SectionLinkTo>
@@ -59,6 +74,10 @@ export function ReaderFooter({ doc, nav, onClose }: { doc: RefDoc; nav: Neighbou
           <Icon name="back" size={16} />
           {t("reader.foot.back")}
         </button>
+        <Link className={styles.secondary} to={bookLink(id)}>
+          <Icon name="book" size={16} />
+          {t("reader.foot.book")}
+        </Link>
         <a className={styles.secondary} href={OFFICIAL_DOCS[doc]} target="_blank" rel="noopener noreferrer">
           <Icon name="external" size={16} />
           {t("reader.foot.pdf")}

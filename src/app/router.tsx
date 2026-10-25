@@ -58,6 +58,7 @@ export const router = createHashRouter([
                   return { loader: route.blockLoader(queryClient), Component: route.Component };
                 },
               },
+              { path: "read", lazy: async () => ({ Component: (await import("./routes/chip/chip-read-route")).Component }) },
               { path: "inside", lazy: async () => ({ Component: (await import("./routes/chip/chip-inside-route")).Component }) },
             ],
           },

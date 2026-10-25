@@ -33,7 +33,7 @@ export function SectionBody({ blocks, target }: { blocks: readonly Block[]; targ
     return idle(() => setCount((c) => nextCount(weights, c)));
   }, [count, weights]);
   return (
-    <div className={styles.body} lang="en">
+    <div className={styles.body} lang="en" dir="ltr">
       {blocks.slice(0, count).map((b, i) => (
         <BlockView key={i} block={b} />
       ))}

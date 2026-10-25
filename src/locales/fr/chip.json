@@ -3,7 +3,8 @@
     "home": "À l'intérieur de l'ESP32-S3",
     "pins": "Broches et alimentation",
     "blocks": "Atlas des périphériques",
-    "inside": "Mémoire, horloges et modes d'alimentation"
+    "inside": "Mémoire, horloges et modes d'alimentation",
+    "read": "Lire la fiche technique"
   },
   "scenes": {
     "descent": {
@@ -333,7 +334,8 @@
       "next": "Suivante",
       "children": "Dans cette section",
       "back": "Retour où tu étais",
-      "pdf": "Ouvrir dans le PDF d'Espressif"
+      "pdf": "Ouvrir dans le PDF d'Espressif",
+      "book": "Poursuivre dans la fiche complète"
     },
     "cite": {
       "open": "Ouvrir {{doc}} §{{section}} dans le lecteur",
@@ -341,5 +343,45 @@
       "pdfLabel": "Ouvrir {{doc}} sur le site d'Espressif (nouvel onglet)"
     },
     "newTab": "(s'ouvre dans un nouvel onglet)"
+  },
+  "mode": {
+    "label": "Comment parcourir la fiche technique",
+    "explore": "Explorer",
+    "read": "Lire"
+  },
+  "book": {
+    "kicker": "La fiche technique, de bout en bout",
+    "lead": "Les cinq documents d'Espressif derrière le guide, réunis en un seul livre : le guide de la carte, les fiches du module et de la puce, le manuel de référence technique et ses annexes. Chapitre après chapitre, avec les mêmes graphiques, tableaux, chiffres clés et registres que le lecteur.",
+    "continue": "Reprendre à",
+    "start": "Commencer au début",
+    "stats": {
+      "documents": "Documents",
+      "chapters": "Chapitres",
+      "reading": "Temps de lecture",
+      "read": "Lu jusqu'ici"
+    },
+    "hours_one": "{{count}} heure",
+    "hours_other": "{{count}} heures",
+    "chapters_one": "{{count}} chapitre",
+    "chapters_other": "{{count}} chapitres",
+    "min_one": "{{count}} min",
+    "min_other": "{{count}} min",
+    "parts": "Cinq documents, un seul livre",
+    "about": {
+      "A": "La carte DevKitC-1 : connecteurs, alimentation, commande.",
+      "M": "Le module WROOM-1 : broches, caractéristiques électriques et RF, routage.",
+      "C": "La puce en un coup d'œil : broches, démarrage, fonctions, limites électriques.",
+      "T": "Chaque périphérique et ses registres, en détail.",
+      "X": "Glossaire, conventions des registres et sources."
+    },
+    "progress": "{{read}} sections lues sur {{total}}",
+    "contents": "Sommaire",
+    "closeContents": "Fermer le sommaire",
+    "read": "Lu",
+    "link": "Lien vers le §{{section}}",
+    "explore": "Explorer {{block}} en 3D",
+    "prev": "Chapitre précédent",
+    "next": "Chapitre suivant",
+    "end": "Vous avez lu toute la fiche technique. Bravo !"
   }
 }

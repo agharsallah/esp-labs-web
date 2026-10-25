@@ -3,6 +3,7 @@ import type { SourceRef } from "@/domain/chip";
 import { OFFICIAL_DOCS } from "@/features/reference/docs-map";
 import { isReferenceBuilt } from "@/features/reference/queries";
 import { refParam, sectionOfParam } from "@/features/reference/ref-param";
+import { useReader } from "@/features/reference/ui/reader-context";
 import { SectionLinkTo } from "@/features/reference/ui/SectionLinkTo";
 import { useOpenSection } from "@/features/reference/use-reader-nav";
 import { Icon } from "@/ui/Icon";
@@ -17,14 +18,16 @@ import styles from "./SourceLink.module.css";
 export function SourceLink({ source, compact = false }: { source: SourceRef; compact?: boolean }) {
   const { t } = useTranslation("chip");
   const available = isReferenceBuilt();
+  // The section on screen (in the reader or the book) is cited as text, not as a link to itself.
   const open = useOpenSection();
+  const { sectionId: reading } = useReader();
   const id = sectionOfParam(refParam(source));
   const doc = t(`source.docs.${source.doc}`);
   const label = t("source.cite", { doc, section: source.section });
   return (
     <p className={styles.source} data-compact={compact || undefined}>
       {compact ? null : <span className={styles.lead}>{t("source.read")}</span>}
-      {available && id !== null && id !== open ? (
+      {available && id !== null && id !== open && id !== reading ? (
         <SectionLinkTo
           id={id}
           opensDialog

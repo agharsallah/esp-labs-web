@@ -3,7 +3,8 @@
     "home": "走进 ESP32-S3",
     "pins": "引脚与供电",
     "blocks": "外设图鉴",
-    "inside": "内存、时钟与电源模式"
+    "inside": "内存、时钟与电源模式",
+    "read": "阅读数据手册"
   },
   "scenes": {
     "descent": {
@@ -321,7 +322,8 @@
       "next": "下一节",
       "children": "本节内容",
       "back": "回到刚才的位置",
-      "pdf": "在乐鑫的 PDF 中打开"
+      "pdf": "在乐鑫的 PDF 中打开",
+      "book": "在完整数据手册中继续阅读"
     },
     "cite": {
       "open": "在阅读器中打开 {{doc}} §{{section}}",
@@ -329,5 +331,42 @@
       "pdfLabel": "在乐鑫官网打开 {{doc}}（新标签页）"
     },
     "newTab": "（在新标签页打开）"
+  },
+  "mode": {
+    "label": "浏览数据手册的方式",
+    "explore": "探索",
+    "read": "阅读"
+  },
+  "book": {
+    "kicker": "数据手册，从头到尾",
+    "lead": "本指南所依据的五份乐鑫文档，合为一本书：开发板指南、模组与芯片数据手册、技术参考手册及其附录。逐章阅读，配有与阅读器相同的图表、表格、关键数值和寄存器。",
+    "continue": "继续阅读：",
+    "start": "从头开始",
+    "stats": {
+      "documents": "文档",
+      "chapters": "章节",
+      "reading": "阅读时间",
+      "read": "已读"
+    },
+    "hours_other": "{{count}} 小时",
+    "chapters_other": "{{count}} 章",
+    "min_other": "{{count}} 分钟",
+    "parts": "五份文档，一本书",
+    "about": {
+      "A": "DevKitC-1 开发板：排针、供电方式、订购信息。",
+      "M": "WROOM-1 模组：管脚、电气与射频特性、布局。",
+      "C": "芯片概览：管脚、启动、功能、电气限值。",
+      "T": "每个外设及其寄存器的详细说明。",
+      "X": "术语表、寄存器约定和来源。"
+    },
+    "progress": "已读 {{read}}/{{total}} 节",
+    "contents": "目录",
+    "closeContents": "关闭目录",
+    "read": "已读",
+    "link": "链接到 §{{section}}",
+    "explore": "在 3D 中探索 {{block}}",
+    "prev": "上一章",
+    "next": "下一章",
+    "end": "整本数据手册已读完，辛苦了！"
   }
 }

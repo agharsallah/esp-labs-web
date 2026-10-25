@@ -62,7 +62,7 @@ export function ReaderSection({ id, titleId, onClose }: { id: string; titleId: s
           {cited.length > 0 ? <WhyHere texts={cited} target={target} /> : null}
           <KeyInfo info={collectKeyInfo(section.blocks)} />
           <SectionBody blocks={section.blocks} target={target} />
-          <ReaderFooter doc={section.doc} nav={nav} onClose={onClose} />
+          <ReaderFooter id={id} doc={section.doc} nav={nav} onClose={onClose} />
         </div>
       </div>
     </ReaderContext>

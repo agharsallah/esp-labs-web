@@ -1,0 +1,333 @@
+{
+  "pages": {
+    "home": "走進 ESP32-S3",
+    "pins": "腳位與供電",
+    "blocks": "周邊圖鑑",
+    "inside": "記憶體、時鐘與電源模式"
+  },
+  "scenes": {
+    "descent": {
+      "model": "ESP32-S3 DevKitC，從開發板一路看到晶粒",
+      "fallback": "下面的平面圖",
+      "stepper": "層級",
+      "prev": "上一層",
+      "next": "下一層",
+      "layer": "第 {{n}} 層，共 {{count}} 層：{{caption}}"
+    },
+    "die": {
+      "model": "ESP32-S3 晶粒：模組方塊按家族分組，實驗用得越多，方塊抬得越高",
+      "fallback": "模組列表",
+      "list": "晶粒上的模組",
+      "legend": "模組家族及其顏色",
+      "pick": "{{name}}，{{coverage}}"
+    },
+    "coverage": {
+      "done": "已完成",
+      "works": "能用",
+      "built": "已建置",
+      "planned": "已計畫",
+      "none": "還沒用到"
+    },
+    "families": {
+      "system": "系統",
+      "memory": "儲存",
+      "security": "安全",
+      "connectivity": "連線",
+      "timing": "定時",
+      "analog": "類比",
+      "radio": "射頻"
+    },
+    "bus": {
+      "model": "CPU 透過訊號線與 {{name}} 模組通訊",
+      "cpu": "CPU",
+      "bus": "匯流排",
+      "peripheral": "周邊",
+      "fallback": "下面列出的訊號線",
+      "lines": "訊號線"
+    },
+    "flat": {
+      "label": "晶粒平面圖"
+    }
+  },
+  "nav": {
+    "label": "晶片頁面",
+    "pill": "{{title}}：實驗已用到 {{used}}/{{total}} 個模組"
+  },
+  "markers": {
+    "key": "關鍵事實",
+    "gotcha": "小心有坑",
+    "used": "我們的實驗用到了"
+  },
+  "source": {
+    "read": "閱讀完整章節",
+    "cite": "{{doc}} §{{section}}",
+    "note": "本指南所依據的 ESP32-S3 參考資料章節",
+    "docs": {
+      "A": "開發板指南",
+      "M": "模組資料手冊",
+      "C": "晶片資料手冊",
+      "T": "技術參考手冊",
+      "X": "附錄"
+    }
+  },
+  "coverage": {
+    "none": "還沒有"
+  },
+  "gotchas": {
+    "seePin": "檢視 GPIO{{n}}",
+    "seeBlock": "檢視這個模組"
+  },
+  "home": {
+    "kicker": "你開發板上的晶片",
+    "lead": "一臺雙核 240 MHz 的小電腦，帶 Wi-Fi 和藍牙，卻只有手指那麼大一塊板子。",
+    "numbers": "數字裡的晶片",
+    "layerStep": "第 {{n}} 層，共 {{count}} 層",
+    "layers": {
+      "board": {
+        "title": "開發板",
+        "text": "DevKitC：USB 介面、按鈕、穩壓器，以及圍著一個模組的兩排排針。"
+      },
+      "module": {
+        "title": "模組",
+        "text": "WROOM 模組：晶片、它的 flash 和 PSRAM、一顆石英振盪器和天線，都罩在一個金屬遮蔽罩下。"
+      },
+      "can": {
+        "title": "遮蔽罩下面",
+        "text": "揭開遮蔽罩，零件就露出來了：ESP32-S3 封裝挨著它的記憶體和 40 MHz 石英振盪器。"
+      },
+      "package": {
+        "title": "封裝",
+        "text": "7 × 7 mm 的 QFN，有 56 個焊墊：你接在排針上的每個腳位，最後都通到其中一個焊墊。"
+      },
+      "die": {
+        "title": "晶粒",
+        "text": "矽晶片本身，按家族畫成 32 個模組。你的實驗用到過的模組會更高。"
+      }
+    },
+    "progress": "你在晶片上的進度",
+    "ringCaption": "晶片的各個模組，按你的實驗推進到哪一步來劃分",
+    "ringCenter": "{{used}}/{{total}}",
+    "sentence": "你的實驗已經用到 {{total}} 個模組中的 {{used}} 個。",
+    "next": "接下來可解鎖的模組",
+    "nextLesson": "{{id}} · {{title}}",
+    "nextNone": "實驗能觸及的模組都完成了，其餘的等新實驗來解鎖。",
+    "families": "家族",
+    "familyCount_other": "{{count}} 個模組",
+    "gotchas": "五個容易踩的坑"
+  },
+  "atlas": {
+    "kicker": "晶粒上的每個模組",
+    "lead": "ESP32-S3 的全部 {{count}} 個模組，按家族分組。晶粒上更高的方塊和每張卡片上的狀態，顯示實驗已經推進到哪一步。",
+    "filters": "篩選模組",
+    "family": "家族",
+    "all": "全部",
+    "usedLabel": "實驗是否用到",
+    "used": {
+      "all": "全部",
+      "yes": "已用到",
+      "no": "還沒有"
+    },
+    "search": "搜尋模組",
+    "results_other": "顯示 {{count}} 個模組",
+    "count_other": "{{count}} 個模組",
+    "spark": "{{value}} {{unit}}"
+  },
+  "pins": {
+    "kicker": "哪個腳位能做什麼",
+    "lead": "{{count}} 個 GPIO，每個都有好幾種用途。我們的實驗已經接過其中 {{used}} 個。",
+    "matrixTitle": "腳位功能",
+    "legend": "粗體強調的行是我們實驗用過的腳位；三角形表示這個腳位有陷阱。",
+    "matrix": "每個 GPIO 以及它能承擔的功能類別",
+    "filter": "顯示具有以下功能的腳位",
+    "all": "全部",
+    "kinds": {
+      "adc": "ADC",
+      "touch": "觸控",
+      "rtc": "RTC",
+      "uart": "UART",
+      "spi": "SPI",
+      "usb": "USB",
+      "jtag": "JTAG",
+      "clock": "時鐘",
+      "strap": "啟動配置"
+    },
+    "pick": "選一個腳位",
+    "pickHint": "選一個腳位，檢視它的功能、啟動配置作用，以及適用於它的陷阱。",
+    "pickLegend": "數字下面的橫條：我們的實驗用過。角上的三角形：腳位有陷阱。虛線：沒有引到排針上。",
+    "pin": "GPIO{{n}}",
+    "used": "我們的實驗用到了",
+    "offHeader": "沒有引到 DevKitC 的排針上：它屬於模組的 flash 或 PSRAM。",
+    "strapping": "啟動配置：",
+    "strappingTitle": "啟動配置腳位",
+    "strappingLead": "晶片一離開重設，就會立刻讀取這些腳位。接到它們上面的東西，不能在上電時把它們拉向錯誤的準位。",
+    "gotchasTitle": "容易踩坑的腳位",
+    "gotchasLead": "有些腳位在你的程式碼執行之前就有任務，或者另有所屬。其餘規則對每個腳位都適用。",
+    "gotchasPins": "特定腳位",
+    "gotchasChip": "整顆晶片"
+  },
+  "block": {
+    "back": "全部模組",
+    "facts": "關鍵事實",
+    "gotchas": "小心有坑",
+    "labs": "在我們的實驗裡",
+    "labsNone": "目前還沒有實驗用到這個模組。",
+    "labsLead_other": "有 {{count}} 個實驗用到這個模組，分佈在 {{tracks}} 條路線裡。開啟一條路線就能看到它們。",
+    "labsCount_other": "{{count}} 個實驗",
+    "registers": "關鍵暫存器",
+    "offset": "偏移 {{offset}}",
+    "bits": "位元",
+    "field": "欄位",
+    "does": "作用",
+    "pager": "其他模組",
+    "prev": "上一個模組",
+    "next": "下一個模組",
+    "listedNote": "僅作列示：幾行講清要點，完整章節只需一次參照就能找到。",
+    "lines": {
+      "default": [
+        "Data",
+        "Clock"
+      ],
+      "gpio": [
+        "IN",
+        "OUT",
+        "OE"
+      ],
+      "uart": [
+        "TX",
+        "RX",
+        "RTS",
+        "CTS"
+      ],
+      "i2c": [
+        "SDA",
+        "SCL"
+      ],
+      "spi": [
+        "SCK",
+        "MOSI",
+        "MISO",
+        "CS"
+      ],
+      "ledc": [
+        "PWM",
+        "Timer"
+      ],
+      "adc": [
+        "AIN",
+        "VREF"
+      ],
+      "touch": [
+        "TOUCH",
+        "Charge"
+      ],
+      "i2s": [
+        "BCLK",
+        "WS",
+        "DIN",
+        "DOUT"
+      ],
+      "rmt": [
+        "TX",
+        "RX",
+        "Carrier"
+      ],
+      "wifi": [
+        "RF",
+        "MAC",
+        "Baseband"
+      ],
+      "ble": [
+        "RF",
+        "Link",
+        "HCI"
+      ],
+      "usb-serial-jtag": [
+        "D+",
+        "D−"
+      ]
+    }
+  },
+  "inside": {
+    "kicker": "引擎蓋下面",
+    "lead": "你的程式碼和資料住在哪裡，哪個時鐘驅動什麼，以及每種電源模式能省多少電。",
+    "memory": {
+      "title": "位址對映",
+      "lead": "CPU 看到的是一整塊大位址空間：ROM、內部 SRAM、經過快取存取的 flash 和 PSRAM，還有各周邊的暫存器。",
+      "caption": "ESP32-S3 位址對映，低位址在上",
+      "yours": "你的程式住在哪裡"
+    },
+    "clocks": {
+      "title": "時鐘樹",
+      "lead": "一顆 40 MHz 石英振盪器驅動一個 PLL；分頻器從中產生 CPU、APB 和周邊時鐘，而慢速 RC 振盪器讓 RTC 在睡眠中繼續計時。",
+      "caption": "時鐘源、分頻器，以及它們驅動的模組",
+      "mhz": "{{value}} MHz"
+    },
+    "power": {
+      "title": "電源模式",
+      "lead": "每往下一級，晶片就多關掉一部分，電流也隨之下降好幾個數量級。",
+      "caption": "各電源模式下的典型電流（對數刻度），以及仍然保持開啟的部分",
+      "gain": "{{last}} 的耗電比 {{first}} 少 {{gain}} 倍。"
+    }
+  },
+  "reader": {
+    "dialog": "參考章節",
+    "close": "關閉參考資料",
+    "loading": "正在開啟章節…",
+    "missing": "參考資料裡沒有這個章節。",
+    "unavailable": "這個版本不包含參考資料。",
+    "breadcrumb": "這個章節所在的位置",
+    "minutes_other": "閱讀約 {{count}} 分鐘",
+    "related": "關於 {{block}} 模組",
+    "why": {
+      "title": "你為什麼來到這裡",
+      "lead": "本指南參照這個章節，是為了：",
+      "highlighted": "下面已醒目標示對應的段落。",
+      "jump": "帶我去看"
+    },
+    "key": {
+      "title": "關鍵資訊",
+      "numbers": "數字",
+      "warnings": "注意",
+      "jump": "跳到這一段：{{text}}"
+    },
+    "body": "章節正文",
+    "warning": "警告",
+    "table": {
+      "source": "顯示原始表格",
+      "fallback": "表格"
+    },
+    "register": {
+      "fields": "所有欄位",
+      "bits": "位元",
+      "field": "欄位",
+      "access": "存取",
+      "reset": "重設值",
+      "description": "說明"
+    },
+    "figure": {
+      "enlarge": "放大：{{caption}}",
+      "close": "關閉圖片"
+    },
+    "pins": "開啟腳位",
+    "chart": {
+      "untitled": "這張表裡的數值",
+      "unit": "{{caption}}（{{unit}}）",
+      "timing": "時序，單位 {{unit}}",
+      "parameter": "參數"
+    },
+    "foot": {
+      "nav": "相鄰章節",
+      "prev": "上一節",
+      "next": "下一節",
+      "children": "本節內容",
+      "back": "回到剛才的位置",
+      "pdf": "在樂鑫的 PDF 中開啟"
+    },
+    "cite": {
+      "open": "在閱讀器中開啟 {{doc}} §{{section}}",
+      "pdf": "PDF",
+      "pdfLabel": "在樂鑫官網開啟 {{doc}}（新分頁）"
+    },
+    "newTab": "（在新分頁開啟）"
+  }
+}

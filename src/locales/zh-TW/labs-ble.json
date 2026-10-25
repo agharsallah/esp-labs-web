@@ -1,0 +1,1343 @@
+{
+  "controls": {
+    "play": "▶ 播放",
+    "pause": "❚❚ 暫停",
+    "playAria": "播放",
+    "pauseAria": "暫停"
+  },
+  "kit": {
+    "previewCaption": "範例資料，畫法和開發板一樣。這些按鈕代替按鍵、你的手機和序列埠監視器。",
+    "galleryComing": "將隨這個實驗推出。",
+    "previewComing": "預覽將隨這個實驗推出。"
+  },
+  "journey": {
+    "aria": "八個藍牙實驗連成一條路徑：每個實驗裡開發板做什麼，資料往哪個方向流。",
+    "stageLabel": "{{id}} {{title}}：{{what}}",
+    "stages": {
+      "B1": {
+        "title": "監聽",
+        "role": "掃描器",
+        "what": "聽到每個裝置的廣播",
+        "caption": "B1 監聽：開發板是掃描器，聽到每個裝置的廣播。資料流入開發板。"
+      },
+      "B2": {
+        "title": "被看見",
+        "role": "廣播者",
+        "what": "大聲播報它自己的即時資料",
+        "caption": "B2 被看見：開發板是廣播者，大聲播報它自己的即時資料。資料從開發板流出。"
+      },
+      "B3": {
+        "title": "連線與交談",
+        "role": "周邊裝置",
+        "what": "被你的手機讀取和寫入",
+        "caption": "B3 連線與交談：開發板是周邊裝置，被你的手機讀取和寫入。資料雙向流動。"
+      },
+      "B4": {
+        "title": "配對與信任",
+        "role": "周邊裝置 + 金鑰",
+        "what": "加上加密、配對碼和繫結",
+        "caption": "B4 配對與信任：開發板是周邊裝置 + 金鑰，並加上加密、配對碼和繫結。資料雙向流動。"
+      },
+      "B5": {
+        "title": "手機 App",
+        "role": "周邊裝置",
+        "what": "透過 Web Bluetooth 與你自己的網頁應用程式對話",
+        "caption": "B5 手機 App：開發板是周邊裝置，透過 Web Bluetooth 與你自己的網頁應用程式對話。資料雙向流動。"
+      },
+      "B6": {
+        "title": "鍵盤與媒體",
+        "role": "HID 周邊裝置",
+        "what": "打字並調節音量",
+        "caption": "B6 鍵盤與媒體：開發板是 HID 周邊裝置，會打字並調節音量。資料從開發板流出。"
+      },
+      "B7": {
+        "title": "音樂",
+        "role": "MIDI 周邊裝置",
+        "what": "在 GarageBand 裡演奏音符",
+        "caption": "B7 音樂：開發板是 MIDI 周邊裝置，在 GarageBand 裡演奏音符。資料雙向流動。"
+      },
+      "B8": {
+        "title": "主機",
+        "role": "中心裝置",
+        "what": "讓你的鍵盤直接打字到它上面",
+        "caption": "B8 主機：開發板是中心裝置，讓你的鍵盤直接打字到它上面。資料流入開發板。"
+      }
+    }
+  },
+  "radio": {
+    "window": "監聽視窗",
+    "windowAria": "掃描視窗，佔掃描間隔的百分比",
+    "percent": "{{value, number}} %",
+    "mode": "掃描模式",
+    "passive": "被動掃描",
+    "active": "主動掃描",
+    "aria": "2.4 GHz 頻段，帶 40 個藍牙通道和三個 Wi-Fi 通道，下方是通道 37、38、39 上的廣播包時間線和掃描器的監聽視窗。",
+    "caption": "開發板有 {{value, number}} % 的時間在監聽，每 100 ms 換一個通道。每個裝置把每個包發三遍，每個通道一遍，所以只聽其中任何一個通道的監聽者也能聽到它。",
+    "activeNote": "主動：每收到一個可掃描裝置的包，就回一個掃描請求，裝置再用第二個包回答（更多名字，更多資料）。",
+    "passiveNote": "被動：開發板從不發射。",
+    "devices": {
+      "phone": "手機",
+      "speaker": "喇叭",
+      "keyboard": "鍵盤"
+    },
+    "draw": {
+      "band": "2.4 GHz 頻段：40 個藍牙 LE 通道，每個 2 MHz",
+      "listening": "監聽中",
+      "channel": "通道 {{ch}}",
+      "tally": "聽到的廣播事件 {{heard, number}} · 錯過 {{missed, number}} · 捕捉 {{caught, number}} %",
+      "slowed": "時間放慢到 1/20"
+    }
+  },
+  "anatomy": {
+    "device": "哪個裝置",
+    "previous": "上一個欄位",
+    "next": "下一個欄位",
+    "bytes": "封包位元組",
+    "used": "已用 {{used, number}}/31 個資料位元組",
+    "position": "{{at, number}}/{{n, number}} · {{what}}",
+    "samples": {
+      "phone": "一部 iPhone",
+      "jbl": "一個 JBL 喇叭",
+      "keyboard": "一個 BLE 鍵盤",
+      "bench": "你的 B2 信標"
+    },
+    "pdu": {
+      "0": "ADV_IND（可連線、可掃描）",
+      "2": "ADV_NONCONN_IND（僅廣播）",
+      "6": "ADV_SCAN_IND（可掃描）"
+    },
+    "field": {
+      "preamble": "前導碼",
+      "preambleWhat": "前導碼 AAh：10101010，讓接收方能鎖定位時序。每個廣播包都以它開頭。",
+      "access": "存取位元址",
+      "accessWhat": "存取位元址 8E89BED6h（按小端序傳送）：所有廣播共用的固定值。之後的連線會有它自己的隨機位址。",
+      "header": "報頭",
+      "headerWhat": "PDU 報頭：型別 {{pdu}} = {{pduName}}，TxAdd {{txAdd}} = {{kind}}，然後是長度：後面跟著 {{length}} 個位元組（6 個位址 + {{data}} 個資料）。",
+      "random": "隨機位址",
+      "public": "公共位址",
+      "advaWhat": "廣播者的位址 {{address}}，倒著傳送（小端序）。{{kind}}",
+      "addressResolvable": "高位是 01：可解析的私有位址，大約每 15 分鐘變一次。",
+      "addressRandom": "一個隨機位址。",
+      "addressPublic": "一個公共位址，出廠時燒錄。",
+      "ad": "AD {{n}}",
+      "adWhat": "AD 結構：長度 {{length}}，型別 {{type}}。{{meaning}}",
+      "crcWhat": "對報頭、位址和資料計算的 CRC-24：接收方重新計算，如果有一位翻轉就丟棄這個包。（在空中，存取位元址之後的每一位還會被「白化」，用一個隨通道變化的模式打亂，以避免出現很長的連零。）"
+    },
+    "ad": {
+      "discoverable": {
+        "general": "一般可發現",
+        "limited": "有限可發現（只持續一會兒，像配對模式）",
+        "none": "不可發現"
+      },
+      "flagsLeOnly": "旗標 {{value}}：{{mode}}，僅 LE（沒有經典藍牙）。",
+      "flagsClassic": "旗標 {{value}}：{{mode}}，同時支援經典藍牙。",
+      "name": "完整名稱：「{{name}}」。純 ASCII，沒有結尾的零：長度位元組說明它到哪裡結束。",
+      "tx": "發射功率 {{dbm}} dBm：它喊得有多響，這樣監聽者就能估算距離。",
+      "appearance": "外觀 {{value}}h（小端序 {{bytes}}）：03C1 = 鍵盤。類別是高 10 位。",
+      "services": "16 位服務的完整列表：{{value}}h = HID，鍵盤/滑鼠服務。主機從廣播裡就知道它能打字。",
+      "apple": "廠商資料，公司 004Ch = Apple（寫作 {{bytes}}：小端序）。然後型別 {{type}} = 附近資訊，{{count}} 位元組的狀態（螢幕亮、Wi-Fi 開、一個加密提示）。iPhone 就是這樣互相發現的。",
+      "jbl": "廠商資料，公司 0057h = Harman (JBL)。其餘是 JBL 給它自己應用用的格式：型號、顏色、電量、PartyBoost 狀態。除了 JBL 沒人公開過它。",
+      "bench": "廠商資料，公司 FFFFh = 測試用 ID，由我們的 B2 信標使用：版本 01，按鍵次數 {{presses, number}}，溫度 {{celsius, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} °C，執行時間 {{uptime, number}} s。全部是小端序。",
+      "maker": "廠商資料。"
+    }
+  },
+  "timing": {
+    "sliders": {
+      "adv": {
+        "label": "廣播間隔",
+        "aria": "廣播間隔，單位 ms"
+      },
+      "si": {
+        "label": "掃描間隔",
+        "aria": "掃描間隔，單位 ms"
+      },
+      "win": {
+        "label": "視窗",
+        "aria": "掃描視窗，佔掃描間隔的百分比"
+      }
+    },
+    "ms": "{{value, number}} ms",
+    "delay": "隨機 0-10 ms advDelay",
+    "aria": "時間線：開發板在通道 37、38、39 上的廣播事件、掃描器的監聽視窗，捕捉的包為綠色，錯過的為灰色。",
+    "count": "{{caught, number}} / {{total, number}}",
+    "rest": "個廣播事件被聽到（{{pct, number}} %）。掃描器有 {{listen, number}} % 的時間在監聽，每個掃描間隔換一個通道。",
+    "restFirst": "個廣播事件被聽到（{{pct, number}} %）。掃描器有 {{listen, number}} % 的時間在監聽，每個掃描間隔換一個通道；{{first, number}} ms 後第一次聽到。",
+    "stuck": "沒有隨機延遲，而且間隔剛好整除：",
+    "stuckWhy": "兩個時鐘保持同步，所以同樣的包會永遠被錯過。這正是 advDelay 要防止的。",
+    "longer": "間隔越長 = 機會越少 = 手機越晚注意到開發板，但電池更耐用。",
+    "draw": {
+      "now": "現在",
+      "span": "顯示 {{ms, number}} ms，速度是真實的四分之一",
+      "listening": "掃描器監聽中",
+      "caught": "已捕捉",
+      "missed": "錯過（那個通道上沒人在聽）"
+    }
+  },
+  "builder": {
+    "preset": "模式 {{name}}",
+    "presetB3": "B3 的廣播",
+    "field": "欄位",
+    "bytes": "位元組",
+    "goesIn": "放進",
+    "where": "{{name}} 放在哪裡",
+    "place": {
+      "none": "不放",
+      "adv": "廣播包",
+      "rsp": "掃描回應"
+    },
+    "name": "名稱",
+    "nameAria": "裝置名稱",
+    "url": "URL",
+    "urlAria": "Eddystone URL",
+    "aria": "兩行各 31 個位元組單元，廣播包和掃描回應，按欄位著色。超過 31 的單元是紅色：放不下。",
+    "row": "{{label}}：31 位元組中的 {{count, number}} 個",
+    "rowOver": "{{label}}：31 位元組中的 {{count, number}} 個 · 多了 {{over, number}} 個",
+    "empty": "空：不傳送掃描回應",
+    "detail": "<b>{{name}}</b>（{{length, number}} + 2 位元組）：{{why}}",
+    "badUrl": "<b>這個 URL 無法編碼：</b>它必須以 http(s):// 開頭，之後最多 17 個位元組。",
+    "fields": {
+      "flags": {
+        "name": "旗標",
+        "why": "02 01 06：LE 一般可發現，不支援經典藍牙。手機會跳過不可發現的廣播。"
+      },
+      "name": {
+        "name": "名稱",
+        "why": "完整本地名稱：人們在列表裡讀到的內容。每個字母佔一個位元組。"
+      },
+      "tx": {
+        "name": "發射功率",
+        "why": "開發板發射時用的功率 (+9 dBm)。手機把它和自己測到的 RSSI 比較來估算距離。"
+      },
+      "app": {
+        "name": "外觀",
+        "why": "0540 = 通用感測器。手機據此挑選圖示（0x03C1 會是鍵盤）。"
+      },
+      "svc16": {
+        "name": "16 位服務",
+        "why": "180F，電池服務，小端序：標準服務只佔 2 位元組。"
+      },
+      "svc128": {
+        "name": "128 位服務",
+        "why": "Bench 服務的 UUID：我們自己的服務需要完整的 16 位元組，超過一半的預算。B3 把它放在這裡，這樣應用就能按它過濾。"
+      },
+      "maker": {
+        "name": "廠商 FFFF",
+        "why": "廠商資料：2 位元組公司 ID（FFFF = 測試），然後隨你放什麼：B2 的版本、按鍵次數、溫度、執行時間。"
+      },
+      "ibeacon": {
+        "name": "iBeacon",
+        "why": "Apple 的廠商資料：4C 00 02 15、UUID、major、minor、1 米處的功率。27 位元組：除了旗標之外什麼也放不下。"
+      },
+      "url": {
+        "name": "Eddystone-URL",
+        "why": "FEAA 的服務資料：訊框 10、0 米處的功率、協定位元組，然後是 URL，其中 .com/ 之類用單一位元組表示。"
+      }
+    }
+  },
+  "legend": {
+    "b3": "無線電包或呼叫（橙色：目前這一步）",
+    "b4": "SMP 或鏈路層包（橙色：目前這一步）",
+    "b4Wait": "等待一個人操作",
+    "b5": "呼叫、事件或無線電包（橙色：目前這一步）",
+    "b8": "空中的包（橙色：目前這一步）",
+    "b8Wait": "開發板在等你"
+  },
+  "table": {
+    "aria": "左邊是手機，右邊是開發板的 GATT 表；一個包在它們之間傳遞，對應所選的操作。",
+    "phone": "手機",
+    "service": "Bench 服務 ba5e0000-…（開發板）",
+    "operations": "操作",
+    "toPhone": "開發板 → 手機",
+    "toBoard": "手機 → 開發板",
+    "what": "：{{what}}。",
+    "value": "值：{{value}}",
+    "ops": {
+      "read": {
+        "action": "讀取 {{name}}",
+        "what": "讀請求 (0A) + 控制代碼 → 讀回應 (0B) + 值"
+      },
+      "write": {
+        "action": "寫入 {{name}}",
+        "what": "寫請求 (12) + 控制代碼 + 值 → 寫回應 (13)"
+      },
+      "subscribe": {
+        "action": "訂閱 {{name}}",
+        "what": "向 CCCD 描述符（控制代碼 + 1）寫一個寫請求：01 00 = 開啟通知"
+      },
+      "notify": {
+        "action": "通知 {{name}}",
+        "what": "控制代碼值通知 (1B) + 控制代碼 + 值，沒有應答"
+      }
+    },
+    "show": {
+      "cccd": "CCCD = 通知已開啟",
+      "gesture": "手勢 {{gesture}}（{{name}}），計數 {{count, number}}",
+      "celsius": "{{value, number}} °C",
+      "seconds": "{{value, number}} s"
+    }
+  },
+  "matrix": {
+    "phone": "手機（發起配對）",
+    "phoneAria": "手機的 IO 能力",
+    "board": "開發板",
+    "boardAria": "開發板的 IO 能力",
+    "mitm": "已要求 MITM 保護",
+    "aria": "手機和開發板：對所選的能力，誰顯示數字，誰輸入或確認它。",
+    "initiator": "手機（發起方）",
+    "responder": "開發板（回應方）",
+    "unchecked": "已加密，但沒人核對：沒有 MITM 保護",
+    "checked": "有人核對：能防止中間人攻擊",
+    "methodTitle": "{{method}}。",
+    "corner": "手機 ↓ · 開發板 →",
+    "sixDigits": "⌨ 6 位數字",
+    "methods": {
+      "J": "Just Works",
+      "N": "數字比較",
+      "PI": "配對碼輸入",
+      "PR": "配對碼輸入",
+      "PB": "配對碼輸入（雙方都輸入）"
+    },
+    "short": {
+      "J": "Just Works",
+      "N": "數字比較",
+      "PI": "配對碼 · 開發板顯示",
+      "PR": "配對碼 · 手機顯示",
+      "PB": "配對碼（雙方）"
+    },
+    "roles": {
+      "nothing": "什麼也不用做",
+      "tapYes": "一樣嗎？點「是」",
+      "pressYes": "一樣嗎？按「是」",
+      "types": "輸入它",
+      "shows": "顯示它",
+      "typeSame": "你輸入同樣的數字",
+      "onBoth": "在兩邊"
+    },
+    "why": {
+      "JNoMitm": "雙方都沒有要求 MITM 保護，所以協定堆疊走最省事的路，不管螢幕能做什麼。",
+      "JNoInput": "有一方既不能顯示也不能輸入任何東西（或者雙方都只能顯示），所以沒有什麼可供人核對。鏈路對竊聽者是加密的，但一個同時中繼兩邊的攻擊者也能做到同樣的事。B4 的 Vault 拒絕這種情況：它要求認證。",
+      "N": "雙方都有螢幕，也都能說「是」：各自用交換的公鑰算出六位數字。中間人的金鑰不同，所以數字會不一樣。只適用於 LE 安全連線。",
+      "PI": "開發板顯示六個隨機數字；你在手機上輸入它們。雙方逐位證明自己知道同一個配對碼，然後才商定金鑰。",
+      "PR": "手機顯示數字，開發板來輸入。B4 的開發板不能輸入，所以你在實驗裡永遠見不到這種情況：鍵盤就是這樣配對的 (B8)。",
+      "PB": "雙方都沒有螢幕：你自己想六位數字，在兩邊的鍵盤上輸入。"
+    }
+  },
+  "throughput": {
+    "sliders": {
+      "mtu": {
+        "label": "MTU",
+        "aria": "MTU，單位位元組"
+      },
+      "interval": {
+        "label": "連線間隔",
+        "aria": "連線間隔，單位 ms"
+      },
+      "cap": {
+        "label": "中心裝置每個事件允許的無線電包數",
+        "aria": "每個連線事件的包數"
+      }
+    },
+    "mtuValue": "{{mtu, number}} B（{{data, number}} B 資料）",
+    "ms": "{{value, number}} ms",
+    "count": "{{value, number}}",
+    "longOn": "長包：開（251 B）",
+    "longOff": "長包：關（27 B）",
+    "aria": "時間線上的三個連線事件，每個無線電包都按比例畫出。",
+    "event": "事件 {{n, number}} · {{ms, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} ms",
+    "data": "開發板 → 中心裝置：通知包",
+    "acks": "中心裝置 → 開發板：空的確認包（線上下方）",
+    "shown": "顯示 {{ms, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} ms · 無線電在間隙裡休眠",
+    "result_other": "<b>{{kBps, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} kB/s</b> = 每個事件 {{count, number}} 個通知 × {{data, number}} B ÷ {{interval, number}} ms。",
+    "frags_other": "每個通知是 {{count, number}} 個無線電包（含確認共 {{ms, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} ms）。",
+    "limit": {
+      "cap": "受中心裝置每個事件的包數限制。",
+      "time": "受空中時間限制：事件已滿。"
+    },
+    "nothing": "<b>一個也放不下：</b>請提高每個事件的包數，或縮小 MTU。"
+  },
+  "sound": {
+    "keys": "媒體鍵",
+    "key": {
+      "play": "播放/暫停",
+      "next": "下一首",
+      "down": "音量 −",
+      "up": "音量 +"
+    },
+    "directButton": "開發板 → 喇叭 直連？",
+    "aria": "開發板透過低功耗藍牙向手機傳送媒體鍵；手機透過經典藍牙把音訊流送到喇叭",
+    "start": "按一個媒體鍵。",
+    "sent": "開發板傳送一個很小的 HID 報告（用法 {{usage}}）和一次釋放。剩下的由手機完成：它改變自己的音樂，它送往喇叭的音訊流隨之改變。",
+    "direct": "S3 的無線電只會低功耗藍牙。喇叭音訊用的是經典藍牙 (BR/EDR)，調製方式和協定都不同，所以開發板連 JBL 的音訊那一側都看不到。最初的 ESP32 有經典藍牙，可以推流 (A2DP)；帶 LE Audio/Auracast 的新喇叭需要藍牙 5.2，而 S3 是 5.0。",
+    "draw": {
+      "leOnly": "僅 LE",
+      "phone": "手機",
+      "orMac": "或 Mac",
+      "playing": "▶ 播放中",
+      "paused": "❚❚ 已暫停",
+      "volume": "音量 {{value, number}}",
+      "speaker": "JBL 喇叭",
+      "classic": "經典藍牙音訊",
+      "reports": "2-8 位元組的報告",
+      "rate": "約 300 kbit/s，不間斷",
+      "fail": "✕ 無線電不同：LE 的包對 A2DP 接收端毫無意義"
+    }
+  },
+  "report": {
+    "layouts": "佈局",
+    "boardLayout": "開發板的 <code>layout</code>",
+    "boardAria": "開發板佈局",
+    "computer": "電腦設為",
+    "computerAria": "電腦佈局",
+    "us": "美式",
+    "de": "德式",
+    "text": "要輸入的文字",
+    "type": "輸入",
+    "clear": "清除",
+    "aria": "一次按鍵從開發板的字元表出發，以 8 位元組報告的形式，傳到電腦的佈局表",
+    "mismatchUs": "開發板在它的 {{board}} 表裡查字元，但電腦按美式解讀鍵號：y 和 z 對調，標點落在別處。解決：layout {{host}}。",
+    "mismatchDe": "開發板在它的 {{board}} 表裡查字元，但電腦按德式解讀鍵號：y 和 z 對調，標點落在別處。解決：layout {{host}}。",
+    "agree": "雙方一致，所以每個字元都能完好無損地到達。",
+    "agreeSkipped": "雙方一致，所以每個字元都能完好無損地到達。已跳過（需要 AltGr/Option）：{{skipped}}",
+    "draw": {
+      "board": "開發板",
+      "report": "8 位元組報告",
+      "overLe": "經低功耗藍牙",
+      "computer": "電腦",
+      "setUs": "設為美式",
+      "setDe": "設為德式",
+      "noShift": "mod 00 = 沒有 Shift",
+      "typed": "你輸入的",
+      "shows": "電腦顯示的"
+    }
+  },
+  "packet": {
+    "options": "封包選項",
+    "running": "執行狀態",
+    "collect": "收集時長",
+    "interval": "連線間隔",
+    "ms": "{{value, number}} ms",
+    "slow": "300 ms（慢，便於觀察合包）",
+    "hear": "聽一聽",
+    "keyboard": "迷你鍵盤",
+    "keyAria": "{{name}}（鍵 {{key}}）",
+    "notes": {
+      "C": "C",
+      "D": "D",
+      "E": "E",
+      "F": "F",
+      "G": "G",
+      "A": "A",
+      "B": "B"
+    },
+    "aria": "最近一個 BLE-MIDI 包的位元組，按角色著色",
+    "start": "彈一個音符。",
+    "built_other": "一個包裡有 {{count, number}} 個音符，共 {{real, number}} 位元組。",
+    "builtSaved_other": "一個包裡有 {{count, number}} 個音符，共 {{real, number}} 位元組：執行狀態省了 {{saved, number}} 位元組。",
+    "timestamps": "每個音符保留自己的時間戳，所以合成器能按你彈奏的間隔來安排它們。音符關閉會在 300 ms 後以同樣的方式發出（狀態 80）。",
+    "empty": "彈幾個音符：它們會聚到一個包裡。",
+    "legend": {
+      "header": "報頭：最高位為 1，然後是時鐘的高位",
+      "ts": "時間戳：最高位為 1，加 ms 時鐘的低 7 位",
+      "status": "狀態：做什麼 + 通道（90 = 音符開，通道 1）",
+      "note": "音符編號（60 = 中央 C）",
+      "vel": "力度（按得多重）"
+    }
+  },
+  "latency": {
+    "group": "間隔與節奏",
+    "play": "演奏",
+    "rhythm": "節奏",
+    "rhythms": {
+      "sixteenths": "240 bpm 的十六分音符（62.5 ms）",
+      "trill": "一個快速的顫音（40 ms）",
+      "eighths": "240 bpm 的八分音符（125 ms）"
+    },
+    "aria": "演奏的音符、承載它們的連線事件，以及兩種合成器何時播放它們",
+    "lanes": {
+      "play": "你演奏",
+      "events": "無線電事件",
+      "arrival": "合成器：到達即播",
+      "timestamps": "合成器：按時間戳"
+    },
+    "caption": "間隔 {{interval, number}} ms：每個音符要等 0 到 {{interval, number}} ms 才有下一個無線電事件。到達即播的合成器會讓音符之間的間隔最多偏移 {{err, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} ms（紅色）。按時間戳的合成器則精確保持你的節奏，只是所有音符都晚了 {{interval, number}} ms（綠色）。"
+  },
+  "decoder": {
+    "keyboardScreen": "開發板的鍵盤檢視：{{text}}▌",
+    "empty": "（空）",
+    "mouseScreen": "開發板的滑鼠檢視：游標在 {{x}}, {{y}}，畫筆 {{brush}}。",
+    "pressKey": "按一個鍵：按下時一個報告，鬆開時一個報告。",
+    "drag": "在觸控板上拖動：每次移動都是一個報告。",
+    "backspace": "退格",
+    "enter": "Enter 鍵",
+    "char": "「{{c}}」",
+    "keyUs": "鍵 {{code}} 帶修飾鍵 {{mods}} → 在美式佈局上是 {{typed}}",
+    "keyDe": "鍵 {{code}} 帶修飾鍵 {{mods}} → 在德式佈局上是 {{typed}}",
+    "releaseKey": "鬆開：每個按鍵槽位又變回 00，什麼也沒輸入",
+    "media": "媒體鍵 {{usage}}：{{name}}",
+    "mediaName": {
+      "up": "音量加",
+      "down": "音量減",
+      "play": "播放/暫停"
+    },
+    "releaseMedia": "鬆開：00 00",
+    "mouse": "按鍵 {{buttons}} · X {{dx}} · Y {{dy}} · 滾輪 {{wheel}}",
+    "group": "報告對映與佈局",
+    "map": "報告對映",
+    "maps": {
+      "combo": "鍵盤 + 媒體鍵",
+      "boot": "啟動鍵盤（HID 規範）",
+      "mouse": "5 鍵滑鼠，12 位 X/Y"
+    },
+    "layout": "佈局",
+    "layoutAria": "鍵盤佈局",
+    "german": "德式佈局：程式碼為 1C 的鍵現在輸入 z，2D 輸入 ß。鍵盤傳送的還是同樣的程式碼。",
+    "us": "美式佈局。",
+    "usOption": "美式 (QWERTY)",
+    "deOption": "德式 (QWERTZ)",
+    "aria": "報告從裝置傳到開發板，它的位元組和位，每個欄位依次亮起",
+    "keyboard": "鍵盤",
+    "keyAria": "鍵碼 {{code}}：{{c}}",
+    "nothing": "無",
+    "space": "空格 (2C)",
+    "mediaKey": {
+      "down": "音量 − (EA)",
+      "up": "音量 + (E9)",
+      "play": "播放 (CD)"
+    },
+    "field": {
+      "padding": "填充",
+      "modifier": "修飾鍵",
+      "keys_other": "鍵碼（{{count, number}} 個槽位）",
+      "button": "按鍵 {{n}}",
+      "x": "X（相對）",
+      "y": "Y（相對）",
+      "wheel": "滾輪",
+      "media": "媒體鍵（consumer usage）",
+      "other": "其他"
+    },
+    "draw": {
+      "keyboard": "鍵盤",
+      "mouse": "滑鼠",
+      "board": "開發板",
+      "reportId": "報告 ID {{id}}（來自 2908，不在位元組裡）",
+      "bits": "位，每個位元組裡先是第 0 位（亮 = 1）",
+      "field_other": "{{name}}：{{count, number}} 位，從第 {{bit}} 位起 = {{value}}"
+    }
+  },
+  "pad": {
+    "aria": "滑鼠觸控板：拖動移動，按下點選，滾動是滾輪，或者用方向鍵",
+    "hint": "在這裡拖動 = 移動 · 按下 = 左鍵 · 滾動 = 滾輪",
+    "left": "左鍵按一下",
+    "right": "右鍵按一下",
+    "wheelUp": "滾輪 +1",
+    "wheelDown": "滾輪 −1"
+  },
+  "items": {
+    "title": "報告對映項",
+    "size": "{{bytes, number}} 位元組 · {{fields, number}} 個輸入欄位"
+  },
+  "screens": {
+    "b1": {
+      "captions": {
+        "0": "每個裝置是一個光點：越靠近中心訊號越強；顏色表示種類（藍色手機、琥珀色音訊、青綠色鍵盤、珊瑚紅標籤）。右邊是最近的六個，附帶距離估算。",
+        "1": "最強的幾個裝置，顯示名稱或廠商、位址型別（rpa = 躲在私有位址後面的手機）、訊號，以及多久之前聽到的。選中的那個醒目標示顯示。",
+        "2": "選中裝置的廣播包和掃描回應，畫成 31 個小格，每位元組一格，按 AD 結構著色，下方逐個解碼每個結構。",
+        "3": "最近一分鐘每秒的包數（柱子）和範圍內的裝置數（折線）、掃描模式和工作週期，以及位址型別的構成。"
+      },
+      "actions": {
+        "phoneCloser": "手機：靠近",
+        "phoneWalkAway": "手機：走遠",
+        "doubleClickNext": "按兩下：下一個",
+        "longPressScan": "長按：掃描"
+      }
+    },
+    "b2": {
+      "captions": {
+        "0": "廣播包和掃描回應各 31 格，每個 AD 結構一種顏色（長度和型別位元組顏色更深），下方解碼。剛變化的位元組閃白：執行時間每秒一次，按鍵次數在按兩下時。",
+        "1": "按設定畫出的時序：每個間隔一個事件，加上隨機 0-10 ms（帶 +n 的標籤），每個事件在通道 37、38、39 上各發一個包。事件觸發時光環從開發板擴散出去；插圖放大顯示一個事件（每個包約 0.3 ms）。",
+        "2": "在這些設定下，對紐扣電池信標晶片的估算：電流花在哪裡、平均值、CR2032 上的壽命，以及壽命隨間隔的變化（琥珀色圓點 = 現在）。這塊開發板本身耗電約 80 mA。",
+        "3": "活動日誌：模式切換、按鍵、被拒絕的設定。"
+      },
+      "actions": {
+        "buttonDoubleClickPress": "按鍵：按兩下（按下）",
+        "modeNext": "模式：下一個",
+        "connectableOnOff": "可連線 開/關",
+        "interval1001000": "間隔 100 / 1000"
+      }
+    },
+    "b3": {
+      "captions": {
+        "0": "以表格顯示 Bench 服務：名稱、屬性（R 讀、W 寫、N 通知）和目前值。一個操作會點亮它所在的行：青綠 = 讀，藍 = 寫，紫 = 通知，琥珀 = 訂閱。一個點在右邊的手機之間來回傳遞；鈴鐺表示已訂閱。",
+        "1": "手機最近寫入的訊息，以 12 pt 自動換行，以及用發光圓盤表示的 LED 顏色。",
+        "2": "即時連線：誰是中心裝置、連線事件在跳動（放慢到 1/20）、間隔、MTU、延遲、超時、PHY、RSSI、安全級別，以及流量計數器。",
+        "3": "活動日誌，最新的在底部：< 從手機收到，> 發給手機，+ 好訊息，! 警告。"
+      },
+      "actions": {
+        "phoneConnect": "手機：連線",
+        "phoneWriteLedFf5000": "手機：寫入 LED FF5000",
+        "phoneWriteMessage": "手機：寫入 Message",
+        "phoneSubscribeButton": "手機：訂閱 Button",
+        "boardClick": "開發板：按一下"
+      }
+    },
+    "b4": {
+      "captions": {
+        "0": "配對流程分成軌道上的八個階段：實心 = NimBLE 報告過，圓環 = 推斷得出（後面的階段發生了，它就必然發生過），琥珀色脈動 = 在等你，珊瑚紅叉 = 在哪裡失敗以及原因。紫色 = 已加密並已繫結。",
+        "1": "按身份位址列出的已繫結裝置，以及隱私技巧：手機在空中的位址一直在變；繫結時得到的 IRK 能把每個位址都解析成同一部手機。",
+        "2": "B3 的 gatt 檢視加上 Vault 一行。被拒絕的 Vault 讀取會閃珊瑚紅。",
+        "3": "即時連線；安全一行現在顯示已加密、+ MITM、+ 已繫結。",
+        "4": "活動日誌：配對碼、ENC_CHANGE 結果、身份、拒絕。"
+      },
+      "actions": {
+        "phoneConnect": "手機：連線",
+        "phoneReadVault": "手機：讀取 Vault",
+        "phoneTypeThePasskeyTapYes": "手機：輸入配對碼 / 點「是」",
+        "boardClickYes": "開發板：按一下（是）"
+      }
+    },
+    "b5": {
+      "captions": {
+        "0": "應用繪製的內容，每訊框複製到狀態列下方（開發板把它儲存在自己的 320 × 128 緩衝區裡），底部顯示已到達多少條指令、寫入和位元組。DROPPED 表示 16 個寫入的佇列滿了。",
+        "1": "應用繪製圖表的四個值，以最近 12 秒的迷你折線表示：溫度、GPIO 1 上的觸控、空閒堆記憶體、鏈路 RSSI。右下角：應用是否已訂閱，以及發出了多少個通知。",
+        "2": "一次執行期間：飛向手機的包、進度條和等待（協定堆疊的緩衝區滿了）。結束後每次執行一根柱子，帶它的 kB/s、MTU、間隔和 PHY。",
+        "3": "B3 的 Bench 服務，原樣不動：應用讀取、寫入或訂閱時，對應的行會亮起。B5 自己的四個特徵不在這裡出現；其他檢視會顯示它們。",
+        "4": "即時連線：間隔、MTU、PHY 和 RSSI。當「速度」分頁裡的 Link 按鈕請求更快的間隔或 2M PHY 時，看它們怎麼變化。",
+        "5": "活動日誌：< 來自應用，> 發給應用，+ 是結果，比如每次速度測試。"
+      },
+      "actions": {
+        "appConnect": "應用：連線",
+        "appDrawAStroke": "應用：畫一筆",
+        "appSubscribeSensors": "應用：訂閱 Sensors",
+        "touchTheWireOnGpio1": "觸控 GPIO 1 上的線",
+        "appSpeed50Kb": "應用：速度 50 kB",
+        "appFast2m": "應用：快速 + 2M"
+      }
+    },
+    "b6": {
+      "captions": {
+        "0": "模式：按鍵就是遙控器。你按的圖示泛起漣漪；圓點從開發板 → 手機 → 喇叭執行。",
+        "1": "模式：幻燈片。按一下 = 右箭頭，按兩下 = 左箭頭，長按 = b（黑屏）。",
+        "2": "`type` 正在傳送的內容：佈局、進度、片段，以及電腦的 Caps/Num 燈狀態傳回給我們。",
+        "3": "最近的報告，以位元組顯示：修飾鍵位、鍵號、每次按鍵輸入什麼，以及全零的釋放報告。",
+        "4": "連線：間隔、MTU、安全級別（鍵盤鏈路總是加密的）。",
+        "5": "空中發生的一切。"
+      },
+      "actions": {
+        "phonePairBenchB6": "手機：配對 Bench B6",
+        "buttonClick": "按鍵：按一下",
+        "typeYes": "輸入 yes"
+      }
+    },
+    "b7": {
+      "captions": {
+        "0": "五個觸控鍵和一個兩個八度的鋼琴：紫色 = 這塊開發板彈的音符，藍色 = 來自合成器的音符。",
+        "1": "鼓機：通道 10 上 4 個鼓 × 16 步，播放頭按速度前進。",
+        "2": "最近 6 秒的鋼琴捲簾，雙向，以及有多少個音符共用一個包。",
+        "3": "音符為什麼要等：每個音符都在下一個連線事件才發出。",
+        "4": "空中發生的一切。"
+      },
+      "actions": {
+        "macConnectInAudioMidiSetup": "Mac：在音訊 MIDI 設定裡連線",
+        "buttonClickANote": "按鍵：按一下（一個音符）",
+        "synthPlayE4": "合成器：彈 E4",
+        "seqOnOff": "序列 開/關"
+      }
+    },
+    "b8": {
+      "captions": {
+        "0": "只顯示可連線的裝置，最強的在前。鍵盤圖示和 HID 標出鍵盤和滑鼠；鑰匙標出已與開發板繫結的裝置。醒目標示的那一行是選中的。",
+        "1": "已連線裝置的 GATT 表：服務（藍色）、帶 R/W/N/I 的特徵和讀到的公開值（青綠色）、描述符（灰色）。HID 的值在配對之前一直鎖著。",
+        "2": "你的鍵盤，直接打字到開發板上：帶閃爍游標的文字、八個修飾鍵鍵帽（按住時為琥珀色）、按住的鍵碼、佈局和協定。",
+        "3": "你的滑鼠變成畫畫玩具：左鍵繪製，右鍵換顏色，中鍵清除，滾輪設定筆刷。軌跡顯示游標剛才在哪裡。",
+        "4": "原始輸入報告，最新的在底部：每個位元組按它的報告對映欄位著色（琥珀 = 修飾鍵/按鍵，青綠 = 鍵，藍 = X，紫 = Y，珊瑚紅 = 滾輪），下方解碼。",
+        "5": "從中心裝置這一側看的即時鏈路：開發板主導，鍵盤在每個連線事件裡回應。間隔、MTU、PHY、訊號和安全級別。",
+        "6": "按順序發生的一切：開發板傳送 (>)、接收 (<) 了什麼，以及結果。"
+      },
+      "actions": {
+        "keyboardPairingModeConnectHost": "鍵盤：配對模式、連線、主機",
+        "typeHelloBench": "輸入「Hello bench」",
+        "mediaVolumeUp": "媒體：音量加",
+        "mouseConnectDraw": "滑鼠：連線 + 繪製",
+        "exploreTheJbl": "探索 JBL",
+        "disconnect": "斷開連線"
+      }
+    }
+  },
+  "flows": {
+    "b3": {
+      "discover": {
+        "label": "連線與發現",
+        "lanes": [
+          [
+            "手機",
+            "中心裝置"
+          ],
+          [
+            "NimBLE",
+            "開發板，周邊裝置"
+          ],
+          [
+            "loop()",
+            "螢幕和 LED"
+          ]
+        ],
+        "steps": {
+          "0": {
+            "msg": "ADV_IND + SCAN_RSP",
+            "title": "開發板廣播",
+            "text": "廣播包裡有旗標和 128 位的 Bench 服務 UUID，掃描回應裡有名稱。手機的掃描器顯示 Bench B3。"
+          },
+          "1": {
+            "msg": "CONNECT_IND",
+            "title": "手機連線",
+            "text": "為了回應一個廣播包，手機發出連線的設定：新的隨機存取位元址、37 個資料通道上的跳頻模式、間隔和超時。從此刻起，它們每個間隔見一次面。"
+          },
+          "2": {
+            "msg": "onConnect",
+            "title": "開發板記下了",
+            "text": "NimBLE 在它自己的任務裡呼叫 ServerLink::onConnect。它只更新共享的鏈路狀態和活動日誌；loop() 繪製兩個圓環並列印這一行。"
+          },
+          "3": {
+            "msg": "Exchange MTU 517",
+            "title": "一個包可以多大？",
+            "text": "預設情況下，一個 ATT 包攜帶 23 位元組。手機提出更大的值，開發板回答它能接受的大小 (255)；雙方都用較小的那個。"
+          },
+          "4": {
+            "msg": "Read By Group Type",
+            "title": "有哪些服務？",
+            "text": "手機請求控制代碼 0001 到 FFFF 之間所有的主服務 (UUID 2800)。開發板回答每個服務的起始控制代碼、結束控制代碼和 UUID。"
+          },
+          "5": {
+            "msg": "Read By Type 2803",
+            "title": "……還有哪些特徵？",
+            "text": "對每個服務，列出特徵宣告：屬性（一個位欄位）、值的控制代碼和 UUID。0A = 讀 + 寫，12 = 讀 + 通知。"
+          },
+          "6": {
+            "msg": "Find Information",
+            "title": "……以及它們的描述符",
+            "text": "描述符緊跟在值的後面：2902（CCCD，你在這裡訂閱）、2901（應用顯示的名稱）、2904（數字格式：sint16，×10^-2，°C）。"
+          },
+          "7": {
+            "msg": "Write CCCD 01 00",
+            "title": "訂閱按鍵",
+            "text": "點通知圖示會向 Button 的 CCCD 寫入 0001。NimBLE 呼叫 onSubscribe：這一行上出現一個鈴鐺。"
+          }
+        }
+      },
+      "write": {
+        "label": "寫入 LED",
+        "lanes": [
+          [
+            "手機",
+            "nRF Connect"
+          ],
+          [
+            "NimBLE",
+            "onWrite()"
+          ],
+          [
+            "loop()",
+            "tick() → LED"
+          ]
+        ],
+        "steps": {
+          "0": {
+            "msg": "Write Request",
+            "title": "三個位元組",
+            "text": "操作碼 12（寫請求）、控制代碼 0010（LED 的值），然後是 FF 50 00。它要等下一個連線事件：最多一個間隔。"
+          },
+          "1": {
+            "msg": "onWrite",
+            "title": "回呼在 NimBLE 的任務裡執行",
+            "text": "它檢查恰好是 3 個位元組，在自旋鎖保護下複製，並舉起一個旗標。它不去碰 LED：只有一個任務會驅動它。"
+          },
+          "2": {
+            "msg": "Write Response",
+            "title": "手機得到它的 OK",
+            "text": "操作碼 13。用「無回應寫入」（操作碼 52）時完全沒有應答：更快，但手機永遠不知道它是否送到了。"
+          },
+          "3": {
+            "msg": "takeLed()",
+            "title": "loop() 點亮它",
+            "text": "下一次 loop() 看到旗標，從狀態顯示那裡接管 LED，把顏色寫給 GPIO 48 上的 WS2812。gatt 那一行閃藍色。"
+          }
+        }
+      },
+      "notify": {
+        "label": "通知一次按一下",
+        "lanes": [
+          [
+            "手機",
+            "已訂閱"
+          ],
+          [
+            "NimBLE",
+            "協定堆疊"
+          ],
+          [
+            "loop()",
+            "按鍵"
+          ]
+        ],
+        "steps": {
+          "0": {
+            "msg": "按一下",
+            "title": "你按一下",
+            "text": "Button 類做消抖並報告一次 Click。實驗的手勢鉤子把它交給 Bench 服務，然後外殼切換到下一個檢視。"
+          },
+          "1": {
+            "msg": "notify()",
+            "title": "設定值，通知",
+            "text": "手勢 1，計數 7（小端序）。notify() 把它排隊等下一個連線事件；沒有誰等待應答。"
+          },
+          "2": {
+            "msg": "Handle Value Notification",
+            "title": "在空中",
+            "text": "操作碼 1B、控制代碼、值。沒有回應：通知是發出去就不管的。（指示 1D 會等一個 1E 確認。）"
+          }
+        }
+      }
+    },
+    "b4": {
+      "passkey": {
+        "label": "配對碼輸入",
+        "lanes": [
+          [
+            "手機",
+            "中心裝置"
+          ],
+          [
+            "開發板",
+            "安全管理器"
+          ],
+          [
+            "你",
+            "一個人"
+          ]
+        ],
+        "steps": {
+          "0": {
+            "msg": "Read Vault",
+            "title": "手機去碰 Vault",
+            "text": "對 Vault 的控制代碼做一次普通的 ATT 讀取。NimBLE 檢查這個特徵的許可權 (READ_ENC + READ_AUTHEN) 並拒絕。"
+          },
+          "1": {
+            "msg": "Pairing Request",
+            "title": "階段 1：你能做什麼？",
+            "text": "手機開始配對（SMP，走它自己的 L2CAP 通道，CID 0006）。它說自己有螢幕和鍵盤，想要繫結，想要 MITM 保護和安全連線。"
+          },
+          "2": {
+            "msg": "Pairing Response",
+            "title": "開發板回答：DisplayOnly",
+            "text": "它自己的能力，由 pair 指令設定。雙方根據兩個回答，在上面的矩陣裡查到同一種方法。"
+          },
+          "3": {
+            "msg": "Public Key",
+            "title": "階段 2：橢圓曲線金鑰",
+            "text": "雙方各發一個新的 P-256 公鑰（64 位元組：X 和 Y）。各自把對方的公鑰乘上自己的私鑰：兩邊得到同一個 DHKey，它從不在空中傳輸。"
+          },
+          "4": {
+            "msg": "顯示 482915",
+            "title": "開發板顯示六位數字",
+            "text": "onPassKeyDisplay 傳回一個隨機配對碼；外殼把它畫在目前檢視上面。"
+          },
+          "5": {
+            "msg": "輸入 482915",
+            "title": "你在手機上輸入它們",
+            "text": "30 秒的計時開始。輸入證明你同時看到了兩塊螢幕：中間的攻擊者不知道這個數字。"
+          },
+          "6": {
+            "msg": "Confirm + Random ×20",
+            "title": "20 輪，配對碼的每一位一輪",
+            "text": "配對碼是 20 位。每一位，雙方先對一個值作出承諾 (Confirm)，再公開它 (Random)。輸錯一個數字會在它那一位上失敗，而不會洩露其餘的位。"
+          },
+          "7": {
+            "msg": "DHKey Check",
+            "title": "階段 2 結束：證明 DHKey 相同",
+            "text": "雙方各發一個用 DHKey、兩個隨機數和兩個位址算出的校驗值 (f6)。只有擁有同一個 DHKey 的人才能產生它。"
+          },
+          "8": {
+            "msg": "LL_ENC_REQ",
+            "title": "開啟加密",
+            "text": "鏈路層用 LTK 開始 AES-CCM。從下一個包起，竊聽者看到的就是噪聲。NimBLE 報告 ENC_CHANGE：流程的加密階段。"
+          },
+          "9": {
+            "msg": "Identity Information",
+            "title": "階段 3：要記住的金鑰",
+            "text": "現在已經加密，雙方交出各自的 IRK 和身份位址。IRK 讓開發板以後能認出這部手機，不管它那天用的是哪個私有位址。"
+          },
+          "10": {
+            "msg": "繫結已儲存",
+            "title": "已繫結，並且已認證",
+            "text": "金鑰存進 NVS。手機再次讀取 Vault，這次成功了。下次：用儲存的 LTK 立刻加密，不需要流程。"
+          }
+        }
+      },
+      "compare": {
+        "label": "數字比較",
+        "lanes": [
+          [
+            "手機",
+            "中心裝置"
+          ],
+          [
+            "開發板",
+            "安全管理器"
+          ],
+          [
+            "你",
+            "一個人"
+          ]
+        ],
+        "steps": {
+          "0": {
+            "msg": "Read Vault",
+            "title": "手機去碰 Vault",
+            "text": "對 Vault 的控制代碼做一次普通的 ATT 讀取。NimBLE 檢查這個特徵的許可權 (READ_ENC + READ_AUTHEN) 並拒絕。"
+          },
+          "1": {
+            "msg": "Pairing Request",
+            "title": "階段 1：你能做什麼？",
+            "text": "手機開始配對（SMP，走它自己的 L2CAP 通道，CID 0006）。它說自己有螢幕和鍵盤，想要繫結，想要 MITM 保護和安全連線。"
+          },
+          "2": {
+            "msg": "Pairing Response",
+            "title": "開發板回答：DisplayYesNo",
+            "text": "它自己的能力，由 pair 指令設定。雙方根據兩個回答，在上面的矩陣裡查到同一種方法。"
+          },
+          "3": {
+            "msg": "Public Key",
+            "title": "階段 2：橢圓曲線金鑰",
+            "text": "雙方各發一個新的 P-256 公鑰（64 位元組：X 和 Y）。各自把對方的公鑰乘上自己的私鑰：兩邊得到同一個 DHKey，它從不在空中傳輸。"
+          },
+          "4": {
+            "msg": "Confirm",
+            "title": "開發板作出承諾",
+            "text": "開發板先發出對自己隨機數的承諾，這樣它就不能在看到手機的隨機數之後再改。"
+          },
+          "5": {
+            "msg": "Random ×2",
+            "title": "雙方公開各自的隨機數",
+            "text": "現在雙方都計算 g2(PKa, PKb, Na, Nb) mod 1,000,000：六位數字，取決於兩個公鑰。"
+          },
+          "6": {
+            "msg": "一樣嗎 731406？",
+            "title": "兩塊螢幕都顯示這個數字",
+            "text": "onConfirmPassKey：TFT 顯示 NUMERIC COMPARISON。你核對手機顯示的是否一樣，在手機上點「是」，並按一下開發板的按鍵（長按 = 否）。"
+          },
+          "7": {
+            "msg": "DHKey Check",
+            "title": "階段 2 結束：證明 DHKey 相同",
+            "text": "雙方各發一個用 DHKey、兩個隨機數和兩個位址算出的校驗值 (f6)。只有擁有同一個 DHKey 的人才能產生它。"
+          },
+          "8": {
+            "msg": "LL_ENC_REQ",
+            "title": "開啟加密",
+            "text": "鏈路層用 LTK 開始 AES-CCM。從下一個包起，竊聽者看到的就是噪聲。NimBLE 報告 ENC_CHANGE：流程的加密階段。"
+          },
+          "9": {
+            "msg": "Identity Information",
+            "title": "階段 3：要記住的金鑰",
+            "text": "現在已經加密，雙方交出各自的 IRK 和身份位址。IRK 讓開發板以後能認出這部手機，不管它那天用的是哪個私有位址。"
+          },
+          "10": {
+            "msg": "繫結已儲存",
+            "title": "已繫結，並且已認證",
+            "text": "金鑰存進 NVS。手機再次讀取 Vault，這次成功了。下次：用儲存的 LTK 立刻加密，不需要流程。"
+          }
+        }
+      },
+      "justworks": {
+        "label": "Just Works",
+        "lanes": [
+          [
+            "手機",
+            "中心裝置"
+          ],
+          [
+            "開發板",
+            "安全管理器"
+          ],
+          [
+            "你",
+            "一個人"
+          ]
+        ],
+        "steps": {
+          "0": {
+            "msg": "Read Vault",
+            "title": "手機去碰 Vault",
+            "text": "對 Vault 的控制代碼做一次普通的 ATT 讀取。NimBLE 檢查這個特徵的許可權 (READ_ENC + READ_AUTHEN) 並拒絕。"
+          },
+          "1": {
+            "msg": "Pairing Request",
+            "title": "階段 1：你能做什麼？",
+            "text": "手機開始配對（SMP，走它自己的 L2CAP 通道，CID 0006）。它說自己有螢幕和鍵盤，想要繫結，想要 MITM 保護和安全連線。"
+          },
+          "2": {
+            "msg": "Pairing Response",
+            "title": "開發板回答：NoInputNoOutput",
+            "text": "它自己的能力，由 pair 指令設定。雙方根據兩個回答，在上面的矩陣裡查到同一種方法。"
+          },
+          "3": {
+            "msg": "Public Key",
+            "title": "階段 2：橢圓曲線金鑰",
+            "text": "雙方各發一個新的 P-256 公鑰（64 位元組：X 和 Y）。各自把對方的公鑰乘上自己的私鑰：兩邊得到同一個 DHKey，它從不在空中傳輸。"
+          },
+          "4": {
+            "msg": "Confirm + Random",
+            "title": "沒有人參與",
+            "text": "和數字比較是同樣的交換，但沒有螢幕顯示數字：沒有人能察覺中間人。"
+          },
+          "5": {
+            "msg": "DHKey Check",
+            "title": "階段 2 結束：證明 DHKey 相同",
+            "text": "雙方各發一個用 DHKey、兩個隨機數和兩個位址算出的校驗值 (f6)。只有擁有同一個 DHKey 的人才能產生它。"
+          },
+          "6": {
+            "msg": "LL_ENC_REQ",
+            "title": "開啟加密",
+            "text": "鏈路層用 LTK 開始 AES-CCM。從下一個包起，竊聽者看到的就是噪聲。NimBLE 報告 ENC_CHANGE：流程的加密階段。"
+          },
+          "7": {
+            "msg": "Identity Information",
+            "title": "階段 3：要記住的金鑰",
+            "text": "現在已經加密，雙方交出各自的 IRK 和身份位址。IRK 讓開發板以後能認出這部手機，不管它那天用的是哪個私有位址。"
+          },
+          "8": {
+            "msg": "繫結已儲存",
+            "title": "已繫結，但未認證",
+            "text": "金鑰存進 NVS，鏈路已加密，但沒人驗證過它：安全級別是「已加密，無 MITM」。Vault 仍然拒絕；LED 和 Message 即使在上鎖時也能用。"
+          }
+        }
+      }
+    },
+    "b5": {
+      "write": {
+        "label": "改變顏色",
+        "lanes": [
+          [
+            "應用 (JS)",
+            "ble-app"
+          ],
+          [
+            "瀏覽器",
+            "Chrome 的 GATT 客戶端"
+          ],
+          [
+            "NimBLE",
+            "開發板，onWrite()"
+          ],
+          [
+            "loop()",
+            "GPIO 48 上的 LED"
+          ]
+        ],
+        "steps": {
+          "0": {
+            "msg": "requestDevice()",
+            "title": "請使用者選一塊開發板",
+            "text": "頁面不能自己掃描或連線。requestDevice() 開啟瀏覽器的選擇器，過濾為帶 Bench 服務、名稱以「Bench」開頭或 BLE-MIDI 的開發板。只有這裡列出的服務（加上 optionalServices）才可能被存取到。"
+          },
+          "1": {
+            "msg": "CONNECT_IND",
+            "title": "瀏覽器連線",
+            "text": "device.gatt.connect()：作業系統的藍牙協定堆疊成為中心裝置。應用從來看不到無線電包，只看到 GATT 物件。"
+          },
+          "2": {
+            "msg": "發現服務",
+            "title": "發現（和 nRF Connect 一樣）",
+            "text": "getPrimaryServices() 和 getCharacteristics() 在底層執行 B3 裡的那套 ATT 發現。應用為它按 UUID 認識的每個特徵儲存一個控制代碼。"
+          },
+          "3": {
+            "msg": "writeValueWithResponse()",
+            "title": "色輪動了",
+            "text": "「控制」分頁把色相、飽和度和亮度轉成紅、綠、藍，每 80 ms 最多一次，並排一次寫入。GATT 一次只允許一個操作，所以每次呼叫都在應用的佇列裡排隊。"
+          },
+          "4": {
+            "msg": "Write Request",
+            "title": "在空中",
+            "text": "操作碼 12、控制代碼 0010、三個位元組。它在下一個連線事件發出：最多晚一個間隔。"
+          },
+          "5": {
+            "msg": "onWrite",
+            "title": "NimBLE 的任務接手",
+            "text": "BenchService::onWrite 檢查長度，在自旋鎖保護下複製顏色，並舉起一個旗標。它從不自己驅動 LED：只有 loop() 這樣做。"
+          },
+          "6": {
+            "msg": "Write Response",
+            "title": "promise 完成",
+            "text": "操作碼 13 在下一個事件裡回來；瀏覽器讓應用的 await 完成。被拒絕的寫入則會用 ATT 錯誤來拒絕它。"
+          },
+          "7": {
+            "msg": "takeLed()",
+            "title": "loop() 點亮 LED",
+            "text": "下一個訊框看到旗標，從無線電狀態那裡接管 LED，並寫入 WS2812。gatt 那一行閃藍色。"
+          }
+        }
+      },
+      "notify": {
+        "label": "感測器資料流",
+        "lanes": [
+          [
+            "應用 (JS)",
+            "「即時」分頁"
+          ],
+          [
+            "瀏覽器",
+            "GATT 客戶端"
+          ],
+          [
+            "NimBLE",
+            "開發板"
+          ],
+          [
+            "loop()",
+            "tick()，每 200 ms"
+          ]
+        ],
+        "steps": {
+          "0": {
+            "msg": "startNotifications()",
+            "title": "訂閱",
+            "text": "「即時」分頁對 Sensors 呼叫 startNotifications()。瀏覽器替我們向它的 CCCD 寫入 01 00。"
+          },
+          "1": {
+            "msg": "Write CCCD 01 00",
+            "title": "空中的 CCCD 寫入",
+            "text": "向緊跟在值後面的描述符（控制代碼 + 1）傳送操作碼 12。NimBLE 呼叫 Extras::onSubscribe：從現在起 tick() 開始傳送。"
+          },
+          "2": {
+            "msg": "notify()",
+            "title": "每 200 ms 一次",
+            "text": "tick() 讀取晶片的溫度、touchRead(1)、空閒堆記憶體和鏈路的 RSSI，打包成 12 位元組並通知。"
+          },
+          "3": {
+            "msg": "Handle Value Notification",
+            "title": "在空中，沒有應答",
+            "text": "操作碼 1B、控制代碼、12 位元組。通知在 GATT 層從不被確認：每秒五個，對手機幾乎沒有開銷。"
+          },
+          "4": {
+            "msg": "characteristicvaluechanged",
+            "title": "頁面裡的一個事件",
+            "text": "瀏覽器觸發一個事件，值是一個 DataView。decodeSensors() 按小端序讀取它；序列號會顯示任何缺口。"
+          },
+          "5": {
+            "msg": "圖表",
+            "title": "React 畫出折線",
+            "text": "這個取樣加入最近的 150 個（30 秒），四張圖表重繪。摸一下那根線：下一個包裡就已經帶著跳變。"
+          }
+        }
+      }
+    },
+    "b8": {
+      "first": {
+        "label": "第一次配對",
+        "lanes": [
+          [
+            "ESP32-S3",
+            "中心裝置（這塊開發板）"
+          ],
+          [
+            "鍵盤",
+            "周邊裝置"
+          ],
+          [
+            "你",
+            "在鍵盤前"
+          ]
+        ],
+        "steps": {
+          "0": {
+            "msg": "ADV_IND（通道 37、38、39）",
+            "title": "鍵盤廣播",
+            "text": "在配對模式下，鍵盤每 20-30 ms 在三個廣播通道上呼叫一次。它的 HID 服務 (1812) 和外觀 (03C1 = 鍵盤) 說明了它是什麼：開發板的掃描器把它標為 HID。"
+          },
+          "1": {
+            "msg": "CONNECT_IND",
+            "title": "開發板連線：現在由它來設定時序",
+            "text": "在一個廣播包之後 150 µs，開發板在同一個通道上回應。從這裡起，兩個無線電一起在 37 個資料通道上跳頻。作為中心裝置，開發板選定了間隔、延遲和超時。"
+          },
+          "2": {
+            "msg": "Exchange MTU: 255",
+            "title": "一個包可以多大？",
+            "text": "預設的 ATT 包是 23 位元組。開發板提出 255；鍵盤迴答它能做到的大小。"
+          },
+          "3": {
+            "msg": "MTU 65",
+            "title": "它們約定用較小的那個",
+            "text": "65 位元組：每個包 62 位元組的資料。綽綽有餘：一次按鍵只有 8 位元組。"
+          },
+          "4": {
+            "msg": "Read By Group Type（服務）",
+            "title": "發現：你提供什麼？",
+            "text": "開發板請求每個主服務，然後是每個服務的特徵和它們的描述符。此時還不需要加密：目錄是公開的。"
+          },
+          "5": {
+            "msg": "1800 1801 180A 180F 1812",
+            "title": "五個服務",
+            "text": "Generic Access 和 Attribute（每個裝置都有）、Device Information、Battery，以及帶報告對映和報告特徵的 HID。探索檢視顯示這棵樹。HID 的值是鎖著的：它們需要加密的鏈路。"
+          },
+          "6": {
+            "msg": "Pairing Request",
+            "title": "主機：請求安全",
+            "text": "開發板說明它能做什麼：顯示數字，但不能輸入。它想要繫結（記住金鑰）、MITM 保護和 LE 安全連線。"
+          },
+          "7": {
+            "msg": "Pairing Response",
+            "title": "鍵盤只能輸入",
+            "text": "僅顯示（開發板）+ 僅鍵盤（鍵盤）= 配對碼輸入：有螢幕的一方顯示六位數字，有按鍵的一方輸入它們。接下來雙方交換公鑰 (ECDH P-256)。"
+          },
+          "8": {
+            "msg": "顯示 482915",
+            "title": "TFT 上的六位數字",
+            "text": "配對碼本身從不在空中傳輸。開發板把它大大地畫在目前檢視上面，最多等 30 秒。"
+          },
+          "9": {
+            "msg": "輸入 4 8 2 9 1 5 ⏎",
+            "title": "你在鍵盤上輸入它們",
+            "text": "這個鍵盤沒有連到任何會顯示你輸入內容的電腦：它的按鍵進入的是配對，不是某個應用。"
+          },
+          "10": {
+            "msg": "20 輪 confirm + DHKey 校驗",
+            "title": "證明，一次一位",
+            "text": "對配對碼的 20 位中的每一位，雙方先交換一個承諾，再交換它背後的隨機值。監聽的人得不到任何能用的東西；中間人則需要知道配對碼。"
+          },
+          "11": {
+            "msg": "LL_ENC_REQ",
+            "title": "加密開啟，金鑰儲存",
+            "text": "從現在起每個包都加密 (AES-CCM)。長期金鑰 (LTK) 和鍵盤的身份金鑰 (IRK) 存進開發板的 NVS：這就是繫結。"
+          },
+          "12": {
+            "msg": "Read Blob 2A4B",
+            "title": "讀取報告對映",
+            "text": "鍵盤對自己報告的描述。它比一個包長，所以分幾輪 Read Blob 到達。"
+          },
+          "13": {
+            "msg": "報告對映，72 位元組",
+            "title": "每一位的含義",
+            "text": "報告 1：8 個修飾鍵位、一個填充位元組、6 個鍵碼。報告 3：一個 16 位媒體鍵。kit/lib/ble-kit/src/hid_report.h 把這些位元組變成欄位；在下一個面板裡試試。"
+          },
+          "14": {
+            "msg": "Read 2908 → 01 01",
+            "title": "哪個報告是哪個？",
+            "text": "每個報告特徵都有一個報告參照描述符：報告 ID 和型別（1 輸入，2 輸出，3 特性）。報告 ID 從不在通知裡傳輸：它只存在於這裡。"
+          },
+          "15": {
+            "msg": "Write CCCD 01 00",
+            "title": "訂閱",
+            "text": "向每個輸入報告的 CCCD（描述符 2902）寫入 01 00 的意思是：給我發通知。對每個輸入報告都這樣做。"
+          },
+          "16": {
+            "msg": "按下 h",
+            "title": "你按下 h",
+            "text": "鍵盤掃描它的按鍵矩陣，找到位置 0B 的鍵，並把一個報告排隊等下一個連線事件。"
+          },
+          "17": {
+            "msg": "Notify 00 00 0B 00 00 00 00 00",
+            "title": "一次按鍵，8 位元組",
+            "text": "沒有修飾鍵 (00)，一個保留位元組 (00)，第一個鍵槽裡的鍵碼 0B。開發板與上一個報告比較：0B 是新的，所以是一次按鍵。在美式和德式鍵盤上，0B 都是 h。"
+          },
+          "18": {
+            "msg": "Notify 00 00 00 00 00 00 00 00",
+            "title": "鬆開",
+            "text": "你一鬆手，又來一個報告：所有鍵槽都是空的。按住一個鍵不會再發任何東西：開發板從上一個報告就知道它還按著。"
+          }
+        }
+      },
+      "back": {
+        "label": "回來（已繫結）",
+        "lanes": [
+          [
+            "ESP32-S3",
+            "中心裝置（這塊開發板）"
+          ],
+          [
+            "鍵盤",
+            "周邊裝置"
+          ],
+          [
+            "你",
+            "在鍵盤前"
+          ]
+        ],
+        "steps": {
+          "0": {
+            "msg": "按任意鍵",
+            "title": "把它喚醒",
+            "text": "斷電重啟後，開發板再次掃描。鍵盤一直睡著，直到你按一個鍵。"
+          },
+          "1": {
+            "msg": "ADV_IND / ADV_DIRECT_IND",
+            "title": "鍵盤呼叫它的主機",
+            "text": "已繫結的鍵盤通常使用定向廣播：只發給這塊開發板的包。開發板的掃描回呼把位址與它儲存在 NVS 裡的繫結做比較。"
+          },
+          "2": {
+            "msg": "CONNECT_IND",
+            "title": "連線",
+            "text": "和第一次一樣：由開發板設定時序。"
+          },
+          "3": {
+            "msg": "LL_ENC_REQ（已存的 LTK）",
+            "title": "用儲存的金鑰加密",
+            "text": "沒有配對，沒有配對碼：雙方都還留著繫結時的長期金鑰。如果有一方忘了它，這一步會失敗並提示「PIN or key missing」：忘掉裝置，重新配對。"
+          },
+          "4": {
+            "msg": "Report Map + CCCD 01 00",
+            "title": "再次做主機",
+            "text": "開發板再次讀取報告對映並訂閱。（已繫結的裝置會記住訂閱，但開發板不依賴這一點。）"
+          },
+          "5": {
+            "msg": "Notify …",
+            "title": "接著打字",
+            "text": "為喚醒它而按的第一個鍵通常會丟失；後面的會到達。"
+          }
+        }
+      },
+      "jbl": {
+        "label": "探索你的 JBL",
+        "lanes": [
+          [
+            "ESP32-S3",
+            "中心裝置（這塊開發板）"
+          ],
+          [
+            "JBL 喇叭",
+            "BLE 這一側"
+          ],
+          [
+            "手機",
+            "播放音樂"
+          ]
+        ],
+        "steps": {
+          "0": {
+            "msg": "音訊（經典藍牙，A2DP）",
+            "title": "音樂從不經過 BLE",
+            "text": "你的手機透過經典藍牙（BR/EDR，A2DP 配置檔案）把音訊流送給喇叭。ESP32-S3 只有低功耗無線電：它加入不了這個連線。"
+          },
+          "1": {
+            "msg": "ADV_IND",
+            "title": "但喇叭也會說 BLE",
+            "text": "許多喇叭也透過 BLE 廣播，給它們的手機 App用（設定、韌體更新、喇叭互聯）。"
+          },
+          "2": {
+            "msg": "CONNECT_IND + 發現",
+            "title": "探索",
+            "text": "connect <n>：開發板連線並列出它提供的東西。"
+          },
+          "3": {
+            "msg": "Read 2A00（裝置名稱）",
+            "title": "只有公開的基本資訊",
+            "text": "開發板讀取喇叭向任何人開放的標準值，不碰廠商服務裡的任何東西：那是 JBL 應用自己的協定。"
+          },
+          "4": {
+            "msg": "結論",
+            "title": "為什麼沒有音訊服務",
+            "text": "沒有 1812，沒有標準的音訊服務：只有應用自己的服務。開發板在探索檢視裡這樣說明，然後不去動它。"
+          }
+        }
+      }
+    }
+  }
+}

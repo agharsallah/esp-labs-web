@@ -1,0 +1,1041 @@
+{
+  "B1": {
+    "title": "監聽",
+    "heading": "聽見周圍所有的藍牙裝置",
+    "goal": "手機、手錶、耳機、喇叭、鍵盤和信標整天都在宣告自己的存在：在三個無線電通道上，每秒許多次發出簡短的<b>廣播</b>封包，不管有沒有人在聽。B1 把開發板變成一個監聽者。它把這些裝置畫在雷達上，猜測每個裝置是什麼，並把封包逐位元組拆開來看。無線電使用 NimBLE，一個輕量級藍牙協定堆疊；韌體是它自己的 (<code>ble-lab-b1</code>)，共用程式碼在 <code>kit/lib/ble-kit</code> 中。",
+    "goalLine": "在周圍的裝置中找出你自己的手機，逐位元組讀取它的封包，並測量它多久廣播一次。",
+    "goalCheck": [
+      "<b>雷達</b>檢視顯示光點，監視器中的 <code>list</code> 會列印一張帶有型別（手機、音訊、鍵盤……）的裝置表。",
+      "你選中了自己的手機（把它拿近：它會變成訊號最強的）；<code>bytes</code> 顯示它的 AD 結構：先是 Flags，然後是廠商資料（Apple、Samsung、Google……）。",
+      "<code>watch</code> 為你手機的每個封包列印一行，你可以從 <code>+… ms</code> 的間隔讀出它的廣播間隔。",
+      "切換到 <code>mode passive</code> 後，掃描回應（以及一些名稱）會消失；<code>mode active</code> 會讓它們回來。"
+    ],
+    "learn": [
+      "廣播",
+      "通道 37 · 38 · 39",
+      "AD 結構",
+      "主動掃描與被動掃描",
+      "RSSI → 距離",
+      "私有位址",
+      "掃描工作週期"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "BLK"
+      },
+      "2": {
+        "role": "RES"
+      },
+      "3": {
+        "role": "DC"
+      },
+      "4": {
+        "role": "CS"
+      },
+      "5": {
+        "role": "SDA"
+      },
+      "6": {
+        "role": "SCL"
+      },
+      "7": {
+        "role": "GND"
+      },
+      "8": {
+        "role": "BTN"
+      },
+      "9": {
+        "role": "BOOT"
+      }
+    },
+    "commands": {
+      "0": {
+        "does": "建置 B1 實驗並寫入開發板。第一次建置會下載 NimBLE-Arduino 2.5.1（藍牙協定堆疊）。",
+        "see": "<code>Hard resetting via RTS pin…</code>。螢幕顯示帶有掃描線的雷達。",
+        "fix": "「Failed to connect」：按住 BOOT，點按 RST，鬆開 BOOT，再執行一次。"
+      },
+      "1": {
+        "does": "開啟序列埠監視器（開發板會重啟）。",
+        "see": "<code>ble-lab-b1: NimBLE 2.5.1 up, address …</code>、<code>+ active scan, 100/100 ms (100% listening)</code>，然後是指令列表。",
+        "fix": "沒有 <code>NimBLE … up</code> 這一行：協定堆疊沒有啟動；拔掉再插上開發板。"
+      },
+      "2": {
+        "does": "列印最近 30 秒內聽到的每個裝置，訊號最強的排最前：RSSI、距離估計、型別、位址及其型別、封包數、名稱或廠商。",
+        "see": "類似 <code>1  -46  0.6  phone  5A:3C:…  private (RPA)  412  Apple</code> 的一張表。公寓裡有十到五十行，住宅裡更少。",
+        "fix": "空的？你周圍的藍牙開著嗎？手機往往只在螢幕亮著，或者某個應用需要時才會廣播。"
+      },
+      "3": {
+        "does": "你的手機變成訊號最強的裝置。把它解鎖：iPhone 在螢幕亮著時廣播更頻繁。",
+        "see": "在<b>雷達</b>上，一個光點移到中心；在 <b>list</b> 上，它跳到第 1 行，約為 −40 dBm。",
+        "fix": "Android 手機可能保持沉默：開啟 nRF Connect，使用它的 Advertiser 分頁，或者暫時開啟 Nearby Share / Quick Share。"
+      },
+      "4": {
+        "does": "為 <b>inspect</b> 檢視選中第 1 行，並逐個結構列印它的廣播和掃描回應。",
+        "see": "<code>[02 01 | 1A] Flags</code>、<code>[0A FF | 4C 00 10 …] Manufacturer data</code>（Apple：Nearby info），也許還有 <code>[02 0A | 0C] TX power</code>。",
+        "fix": "<code>no scan response</code>：有些裝置不傳送掃描回應；在被動模式下沒人去索取它。"
+      },
+      "5": {
+        "does": "為選中的裝置每個封包列印一行，並顯示與上一個封包之間的時間間隔。",
+        "see": "<code>&lt; +  182 ms  -47 dBm  31 B</code> 這樣的行。有些間隔是漏掉的封包（你的手機在開發板沒有監聽的通道上傳送了它）；最短的重複間隔就是它的廣播間隔。",
+        "fix": "<code>watch off</code> 停止它。行數太多？先用 <code>near -60</code>。"
+      },
+      "6": {
+        "does": "被動：開發板只聽。主動：它還會向每個可掃描的裝置傳送掃描請求，並收到第二個封包，即掃描回應。",
+        "see": "在被動模式下，<b>inspect</b> 檢視會少了 <i>scan rsp</i> 一行，有些名稱會變成廠商名。air 檢視會顯示目前模式。",
+        "fix": ""
+      },
+      "7": {
+        "does": "在每 100 ms 中只監聽 30 ms（工作週期 30 %），而不是一直監聽。",
+        "see": "<b>air</b> 檢視上每秒的封包數降到約三分之一。手機就是這樣掃描來省電的。<code>timing 100 100</code> 會恢復。",
+        "fix": "視窗必須 ≤ 間隔。"
+      },
+      "8": {
+        "does": "把選中裝置的平均 RSSI 作為距離估計所用的 1 m 參考值。",
+        "see": "<code>+ 1 m = -58 dBm now: distances use it</code>。走遠一點：光點會向外漂移。",
+        "fix": "距離跳動 ±1 m：這就是 RSSI。人體、牆壁和手機的朝向都會讓它變化 5–10 dB。"
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "藍牙路線，從監聽到做主機",
+        "intro": "八個實驗，各有自己的韌體。開發板一開始是純粹的監聽者，最後成為你鍵盤的主機。選一個實驗，看看開發板的角色和資料的流向；鎖標記的是配對和加密很重要的實驗。"
+      },
+      "1": {
+        "title": "三個通道，許多次呼喊",
+        "intro": "低功耗藍牙把 2.4 GHz 頻段分成 40 個 2 MHz 的通道。廣播只用其中三個，37、38 和 39，它們位於常見 Wi-Fi 通道 1、6 和 11 之間的空隙裡。每個廣播事件會在這三個通道上依次傳送同一個封包。掃描方一次只聽一個通道：只有落在其通道監聽視窗之內的封包才算數。拖動視窗滑桿，看看開發板能捕捉多少封包；切換到主動模式，可以看到掃描請求和回應。"
+      },
+      "2": {
+        "title": "一個廣播包，逐位元組來看",
+        "intro": "無線電實際發出的內容，從第一個位元到檢查碼。選一個裝置，然後用 ◀ ▶ 逐個欄位步進。中間的 AD 結構正是 <b>inspect</b> 檢視和 <code>bytes</code> 指令顯示的內容。"
+      },
+      "3": {
+        "title": "螢幕上顯示什麼",
+        "intro": "四個檢視。按一下按鈕（或 BOOT）切換到下一個檢視，按兩下執行左下角寫著的操作，長按暫停或恢復掃描。右上角的圖示代表無線電：掃描時是旋轉的雷達。"
+      }
+    },
+    "steps": [
+      "螢幕接線保持與第 03 課一致（按鈕選用）。燒錄 <code>ble-lab-b1</code> 並開啟監視器。<b>檢查點 1：</b><code>NimBLE 2.5.1 up</code>，雷達在掃描。",
+      "輸入 <code>list</code>。<b>檢查點 2：</b>一張帶型別的裝置表；找找 <i>audio</i>（你的 JBL 會為它的 App 廣播）、<i>keyboard/mouse</i>，以及 Apple 或 Microsoft 廠商。",
+      "把解鎖的手機拿到開發板旁邊，<code>pick 1</code>，點按切換到 <b>inspect</b>。<b>檢查點 3：</b>它的位元組顯示在彩色的 AD 結構裡，位址型別是 <i>private (RPA)</i>。",
+      "輸入 <code>watch</code> 十秒，然後輸入 <code>watch off</code>。<b>檢查點 4：</b>你能說出你手機的廣播間隔。",
+      "試試 <code>mode passive</code> / <code>mode active</code> 以及 <code>timing 100 30</code> / <code>timing 100 100</code>，同時看著 <b>air</b> 檢視。",
+      "選用：把手機放在 1 m 外執行 <code>calib</code>，然後走到房間另一邊，觀察雷達。"
+    ],
+    "note": "這裡的一切都是裝置向所有人廣播的內容；開發板從不與它們建立連線。不過，這份列表是你鄰居的裝置：不要公開發布它們的位址（它們不會出現在提交的日誌中）。手機大約每 15 分鐘更換一次私有位址，所以同一部手機可能出現兩次。距離是根據訊號強度做的估計，誤差可達兩倍。ESP32-S3 只支援低功耗藍牙：經典藍牙（大多數音訊流和較老的鍵盤）對它是不可見的。"
+  },
+  "B2": {
+    "title": "被看見",
+    "heading": "開發板喊出它自己的資料",
+    "goal": "在 B1 中，開發板在監聽。現在它變成一個<b>信標</b>：它把即時數值（按鍵次數、晶片溫度、執行時間）打包進自己 31 位元組的廣播裡，這樣附近的任何手機都能<i>不用連線</i>就讀到它們。同樣的位元組預算還可以承載一個 <b>iBeacon</b>、一個 <b>Eddystone-URL</b>，或者只放一個名稱。你可以選擇它多久喊一次（間隔）、喊多大聲（發射功率），並看到這對紐扣電池信標意味著多大的耗電。",
+    "goalLine": "讓開發板廣播即時數值，而你的手機無需連線就能讀取。",
+    "goalCheck": [
+      "nRF Connect 列出 <b>Bench B2</b>，並顯示 <b>Manufacturer data 0xFFFF</b>，它的位元組每秒都在變化（執行時間），按兩下時也會變化（按鍵次數）。",
+      "<b>packet</b> 檢視用彩色結構顯示 31 位元組中的 24 位元組，變化的位元組會閃白。",
+      "<code>mode ibeacon</code> 在 Android 上顯示為 iBeacon（iPhone 上的 App看不到 iBeacon：那是 iOS 的限制，不是你的問題），<code>mode url</code> 在 nRF Connect 中顯示為 Eddystone URL。",
+      "設定 <code>connectable off</code> 和 <code>scanresp off</code> 之後，packet 檢視顯示 <b>ADV_NONCONN_IND</b>，nRF Connect 不再提供 Connect，間隔也不能低於 100 ms。",
+      "你可以從 <b>budget</b> 檢視解釋為什麼信標每 500-1000 ms 廣播一次，而不是每 20 ms 一次。"
+    ],
+    "learn": [
+      "廣播者角色",
+      "31 位元組預算",
+      "AD 結構",
+      "廠商資料",
+      "iBeacon 與 Eddystone",
+      "ADV_IND · SCAN_IND · NONCONN",
+      "間隔與 advDelay",
+      "發射功率與電池"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "BLK"
+      },
+      "2": {
+        "role": "RES"
+      },
+      "3": {
+        "role": "DC"
+      },
+      "4": {
+        "role": "CS"
+      },
+      "5": {
+        "role": "SDA"
+      },
+      "6": {
+        "role": "SCL"
+      },
+      "7": {
+        "role": "GND"
+      },
+      "8": {
+        "role": "BTN"
+      },
+      "9": {
+        "role": "BOOT"
+      }
+    },
+    "commands": {
+      "0": {
+        "does": "建置 B2 實驗並寫入開發板。",
+        "see": "<b>packet</b> 檢視：<code>bench ADV_IND every 100 ms</code> 和兩行彩色單元格。",
+        "fix": "「Failed to connect」：按住 BOOT，點按 RST，鬆開 BOOT，再執行一次。"
+      },
+      "1": {
+        "does": "開啟序列埠監視器。",
+        "see": "<code>+ bench ADV_IND every 100 ms, 24+7 B</code> 和指令列表。",
+        "fix": ""
+      },
+      "2": {
+        "does": "現在手機是掃描方（一塊開發板聽不到自己）。點按那一行可以開啟該廣播的詳情。",
+        "see": "Complete Local Name <code>Bench B2</code>，Manufacturer data <code>0xFFFF 0x01…</code>；最後兩個位元組（執行時間）每秒變化。點 RAW 可以看到全部 24 位元組。",
+        "fix": "沒有列出？下拉重新整理；<code>adv on</code>。在 iPhone 上，Manufacturer data 顯示為一整串十六進位：位元組是一樣的。"
+      },
+      "3": {
+        "does": "把一次按鍵計入封包。開發板會替換廣播資料；控制器從下一個事件開始傳送新的位元組。",
+        "see": "<code>- presses 1: in the next packet</code>；在 packet 檢視中有兩個單元格閃白；在 nRF Connect 中，廠商資料的第 4-5 位元組變成 <code>01 00</code>。",
+        "fix": ""
+      },
+      "4": {
+        "does": "逐個結構列印這兩個封包。",
+        "see": "<code>[02 01 | 06] Flags</code>、<code>[09 09 | 42 65 6E 63 68 20 42 32] Name</code>、<code>[0A FF | FF FF 01 01 00 2E 10 2C 01] Manufacturer data</code>。",
+        "fix": ""
+      },
+      "5": {
+        "does": "Apple 的格式：4C 00 02 15、一個 16 位元組的 UUID、major、minor、1 m 處的功率。31 位元組用了 30 位元組：名稱移到掃描回應裡。",
+        "see": "<code>+ ibeacon ADV_IND every 100 ms, 30+10 B</code>。Android 的 nRF Connect：「iBeacon」，UUID BA5E0000-B1E5-…，Major 1，Minor 2。在另一塊開發板上執行 B1 時，這個信標型別會顯示為紫色。",
+        "fix": "iPhone 什麼特別的都不顯示，或者看不到這個信標：iOS 會把 iBeacon 訊框從每個應用的掃描中過濾掉。只有 Core Location（區域監控）能看到它們。"
+      },
+      "6": {
+        "does": "Eddystone-URL：服務資料 FEAA，帶有壓縮的 URL（https:// = 1 位元組，.com/ = 1 位元組）。",
+        "see": "nRF Connect 顯示 <b>Eddystone URL</b> https://github.com/。URL 太長：<code>x the URL doesn't fit…</code>，舊的會保留。",
+        "fix": "Android 以前會把這些作為通知彈出來 (Physical Web)；自 2018 年起這個功能已經取消。應用仍然可以解碼它們。"
+      },
+      "7": {
+        "does": "先是 ADV_SCAN_IND（可以被掃描，不能被連線），然後是 ADV_NONCONN_IND：一種不回應任何人的純廣播。",
+        "see": "packet 檢視的標題會變；nRF Connect 的 Connect 按鈕消失；掃描回應那一行變空。",
+        "fix": "<code>interval</code> 被提高到 100 ms：這是不可連線廣播的下限（藍牙 4.x 的規則；5.0 允許 20，信標仍保持在 100 以上）。"
+      },
+      "8": {
+        "does": "開發板多久喊一次。點按切換到 <b>air</b> 和 <b>budget</b> 檢視，分別檢視。",
+        "see": "<code>+ … every 1000 ms</code>；nRF Connect 的間隔列（Android）或 RSSI 圖表更新變慢；budget 裡紐扣電池的壽命從幾周跳到幾年。",
+        "fix": "<code>interval 20</code> 在 connectable off 時被拒絕：先把 connectable 開啟。"
+      },
+      "9": {
+        "does": "以 dBm 為單位的發射功率（shell 內建指令）。越低 = 距離越短、電流越小。",
+        "see": "在同樣的距離上，nRF Connect 的 RSSI 下降約 20 dB；name 模式的發射功率欄位也會變化。",
+        "fix": ""
+      },
+      "10": {
+        "does": "停止廣播。開發板變得不可見。",
+        "see": "<code>- advertising off: the board is invisible</code>；幾秒後 nRF Connect 會把它置灰。",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "建置一個廣播包",
+        "intro": "你新增的每個欄位都要佔用它的資料加 2 個位元組（長度和型別）。把每個欄位放進廣播、放進掃描回應（僅在掃描方索取時傳送），或者不放，並觀察 31 位元組的預算被填滿。開發板的四種模式是預設。"
+      },
+      "1": {
+        "title": "掃描方什麼時候能聽到？",
+        "intro": "開發板在通道 37、38 和 39 上依次傳送每個廣播事件，每次的間隔再加上隨機的 0-10 ms。手機一次只聽一個通道，在每個掃描間隔中聽一個視窗那麼久。拖動這些數字，數一數能捕捉多少。把隨機延遲關掉，看看它為什麼存在。"
+      },
+      "2": {
+        "title": "螢幕上顯示什麼",
+        "intro": "四個檢視。按一下切換到下一個檢視；在任何地方按兩下會把一次按鍵計入封包；長按開啟或關閉廣播。"
+      }
+    },
+    "steps": [
+      "接線與 B1 相同。燒錄 <code>ble-lab-b2</code> 並開啟監視器。<b>檢查點 1：</b><code>bench ADV_IND every 100 ms, 24+7 B</code>。",
+      "在手機上安裝 nRF Connect（或 LightBlue），找到 <b>Bench B2</b>；點開它，不要連線。<b>檢查點 2：</b>Manufacturer data 0xFFFF，位元組每秒都在變化。",
+      "對開發板的按鈕按兩下幾次。<b>檢查點 3：</b>手機上的按鍵計數器在沒有任何連線的情況下發生了變化。",
+      "試試 <code>mode ibeacon</code>（Android 能看到）和 <code>mode url</code>。與上面的建置器對比：哪些欄位移到了掃描回應裡，為什麼？",
+      "<code>connectable off</code>、<code>scanresp off</code>。<b>檢查點 4：</b>ADV_NONCONN_IND，手機上沒有 Connect 按鈕。",
+      "點按切換到 <b>air</b> 和 <b>budget</b>，然後試試 <code>interval 1000</code> 和 <code>power -12</code>。<b>檢查點 5：</b>你能說出每項設定的代價和換來的好處。"
+    ],
+    "note": "附近的任何人都能讀到開發板廣播的內容：絕不要把任何私密的東西放進廣播裡。0xFFFF 是藍牙技術聯盟 (Bluetooth SIG) 保留給測試用的公司 ID，在工作臺上沒問題，用在產品上則不行。iPhone 上的 App完全看不到 iBeacon 訊框（iOS 會把它們從掃描中移除），所以請在 Android 上，或者用第二塊開發板執行 B1 來測試這個模式。budget 檢視是對典型紐扣電池信標晶片在所述假設下的估算：這塊 ESP32-S3 開發板本身在螢幕亮著時約耗電 80 mA，對紐扣電池來說太大了。同一個無線電聽不到自己，所以在這個實驗裡由手機擔任掃描方。"
+  },
+  "B3": {
+    "title": "連線與對話",
+    "heading": "你的手機連線、讀取並寫入",
+    "goal": "廣播是在喊話；<b>連線</b>則是私下交談。手機（<i>中心裝置</i>）連線到開發板（<i>周邊裝置</i>），從此它們按固定的節拍，也就是連線間隔，在 37 個資料通道上跳頻相會。開發板上有一個小型資料庫，即 <b>GATT</b> 表：Bench 服務，包含 LED、Message、Button、Temperature 和 Uptime。在 nRF Connect 或 LightBlue 中，你可以寫入 LED 的顏色，把一條訊息顯示到螢幕上，讀取晶片的溫度，並訂閱按鈕。",
+    "goalLine": "透過藍牙用手機控制開發板，並在 gatt 檢視上看到每一次操作的到來。",
+    "goalCheck": [
+      "nRF Connect（或 LightBlue）顯示 <b>Bench B3</b>，連線後列出 Bench 服務，其中有五個命名的特徵值，以及 Device Information 和 Battery。",
+      "向 <b>LED</b> 寫入 <code>FF5000</code> 會讓板載 LED 變成橙色，gatt 檢視上的 LED 行閃藍色。",
+      "向 <b>Message</b> 寫入文字，會在 message 檢視上大字顯示。",
+      "訂閱 <b>Button</b> 之後，開發板上的每次點選都會作為通知到達手機；Temperature 每 2 秒通知一次。",
+      "<b>link</b> 檢視顯示連線間隔、MTU 和 RSSI，<code>params slow</code> 會讓間隔明顯變化。"
+    ],
+    "learn": [
+      "中心裝置與周邊裝置",
+      "GATT：服務與特徵值",
+      "UUID（16 位與 128 位）",
+      "讀 · 寫 · 通知",
+      "CCCD（訂閱）",
+      "MTU",
+      "連線間隔"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "BLK"
+      },
+      "2": {
+        "role": "RES"
+      },
+      "3": {
+        "role": "DC"
+      },
+      "4": {
+        "role": "CS"
+      },
+      "5": {
+        "role": "SDA"
+      },
+      "6": {
+        "role": "SCL"
+      },
+      "7": {
+        "role": "GND"
+      },
+      "8": {
+        "role": "BTN"
+      },
+      "9": {
+        "role": "BOOT"
+      }
+    },
+    "commands": {
+      "0": {
+        "does": "建置 B3 實驗並寫入開發板。",
+        "see": "<b>gatt</b> 檢視有五行；無線電圖示顯示圓環：正在廣播。",
+        "fix": "「Failed to connect」：按住 BOOT，點按 RST，鬆開 BOOT，再執行一次。"
+      },
+      "1": {
+        "does": "開啟序列埠監視器。",
+        "see": "<code>- advertising as \"Bench B3\"</code>，然後是指令列表。",
+        "fix": ""
+      },
+      "2": {
+        "does": "你的手機連線上來。安裝 nRF Connect for Mobile（Nordic 出品，免費；iPhone 和 Android 都有）或 LightBlue。在 iPhone 上，永遠不要從「設定 → 藍牙」裡連線：應由應用來連線。",
+        "see": "監視器：<code>+ connected: 5A:3C:…</code> 和 <code>- interval 30.00 ms …</code>，很快還有 <code>- MTU 255: 252 bytes of data per packet</code>。無線電圖示變成兩個圓環，LED 穩定顯示藍色。",
+        "fix": "沒有列出 Bench B3？滾動一下，或者按名稱 「Bench」 過濾。仍然沒有：<code>adv on</code>。"
+      },
+      "3": {
+        "does": "寫入 3 個位元組：紅 FF，綠 50，藍 00。",
+        "see": "<code>&lt; write LED FF 50 00</code>；板載 LED 發出橙色光；LED 行閃藍色並顯示顏色色塊。",
+        "fix": "<code>LED wants 3 bytes, got 1</code>：選擇 Byte Array，而不是 Text 或 UINT8。"
+      },
+      "4": {
+        "does": "寫入 UTF-8 文字（最多 40 位元組）。",
+        "see": "<code>&lt; write Message \"hello bench\"</code>；點按切換到 <b>message</b> 檢視：大字顯示，「written 3s ago」。",
+        "fix": "帶重音的字母會顯示成方塊：螢幕字型只支援純 ASCII。"
+      },
+      "5": {
+        "does": "訂閱會把 01 00 寫入 Button 的 CCCD。之後每個手勢都會推送一個 3 位元組的值：手勢、計數（2 位元組）。",
+        "see": "<code>&lt; subscribe Button (CCCD = 1)</code>，然後每次點選是 <code>&gt; notify Button: click #3</code>；手機顯示 <code>01-03-00</code>。Button 行上出現一個鈴鐺。",
+        "fix": "監視器裡出現 <code>(nobody subscribed)</code>：先訂閱。"
+      },
+      "6": {
+        "does": "讀取 2 個位元組（°C × 100，小端序）。2904 描述符告訴應用如何顯示它。",
+        "see": "nRF Connect 顯示 <code>41.42 °C</code>（原始值 <code>2E-10</code>）；訂閱之後，它每 2 秒更新一次。",
+        "fix": ""
+      },
+      "7": {
+        "does": "請求手機使用 100-200 ms 的間隔（並允許開發板跳過 4 個事件），然後改為 15-30 ms。由手機來決定。",
+        "see": "<code>- new params: 112.50 ms, latency 4</code>；<b>link</b> 檢視上的圓點變慢。通知現在成批到達。",
+        "fix": "<code>params</code> 被拒絕或被忽略：iPhone 會拒絕某些值；幾秒後再試一次。"
+      },
+      "8": {
+        "does": "結束通話。開發板會自己重新開始廣播。",
+        "see": "<code>! disconnected 0x16: we hung up</code>；link 檢視會保留斷開的原因。",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "從廣播到對話，一步步走一遍",
+        "intro": "在 nRF Connect 中點 Connect，以及寫入 LED 或開發板通知一次點選時會發生什麼。每一步都顯示真實的 ATT 位元組：第一個位元組是操作碼，接下來兩個是控制代碼（開發板表中的行號），其餘是數值。"
+      },
+      "1": {
+        "title": "Bench 服務，即時演示",
+        "intro": "開發板的 GATT 表，就像 nRF Connect 裡顯示的那樣。按一個操作來傳送它：封包穿過去，開發板的那一行像在 gatt 檢視上一樣亮起，位元組會在下方被解碼。"
+      },
+      "2": {
+        "title": "螢幕上顯示什麼",
+        "intro": "四個檢視。按一下切換到下一個檢視；每個手勢（按一下、按兩下、長按）也會作為 Button 通知傳送給已訂閱的手機。在 gatt 和 message 檢視上按兩下會額外傳送一次點選。"
+      }
+    },
+    "steps": [
+      "接線與 B1 相同。燒錄 <code>ble-lab-b3</code>，開啟監視器。<b>檢查點 1：</b><code>advertising as \"Bench B3\"</code>。",
+      "在手機上安裝 nRF Connect（或 LightBlue），找到 <b>Bench B3</b> 並連線。<b>檢查點 2：</b>監視器裡顯示 <code>connected</code>，手機上看到帶有 LED、Message、Button、Temperature 和 Uptime 的 Bench 服務。",
+      "向 LED 寫入 <code>FF5000</code>，向 Message 寫入一段文字。<b>檢查點 3：</b>LED 是橙色，訊息顯示在螢幕上。",
+      "訂閱 Button 和 Temperature，然後點按開發板的按鈕。<b>檢查點 4：</b>數值到達手機；gatt 檢視上出現鈴鐺。",
+      "點按切換到 <b>link</b> 檢視，試試 <code>params slow</code> / <code>params fast</code> 和 <code>phy 2m</code>。<b>檢查點 5：</b>螢幕上的間隔發生變化。",
+      "輸入 <code>led auto</code>，把 LED 還給無線電狀態指示，然後輸入 <code>disconnect</code>。"
+    ],
+    "note": "附近的任何人都可以連線 Bench B3 並改變 LED：這裡還沒有配對，一切都以明文傳輸。這是 B4 的內容。iPhone 會快取裝置的 GATT 表：如果後面的實驗改變了表，而 iPhone 還顯示舊的行，請把藍牙關掉再開啟。ESP32-S3 只有一個無線電：B3 不使用 Wi-Fi，所以不必擔心共存問題。"
+  },
+  "B4": {
+    "title": "配對與信任",
+    "heading": "讓連線變得私密，並記住誰被允許",
+    "goal": "在 B3 中，附近的任何人都能連線並讀取每一個位元組。B4 增加了一個 <b>Vault</b> 特徵值，開發板只在<b>加密且經過認證</b>的連線上提供它。從手機上存取它，<b>配對</b>就會開始：配對碼會大大地顯示在 TFT 上，或者兩塊螢幕顯示相同的六位數字，由你用按鈕確認。之後開發板會<b>繫結</b>：它把金鑰儲存在 flash 中，能在手機不斷變化的私有位址背後認出你的手機，並可以拒絕其他所有人。",
+    "goalLine": "用三種方式分別配對你的手機，讀取 Vault，並把開發板鎖定給你的手機。",
+    "goalCheck": [
+      "使用 <code>pair passkey</code> 時，在手機上讀取 Vault 會彈出輸入配對碼的提示，TFT 顯示六位數字，輸入之後手機讀到 <b>the bench's secret: 42</b>。",
+      "<b>ceremony</b> 檢視逐階段填滿，直到 <b>bonded</b>，標題欄顯示一把紫色的鎖和一把琥珀色的鑰匙。",
+      "使用 <code>pair justworks</code>（在 <code>forget all</code> 並讓手機忘記這塊開發板之後），連線是加密的，但 Vault 仍被拒絕：你能解釋為什麼。",
+      "使用 <code>pair compare</code> 時，你在開發板上點一下、在手機上點一下，來接受匹配的數字。",
+      "執行 <code>allow bonded</code> 之後，你的手機仍然能連線，而第二部手機（或讓同一部手機忘記開發板之後）不能。"
+    ],
+    "learn": [
+      "配對與繫結",
+      "IO 能力",
+      "Just Works · Passkey · Numeric Comparison",
+      "LE Secure Connections (ECDH)",
+      "MITM 防護",
+      "LTK 與 IRK",
+      "私有位址",
+      "過濾接受列表"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "BLK"
+      },
+      "2": {
+        "role": "RES"
+      },
+      "3": {
+        "role": "DC"
+      },
+      "4": {
+        "role": "CS"
+      },
+      "5": {
+        "role": "SDA"
+      },
+      "6": {
+        "role": "SCL"
+      },
+      "7": {
+        "role": "GND"
+      },
+      "8": {
+        "role": "BTN"
+      },
+      "9": {
+        "role": "BOOT"
+      }
+    },
+    "commands": {
+      "0": {
+        "does": "建置 B4 實驗並寫入開發板。",
+        "see": "<b>ceremony</b> 檢視：「Waiting for a phone to connect...」 和八個灰色的階段。",
+        "fix": "「Failed to connect」：按住 BOOT，點按 RST，鬆開 BOOT，再執行一次。"
+      },
+      "1": {
+        "does": "開啟序列埠監視器。",
+        "see": "<code>- pairing: Passkey · lock off · anyone may connect</code>，然後是指令列表。配對方式儲存在 flash 裡：重新燒錄 B4 後它依然保留。",
+        "fix": ""
+      },
+      "2": {
+        "does": "Vault 會以 「Insufficient Authentication」 拒絕明文連線；手機的反應是開始配對。",
+        "see": "手機要求輸入一個碼；TFT 顯示 <b>PASSKEY ENTRY</b> 和六位數字；監視器顯示 <code>! passkey 482915: type it on the other device</code>。ceremony 檢視的第 1-5 階段被填滿，「check」 以琥珀色閃動。",
+        "fix": "iPhone 上沒有提示：再讀一次 Vault。在 Android 上，提示可能是一條通知。"
+      },
+      "3": {
+        "does": "雙方逐位核對配對碼（20 輪確認和隨機值），然後加密並交換金鑰。",
+        "see": "<code>+ secured: authenticated, bonded, key 16 B</code>、<code>- identity: 4C:…</code>；手機讀到 <b>the bench's secret: 42</b>。標題欄出現鎖和鑰匙圖示；ceremony 軌道完成。",
+        "fix": "<code>x … confirm failed: wrong passkey</code>：輸錯了。再讀一次 Vault 以獲得新的碼。"
+      },
+      "4": {
+        "does": "已繫結的手機擁有金鑰：無需配對過程，直接開始加密。",
+        "see": "ceremony 檢視顯示 <b>stored keys: bonded before, no ceremony</b>，並從 connect 直接跳到 encrypted。",
+        "fix": ""
+      },
+      "5": {
+        "does": "按身份位址列出已繫結的裝置（IRK 會把手機的私有位址解析成它）。",
+        "see": "<code>1 bonded device …</code> 和 <code>1  4C:…  random static</code>（iPhone 和大多數 Android 使用隨機靜態身份）。<b>bonds</b> 檢視會用 「&lt;- here」 標出它。",
+        "fix": ""
+      },
+      "6": {
+        "does": "刪除開發板上的繫結。手機上仍然保留著它那一半：在「設定 → 藍牙」中忘記該裝置（iPhone：ⓘ → 忽略此裝置；Android：齒輪 → 取消配對；macOS：右鍵 → 忘記）。",
+        "see": "<code>! forgot every bond</code>、<code>- now forget \"Bench B4\" on the phone too</code>。如果你跳過手機這一步：<code>x ENC_CHANGE failed 0x206: key missing: one side forgot the bond</code>。",
+        "fix": ""
+      },
+      "7": {
+        "does": "開發板現在宣告「無輸入、無輸出」：沒有人能核對任何東西。連線會被加密，但沒有經過認證。",
+        "see": "<code>+ secured: Just Works, bonded</code>，一把紫色的鎖，但讀取 Vault 又失敗了，提示 Insufficient Authentication：Vault 要求 MITM 防護。",
+        "fix": "這就是本課的要點：Just Works 能擋住竊聽者，擋不住中間人。"
+      },
+      "8": {
+        "does": "兩塊螢幕顯示相同的六位數字。在開發板上按一下表示「是」，長按表示「否」；手機上有它自己的按鈕。",
+        "see": "TFT 上顯示 <b>NUMERIC COMPARISON</b>，手機上是同一個數字；兩邊都選「是」之後：<code>+ secured: authenticated, bonded</code>。",
+        "fix": "長按（否）會以 <code>numbers didn't match: said no</code> 結束。"
+      },
+      "9": {
+        "does": "只有已繫結的身份才會進入過濾接受列表；控制器用儲存的 IRK 解析每個私有位址，並拒絕其餘的。",
+        "see": "<code>+ only bonded phones may connect (saved)</code>。你的手機能連線；另一部手機（或你自己忘記之後的手機）根本連不上。",
+        "fix": "把自己鎖在外面了：透過序列埠輸入 <code>allow anyone</code>。"
+      },
+      "10": {
+        "does": "LED 和 Message 也需要加密連線。許可權是 GATT 表的一部分，在啟動時一次性建好，所以開發板會儲存設定並重啟。",
+        "see": "<code>lock on saved. … the board restarts now...</code>；之後，未配對的手機寫入 LED 也會觸發配對。",
+        "fix": "iPhone 顯示舊的許可權：把藍牙關掉再開啟（它會快取這張表）。"
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "用哪種配對方式？取決於雙方",
+        "intro": "配對開始時，每一方都會說出自己能做什麼：顯示一個數字、輸入一個數字、按「是」或「否」，或者什麼都不能做。兩邊的回答決定了配對方式。選擇手機和開發板的能力（開發板的能力由 <code>pair</code> 設定），看看誰顯示、誰輸入。"
+      },
+      "1": {
+        "title": "一次配對，逐包來看",
+        "intro": "手機讀取 Vault 時在空中傳輸的安全管理協定 (SMP) 訊息，以及它們的真實位元組。各種方式只有中間一段不同：人如何證明中間沒有第三方。"
+      },
+      "2": {
+        "title": "螢幕上顯示什麼",
+        "intro": "五個檢視。按一下切換到下一個檢視；按兩下執行頁尾中的操作（secure、bonds、press）。當數字等待比對時，按鈕改為用來回答：按一下 = 是，長按 = 否。"
+      }
+    },
+    "steps": [
+      "接線與 B3 相同。燒錄 <code>ble-lab-b4</code> 並開啟監視器。<b>檢查點 1：</b>啟動資訊中有 <code>pairing: Passkey</code>。",
+      "在 nRF Connect 中連線並讀取 <b>Vault</b>。輸入 TFT 上的六位數字。<b>檢查點 2：</b>手機讀到了秘密；ceremony 檢視完成；標題欄有鎖和鑰匙。",
+      "斷開再重新連線。<b>檢查點 3：</b>「stored keys」：這次不需要配對碼。",
+      "執行 <code>forget all</code>，並讓手機忘記這塊開發板。<code>pair justworks</code>，讀取 Vault。<b>檢查點 4：</b>已加密，卻被拒絕。為什麼？",
+      "再次在兩邊都忘記，<code>pair compare</code>，讀取 Vault 並點選確認。<b>檢查點 5：</b>已認證並已繫結。",
+      "<code>allow bonded</code>。<b>檢查點 6：</b>你的手機能連線；在手機上忘記它之後就連不上了。最後用 <code>allow anyone</code> 收尾。"
+    ],
+    "note": "配對有兩半：每當你在開發板上 <code>forget</code>，也要在手機上忘記這塊開發板（iPhone：設定 → 藍牙 → ⓘ → 忽略此裝置；Android：藍牙 → 齒輪 → 取消配對；macOS：系統設定 → 藍牙 → 右鍵 → 忘記），否則下一次連線會因 「key missing」 而失敗。如果只有手機忘記了，NimBLE 會接受新的配對並自動替換舊的繫結（重複配對）。配對方式、鎖和 allow 設定儲存在 flash 中（命名空間 b4），重啟後依然保留。NimBLE 不會逐個上報特性、方式和金鑰交換這幾個階段：ceremony 檢視在後面的階段證明它們發生過之後，把它們畫成推斷出來的（一個圓環）。開發板出廠時的秘密是 「the bench's secret: 42」；<code>vault &lt;text&gt;</code> 會修改它，直到下次重啟。"
+  },
+  "B5": {
+    "title": "手機 App",
+    "heading": "你自己的應用，直連開發板",
+    "goal": "nRF Connect 是一把螺絲刀；現在你要自己造工具。<b>esp-labs/apps/ble-app</b> 是一個使用 <b>Web Bluetooth</b> 的小型 React 應用程式：瀏覽器本身成為 GATT 客戶端，所以你 Mac 或手機上的一個網頁就能與開發板通訊，不需要 Wi-Fi、伺服器或應用商店。韌體保留 B3 的 Bench 服務，並增加四個特徵值：一塊可以在手機上塗畫的 <b>Canvas</b>，每秒推送五次的 <b>Sensors</b>，以無線電允許的最快速度推送通知的 <b>Speed</b> 測速，以及在你觀察速度變化的同時改變連線的 <b>Link</b> 控制。",
+    "goalLine": "透過網頁控制並塗畫開發板，並測量你的連線實際每秒能傳多少位元組。",
+    "goalCheck": [
+      "應用的 Connect 分頁列出 Bench 服務，包括 LED … Uptime，以及 Canvas、Sensors、Speed 和 Link (ba5e0010-0013)，它的位元組日誌顯示每一次操作。",
+      "在 Sketch 分頁中畫的一筆，會在不到一秒內出現在開發板的 <b>sketch</b> 檢視上。",
+      "Live 分頁繪製四條曲線；碰一下接在 GPIO 1 上的杜邦線，touch 曲線會跳起來。",
+      "50 kB 的測速執行結束時，應用中顯示一個 kB/s 的數字，開發板的 <b>speed</b> 檢視上則以一根柱子顯示同一次執行；選擇 <b>Fast interval</b> 或 <b>2M PHY</b> 之後，下一次執行明顯更快（或者你能說出為什麼沒有）。"
+    ],
+    "learn": [
+      "Web Bluetooth",
+      "JavaScript 中的 GATT 客戶端",
+      "無回應寫入",
+      "二進位協定",
+      "通知流",
+      "吞吐量 = MTU × 封包數 ÷ 間隔",
+      "2M PHY 與長封包"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "BLK"
+      },
+      "2": {
+        "role": "RES"
+      },
+      "3": {
+        "role": "DC"
+      },
+      "4": {
+        "role": "CS"
+      },
+      "5": {
+        "role": "SDA"
+      },
+      "6": {
+        "role": "SCL"
+      },
+      "7": {
+        "role": "GND"
+      },
+      "8": {
+        "role": "BTN"
+      },
+      "9": {
+        "role": "BOOT"
+      }
+    },
+    "commands": {
+      "0": {
+        "does": "建置 B5 實驗並寫入開發板。",
+        "see": "<b>sketch</b> 檢視：「Open the ble-app, connect」。無線電圖示顯示圓環：以 <b>Bench B5</b> 的名義在廣播。",
+        "fix": "「Failed to connect」：按住 BOOT，點按 RST，鬆開 BOOT，再執行一次。"
+      },
+      "1": {
+        "does": "一次性安裝應用（React、Vite、TypeScript，精確版本），並在 <code>http://localhost:5177</code> 提供服務。沒有伺服器程式碼：Vite 只是把頁面交給瀏覽器。",
+        "see": "<code>➜ Local: http://localhost:5177/</code>",
+        "fix": "埠被佔用：另一個實驗的應用正在執行；停掉它，或者用 <code>pnpm dev --port 5178</code>。"
+      },
+      "2": {
+        "does": "瀏覽器內建的裝置選擇器會開啟（網頁永遠不能自己連線）。它列出帶有 Bench 服務的開發板、名稱以 「Bench」 開頭的裝置，或 BLE-MIDI 樂器。",
+        "see": "選擇 <b>Bench B5</b>。Connect 分頁顯示 GATT 瀏覽器；監視器列印 <code>+ connected: …</code>。第一次使用時，macOS 會詢問是否允許 Chrome 使用藍牙。",
+        "fix": "「Web Bluetooth isn't available here」：請使用 Chrome 或 Edge，並使用 localhost（而不是 127.0.0.1 或 Mac 的 IP）。"
+      },
+      "3": {
+        "does": "每次移動都會向 LED 寫入 3 個位元組（限速為每 80 ms 寫一次）；Send 向 Message 寫入最多 40 位元組的 UTF-8。",
+        "see": "LED 跟隨你的手指；監視器裡出現 <code>&lt; write LED 1F 5C 99</code> 這樣的行，藍色封包穿過應用的空中通道條。",
+        "fix": "執行 <code>led auto</code> 之後 LED 不動了：再轉一下色輪，開發板會把 LED 奪回去。"
+      },
+      "4": {
+        "does": "筆畫會作為<b>無回應寫入</b>傳送到 Canvas (ba5e0010)：每 50 ms 一次，每個點是 <code>02 cc cc w n</code> + 3 個位元組。開發板把它們排進 NimBLE 任務的佇列，並在 loop() 中繪製。",
+        "see": "開發板的 <b>sketch</b> 檢視上顯示同樣的線條；底部是 <code>412 cmds 96 writes 9120 B</code>。",
+        "fix": "開發板上出現 <code>DROPPED</code>：你畫得比 16 個排隊的寫入還快；不會出問題，只是缺了幾筆。<code>sketch: a command was cut off</code>：應用退回到了 20 位元組的寫入 (MTU 23)。"
+      },
+      "5": {
+        "does": "訂閱 Sensors：每 200 ms 12 個位元組（溫度、觸控、空閒堆記憶體、RSSI、序號）。",
+        "see": "應用裡有四條移動的曲線，開發板的 <b>live</b> 檢視上有同樣的四個迷你曲線；「notifying the app: 230 sent」。碰一下導線的自由端，觸控值會跳高几千。",
+        "fix": "觸控曲線是平的：GPIO 1 沒有接線；任何杜邦線都行，裸露的金屬端就是感測器。"
+      },
+      "6": {
+        "does": "訂閱 Speed 並寫入 <code>01 50 C3 00 00</code>。開發板上的一個小任務會以 (MTU − 3) 位元組的封包通知 50,000 位元組，直到協定堆疊緩衝區滿了，等待，再繼續；最後是一份 15 位元組的摘要。",
+        "see": "監視器：<code>&lt; write Speed: start 50000 bytes</code>，然後是 <code>+ speed: 50000 B in 2310 ms = 21.6 kB/s</code>。應用裡顯示一根相同數量級的柱子。",
+        "fix": "<code>speed: subscribe to Speed (ba5e0012) first</code>：透過序列埠執行之前，先開啟一次 Speed 分頁。"
+      },
+      "7": {
+        "does": "向 Link 寫入 1、3 和 5：開發板請求中心裝置使用 7.5–15 ms 的間隔、2M PHY 和 251 位元組的無線電封包。",
+        "see": "<code>- new params: 15.00 ms …</code>、<code>- PHY now 2M / 2M</code>；下一次執行更快。開發板的 <b>speed</b> 檢視為每次執行保留一根柱子，並標註 MTU、間隔和 PHY。",
+        "fix": "沒有變化：由中心裝置決定。macOS 通常保持 15 ms 並允許 2M；有些手機會拒絕 7.5 ms 或 2M。這就是要點：周邊裝置只能提出請求。"
+      },
+      "8": {
+        "does": "cloudflared 快速隧道會給應用一個 <code>https://…trycloudflare.com</code> 位址，因為手機只在 https 下允許 Web Bluetooth。",
+        "see": "Android：Chrome 開啟它，同樣的選擇器會出現。iPhone：用免費的 <b>Bluefy</b> 瀏覽器開啟它（Safari 沒有 Web Bluetooth）。",
+        "fix": "Bluefy 提示頁面不安全：請使用 https 位址，而不是 http。"
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "一次顏色改變，從 JavaScript 到 LED",
+        "intro": "從應用裡的 <code>navigator.bluetooth.requestDevice()</code> 到 LED 改變顏色之間發生了什麼，以及通知如何回到圖表裡。每一步都顯示真實的呼叫或空中的真實位元組。選一個流程，然後用 ◀ ▶ 步進。"
+      },
+      "1": {
+        "title": "它能有多快？",
+        "intro": "吞吐量由四個數字決定：每個封包能有多大 (MTU)、兩個無線電多久會面一次（連線間隔）、一次會面能裝下多少個封包，以及位元飛得多快 (PHY)。拖動滑桿：時間線按比例畫出三個連線事件和其中的每個封包，結果與 Speed 分頁測量的是同一個公式。"
+      },
+      "2": {
+        "title": "螢幕上顯示什麼",
+        "intro": "六個檢視。按一下切換到下一個；在 sketch 上按兩下會清除畫面，在 speed 上會開始一次 50 kB 的執行，在 gatt 上會傳送一次 Button 點選。每個手勢也會像 B3 中那樣作為 Button 通知傳送給應用。"
+      }
+    },
+    "steps": [
+      "接線與 B1 相同（螢幕，按鈕選用）。選用：在 GPIO 1 上接一根杜邦線，自由端懸空：這就是你的觸控感測器。",
+      "燒錄 <code>ble-lab-b5</code>。<b>檢查點 1：</b>sketch 檢視和廣播圓環。",
+      "啟動應用（先執行一次 <code>pnpm install</code>，然後 <code>pnpm dev</code>），在 Chrome 中開啟 <code>http://localhost:5177</code> 並連線 Bench B5。<b>檢查點 2：</b>GATT 瀏覽器列出九個 Bench 特徵值。",
+      "色輪、訊息，然後在 Sketch 裡畫點什麼。<b>檢查點 3：</b>你的畫出現在開發板上。",
+      "開啟 Live 並碰一下導線。<b>檢查點 4：</b>touch 曲線在應用和開發板上都跳了起來。",
+      "Speed：執行 50 kB，然後選 Fast interval + 2M PHY + Long packets 再執行一次。<b>檢查點 5：</b>兩根柱子；寫下兩個 kB/s 的數字，以及每次執行所用的間隔。",
+      "選用：執行 <code>pnpm tunnel</code>，在你的手機上重複一遍（Android 用 Chrome，iPhone 用 Bluefy）。把它的速度與 Mac 的比較。"
+    ],
+    "note": "仍然沒有配對：附近的任何人都能連線、塗畫並讀取感測器。如果把兩者結合起來，B4 的鎖在這裡同樣有效。應用只能看到你在瀏覽器選擇器裡選中的開發板，而且瀏覽器故意對網頁隱藏了一些標準服務。iPhone 和 Mac 會按位址快取裝置的 GATT 表：如果瀏覽器顯示的是 B3 的舊行，請把藍牙關掉再開啟。吞吐量主要取決於中心裝置：同一塊開發板用 Mac 往往比用手機快 2-4 倍。"
+  },
+  "B6": {
+    "title": "鍵盤與媒體",
+    "heading": "一個藍牙鍵盤，和一個控制音樂的遙控器",
+    "goal": "開發板變成一個真正的藍牙鍵盤：用的是每個無線鍵盤都有的同一個 HID 服務，所以手機、Mac 和 PC 都用自己的驅動來使用它。它的按鈕變成遙控器：播放/暫停和切歌（手機上的音樂可以透過你的 JBL 喇叭播放）、調節音量、翻幻燈片，或者輸入你從序列埠監視器傳送的文字。你來編寫告訴電腦我們的位元組是什麼意思的 Report Map，並看到為什麼鍵盤從不傳送字母，只傳送按鍵編號。",
+    "goalLine": "把開發板配對成鍵盤，用按鈕控制你的音樂，並以正確的佈局輸入文字。",
+    "goalCheck": [
+      "你的手機或 Mac 把 <b>Bench B6</b> 列為已連線的鍵盤，螢幕的狀態列顯示鎖（已加密）和鑰匙（已繫結）。",
+      "在 media 檢視上按一下會暫停和繼續你的音樂；按兩下會切到下一首；觸控 GPIO 2 會調大音量。",
+      "<code>type yes</code> 輸入的是 「yes」，而不是 「zes」：<code>layout</code> 要與電腦的鍵盤設定一致。",
+      "在 keys 檢視上，你可以把一次按鍵讀成位元組：修飾鍵位、按鍵編號，以及隨後全為零的釋放。"
+    ],
+    "learn": [
+      "基於 GATT 的 HID",
+      "Report Map",
+      "按鍵編號與字元",
+      "鍵盤佈局",
+      "Consumer Control（多媒體控制）",
+      "繫結",
+      "媒體遙控器"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "BLK"
+      },
+      "2": {
+        "role": "RES"
+      },
+      "3": {
+        "role": "DC"
+      },
+      "4": {
+        "role": "CS"
+      },
+      "5": {
+        "role": "SDA"
+      },
+      "6": {
+        "role": "SCL"
+      },
+      "7": {
+        "role": "GND"
+      },
+      "8": {
+        "role": "BTN"
+      },
+      "9": {
+        "role": "BOOT"
+      }
+    },
+    "commands": {
+      "0": {
+        "does": "建置 B6 實驗並燒錄（無需新下載：NimBLE 隨 B1 一起來了）。",
+        "see": "<code>ble-lab-b6: NimBLE 2.5.1 up</code>、<code>advertising as keyboard \"Bench B6\"</code>，以及指令列表。螢幕從 media 檢視開始：「pair me: Bluetooth settings &gt; Bench B6」。",
+        "fix": "「Failed to connect」：按住 BOOT，點按 RST，鬆開 BOOT，再執行一次。"
+      },
+      "1": {
+        "does": "你的手機或 Mac 連線上來，讀取 Report Map，請求配對（HID 需要加密），並儲存一份繫結，這樣下次會自動重新連線。",
+        "see": "<code>+ connected</code>，然後是 <code>+ secured: Just Works, bonded, key 16 B</code>。狀態列顯示相連的圓環、一把紫色的鎖和一把鑰匙。Mac 可能會開啟「鍵盤設定助理」：關掉它，或者按它要求的鍵，並選擇 ISO（德語）或 ANSI（美式）。",
+        "fix": "已列出但連不上：在這裡執行 <code>forget</code>，並且在手機上執行「忽略此裝置」，然後重新配對。通常的原因是隻有一邊保留了繫結。"
+      },
+      "2": {
+        "does": "在手機上開始播放音樂（輸出到它的喇叭、耳機或你的 JBL）。按一下 = 播放/暫停，按兩下 = 下一首，按住不足 2 秒 = 靜音，觸控 GPIO 2 / 1 上的導線（在 <code>touch on</code> 之後）= 音量調大 / 調小。",
+        "see": "圖示泛起漣漪，一個圓點沿著 開發板 → 手機 → 喇叭 移動，音樂隨之回應。監視器列印 <code>&gt; media key: play/pause (usage 0CD)</code>。",
+        "fix": "沒反應？應用必須擁有音訊焦點：先播放點什麼。在 Mac 上，Music/Spotify 會回應；瀏覽器分頁可能不會。"
+      },
+      "3": {
+        "does": "在已配對的裝置上開啟備忘錄（或任何文字框），然後在監視器裡輸入這個。開發板為每個字元排隊 2 個報告（按下、釋放），每訊框傳送 6 個，間隔 8 ms。",
+        "see": "「hello bench」 出現在手機或 Mac 上。typer 檢視的進度條被填滿，然後顯示 <code>typed 11 keys</code>。",
+        "fix": "只有這一行顯示 <code>not paired yet</code>？先配對。字母輸出不對：參見 <code>layout</code>。"
+      },
+      "4": {
+        "does": "告訴開發板電腦設定的是哪種佈局，這樣它才能為每個字元選對按鍵。儲存在 NVS 中。",
+        "see": "<code>layout German (QWERTZ) (saved)</code>。現在在德語 Mac 上 <code>type yes</code> 會輸出 「yes」。佈局中需要 AltGr/Option 才能輸入的字元（@ [ ] { } \\ | ~）會被跳過並給出警告。",
+        "fix": "仍然是 y/z 互換：電腦的佈局是另一種。檢查 Mac 選單欄裡的輸入法選單。"
+      },
+      "5": {
+        "does": "一個按鍵或一個組合鍵：修飾鍵（cmd、ctrl、alt、shift）加一個按鍵（enter、tab、esc、方向鍵、f1-f12、一個字母）。",
+        "see": "在 Mac 上會開啟 Spotlight（在接了鍵盤的 iPhone 上也會開啟搜尋）。keys 檢視顯示修飾鍵位元組 <code>08</code>（左 GUI）和按鍵 <code>2C</code>（空格）。",
+        "fix": "Windows：<code>key win+r</code> 會開啟「執行」，<code>key ctrl+alt+delete</code> 會開啟安全螢幕。"
+      },
+      "6": {
+        "does": "把一段文字儲存在 NVS 中；在 typer 檢視上按兩下（或單獨輸入 <code>snippet</code>）就會輸入它。一個迷你巨集鍵盤。",
+        "see": "<code>snippet saved</code>，文字顯示在 typer 檢視上。",
+        "fix": ""
+      },
+      "7": {
+        "does": "開啟一份簡報（Keynote、PowerPoint、處於演示模式的 Google Slides）。按一下 = 右箭頭（下一頁），按兩下 = 左箭頭，按住不足 2 秒 = b（黑屏）。",
+        "see": "螢幕上的幻燈片從你移動的那一側滑入；電腦上的簡報隨之翻頁。",
+        "fix": ""
+      },
+      "8": {
+        "does": "最近的幾個報告，逐位元組來看：修飾鍵位、按鍵編號，以及每次按鍵在開發板的佈局下會輸入什麼。",
+        "see": "<code>down mod 02 key 04 types 'A'</code>，然後是 <code>up all zero</code>，對應一個大寫 A。",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "一次按鍵，從按鈕到字母",
+        "intro": "在框裡輸入，或者按下面的一個鍵，然後跟著它走：開發板用它自己的佈局設定把字元變成按鍵編號，傳送 8 個位元組，電腦再用它自己的佈局把編號變回字元。把兩種佈局設成不同的，然後輸入 <code>yes</code>：這就是 <code>layout de</code> 要修復的那個 bug。"
+      },
+      "1": {
+        "title": "為什麼開發板不能直接播放到你的喇叭",
+        "intro": "你的 JBL 透過經典藍牙音訊播放音樂。ESP32-S3 只有低功耗藍牙，所以它不能向喇叭推流，但它可以作為播放音樂的那部手機的遙控器。按一個媒體鍵來跟蹤它，或者試試直連路徑，看看它在哪裡失敗。"
+      },
+      "2": {
+        "title": "螢幕上顯示什麼",
+        "intro": "六個檢視。media 和 slides 是模式：在那裡按鈕是遙控器（按一下、按兩下、按住），按住 2 秒會切換到下一個檢視。在其他檢視上，按一下照常切換到下一個。"
+      }
+    },
+    "steps": [
+      "螢幕接線相同。選用：在 GPIO 1 和 GPIO 2 上各接一根杜邦線，另一端懸空（用作音量的觸控鍵）。燒錄 <code>ble-lab-b6</code>。",
+      "在你的手機或 Mac 上開啟藍牙設定並配對 <b>Bench B6</b>。<b>檢查點 1：</b>狀態列有鎖和鑰匙，監視器裡顯示 <code>secured: Just Works, bonded</code>。",
+      "在手機上播放音樂（想的話可以輸出到你的 JBL）。在 media 檢視上：按一下、按兩下。<b>檢查點 2：</b>音樂暫停、繼續並切歌。",
+      "輸入 <code>touch on</code>（手別碰導線），然後觸控 GPIO 2 的導線。<b>檢查點 3：</b>音量調大了。",
+      "開啟備忘錄，把 <code>layout</code> 設成與電腦一致，然後輸入 <code>type yes, this is the bench</code>。<b>檢查點 4：</b>恰好出現這段文字。",
+      "按住按鈕 2 秒進入 slides，開啟一份簡報，一頁頁翻過去。",
+      "點按切換到 keys 檢視，讀一次按鍵：修飾鍵位、按鍵編號，然後是釋放。"
+    ],
+    "note": "當 iPhone 或 iPad 連線著硬體鍵盤時，它的螢幕鍵盤會隱藏：斷開開發板（或關閉藍牙）就能把它找回來。要取消配對，請在兩邊都忘記這塊開發板（這裡 <code>forget</code>，那裡「忽略此裝置」）。ESP32-S3 只有低功耗藍牙：它不能向喇叭或耳機推送音訊（那是經典藍牙，A2DP），所以開發板控制手機，由手機播放到你的 JBL。音量和曲目鍵會發給擁有音訊焦點的那個應用。各主機對 Option/AltGr 字元放在哪裡意見不一，所以德語對照表只輸入在 Mac 和 Windows 上都能以同樣方式輸入的字元。"
+  },
+  "B7": {
+    "title": "音樂",
+    "heading": "一個藍牙 MIDI 樂器",
+    "goal": "開發板透過低功耗藍牙變成一個 MIDI 樂器，使用標準的 BLE-MIDI 服務，GarageBand、Audio MIDI Setup、Android 合成器應用和 Chrome 都能識別它。MIDI 傳遞的是音符，不是聲音：另一端的合成器負責發聲（還可以把聲音送到你的 JBL）。你可以用按鈕、五根觸控線、序列埠指令和一臺 16 步鼓機來演奏；在另一端彈的音符會點亮開發板的鋼琴條和它的 LED。你會看到音符如何帶著時間戳被打包，以及為什麼連線間隔決定了延遲。",
+    "goalLine": "把開發板上彈的音符送進合成器，並在開發板上看到合成器的音符。",
+    "goalCheck": [
+      "GarageBand（或 ble-app 的 Music 分頁）列出 <b>Bench B7</b>，點選按鈕時會發出聲音。",
+      "<code>tune twinkle</code> 播放曲子；<code>beat house</code> + <code>seq on</code> 在通道 10 上播放鼓點。",
+      "你在合成器鍵盤上彈的音符會把開發板的鋼琴條點亮成藍色，LED 會變成每個音符的顏色。",
+      "link 檢視顯示你的連線間隔，你能說出一個音符最多要等無線電多久。"
+    ],
+    "learn": [
+      "MIDI 訊息",
+      "BLE-MIDI 封包",
+      "時間戳",
+      "執行狀態 (running status)",
+      "連線間隔 = 延遲",
+      "電容式觸控",
+      "General MIDI 鼓"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "BLK"
+      },
+      "2": {
+        "role": "RES"
+      },
+      "3": {
+        "role": "DC"
+      },
+      "4": {
+        "role": "CS"
+      },
+      "5": {
+        "role": "SDA"
+      },
+      "6": {
+        "role": "SCL"
+      },
+      "7": {
+        "role": "GND"
+      },
+      "8": {
+        "role": "BTN"
+      },
+      "9": {
+        "role": "BOOT"
+      }
+    },
+    "commands": {
+      "0": {
+        "does": "建置 B7 實驗並燒錄。",
+        "see": "<code>advertising as MIDI instrument \"Bench B7\"</code>、指令列表，以及帶有五個琴鍵和一條鋼琴條的 keys 檢視。",
+        "fix": "「Failed to connect」：按住 BOOT，點按 RST，鬆開 BOOT，再執行一次。"
+      },
+      "1": {
+        "does": "macOS 把開發板當作 MIDI 裝置連線（它可能會要求配對：接受）。然後開啟 GarageBand 並選用軟體樂器：它能聽到每一個 MIDI 裝置。",
+        "see": "<code>+ connected</code>、<code>asked for a 7.5-15 ms interval (low latency)</code>、<code>+ a synth is listening (subscribed)</code>。keys 檢視顯示 「synth listening」。",
+        "fix": "iPhone/iPad：GarageBand → 開啟一個鍵盤 → 設定（齒輪）→ 高階 → 藍牙 MIDI 裝置 → Bench B7。Android：一個 BLE-MIDI 應用（例如 「MIDI BLE Connect」）加任意合成器。Chrome：ble-app 的 Music 分頁。"
+      },
+      "2": {
+        "does": "彈奏音階的下一個音（300 ms）。按兩下 = 和絃。按住不足 2 秒 = 所有音符關閉。",
+        "see": "GarageBand 發出聲音；琴鍵在鋼琴條上亮成紫色；捲簾畫出一根紫色條。",
+        "fix": "沒有聲音但顯示 「synth listening」：在 GarageBand 裡選一條軟體樂器軌道（不是音訊軌道），並把音量調大。"
+      },
+      "3": {
+        "does": "按目前速度安排一整首公有領域的曲子。loop() 在每個音符到點時傳送它。",
+        "see": "<code>tune twinkle: 14 notes, 8.4 s</code>，以及合成器發出的曲子。",
+        "fix": ""
+      },
+      "4": {
+        "does": "鼓機：4 種鼓 × 16 步，在 MIDI 通道 10 上，General MIDI 把鼓放在這裡（36 底鼓、38 軍鼓、42 踩鑔、39 拍手）。",
+        "see": "sequencer 檢視的播放頭沿著網格移動；GarageBand 播放鼓聲（選一條鼓組軌道才有真正的聲音）。",
+        "fix": "鼓聽起來像鋼琴音符：這條軌道的樂器不是鼓組。"
+      },
+      "5": {
+        "does": "GPIO 1、2、6、13、14 上的五根杜邦線（懸空的一端）成為五聲音階的琴鍵。測量基線時手不要碰。",
+        "see": "<code>touch on: 5 keys, pentatonic from C4</code>；碰一下導線的端頭會點亮它的琴鍵並發出音符，碰得越用力 = 聲音越大。",
+        "fix": "GPIO 13 和 14 是 RFID 路線裡 RC522 的導線：拔掉讀卡機，或者只用前三個琴鍵。"
+      },
+      "6": {
+        "does": "GarageBand（或 ble-app 的鋼琴）把 MIDI 以寫入的方式發回開發板。",
+        "see": "鋼琴條上亮藍色琴鍵，捲簾上出現藍色條，LED 變成音符的顏色，出現 <code>&lt; note E4 vel 96 ch 1</code> 這樣的行。",
+        "fix": "在 Mac 上，GarageBand 不會向 MIDI 裝置傳送：請使用 ble-app 的鋼琴，或帶 MIDI 輸出的 DAW。"
+      },
+      "7": {
+        "does": "解釋延遲：音符要等下一個連線事件。",
+        "see": "你的間隔（如果主機同意是 7.5-15 ms，在 Apple 裝置上常常是 11.25 或 15），以及一次按鍵被順延到下一個節拍。",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "一個音符，逐位元組來看",
+        "intro": "彈一彈這個小鍵盤（點選，或者按電腦上的 A 到 K 鍵）。在同一個連線事件內按下的音符共用一個封包。觀察包頭、時間戳、狀態位元組和執行狀態，這個技巧會省掉重複的狀態位元組。"
+      },
+      "1": {
+        "title": "為什麼音符要等待：連線間隔",
+        "intro": "已連線的裝置只能在連線事件時發言，每個間隔一次。選一個間隔並彈奏：每個音符都要等下一個事件。然後比較一臺音符一到就立刻播放的合成器，和一臺使用時間戳的合成器。"
+      },
+      "2": {
+        "title": "螢幕上顯示什麼",
+        "intro": "五個檢視。在 keys、sequencer 和 roll 上，按鈕就是樂器（按一下一個音符，按兩下一個和絃或啟動/停止鼓機，按住關閉所有音符，按住 2 秒切換到下一個檢視）。"
+      }
+    },
+    "steps": [
+      "螢幕接線相同。選用：在 GPIO 1、2、6、13、14 上接五根杜邦線（先拔掉 RC522）。燒錄 <code>ble-lab-b7</code>。",
+      "從 GarageBand（iPhone/iPad）、Audio MIDI Setup + GarageBand（Mac）、BLE-MIDI 應用（Android）或 ble-app 的 Music 分頁（Chrome）連線。<b>檢查點 1：</b>keys 檢視上顯示 「synth listening」。",
+      "點幾次按鈕，然後按兩下。<b>檢查點 2：</b>合成器發出音符和一個和絃。",
+      "<code>tune ode</code>，然後 <code>beat funk</code> 和 <code>seq on</code>。<b>檢查點 3：</b>一段曲子和一段鼓點律動。",
+      "彈合成器的鍵盤。<b>檢查點 4：</b>開發板上亮起藍色琴鍵，LED 變色。",
+      "開啟 link 檢視，讀出你的間隔。配上鼓點試試 <code>bpm 200</code> 並聽一聽：節奏還緊湊嗎？"
+    ],
+    "note": "MIDI 是指令，不是音訊：開發板自己從不發聲（它沒有喇叭）。合成器的音訊可以去任何能播放的地方，包括你的 JBL，透過手機或 Mac 自己的藍牙。Apple 主機通常會給 MIDI 分配 11.25-15 ms 的連線間隔，所以一個音符最多要等一個間隔；每個封包裡的時間戳能讓好的合成器仍然保持節奏。如果 Mac 要求配對，接受它：開發板允許 Just Works 繫結。內建的只有公有領域的曲子。"
+  },
+  "B8": {
+    "title": "主機",
+    "heading": "交換角色：你的鍵盤直接向開發板打字",
+    "goal": "到目前為止，手機或膝上型電腦是中心裝置，開發板負責應答。這裡，開發板成為中心裝置，就像你的膝上型電腦一樣。它找到可連線的裝置，建立連線，並探索它們的 GATT 表（只讀：僅限名稱、廠商和電池這樣的公開基本資訊）。然後它充當你自己的 BLE 鍵盤和滑鼠的主機：配對（開發板顯示配對碼，你在鍵盤上輸入），讀取鍵盤自己對其報告的描述（Report Map），訂閱，並把原始位元組變成螢幕上的文字和一個塗畫游標。",
+    "goalLine": "把你的 BLE 鍵盤與開發板配對，在它的螢幕上打字，並弄懂鍵盤傳送的每一個位元組。",
+    "goalCheck": [
+      "你在鍵盤上輸入配對碼之後，<code>host</code> 以 <code>+ hosting: keyboard media keys</code>（或 <code>mouse</code>）結束。",
+      "你輸入的內容顯示在 <b>keyboard</b> 檢視上；Shift、Ctrl、Alt 和 Cmd 在按住時亮起；<code>layout de</code> 會交換 Y 和 Z，並顯示 ä ö ü ß。",
+      "在 <b>reports</b> 檢視上，你能說出每個彩色位元組的含義：修飾鍵（琥珀色）、鍵碼（青色）、滑鼠 X（藍色）、Y（紫色）、滾輪（珊瑚紅）。",
+      "斷電重啟之後，開發板會自動重新連線已繫結的鍵盤，無需配對碼。"
+    ],
+    "learn": [
+      "中心裝置角色",
+      "服務發現",
+      "基於 GATT 的 HID (HOGP)",
+      "Report Map 解析",
+      "作為中心裝置輸入配對碼",
+      "CCCD 訂閱",
+      "鍵碼與佈局",
+      "繫結與重連"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "BLK"
+      },
+      "2": {
+        "role": "RES"
+      },
+      "3": {
+        "role": "DC"
+      },
+      "4": {
+        "role": "CS"
+      },
+      "5": {
+        "role": "SDA"
+      },
+      "6": {
+        "role": "SCL"
+      },
+      "7": {
+        "role": "GND"
+      },
+      "8": {
+        "role": "BTN"
+      },
+      "9": {
+        "role": "BOOT"
+      }
+    },
+    "commands": {
+      "0": {
+        "does": "建置 B8 實驗並寫入開發板。NimBLE-Arduino 已經下載好了 (B1)。",
+        "see": "<code>ble-lab-b8: NimBLE 2.5.1 up, address …</code>、指令列表，以及逐漸被填滿的 <b>devices</b> 檢視。",
+        "fix": "「Failed to connect」：按住 BOOT，點按 RST，鬆開 BOOT，再執行一次。"
+      },
+      "1": {
+        "does": "開啟序列埠監視器（並重啟開發板）。",
+        "see": "<code>Bluetooth lab B8 Host (ble-lab-b8)</code> 和各個指令。",
+        "fix": ""
+      },
+      "2": {
+        "does": "已經與你的 Mac 配對的鍵盤只會與 Mac 通訊。配對模式會讓它向所有人廣播：通常是按住藍牙鍵或通道鍵 3 秒，直到指示燈快速閃爍。多通道鍵盤：選一個你的 Mac 沒有使用的通道。",
+        "see": "<b>devices</b> 檢視：你的鍵盤靠近頂部，帶有鍵盤圖示和 <b>HID</b>。",
+        "fix": "不在那裡：它仍然連著 Mac（切換通道，或者在 Mac 的藍牙設定裡移除它）。Apple Magic Keyboard 使用經典藍牙，永遠不會出現在這裡。"
+      },
+      "3": {
+        "does": "列印可連線的裝置，訊號最強的排最前。信標不在其中：它們無法被連線。",
+        "see": "<code>  1   -48 dBm  keyboard/mouse  C4:7D:2A:91:0E:33  Bench Keys  [HID]</code>",
+        "fix": ""
+      },
+      "4": {
+        "does": "向裝置 1 傳送 CONNECT_IND（現在由開發板選擇連線時序），然後探索：發現每個服務、特徵值和描述符，並讀取公開的基本資訊。",
+        "see": "<code>&gt; CONNECT_IND to Bench Keys</code>、<code>+ connected: we are the central</code>、<code>+ 5 services, 19 characteristics in 820 ms</code>、<code>- it is a keyboard/mouse (1812): type host</code>。<b>explore</b> 檢視顯示這棵樹；HID 的值顯示 「locked until paired」。",
+        "fix": "<code>no answer from …</code>：它停止了廣播（配對模式大約 60 秒後超時）：重新開啟它。"
+      },
+      "5": {
+        "does": "配對（繫結 + 配對碼 + Secure Connections），讀取 Report Map，透過 2908 描述符找到每個輸入報告並訂閱（向它的 CCCD 寫入 01 00）。",
+        "see": "螢幕上出現六個大數字，以及 <code>! type 482915 on the keyboard, then Enter</code>。在鍵盤上輸入它們，按 Enter：<code>+ secured: passkey, bonded, key 16 B</code>、<code>&lt; Report Map: 72 bytes, 11 input fields</code>、<code>&gt; CCCD 01 00: report 1 (keyboard)</code>、<code>+ hosting: keyboard media keys</code>。檢視跳轉到 <b>keyboard</b>。",
+        "fix": "<code>pairing failed</code>：鍵盤退出了配對模式，或者它仍保留著與開發板的舊繫結：<code>forget</code>，在鍵盤一側把它移除（再次進入配對模式），<code>connect</code>，<code>host</code>。"
+      },
+      "6": {
+        "does": "每次按鍵都是一個通知：開發板把它與上一次比較，並加上新按下的鍵。Backspace 刪除，Enter 換行，Esc 清空。",
+        "see": "你的文字顯示在 <b>keyboard</b> 檢視上，帶有閃爍的游標；按住 Shift、Ctrl、Alt 或 Cmd 時，修飾鍵帽亮成琥珀色；媒體鍵會顯示一個紫色的提示。",
+        "fix": "字母不對（y 和 z 互換）？看下一條指令。"
+      },
+      "7": {
+        "does": "鍵碼是位置，不是字母。開發板用你選擇的佈局（美式或德語）把它們變成字元。",
+        "see": "<code>- layout German (QWERTZ): the same keys, other letters</code>。現在印著 Z 的鍵會得到 z，並出現 ä ö ü ß。",
+        "fix": ""
+      },
+      "8": {
+        "does": "原始輸入報告，最新的在底部，每個位元組按它所屬的 Report Map 欄位著色。",
+        "see": "<code>#1 kbd 02 00 0B 00 00 00 00 00</code>，其中 02 為琥珀色（Left Shift），0B 為青色（H 鍵），下面是解碼後的一行。",
+        "fix": ""
+      },
+      "9": {
+        "does": "Boot 協定：每個 BIOS 都能理解的固定 8 位元組格式，無需讀取 Report Map。與 report 協定對比。",
+        "see": "<code>&gt; CCCD 01 00: report 0 (boot keyboard)</code> 和 reports 檢視上的 <code>bootK</code> 行。<code>boot off</code> 會切換回去。",
+        "fix": "<code>no Protocol Mode: this device has no boot mode</code>：有些鍵盤不提供它。"
+      },
+      "10": {
+        "does": "滑鼠沒有按鍵，也沒有螢幕，所以配對會退回到 Just Works（沒有數字）。它的 Report Map 用它喜歡的任意位寬描述按鈕、X、Y 和滾輪。",
+        "see": "<code>+ secured: Just Works, bonded</code>、<code>+ hosting: mouse</code>，以及 <b>mouse</b> 檢視：左鍵塗畫，右鍵換顏色，中鍵清除，滾輪設定筆刷大小。",
+        "fix": "游標飛速掠過：那個滑鼠以很大的步長上報；開發板已經把它們減半了。"
+      },
+      "11": {
+        "does": "繫結（金鑰）儲存在 NVS 中。當鍵盤再次廣播時（按一個鍵喚醒它），開發板會認出它的位址並重新連線。",
+        "see": "<code>+ bonded Bench Keys is back: reconnecting</code>，然後是沒有配對碼的 <code>+ secured: …</code>，以及 <code>+ hosting</code>。",
+        "fix": "躲在不斷變化的私有位址 (RPA) 背後的鍵盤可能無法被識別：這時請手動執行 <code>connect</code> + <code>host</code>。"
+      },
+      "12": {
+        "does": "探索一個不是鍵盤的裝置。只讀取公開的基本資訊，不寫入任何東西。",
+        "see": "幾個服務，大多是一個很長的廠商 UUID，以及 <code>- JBL app's own service only: audio uses Classic BT</code>。這個喇叭的音訊本身從不走 BLE，而這塊晶片又沒有經典藍牙。",
+        "fix": "不在列表裡：它只在 JBL 應用查詢時，或者剛上電之後才會廣播 BLE。"
+      },
+      "13": {
+        "does": "刪除開發板上的所有繫結。",
+        "see": "<code>- every bond deleted: pair again to use a keyboard</code>。也要在鍵盤一側把開發板移除（進入配對模式），否則它會拒絕下一次配對。",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "從掃描到按鍵，一步步走一遍",
+        "intro": "從你的鍵盤開始廣播，到開發板上出現一個 <b>h</b> 之間發生的一切，逐包來看。選一個故事：第一次配對、斷電重啟後回來，或者探索你的 JBL 喇叭。用 ◀ ▶ 或者讓它自動播放；每一步下方的框裡顯示真實的位元組。"
+      },
+      "1": {
+        "title": "自己解碼一個報告",
+        "intro": "鍵盤從不傳送字母，只傳送按鍵位置和位元位。選一個 Report Map，然後在小鍵盤上按鍵，或者在滑鼠墊上拖動：報告飛向開發板，每個欄位依次亮起，並顯示定義它的 Report Map 項。切換 US/DE：同一個鍵碼會變成另一個字母。"
+      },
+      "2": {
+        "title": "螢幕上顯示什麼",
+        "intro": "七個檢視。按一下切換到下一個，按兩下執行左下角的操作，長按進行下一步：先 connect，再 host，再 disconnect。"
+      }
+    },
+    "steps": [
+      "接線與每個 BLE 實驗相同（螢幕；按鈕選用）。燒錄 <code>ble-lab-b8</code> 並開啟監視器。",
+      "把你的 BLE 鍵盤設為配對模式，用一個 Mac 沒有使用的通道。<b>檢查點 1：</b>它出現在 <b>devices</b> 檢視上，帶有 <b>HID</b>。",
+      "<code>connect 1</code>（或者按兩下選中它，然後長按）。<b>檢查點 2：</b><b>explore</b> 檢視列出 1800、180A、180F 和 1812 Human Interface Device 及其 Report 特徵值。",
+      "<code>host</code>（或長按）。在鍵盤上輸入六位數字並按 Enter。<b>檢查點 3：</b><code>+ hosting: keyboard</code> 和 <b>keyboard</b> 檢視。",
+      "輸入一句話，按住 Shift，試試 Backspace 和 Enter。如果你有德語鍵盤：<code>layout de</code>。<b>檢查點 4：</b>你的文字顯示在 TFT 上，包括變音字母。",
+      "點按切換到 <b>reports</b>，說出每個彩色位元組的含義；與上面的「自己解碼一個報告」對照。然後 <code>boot on</code>，<code>host</code>：8 個固定位元組。",
+      "選用：<code>disconnect</code>，用同樣的方式配對你的滑鼠，並在 <b>mouse</b> 檢視上塗畫。",
+      "拔掉再插上開發板，然後在鍵盤上按一個鍵。<b>檢查點 5：</b>它不用配對碼就重新連線並充當主機。",
+      "探索你的 JBL 喇叭：<code>connect &lt;n&gt;</code>。看看為什麼它沒有顯示任何關於音訊的東西。"
+    ],
+    "note": "探索只會連線你選中的裝置，並且只讀取標準的公開數值（名稱、外觀、廠商、型號、韌體、電池、PnP ID）；它從不向裝置寫入，除了你託管的鍵盤或滑鼠上的兩個標準 HID 設定（用於訂閱的 CCCD，用於 boot 的 Protocol Mode）。只連線你自己的裝置。一次只能有一條連線：連線下一個裝置之前先斷開。與開發板繫結過的鍵盤，在那個通道上可能無法再與 Mac 一起工作，直到你在那裡重新配對。keyboard 檢視使用螢幕內建的字型，它有 ä ö ü Ä Ö Ü ß，但沒有 €。BLE 不會把報告 ID 放進通知裡：它存放在 Report Reference 描述符 (2908) 中，所以 reports 檢視上的位元組是直接從資料開始的。"
+  }
+}

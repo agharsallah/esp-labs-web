@@ -28,7 +28,7 @@ export function BlockTile({
   const style = { "--fam": `var(--fam-${block.family})`, "--i": Math.min(index, 12) } as CSSProperties;
   return (
     <li className={styles.tile} data-depth={block.depth} style={style}>
-      <Link to={`/chip/blocks/${block.id}`} viewTransition className={styles.link}>
+      <Link to={`/datasheet/blocks/${block.id}`} viewTransition className={styles.link}>
         <span className={styles.icon}>
           <BlockIcon icon={block.icon} size={56} />
         </span>

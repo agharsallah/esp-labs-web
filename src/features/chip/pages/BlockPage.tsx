@@ -20,7 +20,7 @@ import cards from "../ui/cards.module.css";
 import styles from "./page.module.css";
 import blockStyles from "../block/block.module.css";
 
-/** #/chip/blocks/:blockId: one block, most important first. Listed blocks get the short page. */
+/** #/datasheet/blocks/:blockId: one block, most important first. Listed blocks get the short page. */
 export function BlockPage() {
   const { t } = useTranslation("chip");
   const { blockId } = useLoaderData<{ blockId: string }>();
@@ -36,7 +36,7 @@ export function BlockPage() {
   return (
     <div className={styles.page}>
       <PageTitle page={block.name} />
-      <Link to="/chip/blocks" viewTransition className={blockStyles.back}>
+      <Link to="/datasheet/blocks" viewTransition className={blockStyles.back}>
         {t("block.back")}
       </Link>
       <header className={blockStyles.hero} data-depth={block.depth}>

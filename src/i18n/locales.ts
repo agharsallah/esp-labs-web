@@ -1,7 +1,7 @@
 // The languages the guide speaks. Pure data and rules, no i18next: the rest of i18n builds on it.
 // Adding a language = an entry here + a folder in src/locales/<code>/ (see docs/I18N.md).
 
-export const LOCALES = ["en", "fr", "es", "it", "de", "zh", "ja", "ar"] as const;
+export const LOCALES = ["en", "fr", "es", "it", "de", "zh", "zh-TW", "ja", "ar"] as const;
 export type Locale = (typeof LOCALES)[number];
 
 export const SOURCE_LOCALE: Locale = "en";
@@ -27,6 +27,7 @@ export const LOCALE_INFO: Readonly<Record<Locale, LocaleInfo>> = {
   it: { nativeName: "Italiano", englishName: "Italian", short: "IT", tag: "it", dir: "ltr" },
   de: { nativeName: "Deutsch", englishName: "German", short: "DE", tag: "de", dir: "ltr" },
   zh: { nativeName: "简体中文", englishName: "Chinese (Simplified)", short: "中文", tag: "zh-Hans", dir: "ltr" },
+  "zh-TW": { nativeName: "繁體中文", englishName: "Chinese (Traditional)", short: "繁中", tag: "zh-Hant", dir: "ltr" },
   ja: { nativeName: "日本語", englishName: "Japanese", short: "日本語", tag: "ja", dir: "ltr" },
   ar: { nativeName: "العربية", englishName: "Arabic", short: "عربي", tag: "ar", dir: "rtl" },
 };
@@ -40,13 +41,19 @@ export type LocaleChoice = Locale | "auto";
 export const isLocaleChoice = (value: unknown): value is LocaleChoice =>
   value === "auto" || isLocale(value);
 
+/** Region and script subtags that mean Traditional Chinese (zh-TW, zh-HK, zh-Hant-TW…). */
+const TRADITIONAL_PARTS: ReadonlySet<string> = new Set(["tw", "hk", "mo", "hant"]);
+
 /**
- * The first supported language among the browser's preferences ("fr-CA" → fr, "zh-TW" → zh),
+ * The first supported language among the browser's preferences ("fr-CA" → fr, "zh-CN" → zh, "zh-TW" → zh-TW),
  * else the source language.
  */
 export function matchLocale(preferred: readonly string[]): Locale {
   for (const tag of preferred) {
-    const base = tag.toLowerCase().split(/[-_]/)[0];
+    const [base, ...rest] = tag.toLowerCase().split(/[-_]/);
+    // An explicit Simplified script wins over a region: zh-Hans-HK is still Simplified.
+    if (base === "zh" && !rest.includes("hans") && rest.some((part) => TRADITIONAL_PARTS.has(part)))
+      return "zh-TW";
     if (isLocale(base)) return base;
   }
   return SOURCE_LOCALE;

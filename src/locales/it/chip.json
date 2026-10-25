@@ -113,6 +113,7 @@
     "nextNone": "Ogni blocco che i lab raggiungono è completo. Gli altri aspettano nuovi lab.",
     "families": "Famiglie",
     "familyCount_one": "{{count}} blocco",
+    "familyCount_many": "{{count}} blocchi",
     "familyCount_other": "{{count}} blocchi",
     "gotchas": "Cinque cose che mordono"
   },
@@ -130,8 +131,10 @@
     },
     "search": "Cerca i blocchi",
     "results_one": "{{count}} blocco mostrato",
+    "results_many": "{{count}} blocchi mostrati",
     "results_other": "{{count}} blocchi mostrati",
     "count_one": "{{count}} blocco",
+    "count_many": "{{count}} blocchi",
     "count_other": "{{count}} blocchi",
     "spark": "{{value}} {{unit}}"
   },
@@ -175,8 +178,10 @@
     "labs": "Nei nostri lab",
     "labsNone": "Nessun lab usa ancora questo blocco.",
     "labsLead_one": "{{count}} lab usa questo blocco, in {{tracks}} percorso. Apri un percorso per vederli.",
+    "labsLead_many": "{{count}} lab usano questo blocco, in {{tracks}} percorsi. Apri un percorso per vederli.",
     "labsLead_other": "{{count}} lab usano questo blocco, in {{tracks}} percorsi. Apri un percorso per vederli.",
     "labsCount_one": "{{count}} lab",
+    "labsCount_many": "{{count}} lab",
     "labsCount_other": "{{count}} lab",
     "registers": "Registri principali",
     "offset": "offset {{offset}}",
@@ -282,6 +287,7 @@
     "unavailable": "Il manuale non fa parte di questa versione.",
     "breadcrumb": "Dove si trova questa sezione",
     "minutes_one": "{{count}} min di lettura",
+    "minutes_many": "{{count}} min di lettura",
     "minutes_other": "{{count}} min di lettura",
     "related": "Sul blocco {{block}}",
     "why": {
@@ -327,14 +333,12 @@
       "next": "Successiva",
       "children": "In questa sezione",
       "back": "Torna dove eri",
-      "pdf": "Apri nel PDF di Espressif",
-      "web": "Apri sul sito di Espressif"
+      "pdf": "Apri nel PDF di Espressif"
     },
     "cite": {
       "open": "Apri {{doc}} §{{section}} nel lettore",
       "pdf": "PDF",
-      "pdfLabel": "Apri {{doc}} sul sito di Espressif (nuova scheda)",
-      "web": "Guida"
+      "pdfLabel": "Apri {{doc}} sul sito di Espressif (nuova scheda)"
     },
     "newTab": "(si apre in una nuova scheda)"
   }

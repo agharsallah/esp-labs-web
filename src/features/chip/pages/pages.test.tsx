@@ -32,20 +32,20 @@ describe("chip pages", () => {
   });
 
   it("home: the headline, the progress and the section pills", async () => {
-    await openApp("#/chip");
+    await openApp("#/datasheet");
     expect(await screen.findByRole("heading", { level: 1, name: "Inside the ESP32-S3" }, LOAD)).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Your progress through the chip" })).toBeTruthy();
     expect(screen.getByRole("navigation", { name: "Chip pages" })).toBeTruthy();
   });
 
   it("pins: the matrix and a pin card from the URL", async () => {
-    await openApp("#/chip/pins?pin=0");
+    await openApp("#/datasheet/pins?pin=0");
     expect(await screen.findByRole("heading", { level: 1, name: "Pins and power" }, LOAD)).toBeTruthy();
     expect(screen.getByRole("heading", { name: "GPIO0" })).toBeTruthy();
   });
 
   it("atlas: the filters narrow the tiles and land in the URL", async () => {
-    await openApp("#/chip/blocks");
+    await openApp("#/datasheet/blocks");
     expect(await screen.findByRole("heading", { level: 1, name: "Peripheral atlas" }, LOAD)).toBeTruthy();
     expect(screen.getByRole("heading", { name: /Radio/ })).toBeTruthy();
     const family = screen.getByRole("group", { name: "Family" });
@@ -58,24 +58,24 @@ describe("chip pages", () => {
   });
 
   it("atlas: opens filtered from a family link", async () => {
-    await openApp("#/chip/blocks?family=radio");
+    await openApp("#/datasheet/blocks?family=radio");
     expect(await screen.findByRole("heading", { level: 1, name: "Peripheral atlas" }, LOAD)).toBeTruthy();
     expect(screen.queryByRole("heading", { name: /Analog/ })).toBeNull();
   });
 
   it("block: a full block with its registers", async () => {
-    await openApp("#/chip/blocks/uart");
+    await openApp("#/datasheet/blocks/uart");
     expect(await screen.findByRole("heading", { level: 1, name: "UART" }, LOAD)).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Key registers" })).toBeTruthy();
   });
 
   it("block: an unknown id is a 404", async () => {
-    await openApp("#/chip/blocks/flux-capacitor");
+    await openApp("#/datasheet/blocks/flux-capacitor");
     expect(await screen.findByText("404", undefined, LOAD)).toBeTruthy();
   });
 
   it("inside: memory, clocks and power", async () => {
-    await openApp("#/chip/inside");
+    await openApp("#/datasheet/inside");
     expect(await screen.findByRole("heading", { level: 1, name: "Memory, clocks and power modes" }, LOAD)).toBeTruthy();
     expect(screen.getByRole("heading", { name: /Where your sketch lives/ })).toBeTruthy();
   });

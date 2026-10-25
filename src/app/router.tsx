@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { createHashRouter, data } from "react-router";
+import { createHashRouter, data, redirect } from "react-router";
 import { syncLocaleWithUrl } from "./locale-url";
 import { AppLayout } from "./AppLayout";
 import { queryClient } from "./query-client";
@@ -38,8 +38,14 @@ export const router = createHashRouter([
             lazy: async () => ({ Component: (await import("./routes/code-route")).Component }),
           },
           {
+            // The section's first address: old links (#/chip/blocks/uart?ref=…) keep working.
+            path: "chip/*",
+            loader: ({ params, request }) =>
+              redirect(`/datasheet/${params["*"] ?? ""}${new URL(request.url).search}`),
+          },
+          {
             // The chip pages: one lazily loaded module per page, sharing the chip section nav.
-            path: "chip",
+            path: "datasheet",
             lazy: async () => ({ Component: (await import("./routes/chip/chip-layout-route")).Component }),
             children: [
               { index: true, lazy: async () => ({ Component: (await import("./routes/chip/chip-home-route")).Component }) },

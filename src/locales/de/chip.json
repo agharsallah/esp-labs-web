@@ -327,14 +327,12 @@
       "next": "Weiter",
       "children": "In diesem Abschnitt",
       "back": "Zurück, wo du warst",
-      "pdf": "In Espressifs PDF öffnen",
-      "web": "Auf Espressifs Website öffnen"
+      "pdf": "In Espressifs PDF öffnen"
     },
     "cite": {
       "open": "{{doc}} §{{section}} im Reader öffnen",
       "pdf": "PDF",
-      "pdfLabel": "{{doc}} auf Espressifs Website öffnen (neuer Tab)",
-      "web": "Guide"
+      "pdfLabel": "{{doc}} auf Espressifs Website öffnen (neuer Tab)"
     },
     "newTab": "(öffnet in einem neuen Tab)"
   }

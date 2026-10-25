@@ -1,0 +1,35 @@
+{
+  "overview": {
+    "title": "目前在工作臺上",
+    "loading": "正在載入工作臺狀態"
+  },
+  "specs": {
+    "label": "開發板規格",
+    "chip": "ESP32-S3 <b>N16R8</b>",
+    "cores": "<b>2 個</b> Xtensa LX7 核心，時脈 240 MHz",
+    "flash": "<b>16 MB</b> flash",
+    "psram": "<b>8 MB</b> 八線 PSRAM",
+    "radio": "<b>Wi-Fi 4</b> + BLE 5",
+    "logic": "<b>3.3 V</b> 邏輯準位"
+  },
+  "log": {
+    "title": "工作臺日誌",
+    "intro": "每一條安裝軟體、與開發板通訊或燒錄的指令，以及它的回應。Claude 會先宣佈每條指令。任何會動到開發板或安裝東西的操作，都要等你點頭。",
+    "filter": "按型別篩選",
+    "timeline": "日誌時間線",
+    "entryLabel": "{{n}} · {{types}} · {{title}}",
+    "key": "<flash></flash> 燒錄 <failed></failed> 失敗 <other></other> 安裝、建置、讀取、重設",
+    "response": "回應",
+    "result": "結果"
+  },
+  "types": {
+    "all": "全部",
+    "install": "安裝",
+    "build": "建置",
+    "read": "讀取",
+    "reset": "重設",
+    "flash": "燒錄",
+    "failed": "失敗",
+    "observe": "觀察"
+  }
+}

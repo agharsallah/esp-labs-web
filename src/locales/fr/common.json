@@ -17,7 +17,7 @@
     "sections": "Sections",
     "nav": {
       "labs": "Labos",
-      "chip": "Puce",
+      "chip": "Fiche technique",
       "bench": "Établi",
       "settings": "Réglages"
     },
@@ -32,7 +32,7 @@
     "log": "Journal de l'établi · Guide d'établi ESP32-S3",
     "parts": "Bibliothèque de pièces · Guide d'établi ESP32-S3",
     "settings": "Réglages · Guide d'établi ESP32-S3",
-    "chip": "{{page}} · Puce · Guide d'établi ESP32-S3"
+    "chip": "{{page}} · Fiche technique · Guide d'établi ESP32-S3"
   },
   "routeError": {
     "code": "Erreur",

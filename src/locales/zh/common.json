@@ -17,7 +17,7 @@
     "sections": "章节",
     "nav": {
       "labs": "实验",
-      "chip": "芯片",
+      "chip": "数据手册",
       "bench": "工作台",
       "settings": "设置"
     },
@@ -32,7 +32,7 @@
     "log": "工作台日志 · ESP32-S3 工作台指南",
     "parts": "元件库 · ESP32-S3 工作台指南",
     "settings": "设置 · ESP32-S3 工作台指南",
-    "chip": "{{page}} · 芯片 · ESP32-S3 工作台指南"
+    "chip": "{{page}} · 数据手册 · ESP32-S3 工作台指南"
   },
   "routeError": {
     "code": "错误",

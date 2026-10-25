@@ -28,7 +28,7 @@ export function Descent({
     <ChipDescent
       blocks={die}
       layerCaptions={LAYERS.map((l) => t(`home.layers.${l}.title`))}
-      onBlockPick={(id) => void navigate(`/chip/blocks/${id}`, { viewTransition: true })}
+      onBlockPick={(id) => void navigate(`/datasheet/blocks/${id}`, { viewTransition: true })}
     >
       {(layer) => {
         const id = LAYERS[layer] ?? "board";

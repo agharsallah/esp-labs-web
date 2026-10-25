@@ -49,7 +49,7 @@ describe("reference reader", () => {
 
   it("opens the section named in the URL, with why you came, the key numbers and the way back", async () => {
     serve(true);
-    await openApp("#/chip/blocks/uart?ref=T26.2");
+    await openApp("#/datasheet/blocks/uart?ref=T26.2");
     const dialog = await screen.findByRole("dialog", { name: "§26.2 Features" }, LOAD);
     expect(within(dialog).getByRole("heading", { name: "Why you're here" })).toBeTruthy();
     expect(within(dialog).getByRole("heading", { name: "Key information" })).toBeTruthy();
@@ -66,7 +66,7 @@ describe("reference reader", () => {
 
   it("closes on a click on the dimmed page around it, not on a click inside it", async () => {
     serve(true);
-    await openApp("#/chip/blocks/uart?ref=T26.2");
+    await openApp("#/datasheet/blocks/uart?ref=T26.2");
     const dialog = await screen.findByRole("dialog", { name: "§26.2 Features" }, LOAD);
     vi.spyOn(dialog, "getBoundingClientRect").mockReturnValue(new DOMRect(700, 0, 560, 900));
     fireEvent.click(dialog, { clientX: 900, clientY: 300 });
@@ -78,7 +78,7 @@ describe("reference reader", () => {
 
   it("follows a cross-reference inside the reader", async () => {
     serve(true);
-    await openApp("#/chip?ref=T26.1");
+    await openApp("#/datasheet?ref=T26.1");
     const dialog = await screen.findByRole("dialog", { name: "§26.1 Overview" }, LOAD);
     await userEvent.click(within(dialog).getByRole("link", { name: "§26.2 Features" }));
     expect(await screen.findByRole("dialog", { name: "§26.2 Features" }, LOAD)).toBeTruthy();
@@ -91,7 +91,7 @@ describe("reference reader", () => {
     const { env } = await import("@/config/env");
     // A fresh module per test (vi.resetModules), so the override never leaks.
     Object.defineProperty(env, "referenceUrl", { value: null });
-    await openApp("#/chip/blocks/uart");
+    await openApp("#/datasheet/blocks/uart");
     expect(await screen.findByRole("heading", { level: 1, name: "UART" }, LOAD)).toBeTruthy();
     expect(screen.queryAllByRole("link", { name: /Technical reference §26\.2/ })).toEqual([]);
     expect(screen.getAllByRole("link", { name: /Open the Technical reference on Espressif's site/ }).length).toBeGreaterThan(0);

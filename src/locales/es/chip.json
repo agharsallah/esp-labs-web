@@ -113,6 +113,7 @@
     "nextNone": "Todos los bloques que alcanzan los laboratorios están completos. El resto espera a nuevos laboratorios.",
     "families": "Familias",
     "familyCount_one": "{{count}} bloque",
+    "familyCount_many": "{{count}} bloques",
     "familyCount_other": "{{count}} bloques",
     "gotchas": "Cinco cosas que muerden"
   },
@@ -130,8 +131,10 @@
     },
     "search": "Buscar bloques",
     "results_one": "{{count}} bloque mostrado",
+    "results_many": "{{count}} bloques mostrados",
     "results_other": "{{count}} bloques mostrados",
     "count_one": "{{count}} bloque",
+    "count_many": "{{count}} bloques",
     "count_other": "{{count}} bloques",
     "spark": "{{value}} {{unit}}"
   },
@@ -175,8 +178,10 @@
     "labs": "En nuestros laboratorios",
     "labsNone": "Ningún laboratorio usa este bloque todavía.",
     "labsLead_one": "{{count}} laboratorio usa este bloque, en {{tracks}} ruta. Abre una ruta para verlos.",
+    "labsLead_many": "{{count}} laboratorios usan este bloque, en {{tracks}} rutas. Abre una ruta para verlos.",
     "labsLead_other": "{{count}} laboratorios usan este bloque, en {{tracks}} rutas. Abre una ruta para verlos.",
     "labsCount_one": "{{count}} laboratorio",
+    "labsCount_many": "{{count}} laboratorios",
     "labsCount_other": "{{count}} laboratorios",
     "registers": "Registros clave",
     "offset": "desplazamiento {{offset}}",
@@ -282,6 +287,7 @@
     "unavailable": "La referencia no forma parte de esta versión.",
     "breadcrumb": "Dónde está esta sección",
     "minutes_one": "{{count}} min de lectura",
+    "minutes_many": "{{count}} min de lectura",
     "minutes_other": "{{count}} min de lectura",
     "related": "Sobre el bloque {{block}}",
     "why": {

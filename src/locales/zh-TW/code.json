@@ -8,7 +8,7 @@
   "modes": {
     "tour": { "label": "導覽", "hint": "逐個檔案，每次幾行" },
     "story": { "label": "故事", "hint": "跟著程式執行，跨越多個檔案" },
-    "explore": { "label": "探索", "hint": "點任意一行或一個詞" }
+    "explore": { "label": "探索", "hint": "點任何一行或一個詞" }
   },
   "toolbar": {
     "back": "<wide>回到</wide>實驗",
@@ -82,7 +82,7 @@
   },
   "term": {
     "label": "詞：{{term}}",
-    "library": "庫",
+    "library": "函式庫",
     "close": "關閉詞卡",
     "precise": "精確的來龍去脈"
   },
@@ -98,10 +98,10 @@
     "howItRuns": "怎麼執行",
     "once": "一次，在上電時",
     "forever": "永遠重複，每秒數千次",
-    "shared": "實際的工作在共享程式碼裡：<code>setup()</code> 和 <code>loop()</code> 把事情交給現成的實驗外殼。開啟“幕後”下的檔案就能看到。",
+    "shared": "實際的工作在共享程式碼裡：<code>setup()</code> 和 <code>loop()</code> 把事情交給現成的實驗外殼。開啟「幕後」下的檔案就能看到。",
     "inFile": "在 {{name}} 中",
     "empty": "這裡沒有函式或型別：只有設定和 include。",
-    "kind": { "function": "函式", "struct": "結構體", "class": "類", "enum": "列舉" },
+    "kind": { "function": "函式", "struct": "結構", "class": "類", "enum": "列舉" },
     "lines_other": "{{count}} 行",
     "calls": "呼叫"
   },
@@ -130,9 +130,9 @@
   },
   "explore": {
     "eyebrow": "探索",
-    "title": "點任意一行",
-    "intro": "每一行都會自己解釋：點一下就能看到它做什麼。帶下劃線的詞在詞彙表裡：點一個就能學會它。“地圖”顯示程式的結構。",
-    "hint": "點任意一行或帶下劃線的詞。",
+    "title": "點任何一行",
+    "intro": "每一行都會自己解釋：點一下就能看到它做什麼。帶下劃線的詞在詞彙表裡：點一個就能學會它。「地圖」顯示程式的結構。",
+    "hint": "點任何一行或帶下劃線的詞。",
     "takeTour_other": "開始導覽（{{count}} 站）"
   },
   "tour": {
@@ -145,7 +145,7 @@
     "seeAll": "檢視全部 {{count}} 站",
     "backToLab": "回到實驗",
     "emptyEyebrow": "沒有可導覽的內容",
-    "emptyTitle": "點任意一行",
+    "emptyTitle": "點任何一行",
     "newWord": "新詞",
     "gotIt": "明白了",
     "tellMore": "多講一點"
@@ -167,7 +167,7 @@
       },
       "more": {
         "title": "被呼叫時",
-        "blurb": "被別處呼叫才執行的程式碼：檢視、命令、處理函式。"
+        "blurb": "被別處呼叫才執行的程式碼：檢視、指令、處理函式。"
       }
     },
     "scene": {
@@ -191,7 +191,7 @@
       "setup": "開發板剛剛上電。它執行的第一段程式碼是 <code>setup()</code>，只執行一次。",
       "loop": "準備工作做完了。從現在起，開發板會一遍又一遍地執行 <code>loop()</code>，越快越好。",
       "indirect_other": "不是從 <code>setup()</code> 或 <code>loop()</code> 直接到達的：{{callers}} 會用到它。",
-      "handedOver": "沒有誰按名字呼叫 {{name}}：它是作為一個值（要繪製的檢視、要執行的命令、處理函式）交出去的，到了那個時刻才會執行。",
+      "handedOver": "沒有誰按名字呼叫 {{name}}：它是作為一個值（要繪製的檢視、要執行的指令、處理函式）交出去的，到了那個時刻才會執行。",
       "calls": "{{caller}} 呼叫 {{callee}}。",
       "callsAt": "{{caller}} 在 {{file}} 的第 {{line}} 行呼叫 {{callee}}。",
       "moved": "{{lead}}這段程式碼在另一個檔案 {{file}} 裡。",
@@ -203,7 +203,7 @@
     "loop": "loop()：週而復始",
     "destructor": "收拾善後：~{{name}}()",
     "privatePart": "檔案的私有部分",
-    "libraries": "它用到的庫",
+    "libraries": "它用到的函式庫",
     "setupLines": "設定程式碼",
     "fixedSettings": "固定設定",
     "moreCode": "更多程式碼",
@@ -215,7 +215,7 @@
   },
   "explain": {
     "special": {
-      "setup": "開始 <code>setup()</code>：它在開發板上電或復位之後<b>只執行一次</b>。準備工作都放在這裡。",
+      "setup": "開始 <code>setup()</code>：它在開發板上電或重設之後<b>只執行一次</b>。準備工作都放在這裡。",
       "loop": "開始 <code>loop()</code>：setup 之後，開發板會<b>一遍又一遍、永遠</b>執行它。程式持續做的所有事情都在這裡。",
       "main": "開始 <code>main()</code>：程式從這裡開始。"
     },
@@ -235,7 +235,7 @@
       "do": "迴圈體結束。",
       "switch": "<code>switch</code> 結束。",
       "case": "這個 case 結束。",
-      "lambda": "這個小的行內函數結束。",
+      "lambda": "這個小的行內函式結束。",
       "try": "受保護的程式碼塊結束。",
       "block": "關閉上面開啟的程式碼塊。",
       "andVariable": "{{close}}並且就在這裡建立了 {{name}}，一個這種新型別的變數。",
@@ -252,7 +252,7 @@
       "bool": "真或假",
       "int": "一個整數",
       "float": "一個小數",
-      "char": "單個字元",
+      "char": "單一字元",
       "string": "文字",
       "auto": "一個由編譯器推斷型別的值"
     },
@@ -262,7 +262,7 @@
       "bool": "真假值",
       "int": "整數",
       "float": "小數",
-      "char": "單個字元",
+      "char": "單一字元",
       "string": "文字",
       "auto": "由編譯器推斷型別的值"
     },
@@ -277,15 +277,15 @@
       "destructor": "{{name}} 的解構函式：當一個 {{name}} 被丟棄時自動執行，負責善後。",
       "constructor": "{{name}} 的建構函式：每建立一個新的 {{name}} 時執行；它{{params}}。",
       "constructorInit": "{{name}} 的建構函式：每建立一個新的 {{name}} 時執行；它{{params}}，並用冒號後面的值填充它的成員。",
-      "define": "定義函式 {{name}}：它{{params}}，並返回{{returns}}。",
-      "defineNotes": "定義函式 {{name}}：它{{params}}，並返回{{returns}}（{{notes}}）。"
+      "define": "定義函式 {{name}}：它{{params}}，並傳回{{returns}}。",
+      "defineNotes": "定義函式 {{name}}：它{{params}}，並傳回{{returns}}（{{notes}}）。"
     },
     "block": {
       "if": "檢查 {{cond}}：只有它為真時，裡面的幾行才會執行。",
       "elseIf": "否則，檢查 {{cond}}：只有它為真時，裡面的幾行才會執行。",
       "else": "否則（上面的檢查為假時），改為執行這幾行。",
       "forever": "永遠重複裡面的幾行（除非有東西跳出）。",
-      "forEach": "對 {{list}} 裡的每一項重複一次裡面的幾行，把當前這一項叫作 {{name}}。",
+      "forEach": "對 {{list}} 裡的每一項重複一次裡面的幾行，把目前這一項叫作 {{name}}。",
       "counting": "計數迴圈：從 {{init}} 開始，只要 {{test}} 就繼續，每輪結束後執行 {{step}}。",
       "while": "只要 {{cond}} 保持為真，就重複裡面的幾行。",
       "do": "先執行一次裡面的幾行，然後只要末尾的檢查成立就繼續重複。",
@@ -307,10 +307,10 @@
     "pre": {
       "includeOwn": "貼上進我們自己的檔案 {{file}}，這樣這個檔案就能使用其中定義的東西。",
       "includeOwnKnown": "貼上進我們自己的檔案 {{file}}，這樣這個檔案就能使用其中定義的東西。{{known}}",
-      "include": "引入 {{file}}，一個隨工具附帶的庫，這樣這個檔案就能使用其中宣告的東西。",
+      "include": "引入 {{file}}，一個隨工具附帶的函式庫，這樣這個檔案就能使用其中宣告的東西。",
       "includeKnown": "引入 {{file}}：{{known}}",
-      "pragmaOnce": "確保每次構建中這個檔案只被貼上一次，即使有多個檔案引入它。",
-      "macro": "定義宏 {{name}}：編譯之前，每處使用都會被替換成 {{value}}。",
+      "pragmaOnce": "確保每次建置中這個檔案只被貼上一次，即使有多個檔案引入它。",
+      "macro": "定義巨集 {{name}}：編譯之前，每處使用都會被替換成 {{value}}。",
       "define": "給 {{value}} 起名叫 {{name}}：編譯之前，每個 {{name}} 都會被換成它。",
       "ifdef": "到下一個 <code>#else</code> / <code>#endif</code> 之間的幾行，只有在定義了 {{name}} 時才會編譯。",
       "ifndef": "到下一個 <code>#else</code> / <code>#endif</code> 之間的幾行，只有在沒有定義 {{name}} 時才會編譯。",
@@ -318,7 +318,7 @@
       "elif": "否則，到下一個 <code>#else</code> / <code>#endif</code> 之間的幾行，只有在 {{cond}} 時才會編譯。",
       "else": "否則，改為編譯這幾行。",
       "endif": "上面的 <code>#if</code> 部分結束。",
-      "error": "如果執行到這一行，就用這條訊息終止構建（用來防範錯誤的設定）。",
+      "error": "如果執行到這一行，就用這條訊息終止建置（用來防範錯誤的設定）。",
       "other": "給前處理器的一條指令，前處理器會在編譯之前修改程式碼。"
     },
     "short": {
@@ -329,11 +329,11 @@
       "else": "否則，它{{then}}"
     },
     "jump": {
-      "break": "立刻離開當前的迴圈或 <code>switch</code>。",
+      "break": "立刻離開目前的迴圈或 <code>switch</code>。",
       "continue": "跳過這一輪剩下的部分，進入下一輪。",
       "return": "在這裡結束這個函式，回到呼叫它的地方。",
-      "returnChoice": "根據 <code>?</code> 前面的檢查，返回兩個值中的一個：{{value}}。",
-      "returnValue": "在這裡結束並返回 {{value}}。"
+      "returnChoice": "根據 <code>?</code> 前面的檢查，傳回兩個值中的一個：{{value}}。",
+      "returnValue": "在這裡結束並傳回 {{value}}。"
     },
     "misc": {
       "public": "下面的所有東西都可以從類的外部使用。",
@@ -341,8 +341,8 @@
       "usingNamespace": "讓這個檔案可以使用 {{name}} 裡的名字，而不必每次都寫 {{prefix}}。",
       "using": "給 {{type}} 起一個更短的名字：{{name}}。",
       "typedef": "給一個已有的型別起個新名字。",
-      "template": "開始一個模板：後面的程式碼適用於以後再填入的任何型別。",
-      "staticAssert": "編譯時做的檢查：如果為假，構建就會失敗並顯示這條訊息。",
+      "template": "開始一個範本：後面的程式碼適用於以後再填入的任何型別。",
+      "staticAssert": "編譯時做的檢查：如果為假，建置就會失敗並顯示這條訊息。",
       "forward": "宣告 {{name}} 存在；它的完整描述在別處。",
       "delete": "釋放之前用 <code>new</code> 佔用的記憶體。"
     },

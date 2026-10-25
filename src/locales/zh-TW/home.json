@@ -49,11 +49,11 @@
       },
       "antenna": {
         "title": "PCB 天線",
-        "text": "Wi-Fi 4 和藍芽 5 都從這道銅走線發出：別讓金屬靠近它。"
+        "text": "Wi-Fi 4 和藍牙 5 都從這道銅走線發出：別讓金屬靠近它。"
       },
       "headers": {
         "title": "排針",
-        "text": "44 個腳位：3V3、5V、GND，以及用來接螢幕、讀卡器和麥克風的 GPIO。"
+        "text": "44 個腳位：3V3、5V、GND，以及用來接螢幕、讀卡機和麥克風的 GPIO。"
       }
     },
     "goInside": "走進晶片內部"
@@ -62,7 +62,7 @@
     "title": "所有實驗"
   },
   "track": {
-    "planned": "計劃中",
+    "planned": "計畫中",
     "working": "<b>{{working}}</b>/{{total}}<span> 可用</span>",
     "state": "，{{state}}",
     "loading": "載入中…"

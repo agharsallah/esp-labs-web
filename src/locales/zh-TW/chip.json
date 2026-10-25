@@ -2,7 +2,7 @@
   "pages": {
     "home": "走進 ESP32-S3",
     "pins": "腳位與供電",
-    "blocks": "外設圖鑑",
+    "blocks": "周邊圖鑑",
     "inside": "記憶體、時鐘與電源模式"
   },
   "scenes": {
@@ -25,7 +25,7 @@
       "done": "已完成",
       "works": "能用",
       "built": "已搭建",
-      "planned": "已計劃",
+      "planned": "已計畫",
       "none": "還沒用到"
     },
     "families": {
@@ -41,7 +41,7 @@
       "model": "CPU 透過訊號線與 {{name}} 模組通訊",
       "cpu": "CPU",
       "bus": "匯流排",
-      "peripheral": "外設",
+      "peripheral": "周邊",
       "fallback": "下面列出的訊號線",
       "lines": "訊號線"
     },
@@ -79,7 +79,7 @@
   },
   "home": {
     "kicker": "你開發板上的晶片",
-    "lead": "一臺雙核 240 MHz 的小電腦，帶 Wi-Fi 和藍芽，卻只有手指那麼大一塊板子。",
+    "lead": "一臺雙核 240 MHz 的小電腦，帶 Wi-Fi 和藍牙，卻只有手指那麼大一塊板子。",
     "numbers": "數字裡的晶片",
     "layerStep": "第 {{n}} 層，共 {{count}} 層",
     "layers": {
@@ -159,7 +159,7 @@
     "offHeader": "沒有引到 DevKitC 的排針上：它屬於模組的 flash 或 PSRAM。",
     "strapping": "啟動配置：",
     "strappingTitle": "啟動配置腳位",
-    "strappingLead": "晶片一離開復位，就會立刻讀取這些腳位。接到它們上面的東西，不能在上電時把它們拉向錯誤的電平。",
+    "strappingLead": "晶片一離開重設，就會立刻讀取這些腳位。接到它們上面的東西，不能在上電時把它們拉向錯誤的準位。",
     "gotchasTitle": "容易踩坑的腳位",
     "gotchasLead": "有些腳位在你的程式碼執行之前就有任務，或者另有所屬。其餘規則對每個腳位都適用。",
     "gotchasPins": "特定腳位",
@@ -181,7 +181,7 @@
     "pager": "其他模組",
     "prev": "上一個模組",
     "next": "下一個模組",
-    "listedNote": "僅作列示：幾行講清要點，完整章節只需一次引用就能找到。",
+    "listedNote": "僅作列示：幾行講清要點，完整章節只需一次參照就能找到。",
     "lines": {
       "default": [
         "Data",
@@ -252,13 +252,13 @@
     "lead": "你的程式碼和資料住在哪裡，哪個時鐘驅動什麼，以及每種電源模式能省多少電。",
     "memory": {
       "title": "位址對映",
-      "lead": "CPU 看到的是一整塊大位址空間：ROM、內部 SRAM、經過快取存取的 flash 和 PSRAM，還有各外設的暫存器。",
+      "lead": "CPU 看到的是一整塊大位址空間：ROM、內部 SRAM、經過快取存取的 flash 和 PSRAM，還有各周邊的暫存器。",
       "caption": "ESP32-S3 位址對映，低位址在上",
       "yours": "你的程式住在哪裡"
     },
     "clocks": {
       "title": "時鐘樹",
-      "lead": "一顆 40 MHz 晶振驅動一個 PLL；分頻器從中產生 CPU、APB 和外設時鐘，而慢速 RC 振盪器讓 RTC 在睡眠中繼續走時。",
+      "lead": "一顆 40 MHz 晶振驅動一個 PLL；分頻器從中產生 CPU、APB 和周邊時鐘，而慢速 RC 振盪器讓 RTC 在睡眠中繼續走時。",
       "caption": "時鐘源、分頻器，以及它們驅動的模組",
       "mhz": "{{value}} MHz"
     },
@@ -280,7 +280,7 @@
     "related": "關於 {{block}} 模組",
     "why": {
       "title": "你為什麼來到這裡",
-      "lead": "本指南引用這個章節，是為了：",
+      "lead": "本指南參照這個章節，是為了：",
       "highlighted": "下面已高亮對應的段落。",
       "jump": "帶我去看"
     },
@@ -301,7 +301,7 @@
       "bits": "位",
       "field": "欄位",
       "access": "存取",
-      "reset": "復位值",
+      "reset": "重設值",
       "description": "說明"
     },
     "figure": {
@@ -327,9 +327,9 @@
     "cite": {
       "open": "在閱讀器中開啟 {{doc}} §{{section}}",
       "pdf": "PDF",
-      "pdfLabel": "在樂鑫官網開啟 {{doc}}（新標籤頁）",
+      "pdfLabel": "在樂鑫官網開啟 {{doc}}（新分頁）",
       "web": "指南"
     },
-    "newTab": "（在新標籤頁開啟）"
+    "newTab": "（在新分頁開啟）"
   }
 }

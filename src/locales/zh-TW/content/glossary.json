@@ -3,7 +3,7 @@
     "assign": {
       "short": "把右邊的值放進左邊的名字裡。",
       "simple": "就像在貼了標籤的盒子裡寫上一個新數字：原來裡面的東西就沒了。",
-      "deep": "這是賦值，不是提問：比較要用 <code>==</code>。在 <code>uint8_t r = 0;</code> 這樣的宣告裡，<code>=</code> 給變數賦第一個值（初始化）。"
+      "deep": "這是指定，不是提問：比較要用 <code>==</code>。在 <code>uint8_t r = 0;</code> 這樣的宣告裡，<code>=</code> 給變數賦第一個值（初始化）。"
     },
     "arithmetic": {
       "short": "加、減、乘、除，就像計算器一樣。",
@@ -18,26 +18,26 @@
     "compound-assign": {
       "short": "用變數自身的值來更新它的簡寫：<code>x += 5</code> 的意思是 <code>x = x + 5</code>。",
       "simple": "就像給罐子加滿：你不用倒空再重灌，只要再加一點就行。",
-      "deep": "左邊只會被計算一次，當它是 <code>buf_[i++]</code> 這樣的表示式時，這一點很重要。結果會被轉換回變數的型別，所以 <code>uint8_t</code> 超過 255 時會悄悄迴繞。"
+      "deep": "左邊只會被計算一次，當它是 <code>buf_[i++]</code> 這樣的運算式時，這一點很重要。結果會被轉換回變數的型別，所以 <code>uint8_t</code> 超過 255 時會悄悄迴繞。"
     },
     "increment": {
       "short": "給變數加一 (<code>++</code>) 或減一 (<code>--</code>)。",
       "simple": "一個你來點選的計數器：點一下，多一個。",
-      "deep": "<code>i++</code> 先返回舊值再加一；<code>++i</code> 先加一。單獨寫在 <code>for</code> 迴圈裡時，兩者效果相同。無符號的 <code>uint8_t hue</code> 會從 255 迴繞到 0，第 01 課的彩虹就依賴這一點。"
+      "deep": "<code>i++</code> 先傳回舊值再加一；<code>++i</code> 先加一。單獨寫在 <code>for</code> 迴圈裡時，兩者效果相同。無號的 <code>uint8_t hue</code> 會從 255 迴繞到 0，第 01 課的彩虹就依賴這一點。"
     },
     "compare": {
       "short": "比較兩個值，回答 <code>true</code> 或 <code>false</code>；在型別名後面時，&lt; &gt; 表示的是一個型別。",
-      "simple": "答案為“是/否”的問題：相等嗎？更小嗎？注意是雙等號 <code>==</code>：單個 <code>=</code> 會改變值，而不是提問。",
-      "deep": "把有符號數與無符號數比較時，有符號的一邊會被轉換成無符號，所以 <code>-1 &lt; 1u</code> 為假；編譯器會對此發出警告。在 <code>std::vector&lt;Card&gt;</code> 或 <code>static_cast&lt;int&gt;</code> 中，尖括號是模板括號，不是比較。"
+      "simple": "答案為「是/否」的問題：相等嗎？更小嗎？注意是雙等號 <code>==</code>：單一 <code>=</code> 會改變值，而不是提問。",
+      "deep": "把有號數與無號數比較時，有號的一邊會被轉換成無號，所以 <code>-1 &lt; 1u</code> 為假；編譯器會對此發出警告。在 <code>std::vector&lt;Card&gt;</code> 或 <code>static_cast&lt;int&gt;</code> 中，尖括號是範本括號，不是比較。"
     },
     "logic": {
-      "short": "組合“是/否”的答案：<code>&amp;&amp;</code> 表示“且”，<code>||</code> 表示“或”，<code>!</code> 表示“非”。",
-      "simple": "“如果在下雨<b>並且</b>我在外面，就開啟雨傘。”<code>!</code> 會翻轉一個答案：沒在下雨。",
-      "deep": "短路求值：當 <code>a</code> 為假時，<code>a &amp;&amp; b</code> 根本不會去看 <code>b</code>，這就是為什麼 <code>queue_ &amp;&amp; xQueueReceive(queue_, ...)</code> 在佇列為空指標時也是安全的。在型別之後 (<code>T &amp;&amp;</code>)，雙 &amp; 號表示的是可移動引用。"
+      "short": "組合「是/否」的答案：<code>&amp;&amp;</code> 表示「且」，<code>||</code> 表示「或」，<code>!</code> 表示「非」。",
+      "simple": "「如果在下雨<b>並且</b>我在外面，就開啟雨傘。」<code>!</code> 會翻轉一個答案：沒在下雨。",
+      "deep": "短路求值：當 <code>a</code> 為假時，<code>a &amp;&amp; b</code> 根本不會去看 <code>b</code>，這就是為什麼 <code>queue_ &amp;&amp; xQueueReceive(queue_, ...)</code> 在佇列為空指標時也是安全的。在型別之後 (<code>T &amp;&amp;</code>)，雙 &amp; 號表示的是右值參照。"
     },
     "ternary": {
       "short": "一行的 if/else，用來選出一個值：<code>test ? this : that</code>。",
-      "simple": "“HUD 開著嗎？那就說‘on’，否則說‘off’。”一個有兩種可能答案的問題。",
+      "simple": "「HUD 開著嗎？那就說『on』，否則說『off』。」一個有兩種可能答案的問題。",
       "deep": "兩個分支必須都能轉換成同一個公共型別。只有被選中的分支會被計算，所以用它來保護除法或指標是安全的。"
     },
     "shift": {
@@ -46,43 +46,43 @@
       "deep": "用來打包和拆包位元組：<code>(r &amp; 0xF8) &lt;&lt; 8</code> 把紅色放進 RGB565 顏色的高 5 位。移位的位數等於或超過型別的寬度屬於未定義行為。"
     },
     "bit-ops": {
-      "short": "對一個數的單個位進行操作：<code>|</code> 置位，<code>^</code> 翻轉，<code>~</code> 全部取反。",
+      "short": "對一個數的單一位進行操作：<code>|</code> 置位，<code>^</code> 翻轉，<code>~</code> 全部取反。",
       "simple": "把一個數想象成一排 8 個、16 個或 32 個電燈開關。這些運算子能翻轉選定的開關，而不碰其他的。",
       "deep": "<code>flags |= bit</code> 開啟一位，<code>flags &amp;= ~bit</code> 關閉一位，<code>flags ^= bit</code> 切換一位。像我們的 MFRC522 這樣的暫存器驅動全靠這些。ArduinoJson 把 <code>|</code> 重新用於預設值：<code>in[\"type\"] | \"\"</code>。"
     },
     "scope": {
-      "short": "深入名稱空間、類或列舉內部去找一個名字：<code>std::min</code> 就是住在 <code>std</code> 裡的那個 <code>min</code>。",
+      "short": "深入命名空間、類或列舉內部去找一個名字：<code>std::min</code> 就是住在 <code>std</code> 裡的那個 <code>min</code>。",
       "simple": "就像位址：<i>倫敦::貝克街</i>。只要在不同的城市，兩條街可以重名。",
-      "deep": "作用域解析運算子。<code>Button::Event::Click</code> 往下走兩層；開頭的 <code>::</code>（如 <code>::ble::activity()</code>）從全域性名稱空間開始，所以區域性名字永遠不會遮蔽它。"
+      "deep": "作用域解析運算子。<code>Button::Event::Click</code> 往下走兩層；開頭的 <code>::</code>（如 <code>::ble::activity()</code>）從全域命名空間開始，所以區域名字永遠不會遮蔽它。"
     },
     "arrow": {
       "short": "使用指標所指向的物件的成員：<code>p->x</code> 與 <code>(*p).x</code> 相同。",
       "simple": "點 (<code>.</code>) 用來存取你手裡拿著的物件；箭頭用來存取你只有位址的物件。",
-      "deep": "透過指標存取成員。Web 處理函式拿到的是 <code>AsyncWebServerRequest *req</code>，所以要寫 <code>req->send(...)</code>。跟隨一個 <code>nullptr</code> 會讓 ESP32 因 LoadProhibited 或 StoreProhibited 而崩潰，所以要先檢查指標。"
+      "deep": "透過指標存取成員。Web 處理函式拿到的是 <code>AsyncWebServerRequest *req</code>，所以要寫 <code>req->send(...)</code>。跟隨一個 <code>nullptr</code> 會讓 ESP32 因 LoadProhibited 或 StoreProhibited 而當機，所以要先檢查指標。"
     },
     "maths": {
-      "short": "C 庫裡的數學幫手：正弦、餘弦、平方根、取整、絕對值等等。",
+      "short": "C 函式庫裡的數學幫手：正弦、餘弦、平方根、取整、絕對值等等。",
       "simple": "計算器上的科學函式按鈕，可以直接在程式碼裡使用。角度以弧度為單位：轉一整圈約是 6.283。",
       "deep": "帶 <code>f</code> 的版本（<code>sinf</code>、<code>sqrtf</code>）處理 <code>float</code>，ESP32-S3 的硬體 FPU 能快速處理它；<code>double</code> 版本用軟體執行，慢好幾倍。<code>lroundf</code> 四捨五入到最近的整數。"
     },
     "snprintf": {
       "short": "根據一個模式和若干值，在固定大小的盒子裡組裝出一段文字。",
       "simple": "一張填空表：<code>\"%d/%d\"</code> 有兩個空，你傳入的數字會按順序填進去。",
-      "deep": "<code>snprintf(buf, sizeof(buf), fmt, ...)</code> 絕不會寫出緩衝區之外，並且總是以 <code>'\\0'</code> 結束文字；過長的文字會被截斷。與 <code>Serial.printf</code> 使用相同的 <code>%</code> 程式碼：<code>%d</code> int，<code>%u</code> unsigned，<code>%lu</code> unsigned long，<code>%.1f</code> float，<code>%s</code> 文字，<code>%02X</code> 十六進位制。"
+      "deep": "<code>snprintf(buf, sizeof(buf), fmt, ...)</code> 絕不會寫出緩衝區之外，並且總是以 <code>'\\0'</code> 結束文字；過長的文字會被截斷。與 <code>Serial.printf</code> 使用相同的 <code>%</code> 程式碼：<code>%d</code> int，<code>%u</code> unsigned，<code>%lu</code> unsigned long，<code>%.1f</code> float，<code>%s</code> 文字，<code>%02X</code> 十六進位。"
     },
     "void": {
-      "short": "表示“什麼都沒有”：<code>void</code> 函式完成它的工作，但不交回任何值。",
+      "short": "表示「什麼都沒有」：<code>void</code> 函式完成它的工作，但不交回任何值。",
       "simple": "就像門鈴：你按一下，事情就發生了，但它不會給你任何可以拿在手裡的東西。",
-      "deep": "作為返回型別，它表示沒有結果。<code>void *</code> 是指向未知型別記憶體的指標，就像 FreeRTOS 任務和中斷處理函式收到的 <code>void *arg</code>；使用前必須轉換回去。"
+      "deep": "作為傳回型別，它表示沒有結果。<code>void *</code> 是指向未知型別記憶體的指標，就像 FreeRTOS 任務和中斷處理函式收到的 <code>void *arg</code>；使用前必須轉換回去。"
     },
     "bool": {
-      "short": "一個“是/否”的值：要麼是 <code>true</code>，要麼是 <code>false</code>。",
+      "short": "一個「是/否」的值：要麼是 <code>true</code>，要麼是 <code>false</code>。",
       "simple": "一個電燈開關：開或關，沒有中間狀態。",
       "deep": "佔一個位元組。數字和指標會自動轉換成 <code>bool</code>（零和 <code>nullptr</code> 為假），這就是 <code>if (buf_)</code> 能用的原因。Arduino 的 <code>boolean</code> 是同一種型別。"
     },
     "true-false": {
       "short": "<code>bool</code> 能儲存的兩個值。",
-      "simple": "“是”和“否”，按編譯器能理解的方式書寫。",
+      "simple": "「是」和「否」，按編譯器能理解的方式書寫。",
       "deep": "型別為 <code>bool</code> 的關鍵字；轉換成數字時變成 1 和 0。FreeRTOS 用自己的 <code>pdTRUE</code>/<code>pdFALSE</code> 表達同樣的意思。"
     },
     "int": {
@@ -93,157 +93,157 @@
     "long": {
       "short": "一種至少與 <code>int</code> 一樣大的整數型別；在 ESP32 上兩者都是 32 位。",
       "simple": "另一個裝整數的盒子。在這顆晶片上，它裝的東西和 <code>int</code> 完全一樣。",
-      "deep": "在 Xtensa 的 ESP32 上，<code>long</code> 是 32 位，<code>long long</code> 是 64 位。<code>millis()</code> 返回 <code>unsigned long</code>，所以列印它需要 <code>%lu</code>；程式碼常用 <code>static_cast&lt;unsigned long&gt;</code> 來轉換，讓兩者精確匹配。"
+      "deep": "在 Xtensa 的 ESP32 上，<code>long</code> 是 32 位，<code>long long</code> 是 64 位。<code>millis()</code> 傳回 <code>unsigned long</code>，所以列印它需要 <code>%lu</code>；程式碼常用 <code>static_cast&lt;unsigned long&gt;</code> 來轉換，讓兩者精確匹配。"
     },
     "unsigned": {
       "short": "不能小於零的整數，所以它能達到兩倍那麼高。",
       "simple": "就像汽車的里程錶：它只會從 0 往上數，數過最後一位就回繞到 0。",
-      "deep": "無符號運算會迴繞，而不是溢位：<code>0u - 1</code> 是最大值。正是這種迴繞，讓 <code>now - last >= interval</code> 在 <code>millis()</code> 迴繞時仍然有效。<code>unsigned(x)</code> 是一種快捷的轉換，適合在 printf 中配合 <code>%u</code> 使用。"
+      "deep": "無號運算會迴繞，而不是溢位：<code>0u - 1</code> 是最大值。正是這種迴繞，讓 <code>now - last >= interval</code> 在 <code>millis()</code> 迴繞時仍然有效。<code>unsigned(x)</code> 是一種快捷的轉換，適合在 printf 中配合 <code>%u</code> 使用。"
     },
     "float": {
       "short": "帶小數點的數，比如 <code>3.14</code> 或 <code>-0.5</code>。",
-      "simple": "一把刻度很細的尺子：適合測量，但會有微小的舍入誤差，所以永遠不要測試兩個浮點數是否完全相等。",
-      "deep": "32 位，約 7 位有效數字。ESP32-S3 有單精度 FPU，所以 <code>float</code> 運算很快；把常量寫成 <code>0.5f</code>，這樣編譯器就不會切換到慢速的 <code>double</code>。"
+      "simple": "一把刻度很細的尺子：適合測量，但會有微小的捨入誤差，所以永遠不要測試兩個浮點數是否完全相等。",
+      "deep": "32 位，約 7 位有效數字。ESP32-S3 有單精度 FPU，所以 <code>float</code> 運算很快；把常數寫成 <code>0.5f</code>，這樣編譯器就不會切換到慢速的 <code>double</code>。"
     },
     "double": {
       "short": "一種小數，精度大約是 <code>float</code> 的兩倍。",
       "simple": "與 <code>float</code> 同一把尺子，刻度更細，但在這顆晶片上讀起來更慢。",
-      "deep": "64 位，約 15 位有效數字。ESP32-S3 的 FPU 只支援單精度，所以 <code>double</code> 由軟體完成：偶爾計算一次沒問題，但用在每個畫素或每個音訊取樣上就太慢了。"
+      "deep": "64 位，約 15 位有效數字。ESP32-S3 的 FPU 只支援單精度，所以 <code>double</code> 由軟體完成：偶爾計算一次沒問題，但用在每個像素或每個音訊取樣上就太慢了。"
     },
     "char": {
       "short": "一個字元的文字，存成一個小數字；<code>const char *</code> 則是一整段文字。",
-      "simple": "文字遊戲裡的一塊字母牌。把牌排成一行，最後放一塊看不見的結束牌 <code>'\\0'</code>，就成了一個單詞。",
+      "simple": "文字遊戲裡的一塊字母牌。把牌排成一行，最後放一塊看不見的結束牌 <code>'\\0'</code>，就成了一個單字。",
       "deep": "一個位元組。C 字串是以 <code>'\\0'</code> 結尾的 <code>char</code> 陣列；<code>char text[32]</code> 最多能放 31 個字母。<code>\"hello\"</code> 是指向儲存在 flash 中的文字的 <code>const char *</code>，而 <code>'h'</code>（單引號）是一個 <code>char</code>。"
     },
     "size-t": {
-      "short": "一種無符號整數，專門用來表示記憶體中東西的大小和數量。",
+      "short": "一種無號整數，專門用來表示記憶體中東西的大小和數量。",
       "simple": "記憶體裡的捲尺讀數：多少位元組，多少項。它永遠不會是負數。",
       "deep": "在 ESP32 上是 32 位，是 <code>sizeof</code> 給出、<code>malloc</code> 接受的型別。轉換後用 <code>%u</code> 列印，或者用 <code>%zu</code>。"
     },
     "uint8-t": {
       "short": "0 到 255 的整數：正好一個位元組。",
       "simple": "最小的盒子：一個位元組，八個開關。非常適合表示顏色通道、腳位編號或亮度。",
-      "deep": "<code>u</code> = 無符號，<code>int</code> = 整數，<code>8</code> 位，<code>_t</code> = 一個型別。它在 <code>&lt;stdint.h&gt;</code> 中定義，所以大小在每顆晶片上都相同。Arduino 的 <code>byte</code> 是同一種型別。超過 255 就回繞到 0。"
+      "deep": "<code>u</code> = 無號，<code>int</code> = 整數，<code>8</code> 位，<code>_t</code> = 一個型別。它在 <code>&lt;stdint.h&gt;</code> 中定義，所以大小在每顆晶片上都相同。Arduino 的 <code>byte</code> 是同一種型別。超過 255 就回繞到 0。"
     },
     "uint16-t": {
       "short": "0 到 65 535 的整數：兩個位元組。",
       "simple": "大小是位元組兩倍的盒子。這些實驗裡每一種螢幕顏色都裝得下。",
-      "deep": "無符號，16 位。ST7789 使用 RGB565：紅 5 位、綠 6 位、藍 5 位，打包進一個 <code>uint16_t</code>。也用於 BLE 控制代碼和 16 位 UUID。"
+      "deep": "無號，16 位。ST7789 使用 RGB565：紅 5 位、綠 6 位、藍 5 位，打包進一個 <code>uint16_t</code>。也用於 BLE 控制代碼和 16 位 UUID。"
     },
     "uint32-t": {
       "short": "0 到約 42.9 億的整數：四個位元組。",
       "simple": "一個裝大數目的大盒子，比如開發板啟動以來的毫秒數。",
-      "deep": "無符號，32 位：這是 ESP32 的自然字長，所以讀寫它只需一條指令。<code>millis()</code> 的時間就存在裡面，大約 49.7 天后迴繞。"
+      "deep": "無號，32 位：這是 ESP32 的自然字長，所以讀寫它只需一條指令。<code>millis()</code> 的時間就存在裡面，大約 49.7 天后迴繞。"
     },
     "uint64-t": {
       "short": "一個巨大的整數，0 到約 1800 億億：八個位元組。",
       "simple": "一個大到實際上永遠裝不滿的盒子。晶片 48 位的 MAC 位址輕鬆放得下。",
-      "deep": "無符號，64 位。在 32 位 CPU 上，每個運算要花幾條指令，而且讀取一個在中斷和主程式碼之間共享的 64 位值並不是單一步驟，所以各實驗把共享的時間戳保持為 32 位。"
+      "deep": "無號，64 位。在 32 位 CPU 上，每個運算要花幾條指令，而且讀取一個在中斷和主程式碼之間共享的 64 位值並不是單一步驟，所以各實驗把共享的時間戳保持為 32 位。"
     },
     "int8-t": {
       "short": "一個小整數，從 -128 到 127：一個可以為負的位元組。",
       "simple": "一個帶負號位置的單位元組盒子。適合表示 Wi-Fi 訊號強度 (dBm) 這類東西。",
-      "deep": "有符號，8 位，補碼。BLE 的發射功率和 RSSI 值都以 <code>int8_t</code> 上報。"
+      "deep": "有號，8 位，補碼。BLE 的發射功率和 RSSI 值都以 <code>int8_t</code> 上報。"
     },
     "int16-t": {
       "short": "從 -32 768 到 32 767 的整數：兩個可以為負的位元組。",
       "simple": "帶負號的兩位元組盒子。螢幕座標使用它，所以圖形可以從邊緣外面一點開始。",
-      "deep": "有符號，16 位。Adafruit GFX 的 x、y、寬度和高度都接受 <code>int16_t</code>，來自麥克風的 16 位音訊取樣也是 <code>int16_t</code>。"
+      "deep": "有號，16 位。Adafruit GFX 的 x、y、寬度和高度都接受 <code>int16_t</code>，來自麥克風的 16 位音訊取樣也是 <code>int16_t</code>。"
     },
     "int32-t": {
       "short": "從約 -21 億到 +21 億的整數：四個可以為負的位元組。",
       "simple": "在這顆晶片上，它和 <code>int</code> 是同一個盒子，但它的名字保證了在每顆晶片上大小都一樣。",
-      "deep": "有符號，32 位。INMP441 麥克風在 32 位的 I2S 時隙裡傳送 24 位取樣，它們被當作 <code>int32_t</code> 讀取，然後右移。"
+      "deep": "有號，32 位。INMP441 麥克風在 32 位的 I2S 時隙裡傳送 24 位取樣，它們被當作 <code>int32_t</code> 讀取，然後右移。"
     },
     "int64-t": {
       "short": "一個可以為負的巨大整數：八個位元組。",
       "simple": "一個永遠不會用完的盒子，適合用來計數微秒的時鐘。",
-      "deep": "有符號，64 位。<code>esp_timer_get_time()</code> 返回開機以來的微秒數，型別是 <code>int64_t</code>，要溢位大約需要 29.2 萬年。"
+      "deep": "有號，64 位。<code>esp_timer_get_time()</code> 傳回開機以來的微秒數，型別是 <code>int64_t</code>，要溢位大約需要 29.2 萬年。"
     },
     "string-class": {
       "short": "Arduino 的文字型別：一段可以增長、縮短和搜尋的文字。",
       "simple": "一張可伸縮的筆記本頁面，用來寫字：可以往裡新增、剪掉一部分、查詢一個詞，而不用自己數字母。",
-      "deep": "它的字母存放在堆上（短的則存放在內部），所以在繁忙的迴圈裡反覆使用 <code>+</code> 會折騰記憶體。各實驗把 <code>String</code> 用於序列埠命令和網頁回覆，在速度或中斷重要的地方則用固定的 <code>char</code> 陣列。<code>String(42)</code> 把數字變成文字。"
+      "deep": "它的字母存放在堆上（短的則存放在內部），所以在繁忙的迴圈裡反覆使用 <code>+</code> 會折騰記憶體。各實驗把 <code>String</code> 用於序列埠指令和網頁回覆，在速度或中斷重要的地方則用固定的 <code>char</code> 陣列。<code>String(42)</code> 把數字變成文字。"
     },
     "auto": {
       "short": "讓編譯器根據你給的值自己推斷出型別。",
-      "simple": "就像說“放進一個合適大小的盒子裡”，而不是說出盒子的名字。",
+      "simple": "就像說「放進一個合適大小的盒子裡」，而不是說出盒子的名字。",
       "deep": "型別仍然是在編譯時固定的，不是動態的。<code>auto *self = static_cast&lt;Button *&gt;(arg);</code> 避免把 <code>Button</code> 寫兩遍；<code>auto</code> 也是存放 lambda 的方式，因為它們的型別沒有名字。"
     },
     "nullptr": {
       "short": "一個什麼都不指向的指標。",
       "simple": "一張空的位址標籤：沒有房子可去，所以出發前要先檢查。",
-      "deep": "型別安全的空指標常量 (C++11)，取代 <code>NULL</code> 和 <code>0</code>。<code>heap_caps_malloc</code> 這樣的分配函式在失敗時返回它，許多 ESP-IDF 呼叫用它表示“我不需要這個”。"
+      "deep": "型別安全的空指標常數 (C++11)，取代 <code>NULL</code> 和 <code>0</code>。<code>heap_caps_malloc</code> 這樣的分配函式在失敗時傳回它，許多 ESP-IDF 呼叫用它表示「我不需要這個」。"
     },
     "if": {
       "short": "只有括號裡的條件為真時，才執行下一個程式碼塊。",
-      "simple": "“如果在下雨，就帶傘。”不下雨時，帶傘這一步就被跳過。",
+      "simple": "「如果在下雨，就帶傘。」不下雨時，帶傘這一步就被跳過。",
       "deep": "條件會被轉換成 <code>bool</code>，所以數字和指標可以直接使用。在條件裡宣告變數 (<code>if (DeserializationError e = deserializeJson(...))</code>) 會讓這個變數只存在於這個 if 之內。"
     },
     "else": {
       "short": "另一條路：當 <code>if</code> 的條件為假時執行。",
-      "simple": "“……否則，戴上太陽鏡。”兩條路里恰好走一條。",
+      "simple": "「……否則，戴上太陽鏡。」兩條路里恰好走一條。",
       "deep": "<code>else if</code> 其實就是一個 <code>else</code>，它的程式碼塊是另一個 <code>if</code>，所以整條鏈從上到下依次檢查，遇到第一個為真的條件就停止。"
     },
     "for": {
       "short": "把一個程式碼塊重複固定的次數，或者對列表中的每一項各執行一次。",
-      "simple": "“對這 6 個位元組中的每一個，把它列印出來。”從 0 開始，檢查有沒有做完，做事，計數加一，重複。",
+      "simple": "「對這 6 個位元組中的每一個，把它列印出來。」從 0 開始，檢查有沒有做完，做事，計數加一，重複。",
       "deep": "<code>for (init; test; step)</code>。範圍形式 <code>for (const auto &amp;card : cards)</code> 不用下標就能存取陣列或容器的每個元素。"
     },
     "while": {
       "short": "只要條件保持為真，就一直重複一個程式碼塊。",
-      "simple": "“只要信箱裡還有信，就取出一封。”空了就停止。",
-      "deep": "條件在每一輪之前檢查，所以迴圈體可能一次都不執行。在 <code>loop()</code> 裡永遠不結束的 <code>while</code> 會讓程式的其他部分“餓死”；各實驗用 <code>while (Serial.available())</code> 來讀取輸入，緩衝區一空它就結束。"
+      "simple": "「只要信箱裡還有信，就取出一封。」空了就停止。",
+      "deep": "條件在每一輪之前檢查，所以迴圈體可能一次都不執行。在 <code>loop()</code> 裡永遠不結束的 <code>while</code> 會讓程式的其他部分「餓死」；各實驗用 <code>while (Serial.available())</code> 來讀取輸入，緩衝區一空它就結束。"
     },
     "do-while": {
       "short": "與 <code>while</code> 類似，但程式碼塊總是在檢查條件之前至少執行一次。",
       "simple": "先嚐一口湯，再決定要不要加鹽。你總是先嚐。",
-      "deep": "條件在迴圈體之後，並且需要分號：<code>do { ... } while (cond);</code>。適合“隨機選一個值，直到它合適為止”。"
+      "deep": "條件在迴圈體之後，並且需要分號：<code>do { ... } while (cond);</code>。適合「隨機選一個值，直到它合適為止」。"
     },
     "switch": {
       "short": "透過把一個值與固定的選項比較，從多條路徑中選出一條。",
       "simple": "電梯面板：按 3 就去 3 樓。每個 <code>case</code> 是一個按鈕。",
-      "deep": "適用於整數和列舉，不適用於文字。執行會“穿透”進下一個 case，除非你用 <code>break</code> 或 <code>return</code>。對於 <code>enum class</code>，編譯器會警告你漏掉的 case。"
+      "deep": "適用於整數和列舉，不適用於文字。執行會「穿透」進下一個 case，除非你用 <code>break</code> 或 <code>return</code>。對於 <code>enum class</code>，編譯器會警告你漏掉的 case。"
     },
     "case": {
       "short": "<code>switch</code> 裡的一個選項：值匹配時要執行的程式碼。",
       "simple": "電梯面板上的一個按鈕，旁邊寫著它的樓層。",
-      "deep": "標籤必須是編譯期常量。把幾個標籤疊在一起，可以共用同一個程式碼體；沒有 <code>break</code> 的程式碼體會接著執行下一個 case。"
+      "deep": "標籤必須是編譯期常數。把幾個標籤疊在一起，可以共用同一個程式碼體；沒有 <code>break</code> 的程式碼體會接著執行下一個 case。"
     },
     "default": {
       "short": "在 <code>switch</code> 中，沒有任何 <code>case</code> 匹配時走的那條路。",
-      "simple": "“其他任何情況”按鈕。",
+      "simple": "「其他任何情況」按鈕。",
       "deep": "可選的，可以放在 switch 裡的任何位置。在類裡，<code>= default</code> 的意思不同：讓編譯器替你寫出那個建構函式或運算子。"
     },
     "break": {
-      "short": "立刻離開當前的迴圈或 <code>switch</code>。",
+      "short": "立刻離開目前的迴圈或 <code>switch</code>。",
       "simple": "一個緊急出口：不再繞圈，接著執行迴圈之後的程式碼。",
       "deep": "只會離開最內層的迴圈或 switch。在迴圈裡的 switch 中，<code>break</code> 離開的是 switch，而不是迴圈。"
     },
     "continue": {
       "short": "跳過這一輪迴圈的剩餘部分，開始下一輪。",
-      "simple": "“這封信不是給我的：放到一邊，拆開下一封。”",
+      "simple": "「這封信不是給我的：放到一邊，拆開下一封。」",
       "deep": "在 <code>for</code> 迴圈裡，步進 (<code>i++</code>) 仍然會在下一次檢查之前執行。常常用來提早跳過壞資料，而不是巢狀 <code>if</code>。"
     },
     "return": {
       "short": "立即結束函式，並可以把一個值交還給呼叫它的地方。",
       "simple": "交回做完的作業：任務完成了，這是答案。",
-      "deep": "在 <code>void</code> 函式里，單獨的 <code>return;</code> 只是提前離開，這是遇到壞輸入時常見的退出方式（守衛子句）。區域性變數會在離開時被銷燬，<code>std::lock_guard</code> 就是這樣解鎖的。"
+      "deep": "在 <code>void</code> 函式里，單獨的 <code>return;</code> 只是提前離開，這是遇到壞輸入時常見的退出方式（守衛子句）。區域變數會在離開時被銷燬，<code>std::lock_guard</code> 就是這樣解鎖的。"
     },
     "setup-loop": {
       "short": "每個 Arduino 程式都有這兩個：<code>setup()</code> 在上電時執行一次，然後 <code>loop()</code> 永遠執行。",
       "simple": "開一家店：<code>setup()</code> 開啟門、開一次燈；<code>loop()</code> 一位接一位地接待顧客，直到打烊（斷電）。",
-      "deep": "Arduino 核心的 <code>main</code> 啟動一個 FreeRTOS 任務（“loopTask”，核心 1，預設 8 KB 棧），它先呼叫 <code>setup()</code>，然後一遍又一遍地呼叫 <code>loop()</code>。讓 <code>loop()</code> 保持快速且不阻塞：檢查 <code>millis()</code>，而不是長時間 <code>delay()</code>。實驗裡的 <code>lab.loop()</code> 是 shell 自己每一輪要做的工作。"
+      "deep": "Arduino 核心的 <code>main</code> 啟動一個 FreeRTOS 任務（「loopTask」，核心 1，預設 8 KB 棧），它先呼叫 <code>setup()</code>，然後一遍又一遍地呼叫 <code>loop()</code>。讓 <code>loop()</code> 保持快速且不阻塞：檢查 <code>millis()</code>，而不是長時間 <code>delay()</code>。實驗裡的 <code>lab.loop()</code> 是 shell 自己每一輪要做的工作。"
     },
     "lambda": {
       "short": "一個寫在需要它的地方的小函式，常常傳給另一個函式，留待以後呼叫。",
-      "simple": "你交給別人的一張寫有指示的便利貼：“當對 / 的請求到來時，就做這件事。”",
-      "deep": "<code>[capture](params) { body }</code>。捕獲列表說明它可以使用周圍的什麼東西：<code>[this]</code> 當前物件，<code>[&amp;]</code> 按引用使用所有東西，<code>[]</code> 什麼都不用。Web 路由、Wi-Fi 事件和排序在這裡都用 lambda。"
+      "simple": "你交給別人的一張寫有指示的便利貼：「當對 / 的請求到來時，就做這件事。」",
+      "deep": "<code>[capture](params) { body }</code>。捕獲列表說明它可以使用周圍的什麼東西：<code>[this]</code> 目前物件，<code>[&amp;]</code> 按參照使用所有東西，<code>[]</code> 什麼都不用。Web 路由、Wi-Fi 事件和排序在這裡都用 lambda。"
     },
     "variadic": {
-      "short": "表示“任意數量的額外引數”，就像 printf 模式所需要的那些值。",
-      "simple": "“……等等”：函式接受你給它的任意多個額外引數。",
-      "deep": "在 <code>void warn(const char *fmt, ...)</code> 中，額外引數用 <code>va_list</code> 讀取並轉發給 <code>vsnprintf</code>；<code>[[gnu::format(printf, 2, 3)]]</code> 屬性讓編譯器能按模式檢查它們。在宏裡，<code>__VA_ARGS__</code> 把它們貼上進去。"
+      "short": "表示「任意數量的額外引數」，就像 printf 模式所需要的那些值。",
+      "simple": "「……等等」：函式接受你給它的任意多個額外引數。",
+      "deep": "在 <code>void warn(const char *fmt, ...)</code> 中，額外引數用 <code>va_list</code> 讀取並轉發給 <code>vsnprintf</code>；<code>[[gnu::format(printf, 2, 3)]]</code> 屬性讓編譯器能按模式檢查它們。在巨集裡，<code>__VA_ARGS__</code> 把它們貼上進去。"
     },
     "inline": {
       "short": "允許把函式或變數定義在許多檔案都會包含的標頭檔案裡。",
@@ -257,33 +257,33 @@
     },
     "noexcept": {
       "short": "一個承諾：這個函式永遠不會丟擲異常。",
-      "simple": "門上的一塊牌子：“這裡面沒有意外。”",
-      "deep": "如果它還是丟擲了異常，<code>std::terminate</code> 會結束程式。標準容器用它來判斷移動一個元素是否安全。Arduino-ESP32 的構建支援異常，但各實驗從不丟擲異常。"
+      "simple": "門上的一塊牌子：「這裡面沒有意外。」",
+      "deep": "如果它還是丟擲了異常，<code>std::terminate</code> 會結束程式。標準容器用它來判斷移動一個元素是否安全。Arduino-ESP32 的建置支援異常，但各實驗從不丟擲異常。"
     },
     "override": {
       "short": "<code>virtual</code> 讓子類替換一個函式；<code>override</code> 標記這個替換。",
-      "simple": "一張帶空白的表格：庫把“如何畫一個畫素”留給你來填，而 <code>override</code> 表示“這是我對這個空白的回答”。",
-      "deep": "呼叫經過一張函式指標表（虛擬函式表 vtable），所以 <code>Adafruit_GFX</code> 的程式碼最終會呼叫我們的 <code>FrameBuffer::drawPixel</code>。<code>override</code> 讓編譯器檢查確實存在一個匹配的虛擬函式。<code>onConnect</code> 這樣的 NimBLE 回撥也是同樣的原理。"
+      "simple": "一張帶空白的表格：函式庫把「如何畫一個像素」留給你來填，而 <code>override</code> 表示「這是我對這個空白的回答」。",
+      "deep": "呼叫經過一張函式指標表（虛擬函式表 vtable），所以 <code>Adafruit_GFX</code> 的程式碼最終會呼叫我們的 <code>FrameBuffer::drawPixel</code>。<code>override</code> 讓編譯器檢查確實存在一個匹配的虛擬函式。<code>onConnect</code> 這樣的 NimBLE 回呼也是同樣的原理。"
     },
     "explicit": {
       "short": "阻止編譯器透過建構函式悄悄地把一種型別變成另一種型別。",
-      "simple": "“先問一聲”：一個數字不會僅僅因為 <code>Button</code> 可以由它構造出來，就變成 <code>Button</code>。",
+      "simple": "「先問一聲」：一個數字不會僅僅因為 <code>Button</code> 可以由它構造出來，就變成 <code>Button</code>。",
       "deep": "沒有它，單引數的建構函式就是一種隱式轉換，所以一個接受 <code>BootButton</code> 的函式可以被一個普通數字呼叫。也用於 <code>operator bool</code>。"
     },
     "constructor": {
       "short": "一個與類同名的特殊函式，用來設定一個新物件。",
       "simple": "新東西從盒子裡拿出來時只執行一次的組裝說明。",
-      "deep": "沒有返回型別。<code>:</code> 之後的列表 (<code>: pin_(pin), name_(name)</code>) 在函式體執行之前，按成員宣告的順序填充成員。<code>~Name()</code> 解構函式在物件消失時執行，就像 <code>FrameBuffer</code> 釋放它的畫素。"
+      "deep": "沒有傳回型別。<code>:</code> 之後的列表 (<code>: pin_(pin), name_(name)</code>) 在函式體執行之前，按成員宣告的順序填充成員。<code>~Name()</code> 解構函式在物件消失時執行，就像 <code>FrameBuffer</code> 釋放它的像素。"
     },
     "address-reference": {
-      "short": "三種用途：在型別之後它構成引用（另一個名字），在變數之前它取這個變數的位址，在數字之間它是按位與。",
-      "simple": "引用是一個暱稱：<code>uint8_t &amp;r</code> 讓函式直接寫進你的盒子裡。<code>&amp;x</code> 是盒子的街道位址。<code>a &amp; b</code> 只保留兩者都為 1 的位。",
+      "short": "三種用途：在型別之後它構成參照（另一個名字），在變數之前它取這個變數的位址，在數字之間它是按位與。",
+      "simple": "參照是一個暱稱：<code>uint8_t &amp;r</code> 讓函式直接寫進你的盒子裡。<code>&amp;x</code> 是盒子的街道位址。<code>a &amp; b</code> 只保留兩者都為 1 的位。",
       "deep": "<code>T &amp;</code> 繫結到一個已有的物件，不能為空，也不能改指別處；<code>const T &amp;</code> 傳遞大物件而不用複製。<code>&amp;lock_</code> 得到一個 <code>portMUX_TYPE *</code>。<code>x &amp; 0xFF</code> 遮蔽出低位元組。"
     },
     "pointer": {
       "short": "三種用途：在型別之後它宣告一個指標，在指標之前它跟隨這個指標，在數字之間它是乘法。",
-      "simple": "指標就是一張寫著位址的紙條。<code>*p</code> 的意思是“去那個位址，使用那裡的東西”。在兩個數字之間，它就是乘。",
-      "deep": "在 ESP32 上指標是 4 個位元組。<code>uint16_t *buf_</code> 儲存畫素從哪裡開始；<code>buf_[i]</code> 與 <code>*(buf_ + i)</code> 相同。<code>const char *</code> 是指向你可以讀但不能改的文字的指標。"
+      "simple": "指標就是一張寫著位址的紙條。<code>*p</code> 的意思是「去那個位址，使用那裡的東西」。在兩個數字之間，它就是乘。",
+      "deep": "在 ESP32 上指標是 4 個位元組。<code>uint16_t *buf_</code> 儲存像素從哪裡開始；<code>buf_[i]</code> 與 <code>*(buf_ + i)</code> 相同。<code>const char *</code> 是指向你可以讀但不能改的文字的指標。"
     },
     "array": {
       "short": "一排固定的同型別的值，從 0 開始編號。",
@@ -298,7 +298,7 @@
     "static": {
       "short": "讓一個變數在整個程式期間都存活，或者讓一個類的所有物件共享同一份複製。",
       "simple": "在函式內部，它是一本在兩次存取之間一直放在桌上的筆記本，所以 <code>loop()</code> 能記住它上一次的值。",
-      "deep": "有三種含義。<code>static</code> 區域性變數只建立一次，並在多次呼叫之間保留。<code>static</code> 成員屬於類，而不屬於每個物件（中斷處理函式 <code>onEdge</code> 是 static 的，透過 <code>arg</code> 拿到物件）。在檔案級別，它讓一個名字只在該檔案內可見。"
+      "deep": "有三種含義。<code>static</code> 區域變數只建立一次，並在多次呼叫之間保留。<code>static</code> 成員屬於類，而不屬於每個物件（中斷處理函式 <code>onEdge</code> 是 static 的，透過 <code>arg</code> 拿到物件）。在檔案級別，它讓一個名字只在該檔案內可見。"
     },
     "volatile": {
       "short": "告訴編譯器這個值可能會在它不知情時改變，所以每次都必須重新讀取。",
@@ -311,9 +311,9 @@
       "deep": "在編譯時計算，執行時不花任何代價。陣列的 <code>sizeof(text)</code> 是它完整的位元組大小，但指標的只有 4。<code>sizeof(arr) / sizeof(arr[0])</code> 數出元素個數。"
     },
     "new-delete": {
-      "short": "<code>new</code> 在空閒記憶體（堆）中構建一個物件；<code>delete</code> 銷燬它並把記憶體還回去。",
+      "short": "<code>new</code> 在空閒記憶體（堆）中建置一個物件；<code>delete</code> 銷燬它並把記憶體還回去。",
       "simple": "租一個儲物間：<code>new</code> 租一間，<code>delete</code> 交還鑰匙。忘了交還，這塊空間就會丟失，直到重啟。",
-      "deep": "每個 <code>new</code> 恰好需要一個 <code>delete</code>（<code>new[]</code> 需要 <code>delete[]</code>）。在 ESP32 上，普通的 <code>new</code> 可能落在內部 RAM 或 PSRAM 中，取決於大小和構建設定；要自己選擇，請用 <code>heap_caps_malloc</code>。函式上的 <code>= delete</code> 表示禁止它，例如禁止複製。"
+      "deep": "每個 <code>new</code> 恰好需要一個 <code>delete</code>（<code>new[]</code> 需要 <code>delete[]</code>）。在 ESP32 上，普通的 <code>new</code> 可能落在內部 RAM 或 PSRAM 中，取決於大小和建置設定；要自己選擇，請用 <code>heap_caps_malloc</code>。函式上的 <code>= delete</code> 表示禁止它，例如禁止複製。"
     },
     "progmem": {
       "short": "要求資料留在 flash 儲存器裡，而不是被複制進 RAM。",
@@ -323,17 +323,17 @@
     "iram-attr": {
       "short": "把一個函式放進晶片快速的內部 RAM 裡，這樣它能在中斷觸發的瞬間就執行。",
       "simple": "把滅火器放在門口，而不是放在地下室：它必須能立刻拿到。",
-      "deep": "普通程式碼透過快取從外部 flash 執行，而在寫 flash（NVS、OTA）時快取是關閉的。那時位於 flash 中的中斷處理函式會讓晶片崩潰；<code>IRAM_ATTR</code> 讓它留在 IRAM 中。它呼叫的任何東西也應該在 IRAM 裡，所以要讓處理函式儘量小。"
+      "deep": "普通程式碼透過快取從外部 flash 執行，而在寫 flash（NVS、OTA）時快取是關閉的。那時位於 flash 中的中斷處理函式會讓晶片當機；<code>IRAM_ATTR</code> 讓它留在 IRAM 中。它呼叫的任何東西也應該在 IRAM 裡，所以要讓處理函式儘量小。"
     },
     "c-strings": {
       "short": "C 語言處理 <code>char</code> 陣列中文字的工具：複製、比較、測量。",
-      "simple": "用手擺弄字母牌：把一個單詞複製到你的牌架上，比較兩排牌，數一數結束牌之前有多少塊牌。",
-      "deep": "<code>strlcpy(dst, src, sizeof(dst))</code> 安全地複製，並且總是以 <code>'\\0'</code> 結束。兩段文字相等時 <code>strcmp</code> 返回 0（不是 true！），所以程式碼要寫成 <code>strcmp(a, b) == 0</code>。<code>strlen</code> 數的是字母，不包括最後的 <code>'\\0'</code>。"
+      "simple": "用手擺弄字母牌：把一個單字複製到你的牌架上，比較兩排牌，數一數結束牌之前有多少塊牌。",
+      "deep": "<code>strlcpy(dst, src, sizeof(dst))</code> 安全地複製，並且總是以 <code>'\\0'</code> 結束。兩段文字相等時 <code>strcmp</code> 傳回 0（不是 true！），所以程式碼要寫成 <code>strcmp(a, b) == 0</code>。<code>strlen</code> 數的是字母，不包括最後的 <code>'\\0'</code>。"
     },
     "memcpy": {
       "short": "複製、填充或比較一塊原始位元組。",
       "simple": "一次搬一整盤雞蛋，而不是一次搬一個。",
-      "deep": "它們按位元組工作，不知道任何型別：長度永遠以位元組為單位，所以要用 <code>sizeof</code>。<code>memcpy</code> 不能重疊（要用 <code>memmove</code>）；<code>memcmp</code> 相等時返回 0。卡片 UID 和 BLE 負載就是這樣處理的。"
+      "deep": "它們按位元組工作，不知道任何型別：長度永遠以位元組為單位，所以要用 <code>sizeof</code>。<code>memcpy</code> 不能重疊（要用 <code>memmove</code>）；<code>memcmp</code> 相等時傳回 0。卡片 UID 和 BLE 負載就是這樣處理的。"
     },
     "struct": {
       "short": "把幾個有名字的值捆成一個新型別。",
@@ -356,9 +356,9 @@
       "deep": "沒有名字的 <code>namespace { }</code> 讓裡面的一切只在那個 <code>.cpp</code> 檔案內可見（內部連結），第 01 課對它的輔助函式就是這樣做的。<code>using namespace x;</code> 會把名字再拉出來；在標頭檔案裡要避免使用它。"
     },
     "std": {
-      "short": "C++ 標準庫的名稱空間：<code>std::min</code>、<code>std::vector</code>、<code>std::mutex</code>……",
-      "simple": "每個 C++ 編譯器自帶的工具箱。<code>std::</code> 的意思是“從標準工具箱裡拿這個工具”。",
-      "deep": "Arduino-ESP32 自帶完整的 C++ 標準庫（GCC 的 libstdc++），包括容器、演算法，以及建立在 FreeRTOS 之上的 <code>&lt;atomic&gt;</code> 和 <code>&lt;mutex&gt;</code>。注意堆的使用：容器會分配記憶體。"
+      "short": "C++ 標準函式庫的命名空間：<code>std::min</code>、<code>std::vector</code>、<code>std::mutex</code>……",
+      "simple": "每個 C++ 編譯器自帶的工具箱。<code>std::</code> 的意思是「從標準工具箱裡拿這個工具」。",
+      "deep": "Arduino-ESP32 自帶完整的 C++ 標準函式庫（GCC 的 libstdc++），包括容器、演算法，以及建立在 FreeRTOS 之上的 <code>&lt;atomic&gt;</code> 和 <code>&lt;mutex&gt;</code>。注意堆的使用：容器會分配記憶體。"
     },
     "access": {
       "short": "決定誰可以使用一個類的成員：所有人、只有類自己，或者類和它的子類。",
@@ -367,8 +367,8 @@
     },
     "this": {
       "short": "在成員函式內部，指向該函式正在處理的那個物件的指標。",
-      "simple": "“我”：指向自己的物件。",
-      "deep": "通常是隱式的（<code>pin_</code> 意思是 <code>this->pin_</code>）。當 C 風格的回撥需要找回路徑時會顯式傳遞，比如 <code>attachInterruptArg(..., onEdge, this, CHANGE)</code> 或任務的引數，並且 lambda 用 <code>[this]</code> 捕獲它。"
+      "simple": "「我」：指向自己的物件。",
+      "deep": "通常是隱式的（<code>pin_</code> 意思是 <code>this->pin_</code>）。當 C 風格的回呼需要找回路徑時會顯式傳遞，比如 <code>attachInterruptArg(..., onEdge, this, CHANGE)</code> 或任務的引數，並且 lambda 用 <code>[this]</code> 捕獲它。"
     },
     "using": {
       "short": "給一個型別起一個更短或更清楚的名字。",
@@ -382,13 +382,13 @@
     },
     "extern": {
       "short": "說明一個變數存在，但在程式的別處定義。",
-      "simple": "“鑰匙在另一個房間”：你可以在這裡談論它，連結器稍後會把它取來。",
-      "deep": "沒有定義的宣告。HTTPS 客戶端用它按連結器符號名，存取構建時連結進 flash 的 Mozilla 證書包。"
+      "simple": "「鑰匙在另一個房間」：你可以在這裡談論它，連結器稍後會把它取來。",
+      "deep": "沒有定義的宣告。HTTPS 客戶端用它按連結器符號名，存取建置時連結進 flash 的 Mozilla 證書包。"
     },
     "constexpr": {
       "short": "在程式編譯時就固定的值，所以開發板執行時它永遠不會改變。",
       "simple": "就像印在盒子上的數字，而不是寫在便利貼上的：在開發板上電之前就已經確定了。",
-      "deep": "<code>constexpr</code> 變數由編譯器計算，執行時不佔 RAM；<code>rgb()</code> 這樣的 <code>constexpr</code> 函式在輸入是常量時可以在編譯時執行。各實驗把這些命名為 <code>kSomething</code>。"
+      "deep": "<code>constexpr</code> 變數由編譯器計算，執行時不佔 RAM；<code>rgb()</code> 這樣的 <code>constexpr</code> 函式在輸入是常數時可以在編譯時執行。各實驗把這些命名為 <code>kSomething</code>。"
     },
     "static-cast": {
       "short": "有意地把一個值轉換成另一種型別，讓你能看見。",
@@ -411,8 +411,8 @@
       "deep": "<code>template &lt;typename F&gt; void withChip(F &amp;&amp;fn)</code> 接受任何可呼叫物件，包括 lambda，沒有執行時代價。每一種新型別都意味著多一份編譯出來的複製，所以大量使用會讓韌體變大。尖括號提供型別：<code>std::vector&lt;Card&gt;</code>。"
     },
     "std-min-max": {
-      "short": "返回兩個值中較小的或較大的那一個。",
-      "simple": "“哪個更小”和“哪個更大”：方便把數字保持在範圍之內。",
+      "short": "傳回兩個值中較小的或較大的那一個。",
+      "simple": "「哪個更小」和「哪個更大」：方便把數字保持在範圍之內。",
       "deep": "兩個引數必須是同一種型別，或者你顯式指明：<code>std::min&lt;uint32_t&gt;(n, 320)</code>。<code>std::max(0, n - 9)</code> 能防止值降到零以下。"
     },
     "std-clamp": {
@@ -421,33 +421,33 @@
       "deep": "C++17，來自 <code>&lt;algorithm&gt;</code>。三個引數必須是同一種型別，所以才有 <code>0.0f</code> 和 <code>1.0f</code>。Arduino 的 <code>constrain()</code> 做同樣的事。"
     },
     "std-algorithms": {
-      "short": "標準庫裡現成的迴圈：填充、複製、排序、找最大值……",
+      "short": "標準函式庫裡現成的迴圈：填充、複製、排序、找最大值……",
       "simple": "廚房小工具：你可以用手切，但工具更快，而且不會打滑。",
-      "deep": "來自 <code>&lt;algorithm&gt;</code>，它們適用於以起始指標和結束指標（或迭代器）給出的任何範圍，結束位置是最後一項之後的那一個。<code>std::fill_n(buf_, n, c)</code> 能塗滿整個螢幕；<code>std::sort</code> 接受一個 lambda，說明“排在前面”是什麼意思。"
+      "deep": "來自 <code>&lt;algorithm&gt;</code>，它們適用於以起始指標和結束指標（或迭代器）給出的任何範圍，結束位置是最後一項之後的那一個。<code>std::fill_n(buf_, n, c)</code> 能塗滿整個螢幕；<code>std::sort</code> 接受一個 lambda，說明「排在前面」是什麼意思。"
     },
     "std-move": {
       "short": "把一個物件的內容交給另一個物件，而不是複製它們。",
       "simple": "帶著原封不動的箱子搬家，而不是為新家把所有東西都買一份複製。",
-      "deep": "它只是一個轉換成右值引用 (<code>T &amp;&amp;</code>) 的型別轉換；真正的移動由接收型別的移動建構函式完成。之後源物件有效但差不多是空的，所以不要依賴它的值。對 <code>String</code>、<code>std::vector</code> 和 <code>std::function</code> 來說成本很低。"
+      "deep": "它只是一個轉換成右值參照 (<code>T &amp;&amp;</code>) 的型別轉換；真正的移動由接收型別的移動建構函式完成。之後源物件有效但差不多是空的，所以不要依賴它的值。對 <code>String</code>、<code>std::vector</code> 和 <code>std::function</code> 來說成本很低。"
     },
     "std-vector": {
       "short": "一個可以增長和縮小的列表，儲存同一種型別的專案。",
-      "simple": "一個可擴充套件的資料夾：加頁它就騰出空間，而你仍然可以說“把第 3 頁給我”。",
+      "simple": "一個可擴充套件的資料夾：加頁它就騰出空間，而你仍然可以說「把第 3 頁給我」。",
       "deep": "把專案存放在一整塊連續的堆記憶體裡，滿了就翻倍，這會移動（並可能碎片化）記憶體。各實驗在不要求實時的路徑之外填充 vector，例如為螢幕複製卡片列表。<code>v.size()</code>、<code>v.push_back(x)</code>、<code>v[i]</code>。"
     },
     "std-function": {
       "short": "一個可以容納任何具有給定形狀的函式或 lambda 的盒子，留待以後呼叫。",
       "simple": "一個放指示便利貼的插槽：任何便利貼都放得進去，只要它接受相同的輸入。",
-      "deep": "<code>std::function&lt;void(Card &amp;)&gt;</code> 接受一個 <code>Card &amp;</code>，不返回任何東西。靈活，但比模板更重：呼叫是間接的，較大的捕獲會放進堆裡。適合儲存在類裡的回撥。"
+      "deep": "<code>std::function&lt;void(Card &amp;)&gt;</code> 接受一個 <code>Card &amp;</code>，不傳回任何東西。靈活，但比範本更重：呼叫是間接的，較大的捕獲會放進堆裡。適合儲存在類裡的回呼。"
     },
     "std-atomic": {
       "short": "一個兩個任務可以同時讀寫、卻永遠不會看到改了一半的變數。",
       "simple": "一個人人都能撥動的開關：不管誰碰它，它總是清楚地處於開或關。",
-      "deep": "<code>std::atomic&lt;bool&gt;</code> 和 <code>std::atomic&lt;uint32_t&gt;</code> 在 ESP32 上是無鎖的。把它們用於標誌或計數器這樣的單個小值；對於必須一起改變的多個值，請用互斥鎖。"
+      "deep": "<code>std::atomic&lt;bool&gt;</code> 和 <code>std::atomic&lt;uint32_t&gt;</code> 在 ESP32 上是無鎖的。把它們用於旗標或計數器這樣的單一小值；對於必須一起改變的多個值，請用互斥鎖。"
     },
     "memory-order": {
       "short": "說明一次原子讀或寫必須與周圍的記憶體對齊得多嚴格。",
-      "simple": "“Release”就像信封封好之後才投遞；“acquire”就像讀信之前先拆開。兩者合起來保證讀的一方能看到寫的一方準備好的一切。",
+      "simple": "「Release」就像信封封好之後才投遞；「acquire」就像讀信之前先拆開。兩者合起來保證讀的一方能看到寫的一方準備好的一切。",
       "deep": "<code>relaxed</code> 只讓那一個值成為原子的。<code>release</code> 儲存配上 <code>acquire</code> 載入，就能讓儲存之前寫入的一切，在載入之後對 ESP32 的兩個核心都可見。預設值 (<code>seq_cst</code>) 是最嚴格的。"
     },
     "std-mutex": {
@@ -461,14 +461,14 @@
       "deep": "RAII：建構函式呼叫 <code>lock()</code>，變數離開作用域時解構函式呼叫 <code>unlock()</code>。這樣就不可能在提前 <code>return</code> 時忘記解鎖。保持程式碼塊簡短。"
     },
     "decltype": {
-      "short": "問編譯器“這個表示式是什麼型別？”，並把答案當作型別使用。",
-      "simple": "“給我一個和那個一模一樣的盒子。”",
-      "deep": "在編譯時求值；表示式永遠不會被執行。適用於模板，以及給 lambda 的型別命名。"
+      "short": "問編譯器「這個運算式是什麼型別？」，並把答案當作型別使用。",
+      "simple": "「給我一個和那個一模一樣的盒子。」",
+      "deep": "在編譯時求值；運算式永遠不會被執行。適用於範本，以及給 lambda 的型別命名。"
     },
     "static-assert": {
-      "short": "一項在編譯時執行的檢查；如果失敗，構建會帶著你的訊息停止。",
+      "short": "一項在編譯時執行的檢查；如果失敗，建置會帶著你的訊息停止。",
       "simple": "工廠裡的守門人：不合格的零件永遠離不開這棟樓。",
-      "deep": "執行時不花任何代價。典型用法：檢查一個緊湊打包的結構體確實有協議所期望的位元組大小，或者一張表對每個列舉值都有一個條目。"
+      "deep": "執行時不花任何代價。典型用法：檢查一個緊湊打包的結構確實有協定所期望的位元組大小，或者一張表對每個列舉值都有一個條目。"
     },
     "mutable": {
       "short": "讓一個成員即使在 <code>const</code> 函式里也能改變，用於不屬於物件值的記賬資訊。",
@@ -477,23 +477,23 @@
     },
     "include": {
       "short": "把另一個檔案貼上到這裡，這樣本檔案就能使用它所宣告的東西。",
-      "simple": "就像在食譜頂部寫“見附上的菜譜卡”：它列出的食材現在可以使用了。",
-      "deep": "尖括號裡的 <code>&lt;Arduino.h&gt;</code> 在庫和系統路徑中查詢；引號裡的 <code>\"pins.h\"</code> 先在本檔案旁邊（以及專案的 <code>include/</code>）查詢。這是純文字貼上，在編譯之前完成。"
+      "simple": "就像在食譜頂部寫「見附上的菜譜卡」：它列出的食材現在可以使用了。",
+      "deep": "尖括號裡的 <code>&lt;Arduino.h&gt;</code> 在函式庫和系統路徑中查詢；引號裡的 <code>\"pins.h\"</code> 先在本檔案旁邊（以及專案的 <code>include/</code>）查詢。這是純文字貼上，在編譯之前完成。"
     },
     "pragma-once": {
       "short": "確保一個標頭檔案只被貼上一次，不管有多少個檔案包含它。",
-      "simple": "一枚“你已經讀過這一頁”的書籤：第二次時，這一頁會被跳過。",
-      "deep": "GCC 和所有主流編譯器都支援；它取代了較老的 <code>#ifndef X / #define X / #endif</code> 包含保護。沒有它，一個被定義兩次的結構體會導致編譯錯誤。"
+      "simple": "一枚「你已經讀過這一頁」的書籤：第二次時，這一頁會被跳過。",
+      "deep": "GCC 和所有主流編譯器都支援；它取代了較老的 <code>#ifndef X / #define X / #endif</code> 包含保護。沒有它，一個被定義兩次的結構會導致編譯錯誤。"
     },
     "define": {
       "short": "建立一個名字，在程式碼被編譯之前，它會被替換成一段文字。",
       "simple": "由計算機在讀你的程式碼之前做的查詢替換：每個 <code>PIN_RGB</code> 都變成 <code>48</code>。",
-      "deep": "宏不瞭解型別或作用域。<code>pins.h</code> 使用它們，這樣 <code>-DPIN_RGB=38</code> 這樣的構建選項就可以覆蓋一個腳位；對普通常量請優先使用 <code>constexpr</code>。帶括號的宏，如 <code>BLE_NOTE(kind, ...)</code>，會把它的引數貼上進去。"
+      "deep": "巨集不瞭解型別或作用域。<code>pins.h</code> 使用它們，這樣 <code>-DPIN_RGB=38</code> 這樣的建置選項就可以覆蓋一個腳位；對普通常數請優先使用 <code>constexpr</code>。帶括號的巨集，如 <code>BLE_NOTE(kind, ...)</code>，會把它的引數貼上進去。"
     },
     "conditional-compile": {
       "short": "根據某個名字是否已定義，在編譯前保留或丟棄某些程式碼行。",
-      "simple": "“如果還沒有人選腳位，就用 48。”不適用的那些行在編譯器看到之前就被剪掉了。",
-      "deep": "<code>#ifndef PIN_RGB</code> ... <code>#endif</code> 讓 <code>platformio.ini</code> 的構建選項優先於 <code>pins.h</code> 裡的預設值。<code>#if</code> 測試一個常量表示式；每個 <code>#if</code>/<code>#ifdef</code>/<code>#ifndef</code> 都需要一個匹配的 <code>#endif</code>。"
+      "simple": "「如果還沒有人選腳位，就用 48。」不適用的那些行在編譯器看到之前就被剪掉了。",
+      "deep": "<code>#ifndef PIN_RGB</code> ... <code>#endif</code> 讓 <code>platformio.ini</code> 的建置選項優先於 <code>pins.h</code> 裡的預設值。<code>#if</code> 測試一個常數運算式；每個 <code>#if</code>/<code>#ifdef</code>/<code>#ifndef</code> 都需要一個匹配的 <code>#endif</code>。"
     },
     "serial-begin": {
       "short": "以選定的速度開啟通往你電腦的序列埠線，這樣開發板就能列印訊息。",
@@ -503,17 +503,17 @@
     "serial-printf": {
       "short": "向序列埠監視器列印一行，並用 <code>%</code> 程式碼填入各個值。",
       "simple": "一封格式信：<code>\"%d cores\"</code> 有一個空，你傳入的數字會填進去。",
-      "deep": "先用 <code>vsnprintf</code> 格式化，再以 115200 波特寫入 UART0（約 11.5 KB/s，所以長篇列印會拖慢迴圈）。程式碼：<code>%d</code> int，<code>%u</code> unsigned，<code>%lu</code> unsigned long，<code>%.1f</code> float，<code>%s</code> C 字串（<code>String</code> 要用 <code>.c_str()</code>），<code>%02X</code> 兩位十六進位制。<code>\\n</code> 要自己加。"
+      "deep": "先用 <code>vsnprintf</code> 格式化，再以 115200 波特寫入 UART0（約 11.5 KB/s，所以長篇列印會拖慢迴圈）。程式碼：<code>%d</code> int，<code>%u</code> unsigned，<code>%lu</code> unsigned long，<code>%.1f</code> float，<code>%s</code> C 字串（<code>String</code> 要用 <code>.c_str()</code>），<code>%02X</code> 兩位十六進位。<code>\\n</code> 要自己加。"
     },
     "serial-print": {
       "short": "把文字或數字列印到序列埠監視器；<code>println</code> 還會另起一行。",
-      "simple": "對你的電腦大聲說話。<code>println</code> 就像說完之後再按一下回車。",
-      "deep": "接受文字、數字和 <code>String</code>；<code>Serial.print(x, HEX)</code> 以十六進位制列印。它寫入傳送緩衝區，只有緩衝區滿時才會等待。"
+      "simple": "對你的電腦大聲說話。<code>println</code> 就像說完之後再按一下Enter 鍵。",
+      "deep": "接受文字、數字和 <code>String</code>；<code>Serial.print(x, HEX)</code> 以十六進位列印。它寫入傳送緩衝區，只有緩衝區滿時才會等待。"
     },
     "serial-read": {
       "short": "<code>available()</code> 告訴你有多少個輸入的字母在等待；<code>read()</code> 取走下一個。",
       "simple": "檢視信箱：<code>available()</code> 告訴你裡面有多少封信，<code>read()</code> 取出一封。",
-      "deep": "兩者都立即返回；沒有東西在等待時 <code>read()</code> 返回 -1。各實驗把字母收集到緩衝區裡，直到換行，然後執行命令，所以輸入永遠不會阻塞螢幕。<code>flush()</code> 會等到所有已列印的內容都傳送完畢。"
+      "deep": "兩者都立即傳回；沒有東西在等待時 <code>read()</code> 傳回 -1。各實驗把字母收集到緩衝區裡，直到換行，然後執行指令，所以輸入永遠不會阻塞螢幕。<code>flush()</code> 會等到所有已列印的內容都傳送完畢。"
     },
     "pin-mode": {
       "short": "在使用之前，把一個 GPIO 腳位設定為輸入或輸出。",
@@ -522,7 +522,7 @@
     },
     "pin-modes": {
       "short": "腳位可以設定的幾種方式：監聽、驅動，或者帶內建電阻的監聽。",
-      "simple": "<code>OUTPUT</code> 是一個你可以開關的水龍頭。<code>INPUT</code> 是一個你來讀數的儀表。<code>INPUT_PULLUP</code> 是一個平時停在“高”的儀表，直到有東西把它拉低。",
+      "simple": "<code>OUTPUT</code> 是一個你可以開關的水龍頭。<code>INPUT</code> 是一個你來讀數的儀表。<code>INPUT_PULLUP</code> 是一個平時停在「高」的儀表，直到有東西把它拉低。",
       "deep": "懸空的 <code>INPUT</code> 會拾取噪聲；<code>INPUT_PULLUP</code>/<code>INPUT_PULLDOWN</code> 會啟用 ESP32 微弱的內部電阻（幾十千歐）。這就是為什麼在這些實驗裡按下的按鈕讀作 <code>LOW</code>。"
     },
     "digital-write": {
@@ -533,10 +533,10 @@
     "digital-read": {
       "short": "讀取輸入腳位是高（接近 3.3 V）還是低（接近 0 V）。",
       "simple": "問門鈴按鈕：你現在被按下了嗎？",
-      "deep": "返回 <code>HIGH</code> (1) 或 <code>LOW</code> (0)。使用 <code>INPUT_PULLUP</code> 時，按下的按鈕讀作 <code>LOW</code>，所以 <code>== LOW</code> 表示“按下了”。機械觸點會抖動幾毫秒，<code>Button</code> 會把它過濾掉。"
+      "deep": "傳回 <code>HIGH</code> (1) 或 <code>LOW</code> (0)。使用 <code>INPUT_PULLUP</code> 時，按下的按鈕讀作 <code>LOW</code>，所以 <code>== LOW</code> 表示「按下了」。機械觸點會抖動幾毫秒，<code>Button</code> 會把它過濾掉。"
     },
     "high-low": {
-      "short": "數字腳位的兩個電平：<code>HIGH</code> 是 3.3 V，<code>LOW</code> 是 0 V。",
+      "short": "數字腳位的兩個準位：<code>HIGH</code> 是 3.3 V，<code>LOW</code> 是 0 V。",
       "simple": "開和關，電壓版本。",
       "deep": "它們就是 1 和 0。在 ESP32 上，輸入高於約 3.3 V 的四分之三讀作 <code>HIGH</code>，低於四分之一讀作 <code>LOW</code>；介於兩者之間則不能保證。"
     },
@@ -548,7 +548,7 @@
     "millis": {
       "short": "開發板啟動以來過去了多少毫秒。",
       "simple": "一塊在上電時開始走、永不停止的秒錶。把它與之前的讀數比較，就知道過了多久。",
-      "deep": "返回一個由 64 位 <code>esp_timer</code> 得到的 32 位 <code>unsigned long</code>。大約 49.7 天后迴繞到 0，得益於無符號運算，<code>millis() - last >= interval</code> 在迴繞時依然正確。迴圈就是這樣不用 <code>delay()</code> 來“每隔 N ms”做一件事的。"
+      "deep": "傳回一個由 64 位 <code>esp_timer</code> 得到的 32 位 <code>unsigned long</code>。大約 49.7 天后迴繞到 0，得益於無號運算，<code>millis() - last >= interval</code> 在迴繞時依然正確。迴圈就是這樣不用 <code>delay()</code> 來「每隔 N ms」做一件事的。"
     },
     "micros": {
       "short": "開發板啟動以來過去了多少微秒（百萬分之一秒）。",
@@ -556,7 +556,7 @@
       "deep": "32 位，所以大約 71.6 分鐘後迴繞；用來給短時間的事情計時沒問題，要用實際上永不迴繞的 64 位時鐘，請用 <code>esp_timer_get_time()</code>。"
     },
     "delay": {
-      "short": "讓當前程式碼暫停若干毫秒。",
+      "short": "讓目前程式碼暫停若干毫秒。",
       "simple": "打個盹：在你醒來之前，<code>loop()</code> 裡的其他事情都不會發生。",
       "deep": "在 ESP32 上它呼叫 <code>vTaskDelay</code>，所以在這個任務休眠時，CPU 可以去做其他任務（Wi-Fi、BLE、取樣器）。這裡 FreeRTOS 的節拍是 1 ms。長時間的延遲仍會凍結按鈕和螢幕，所以各實驗主要使用 <code>millis()</code> 檢查。"
     },
@@ -567,18 +567,18 @@
     },
     "ledc-attach": {
       "short": "把一個腳位變成 PWM 輸出，帶有選定的頻率和解析度，用於給 LED 或背光調光。",
-      "simple": "裝一個非常快的電燈開關，它每秒開關幾千次，所以眼睛看到的是“半亮”。",
-      "deep": "基於 LEDC 外設的 Arduino-ESP32 3.x API：如果沒有合適的通道或頻率，<code>ledcAttach(pin, freq, bits)</code> 返回 <code>false</code>。5 kHz、8 位給出 0-255 的佔空比值，沒有可見的閃爍。"
+      "simple": "裝一個非常快的電燈開關，它每秒開關幾千次，所以眼睛看到的是「半亮」。",
+      "deep": "基於 LEDC 周邊的 Arduino-ESP32 3.x API：如果沒有合適的通道或頻率，<code>ledcAttach(pin, freq, bits)</code> 傳回 <code>false</code>。5 kHz、8 位給出 0-255 的工作週期值，沒有可見的閃爍。"
     },
     "ledc-write": {
       "short": "設定腳位在每個 PWM 週期裡保持開啟的比例：0 是關，最大值是完全開啟。",
       "simple": "轉動那個快速開關上的調光旋鈕。",
-      "deep": "在 Arduino-ESP32 3.x 中它接受腳位（2.x 接受通道）。佔空比範圍由 <code>ledcAttach</code> 決定，從 0 到 2^bits - 1（8 位時是 0-255）；LEDC 硬體不需要 CPU 參與就能持續輸出波形。"
+      "deep": "在 Arduino-ESP32 3.x 中它接受腳位（2.x 接受通道）。工作週期範圍由 <code>ledcAttach</code> 決定，從 0 到 2^bits - 1（8 位時是 0-255）；LEDC 硬體不需要 CPU 參與就能持續輸出波形。"
     },
     "rgb-led-write": {
       "short": "根據紅、綠、藍的值（各 0-255）設定開發板內建 RGB LED 的顏色。",
       "simple": "調顏料：一點紅，大量綠，沒有藍。LED 顯示出混合的結果。",
-      "deep": "板載 LED 是 WS2812，它把顏色當作精確計時的脈衝序列來接收；Arduino-ESP32 用 RMT 外設來生成它。它非常亮，所以各實驗把數值調小。在較老的核心中叫 <code>neopixelWrite</code>。"
+      "deep": "板載 LED 是 WS2812，它把顏色當作精確計時的脈衝序列來接收；Arduino-ESP32 用 RMT 周邊來生成它。它非常亮，所以各實驗把數值調小。在較老的核心中叫 <code>neopixelWrite</code>。"
     },
     "attach-interrupt": {
       "short": "在腳位變化的瞬間執行一個函式，即使其餘程式碼正忙著也一樣。",
@@ -601,8 +601,8 @@
       "deep": "Arduino 版本的 <code>std::clamp</code>：<code>constrain(x, lo, hi)</code>。MIDI 音符和力度必須保持在 0-127，所以 BLE MIDI 實驗會限制它們。"
     },
     "min-max": {
-      "short": "Arduino 對“兩個值中較小的或較大的”的簡寫。",
-      "simple": "“哪個更小”或“哪個更大”。<code>max(2, s / 6)</code> 的意思是“至少為 2”。",
+      "short": "Arduino 對「兩個值中較小的或較大的」的簡寫。",
+      "simple": "「哪個更小」或「哪個更大」。<code>max(2, s / 6)</code> 的意思是「至少為 2」。",
       "deep": "讓兩個引數使用同一種型別，以避免意外。在別處，各實驗寫的是 <code>std::min</code>/<code>std::max</code>，它們也接受顯式型別：<code>std::min&lt;uint32_t&gt;(n, 320)</code>。"
     },
     "string-c-str": {
@@ -618,67 +618,67 @@
     "string-substring": {
       "short": "<code>indexOf</code> 找到某段文字出現的位置；<code>substring</code> 剪出一段。",
       "simple": "先用手指在句子裡找到一個詞，再用剪刀剪下你需要的部分。",
-      "deep": "位置從 0 開始計數。<code>substring(from)</code> 一直取到末尾，<code>substring(from, to)</code> 在 <code>to</code> 之前停止。找不到時 <code>indexOf</code> 返回 -1。每個 <code>substring</code> 都會在堆上建立一個新的 <code>String</code>。"
+      "deep": "位置從 0 開始計數。<code>substring(from)</code> 一直取到末尾，<code>substring(from, to)</code> 在 <code>to</code> 之前停止。找不到時 <code>indexOf</code> 傳回 -1。每個 <code>substring</code> 都會在堆上建立一個新的 <code>String</code>。"
     },
     "string-starts-with": {
       "short": "檢查一個 <code>String</code> 是否以某段文字開頭（或結尾）。",
-      "simple": "“這條命令是以 'vol ' 開頭的嗎？”一個快速的是或否。",
-      "deep": "區分大小寫，所以命令要先轉成小寫 (<code>lower.startsWith(...)</code>)。每個實驗的序列埠命令解析器就是這樣識別它的詞的。"
+      "simple": "「這條指令是以 'vol ' 開頭的嗎？」一個快速的是或否。",
+      "deep": "區分大小寫，所以指令要先轉成小寫 (<code>lower.startsWith(...)</code>)。每個實驗的序列埠指令解析器就是這樣識別它的詞的。"
     },
     "string-trim": {
       "short": "就地整理文字：去掉兩端的空格、改變字母大小寫，或者把一段文字換成另一段。",
-      "simple": "讀之前先把便條撫平：沒有多餘的空格，全是小寫字母，所以 “Help ” 和 “help” 意思相同。",
-      "deep": "這些會改變 <code>String</code> 本身，不返回任何東西，所以要對你自己擁有的副本呼叫它們：<code>String lower = line; lower.toLowerCase();</code>。<code>trim</code> 還會去掉某些終端傳送的 <code>\\r</code>。"
+      "simple": "讀之前先把便條撫平：沒有多餘的空格，全是小寫字母，所以 「Help 」 和 「help」 意思相同。",
+      "deep": "這些會改變 <code>String</code> 本身，不傳回任何東西，所以要對你自己擁有的副本呼叫它們：<code>String lower = line; lower.toLowerCase();</code>。<code>trim</code> 還會去掉某些終端傳送的 <code>\\r</code>。"
     },
     "string-to-int": {
       "short": "把 <code>\"42\"</code> 這樣的文字變成數字 42。",
       "simple": "讀出便條上的數字，再把它們輸入計算器。",
-      "deep": "返回一個 <code>long</code>（或 <code>float</code>）。不是以數字開頭的文字會得到 0，所以輸入的 <code>0</code> 和亂碼看起來一樣；需要區分時要檢查文字。"
+      "deep": "傳回一個 <code>long</code>（或 <code>float</code>）。不是以數字開頭的文字會得到 0，所以輸入的 <code>0</code> 和亂碼看起來一樣；需要區分時要檢查文字。"
     },
     "spi-begin": {
-      "short": "在你選的腳位上啟動 SPI 匯流排，讓開發板能快速地與螢幕或 RFID 讀卡器通訊。",
+      "short": "在你選的腳位上啟動 SPI 匯流排，讓開發板能快速地與螢幕或 RFID 讀卡機通訊。",
       "simple": "鋪設一條私人電話線，說話、聽、以及雙方對齊節拍各用單獨的線。",
-      "deep": "<code>SPI.begin(sck, miso, mosi, ss)</code>；-1 表示跳過一個腳位（顯示屏沒有 MISO）。<code>SPI</code> 是 S3 的 SPI2 (FSPI)；RFID 路線在 SPI3 上另建一個 <code>SPIClass</code>，這樣兩者永遠不會共用導線或時序。"
+      "deep": "<code>SPI.begin(sck, miso, mosi, ss)</code>；-1 表示跳過一個腳位（顯示器沒有 MISO）。<code>SPI</code> 是 S3 的 SPI2 (FSPI)；RFID 路線在 SPI3 上另建一個 <code>SPIClass</code>，這樣兩者永遠不會共用導線或時序。"
     },
     "log-macros": {
       "short": "列印帶標籤的日誌行：<code>i</code> 資訊，<code>w</code> 警告，<code>e</code> 錯誤，<code>d</code> 除錯。",
       "simple": "船上航海日誌裡的記錄，每條都有一個表明嚴重程度的標記。",
-      "deep": "使用 printf 風格模式的 Arduino-ESP32 宏。每一行都帶有級別、檔案、行號和函式名的字首，高於 <code>CORE_DEBUG_LEVEL</code>（<code>platformio.ini</code> 裡 3 = 資訊）的行會在編譯時被移除，所以 <code>log_d</code> 在這裡沒有任何開銷。輸出和 <code>Serial</code> 走同一個序列埠。"
+      "deep": "使用 printf 風格模式的 Arduino-ESP32 巨集。每一行都帶有級別、檔案、行號和函式名的字首，高於 <code>CORE_DEBUG_LEVEL</code>（<code>platformio.ini</code> 裡 3 = 資訊）的行會在編譯時被移除，所以 <code>log_d</code> 在這裡沒有任何開銷。輸出和 <code>Serial</code> 走同一個序列埠。"
     },
     "esp-info": {
       "short": "向晶片詢問它自己的資訊：型號、核心數、速度、flash 和 PSRAM 大小、MAC 位址。",
       "simple": "開發板大聲讀出它自己的身份證。",
-      "deep": "第 01 課期望的是 <i>ESP32-S3</i>、2 個 240 MHz 的核心、16 MB flash（N16）和約 8 MB PSRAM（R8）。<code>getEfuseMac()</code> 以 <code>uint64_t</code> 返回 eFuse 中的出廠 MAC，低位元組在前。"
+      "deep": "第 01 課期望的是 <i>ESP32-S3</i>、2 個 240 MHz 的核心、16 MB flash（N16）和約 8 MB PSRAM（R8）。<code>getEfuseMac()</code> 以 <code>uint64_t</code> 傳回 eFuse 中的出廠 MAC，低位元組在前。"
     },
     "free-heap": {
       "short": "還有多少記憶體可供新的分配使用。",
       "simple": "在買更多東西之前，先看看櫥櫃裡還剩多少地方。",
-      "deep": "<code>ESP.getFreeHeap()</code> 統計內部 RAM；<code>heap_caps_get_free_size(MALLOC_CAP_SPIRAM)</code> 統計 PSRAM。空閒不等於可用：<code>heap_caps_get_largest_free_block</code> 告訴你最大的單個連續塊，而這正是幀緩衝區所需要的。"
+      "deep": "<code>ESP.getFreeHeap()</code> 統計內部 RAM；<code>heap_caps_get_free_size(MALLOC_CAP_SPIRAM)</code> 統計 PSRAM。空閒不等於可用：<code>heap_caps_get_largest_free_block</code> 告訴你最大的單一連續塊，而這正是影格緩衝區所需要的。"
     },
     "esp-restart": {
-      "short": "從頭重啟晶片，就像你按了復位按鈕一樣。",
+      "short": "從頭重啟晶片，就像你按了重設按鈕一樣。",
       "simple": "把它關掉再開啟，只不過是從程式內部完成的。",
-      "deep": "軟體復位：RAM 被清除，NVS (Preferences) 保留，下次 <code>esp_reset_reason()</code> 會報告 <code>ESP_RST_SW</code>。在修改了只在啟動時才生效的已儲存設定之後使用。"
+      "deep": "軟體重設：RAM 被清除，NVS (Preferences) 保留，下次 <code>esp_reset_reason()</code> 會報告 <code>ESP_RST_SW</code>。在修改了只在啟動時才生效的已儲存設定之後使用。"
     },
     "esp-reset-reason": {
-      "short": "告訴你開發板上一次為什麼啟動：上電、復位按鈕、崩潰、欠壓……",
-      "simple": "醒來後問一句：“我剛才是睡著了，還是摔倒了？”",
-      "deep": "返回一個 <code>esp_reset_reason_t</code>，如 <code>ESP_RST_POWERON</code>、<code>ESP_RST_SW</code>、<code>ESP_RST_PANIC</code>、<code>ESP_RST_TASK_WDT</code> 或 <code>ESP_RST_BROWNOUT</code>（供電電壓下跌）。在啟動時列印它能讓崩潰變得可見。"
+      "short": "告訴你開發板上一次為什麼啟動：上電、重設按鈕、當機、欠壓……",
+      "simple": "醒來後問一句：「我剛才是睡著了，還是摔倒了？」",
+      "deep": "傳回一個 <code>esp_reset_reason_t</code>，如 <code>ESP_RST_POWERON</code>、<code>ESP_RST_SW</code>、<code>ESP_RST_PANIC</code>、<code>ESP_RST_TASK_WDT</code> 或 <code>ESP_RST_BROWNOUT</code>（供電電壓下跌）。在啟動時列印它能讓當機變得可見。"
     },
     "esp-timer-get-time": {
       "short": "開機以來的微秒數，來自一個永遠不會用完的 64 位時鐘。",
-      "simple": "一塊非常精確的秒錶：適合測量畫一幀螢幕花了多長時間。",
-      "deep": "返回來自 ESP-IDF 高解析度定時器的 <code>int64_t</code>；可以在中斷中安全呼叫。<code>millis()</code> 和 <code>micros()</code> 都建立在它之上。按鈕處理函式只保留低 32 位，這樣一次讀取就是單一步驟。"
+      "simple": "一塊非常精確的秒錶：適合測量畫一個影格螢幕花了多長時間。",
+      "deep": "傳回來自 ESP-IDF 高解析度定時器的 <code>int64_t</code>；可以在中斷中安全呼叫。<code>millis()</code> 和 <code>micros()</code> 都建立在它之上。按鈕處理函式只保留低 32 位，這樣一次讀取就是單一步驟。"
     },
     "esp-timer": {
-      "short": "設定一個回撥，ESP-IDF 會在延遲之後或以穩定的節拍執行它，計時精度為微秒。",
+      "short": "設定一個回呼，ESP-IDF 會在延遲之後或以穩定的節拍執行它，計時精度為微秒。",
       "simple": "一個每 125 ms 響一次的廚房定時器，不管其餘程式碼在做什麼。",
-      "deep": "回撥在高優先順序的 <code>esp_timer</code> 任務裡執行，而不是在 <code>loop()</code> 裡，所以要保持簡短，並安全地共享資料。週期以微秒為單位。"
+      "deep": "回呼在高優先順序的 <code>esp_timer</code> 任務裡執行，而不是在 <code>loop()</code> 裡，所以要保持簡短，並安全地共享資料。週期以微秒為單位。"
     },
     "esp-random": {
       "short": "來自晶片硬體隨機數發生器的一個隨機 32 位數。",
       "simple": "由晶片內部的物理過程，而不是公式，擲出來的骰子。",
-      "deep": "在 Wi-Fi 或藍芽執行時是真正隨機的（無線電噪聲為它提供熵）；在此之前，只能把它當作偽隨機。<code>esp_fill_random(buf, n)</code> 填充一個緩衝區，保險庫實驗就是這樣生成它的金鑰的。"
+      "deep": "在 Wi-Fi 或藍牙執行時是真正隨機的（無線電噪聲為它提供熵）；在此之前，只能把它當作偽隨機。<code>esp_fill_random(buf, n)</code> 填充一個緩衝區，保險函式庫實驗就是這樣生成它的金鑰的。"
     },
     "heap-caps-malloc": {
       "short": "從選定種類的 RAM 中申請一塊記憶體：快速的內部 RAM，或大容量的外部 PSRAM。",
@@ -692,53 +692,53 @@
     },
     "esp-err": {
       "short": "ESP-IDF 函式用一個結果程式碼作答；<code>ESP_OK</code> (0) 表示成功。",
-      "simple": "一張收據：“OK”，或者一個失敗的原因。",
-      "deep": "任何其他值都是錯誤，如 <code>ESP_ERR_NO_MEM</code> 或 <code>ESP_ERR_TIMEOUT</code>；<code>esp_err_to_name()</code> 把它變成文字寫入日誌。各實驗檢查 <code>!= ESP_OK</code> 並退出，而不是崩潰。"
+      "simple": "一張收據：「OK」，或者一個失敗的原因。",
+      "deep": "任何其他值都是錯誤，如 <code>ESP_ERR_NO_MEM</code> 或 <code>ESP_ERR_TIMEOUT</code>；<code>esp_err_to_name()</code> 把它變成文字寫入日誌。各實驗檢查 <code>!= ESP_OK</code> 並退出，而不是當機。"
     },
     "preferences": {
       "short": "把少量設定儲存在晶片的 flash 裡，這樣斷電和重新燒錄後它們依然保留。",
-      "simple": "一本粘在開發板裡的筆記本：寫下 “Wi-Fi name = home”，明天它仍然在那裡。",
-      "deep": "Arduino 對 ESP-IDF NVS 的封裝，NVS 是位於獨立 flash 分割槽中的鍵值儲存。<code>begin(\"ns\", readOnly)</code> 開啟一個名稱空間；名稱空間和鍵最多 15 個字元。預設不加密；用完後呼叫 <code>end()</code>。"
+      "simple": "一本粘在開發板裡的筆記本：寫下 「Wi-Fi name = home」，明天它仍然在那裡。",
+      "deep": "Arduino 對 ESP-IDF NVS 的封裝，NVS 是位於獨立 flash 分割槽中的鍵值儲存。<code>begin(\"ns\", readOnly)</code> 開啟一個命名空間；命名空間和鍵最多 15 個字元。預設不加密；用完後呼叫 <code>end()</code>。"
     },
     "preferences-put-get": {
       "short": "在一個鍵下寫入一個值，或者讀回它，如果從未儲存過就使用一個備用值。",
-      "simple": "貨架上貼了標籤的罐子：往叫 “vol” 的罐子裡放點東西，以後再把它取出來。",
-      "deep": "型別就在名字裡（<code>UChar</code> = <code>uint8_t</code>，<code>UInt</code> = <code>uint32_t</code>）。鍵不存在時，<code>getX(key, fallback)</code> 返回備用值。寫入會消耗 flash 壽命，所以各實驗只在發生變化時才儲存。"
+      "simple": "貨架上貼了標籤的罐子：往叫 「vol」 的罐子裡放點東西，以後再把它取出來。",
+      "deep": "型別就在名字裡（<code>UChar</code> = <code>uint8_t</code>，<code>UInt</code> = <code>uint32_t</code>）。鍵不存在時，<code>getX(key, fallback)</code> 傳回備用值。寫入會消耗 flash 壽命，所以各實驗只在發生變化時才儲存。"
     },
     "x-task-create": {
       "short": "啟動一個新任務：一個與 <code>loop()</code> 並行執行、在你選定的核心上的函式。",
       "simple": "僱第二個廚師。他有自己的菜譜，和你同時工作，用他自己的爐灶。",
-      "deep": "引數：函式、名稱、棧大小、一個 <code>void *</code> 引數（常常是 <code>this</code>）、優先順序、一個可選的控制代碼、核心。在 ESP-IDF 中，棧大小以<b>位元組</b>為單位。<code>loop()</code> 在核心 1 上執行；各實驗把它們的讀取器和取樣器固定在核心 0 上。成功時返回 <code>pdPASS</code>。"
+      "deep": "引數：函式、名稱、棧大小、一個 <code>void *</code> 引數（常常是 <code>this</code>）、優先順序、一個可選的控制代碼、核心。在 ESP-IDF 中，棧大小以<b>位元組</b>為單位。<code>loop()</code> 在核心 1 上執行；各實驗把它們的讀取器和取樣器固定在核心 0 上。成功時傳回 <code>pdPASS</code>。"
     },
     "v-task-delay": {
       "short": "讓這個任務睡眠若干個節拍，這樣其他任務就能用 CPU。",
       "simple": "第二個廚師暫時離開爐灶，好讓別人使用它。",
-      "deep": "在 Arduino-ESP32 上一個節拍是 1 ms，但請寫成 <code>pdMS_TO_TICKS(ms)</code>，這樣含義就清楚了。任務的無限迴圈必須在某處阻塞或延遲，否則低優先順序的任務會“餓死”，看門狗也會報警。"
+      "deep": "在 Arduino-ESP32 上一個節拍是 1 ms，但請寫成 <code>pdMS_TO_TICKS(ms)</code>，這樣含義就清楚了。任務的無限迴圈必須在某處阻塞或延遲，否則低優先順序的任務會「餓死」，看門狗也會報警。"
     },
     "pd-ms-to-ticks": {
       "short": "把毫秒轉換成 FreeRTOS 的節拍，這是 FreeRTOS 中每個等待所使用的單位。",
       "simple": "把分鐘翻譯成廚房時鐘自己的單位。",
-      "deep": "一個宏：<code>ms * configTICK_RATE_HZ / 1000</code>。這裡的節拍是 1000 Hz，所以是一比一，但即使節拍率改變，程式碼依然正確。比一個節拍還短的等待會向下舍入為 0。"
+      "deep": "一個巨集：<code>ms * configTICK_RATE_HZ / 1000</code>。這裡的節拍是 1000 Hz，所以是一比一，但即使節拍率改變，程式碼依然正確。比一個節拍還短的等待會向下捨入為 0。"
     },
     "port-max-delay": {
-      "short": "“永遠等待”：把它作為超時傳入，就會一直阻塞到有東西到來。",
+      "short": "「永遠等待」：把它作為超時傳入，就會一直阻塞到有東西到來。",
       "simple": "坐在信箱旁邊等郵遞員來，不管要等多久。",
       "deep": "最大的節拍數，FreeRTOS 把它當作沒有超時。適合沒有其他事可做的工作任務；永遠不要在 <code>loop()</code> 或中斷裡使用它。"
     },
     "pd-true": {
-      "short": "FreeRTOS 自己的“是/否”答案：<code>pdTRUE</code>/<code>pdPASS</code> 表示成功。",
+      "short": "FreeRTOS 自己的「是/否」答案：<code>pdTRUE</code>/<code>pdPASS</code> 表示成功。",
       "simple": "FreeRTOS 在佇列或任務請求之後交還的回執。",
       "deep": "普通整數 (<code>BaseType_t</code>)，1 表示真/透過，0 表示假/失敗。要顯式地與它們比較：<code>xQueueSend(...) == pdTRUE</code>。"
     },
     "x-queue-create": {
       "short": "建立一個佇列：在任務之間傳遞專案的安全郵箱。",
       "simple": "一個槽位數固定的信箱：一個任務把信投進去，另一個任務把它們取出來，兩者永遠不會衝突。",
-      "deep": "<code>xQueueCreate(length, itemSize)</code> 返回一個 <code>QueueHandle_t</code>，記憶體不足時返回空。專案是以<b>複製</b>的方式放進和取出的，所以要傳送小結構體，而不是指向可能消失的東西的指標。"
+      "deep": "<code>xQueueCreate(length, itemSize)</code> 傳回一個 <code>QueueHandle_t</code>，記憶體不足時傳回空。專案是以<b>複製</b>的方式放進和取出的，所以要傳送小結構，而不是指向可能消失的東西的指標。"
     },
     "x-queue-send": {
       "short": "把一個專案的副本放進佇列，如果佇列已滿，最多等待一個超時時間。",
       "simple": "把一封信投進信箱。如果信箱滿了，你可以稍等片刻，或者走開。",
-      "deep": "超時為 0 時永不阻塞，沒有空間時返回 <code>errQUEUE_FULL</code>：適合 <code>loop()</code> 和不能停頓的 Web 處理函式。在中斷裡請使用 <code>FromISR</code> 版本。"
+      "deep": "超時為 0 時永不阻塞，沒有空間時傳回 <code>errQUEUE_FULL</code>：適合 <code>loop()</code> 和不能停頓的 Web 處理函式。在中斷裡請使用 <code>FromISR</code> 版本。"
     },
     "x-queue-receive": {
       "short": "從佇列中取出下一個專案，如果佇列為空，最多等待一個超時時間。",
@@ -748,12 +748,12 @@
     "semaphore": {
       "short": "一個任務等待、另一個任務（或中斷）給出的訊號。",
       "simple": "接力賽裡的接力棒：跑者一直等到棒子交到手裡，然後才出發。",
-      "deep": "MFRC522 驅動在 <code>xSemaphoreTake(done_, timeout)</code> 裡休眠，直到讀卡器的 IRQ 中斷呼叫 <code>xSemaphoreGiveFromISR</code>，所以不需要 SPI 輪詢。互斥型訊號量增加了用於加鎖的優先順序繼承。"
+      "deep": "MFRC522 驅動在 <code>xSemaphoreTake(done_, timeout)</code> 裡休眠，直到讀卡機的 IRQ 中斷呼叫 <code>xSemaphoreGiveFromISR</code>，所以不需要 SPI 輪詢。互斥型訊號量增加了用於加鎖的優先順序繼承。"
     },
     "task-handle": {
       "short": "控制代碼 (handle) 給一個正在執行的任務命名；<code>vTaskDelete</code> 結束一個任務。",
       "simple": "第二個廚師的名牌，以及打發他回家的字條。",
-      "deep": "<code>vTaskDelete(nullptr)</code> 結束呼叫它的任務；任務函式絕不能直接返回。<code>uxTaskGetStackHighWaterMark</code> 顯示一個任務離棧溢位有多近。"
+      "deep": "<code>vTaskDelete(nullptr)</code> 結束呼叫它的任務；任務函式絕不能直接傳回。<code>uxTaskGetStackHighWaterMark</code> 顯示一個任務離棧溢位有多近。"
     },
     "critical-section": {
       "short": "鎖住幾行程式碼，這樣在此期間沒有其他任務、核心或中斷能碰同一份資料。",
@@ -762,18 +762,18 @@
     },
     "adafruit-st7789": {
       "short": "第 03 課起使用的 1.9 英寸 320×170 彩色螢幕的驅動。",
-      "simple": "開發板與螢幕之間的翻譯：你說“畫這個”，它用 SPI 說螢幕的語言。",
-      "deep": "Adafruit 的 ST7789 驅動。<code>init(170, 320)</code> 設定面板尺寸，<code>setRotation(1)</code> 把它轉成橫向，<code>setSPISpeed</code> 把時鐘提高到 40 MHz。畫素是 RGB565。"
+      "simple": "開發板與螢幕之間的翻譯：你說「畫這個」，它用 SPI 說螢幕的語言。",
+      "deep": "Adafruit 的 ST7789 驅動。<code>init(170, 320)</code> 設定面板尺寸，<code>setRotation(1)</code> 把它轉成橫向，<code>setSPISpeed</code> 把時鐘提高到 40 MHz。像素是 RGB565。"
     },
     "adafruit-gfx": {
       "short": "每個螢幕呼叫背後的繪相簿：線、圓、矩形、文字。",
-      "simple": "一盒模板和筆。任何能給一個畫素上色的螢幕，都能免費獲得其他所有形狀。",
+      "simple": "一盒範本和筆。任何能給一個像素上色的螢幕，都能免費獲得其他所有形狀。",
       "deep": "一個抽象基類：子類只需要實現 <code>drawPixel</code>，其他一切都建立在它之上（我們的 <code>FrameBuffer</code> 為了速度還重寫了線和填充呼叫）。座標是 <code>int16_t</code>，從左上角開始。"
     },
     "gfx-canvas16": {
       "short": "記憶體中一幅螢幕外的畫，你先在上面繪製，然後一次性傳送到螢幕上。",
       "simple": "先在紙上畫草圖，再把畫好的那一頁舉到窗前，這樣沒有人會看到畫了一半的畫。",
-      "deep": "Adafruit GFX 的 16 位畫布：每個畫素一個 <code>uint16_t</code>，320×170×2 = 約 106 KB。它用普通的 <code>malloc</code> 分配，在這裡會落在 PSRAM 中；我們的 <code>FrameBuffer</code> 則優先使用內部 RAM。"
+      "deep": "Adafruit GFX 的 16 位畫布：每個像素一個 <code>uint16_t</code>，320×170×2 = 約 106 KB。它用普通的 <code>malloc</code> 分配，在這裡會落在 PSRAM 中；我們的 <code>FrameBuffer</code> 則優先使用內部 RAM。"
     },
     "frame-buffer": {
       "short": "這個專案的螢幕外畫面：用普通的 GFX 呼叫往裡面畫，然後把它推送到螢幕上。",
@@ -781,24 +781,24 @@
       "deep": "定義在 <code>kit/lib/bench/src/frame_buffer.h</code> 中。<code>begin()</code> 先嚐試快速的內部 RAM，失敗則退回到 PSRAM，<code>internal()</code> 告訴你得到的是哪一種。它用直接寫入 <code>pixels()</code> 的方式重寫了 <code>drawPixel</code>、<code>fillScreen</code> 以及線和矩形呼叫。"
     },
     "display": {
-      "short": "這個專案的螢幕助手：ST7789、它的背光和幀緩衝區，在每個實驗裡都以相同的方式設定。",
+      "short": "這個專案的螢幕助手：ST7789、它的背光和影格緩衝區，在每個實驗裡都以相同的方式設定。",
       "simple": "螢幕和它的草稿板打包在一起：在 <code>fb()</code> 上繪製，然後 <code>push()</code> 把它顯示出來。",
       "deep": "定義在 <code>kit/lib/bench/src/display.h</code> 中。<code>begin()</code> 啟動背光上的 PWM、40 MHz 的 SPI 和橫向的面板；<code>push()</code> 用一次 <code>drawRGBBitmap</code> 傳送整幅畫面。"
     },
     "button": {
       "short": "這個專案的按鈕助手：把原始的按下動作變成乾淨的單擊、雙擊和長按。",
       "simple": "按鈕的門衛：它忽略金屬觸點的抖動，並告訴你那個人真正的意思。",
-      "deep": "定義在 <code>kit/lib/bench/src/button.h</code> 中。一個 <code>IRAM_ATTR</code> 中斷統計每一個邊沿；<code>poll()</code> 在安靜 25 ms 之後接受新的電平，並報告 <code>Event::Click</code>、<code>DoubleClick</code>（280 ms 內）或 <code>LongPress</code>（600 ms）。"
+      "deep": "定義在 <code>kit/lib/bench/src/button.h</code> 中。一個 <code>IRAM_ATTR</code> 中斷統計每一個邊沿；<code>poll()</code> 在安靜 25 ms 之後接受新的準位，並報告 <code>Event::Click</code>、<code>DoubleClick</code>（280 ms 內）或 <code>LongPress</code>（600 ms）。"
     },
     "lab-shell": {
-      "short": "每條路線的實驗所基於的共享外殼：螢幕、按鈕、LED、序列埠命令和鉤子。",
-      "simple": "一個現成的工作臺。每個實驗只帶上自己的工具（檢視和命令），並把它們插上去。",
-      "deep": "一個實驗就是一個 <code>...Spec</code>：它的檢視（繪製函式加一個雙擊動作）、它的序列埠命令，以及 <code>setup</code>、<code>tick</code> 和 <code>gesture</code> 這樣的鉤子。<code>lab.warn</code> 和 <code>lab.note</code> 以 printf 風格把訊息列印到日誌和螢幕上。每個 <code>src/&lt;lab&gt;/main.cpp</code> 基本上就是那份清單，所以 <code>help</code> 恰好顯示這一課教的內容。"
+      "short": "每條路線的實驗所基於的共享外殼：螢幕、按鈕、LED、序列埠指令和鉤子。",
+      "simple": "一個現成的工作臺。每個實驗只帶上自己的工具（檢視和指令），並把它們插上去。",
+      "deep": "一個實驗就是一個 <code>...Spec</code>：它的檢視（繪製函式加一個雙擊動作）、它的序列埠指令，以及 <code>setup</code>、<code>tick</code> 和 <code>gesture</code> 這樣的鉤子。<code>lab.warn</code> 和 <code>lab.note</code> 以 printf 風格把訊息列印到日誌和螢幕上。每個 <code>src/&lt;lab&gt;/main.cpp</code> 基本上就是那份清單，所以 <code>help</code> 恰好顯示這一課教的內容。"
     },
     "mfrc522": {
-      "short": "這個專案自己的 RC522 讀卡器驅動，逐個暫存器編寫，不使用任何庫。",
+      "short": "這個專案自己的 RC522 讀卡機驅動，逐個暫存器編寫，不使用任何函式庫。",
       "simple": "一個位元組一個位元組地直接與讀卡晶片對話，這樣你就能看到對話的每一個字。",
-      "deep": "定義在 <code>kit/lib/rfid-kit/src/mfrc522.h</code> 中：SPI 幀、暫存器、FIFO、晶片的定時器，以及輪詢或在它的 IRQ 線上休眠。<code>iso14443a.h</code> 和 <code>mifare_classic.h</code> 在其上構建卡片協議。"
+      "deep": "定義在 <code>kit/lib/rfid-kit/src/mfrc522.h</code> 中：SPI 訊框、暫存器、FIFO、晶片的定時器，以及輪詢或在它的 IRQ 線上休眠。<code>iso14443a.h</code> 和 <code>mifare_classic.h</code> 在其上建置卡片協定。"
     },
     "rgb565": {
       "short": "把紅、綠、藍（或色輪上的一個色相）變成一個 16 位的螢幕顏色。",
@@ -807,8 +807,8 @@
     },
     "gfx-fill-screen": {
       "short": "把整個螢幕（或畫布）塗成一種顏色。",
-      "simple": "給所有東西刷上一層新漆，通常是繪製新一幀的第一步。",
-      "deep": "在我們的 <code>FrameBuffer</code> 上，它是對 54 400 個畫素做一次 <code>std::fill_n</code>；在面板本身，則要透過 SPI 傳輸那麼多畫素。"
+      "simple": "給所有東西刷上一層新漆，通常是繪製新一個影格的第一步。",
+      "deep": "在我們的 <code>FrameBuffer</code> 上，它是對 54 400 個像素做一次 <code>std::fill_n</code>；在面板本身，則要透過 SPI 傳輸那麼多像素。"
     },
     "gfx-draw-pixel": {
       "short": "給 x、y 處的一個點上色。",
@@ -823,12 +823,12 @@
     "gfx-circle": {
       "short": "繪製圓形和三角形：圓由圓心和半徑確定，三角形由三個角點確定。",
       "simple": "給螢幕用的圓規和三角尺。",
-      "deep": "<code>fillCircle(cx, cy, r, colour)</code> 使用的是圓心，而不是角點。三角形接受 <code>(x0, y0, x1, y1, x2, y2, colour)</code>。在我們的幀緩衝區上，它們都由快速的水平線構成。"
+      "deep": "<code>fillCircle(cx, cy, r, colour)</code> 使用的是圓心，而不是角點。三角形接受 <code>(x0, y0, x1, y1, x2, y2, colour)</code>。在我們的影格緩衝區上，它們都由快速的水平線構成。"
     },
     "gfx-line": {
       "short": "在兩點之間畫一條直線，或者一條快速的水平線或垂直線。",
-      "simple": "尺子和鉛筆。“快速”的那些只能水平或垂直地畫，但要快得多。",
-      "deep": "<code>drawLine(x0, y0, x1, y1, c)</code> 使用 Bresenham 演算法，一次一個畫素。<code>drawFastHLine(x, y, w, c)</code> 在我們的幀緩衝區上用一次 <code>std::fill_n</code> 填充一段畫素，所以分隔線和條形圖都用它。"
+      "simple": "尺子和鉛筆。「快速」的那些只能水平或垂直地畫，但要快得多。",
+      "deep": "<code>drawLine(x0, y0, x1, y1, c)</code> 使用 Bresenham 演算法，一次一個像素。<code>drawFastHLine(x, y, w, c)</code> 在我們的影格緩衝區上用一次 <code>std::fill_n</code> 填充一段像素，所以分隔線和條形圖都用它。"
     },
     "gfx-cursor": {
       "short": "<code>setCursor</code> 設定文字從哪裡開始；然後 <code>fb.print</code> 在螢幕上那個位置寫文字。",
@@ -837,18 +837,18 @@
     },
     "gfx-text-style": {
       "short": "選擇你接下來要列印的文字的顏色、大小和字型。",
-      "simple": "挑選用哪支筆、用哪種字型模板。",
+      "simple": "挑選用哪支筆、用哪種字型範本。",
       "deep": "<code>setTextColor(fg)</code> 繪製透明背景的文字；<code>setTextColor(fg, bg)</code> 還會塗上背景（僅限內建字型）。<code>setFont(&amp;FreeSans9pt7b)</code> 選擇隨 Adafruit GFX 提供的平滑字型（9 pt，常規）；<code>setFont(nullptr)</code> 回到 6×8 的內建字型；<code>setTextSize(2)</code> 把它放大一倍。"
     },
     "gfx-text-bounds": {
       "short": "測量一段文字有多寬多高，而不真正繪製它。",
       "simple": "掛牌子之前先量一量，這樣就能把它掛在牆的正中央。",
-      "deep": "<code>getTextBounds(text, x, y, &amp;x1, &amp;y1, &amp;w, &amp;h)</code> 填入文字在當前字型和大小下會覆蓋的方框；用於居中和右對齊標籤。"
+      "deep": "<code>getTextBounds(text, x, y, &amp;x1, &amp;y1, &amp;w, &amp;h)</code> 填入文字在目前字型和大小下會覆蓋的方框；用於居中和右對齊標籤。"
     },
     "gfx-rgb-bitmap": {
-      "short": "一次性把一整塊畫素複製到螢幕上。",
+      "short": "一次性把一整塊像素複製到螢幕上。",
       "simple": "把一張洗好的照片直接滑進相框，而不是一個點一個點地畫。",
-      "deep": "<code>drawRGBBitmap(x, y, pixels, w, h)</code> 透過 SPI 傳輸 RGB565 資料；完整的 320×170 一幀約 106 KB，在 40 MHz 下大約 22 ms。這就是幀率的上限，也是各實驗先在螢幕外繪製的原因。"
+      "deep": "<code>drawRGBBitmap(x, y, pixels, w, h)</code> 透過 SPI 傳輸 RGB565 資料；完整的 320×170 一個影格約 106 KB，在 40 MHz 下大約 22 ms。這就是影格率的上限，也是各實驗先在螢幕外繪製的原因。"
     },
     "gfx-rotation": {
       "short": "以 90° 為單位旋轉螢幕的畫面，讓它朝向正確。",
@@ -858,7 +858,7 @@
     "wifi-begin": {
       "short": "開始用名稱和密碼加入一個 Wi-Fi 網路。",
       "simple": "帶著密碼去敲路由器的門；幾秒鐘後才會有回應。",
-      "deep": "立即返回；加入過程在後臺的 Wi-Fi 任務中進行。我們的 <code>Connection</code> 類監聽事件（已連線、獲得 IP、已斷開），而不是在迴圈裡等待。把 <code>nullptr</code> 作為密碼傳入，會加入一個開放網路。"
+      "deep": "立即傳回；加入過程在後臺的 Wi-Fi 任務中進行。我們的 <code>Connection</code> 類監聽事件（已連線、獲得 IP、已斷開），而不是在迴圈裡等待。把 <code>nullptr</code> 作為密碼傳入，會加入一個開放網路。"
     },
     "wifi-mode": {
       "short": "選擇開發板是加入一個網路（station），建立自己的網路（接入點），還是兩者兼有。",
@@ -873,12 +873,12 @@
     "wifi-scan": {
       "short": "監聽附近的 Wi-Fi 網路，並列出它們的名稱、訊號和安全型別。",
       "simple": "轉動收音機的旋鈕，聽聽周圍有哪些電臺。",
-      "deep": "設定 <code>async = true</code> 時它立即返回（-1，仍在執行）；輪詢 <code>scanComplete()</code> 獲取數量，讀取每一項，然後用 <code>scanDelete()</code> 釋放列表。掃描遍歷所有通道需要幾秒鐘。"
+      "deep": "設定 <code>async = true</code> 時它立即傳回（-1，仍在執行）；輪詢 <code>scanComplete()</code> 獲取數量，讀取每一項，然後用 <code>scanDelete()</code> 釋放列表。掃描遍歷所有通道需要幾秒鐘。"
     },
     "wifi-events": {
       "short": "註冊一個函式，當有事情發生時由 Wi-Fi 驅動呼叫：已連線、獲得 IP、掉線。",
       "simple": "請前臺在你的訪客到達時給你打電話，而不是自己在大堂裡等。",
-      "deep": "回撥在 Wi-Fi 事件任務裡執行，而不是在 <code>loop()</code> 裡，所以它應該只設定標誌；真正的工作由 <code>loop()</code> 來做。<code>info</code> 攜帶斷開原因等詳細資訊。"
+      "deep": "回呼在 Wi-Fi 事件任務裡執行，而不是在 <code>loop()</code> 裡，所以它應該只設定旗標；真正的工作由 <code>loop()</code> 來做。<code>info</code> 攜帶斷開原因等詳細資訊。"
     },
     "mdns": {
       "short": "給開發板在你的網路上起一個友好的名字，比如 <code>bench.local</code>。",
@@ -887,8 +887,8 @@
     },
     "ntp-time": {
       "short": "用網際網路時間伺服器設定時鐘，然後讀取本地的日期和時間。",
-      "simple": "開發板沒有帶電池的時鐘，所以一聯網就向網際網路問“現在幾點了？”。",
-      "deep": "<code>configTzTime(tz, server1, server2)</code> 設定 POSIX 時區並啟動 SNTP。<code>getLocalTime(&amp;tm, timeoutMs)</code> 填充一個 <code>struct tm</code>，在第一次同步完成之前返回 <code>false</code>。"
+      "simple": "開發板沒有帶電池的時鐘，所以一聯網就向網際網路問「現在幾點了？」。",
+      "deep": "<code>configTzTime(tz, server1, server2)</code> 設定 POSIX 時區並啟動 SNTP。<code>getLocalTime(&amp;tm, timeoutMs)</code> 填充一個 <code>struct tm</code>，在第一次同步完成之前傳回 <code>false</code>。"
     },
     "http-client": {
       "short": "從開發板發出 Web 請求，就像一個小小的瀏覽器：請求一個 URL，取回答案。",
@@ -903,17 +903,17 @@
     "serialize-json": {
       "short": "把 <code>JsonDocument</code> 變成 JSON 文字，準備傳送。",
       "simple": "把檔案盤裡的內容打成一封整齊的信。",
-      "deep": "<code>serializeJson(doc, out)</code> 寫入 <code>String</code>、<code>char</code> 緩衝區或 <code>Serial</code> 這樣的流，並返回寫入的位元組數。"
+      "deep": "<code>serializeJson(doc, out)</code> 寫入 <code>String</code>、<code>char</code> 緩衝區或 <code>Serial</code> 這樣的流，並傳回寫入的位元組數。"
     },
     "deserialize-json": {
       "short": "把 JSON 文字讀入一個 <code>JsonDocument</code>，你可以在裡面查詢東西。",
       "simple": "拆開一封信，把裡面的內容分別放進貼了標籤的資料夾。",
-      "deep": "返回一個 <code>DeserializationError</code>，出錯時它為真（<code>e.c_str()</code> 說明是什麼錯誤）。<code>Filter</code> 只保留你需要的欄位，這在很大的天氣回覆上能節省大量 RAM。"
+      "deep": "傳回一個 <code>DeserializationError</code>，出錯時它為真（<code>e.c_str()</code> 說明是什麼錯誤）。<code>Filter</code> 只保留你需要的欄位，這在很大的天氣回覆上能節省大量 RAM。"
     },
     "async-web-server": {
       "short": "開發板上的 Web 伺服器：你的手機或膝上型電腦開啟一個頁面或 API，開發板作答。",
       "simple": "一個小小的店鋪視窗：每個位址 (<code>/api/card</code>) 都有一位知道該怎麼回覆的店員。",
-      "deep": "ESPAsyncWebServer 在它自己的網路任務裡作答，所以螢幕和讀卡器永遠不用等待。<code>server_.on(path, HTTP_GET, handler)</code> 註冊一個路由；處理函式必須很快，而且不能阻塞，所以繁重的工作會排隊交給另一個任務。"
+      "deep": "ESPAsyncWebServer 在它自己的網路任務裡作答，所以螢幕和讀卡機永遠不用等待。<code>server_.on(path, HTTP_GET, handler)</code> 註冊一個路由；處理函式必須很快，而且不能阻塞，所以繁重的工作會排隊交給另一個任務。"
     },
     "async-request": {
       "short": "一個傳入的 Web 請求：被請求的是什麼，以及如何回答。",
@@ -926,59 +926,59 @@
       "deep": "掛載在 Web 伺服器的某個路徑上，比如 <code>/ws</code>。<code>textAll</code> 傳送給每個已連線的瀏覽器；<code>onEvent</code> 監聽連線、斷開和訊息。時不時呼叫 <code>cleanupClients()</code> 來丟棄已經離開的連線。"
     },
     "nimble-device": {
-      "short": "通向低功耗藍芽的前門：啟動無線電協議棧，並分發伺服器、掃描器和客戶端。",
-      "simple": "藍芽的接待臺：用 <code>init</code> 打一次招呼，然後向它要你需要的東西。",
-      "deep": "NimBLE-Arduino，一個比 Bluedroid 更輕量的 BLE 協議棧。它的函式是 <code>static</code> 的，所以以 <code>NimBLEDevice::...</code> 的形式呼叫，不需要物件。<code>init(name)</code> 設定廣播的名稱；<code>setPower</code> 以 dBm 設定發射功率。"
+      "short": "通向低功耗藍牙的前門：啟動無線電協定棧，並分發伺服器、掃描器和客戶端。",
+      "simple": "藍牙的接待臺：用 <code>init</code> 打一次招呼，然後向它要你需要的東西。",
+      "deep": "NimBLE-Arduino，一個比 Bluedroid 更輕量的 BLE 協定棧。它的函式是 <code>static</code> 的，所以以 <code>NimBLEDevice::...</code> 的形式呼叫，不需要物件。<code>init(name)</code> 設定廣播的名稱；<code>setPower</code> 以 dBm 設定發射功率。"
     },
     "nimble-server": {
-      "short": "開發板自己的藍芽選單：服務把特徵值分組，特徵值是手機可以讀取、寫入或訂閱的小數值。",
+      "short": "開發板自己的藍牙選單：服務把特徵值分組，特徵值是手機可以讀取、寫入或訂閱的小數值。",
       "simple": "一塊帶有貼標籤格子的佈告欄：手機走過去，讀取溫度那一格，或者在訊息那一格釘上一條資訊。",
       "deep": "GATT：一個服務（一個 UUID）包含特徵值，每個特徵值都有一個 UUID、<code>READ | WRITE | NOTIFY</code> 這樣的屬性，以及一個最大為 MTU 的值。<code>notify()</code> 會在沒被詢問的情況下，把新值推送給已訂閱的手機。"
     },
     "nimble-advertising": {
-      "short": "讓開發板每秒幾次喊“我在這裡！”，這樣手機就能看到它並連線它。",
+      "short": "讓開發板每秒幾次喊「我在這裡！」，這樣手機就能看到它並連線它。",
       "simple": "一座燈塔：以固定間隔發出的短暫閃光，附近的任何人都能看到。",
-      "deep": "傳統的廣播資料包最多攜帶 31 個位元組（名稱、標誌、服務 UUID、廠商資料），掃描響應裡還可以再放 31 個位元組。"
+      "deep": "傳統的廣播資料包最多攜帶 31 個位元組（名稱、旗標、服務 UUID、廠商資料），掃描回應裡還可以再放 31 個位元組。"
     },
     "nimble-scan": {
-      "short": "監聽附近其他正在廣播的藍芽裝置，並報告發現的每一個。",
+      "short": "監聽附近其他正在廣播的藍牙裝置，並報告發現的每一個。",
       "simple": "注視海岸線上燈塔的閃光，並記下你看到的每一次。",
-      "deep": "每個 <code>NimBLEAdvertisedDevice</code> 都有一個位址、RSSI 和負載。主動掃描還會索取掃描響應。回撥在 NimBLE 主機任務裡執行，所以要把結果交給 <code>loop()</code>，而不是在那裡繪製。"
+      "deep": "每個 <code>NimBLEAdvertisedDevice</code> 都有一個位址、RSSI 和負載。主動掃描還會索取掃描回應。回呼在 NimBLE 主機任務裡執行，所以要把結果交給 <code>loop()</code>，而不是在那裡繪製。"
     },
     "nimble-client": {
-      "short": "開發板扮演訪客：連線到另一個藍芽裝置，並讀取或寫入它的值。",
+      "short": "開發板扮演訪客：連線到另一個藍牙裝置，並讀取或寫入它的值。",
       "simple": "走到別人的佈告欄前，而不是自己架設一塊。",
       "deep": "中心裝置角色。連線、發現服務 (<code>getServices(true)</code>)，然後讀取、寫入或訂閱遠端的特徵值。連線和發現都會阻塞，所以 B8 在工作任務裡做這些事。"
     },
     "nimble-conn-info": {
-      "short": "一次藍芽連線的詳細資訊：誰連上了、它如何受到保護、一個資料包能有多大。",
+      "short": "一次藍牙連線的詳細資訊：誰連上了、它如何受到保護、一個資料包能有多大。",
       "simple": "訪客的胸牌：姓名、他們是否出示了身份證，以及一次能攜帶多少東西。",
-      "deep": "傳給 <code>onConnect</code> 和 <code>onAuthenticationComplete</code> 這樣的回撥：對端的位址、連線控制代碼、MTU，以及連線是否已加密、已認證、已繫結。"
+      "deep": "傳給 <code>onConnect</code> 和 <code>onAuthenticationComplete</code> 這樣的回呼：對端的位址、連線控制代碼、MTU，以及連線是否已加密、已認證、已繫結。"
     },
     "nimble-callbacks": {
-      "short": "你繼承的一些類，用來獲知藍芽事件：連線、斷開、寫入、讀取。",
-      "simple": "把你的電話號碼留給接待臺：“有人到的時候給我打電話”。",
+      "short": "你繼承的一些類，用來獲知藍牙事件：連線、斷開、寫入、讀取。",
+      "simple": "把你的電話號碼留給接待臺：「有人到的時候給我打電話」。",
       "deep": "只重寫你需要的 <code>virtual</code> 函式 (<code>onConnect</code>、<code>onWrite</code>……)，然後用 <code>setCallbacks</code> 註冊這個物件。它們在 NimBLE 主機任務裡執行，所以要保持簡短並且執行緒安全。"
     },
     "nimble-security": {
-      "short": "決定藍芽連線如何受到保護：配對、配對碼和被記住的繫結。",
+      "short": "決定藍牙連線如何受到保護：配對、配對碼和被記住的繫結。",
       "simple": "門禁政策：讓任何人進來、要求輸入一個碼，或者只讓你以前見過的朋友進來。",
-      "deep": "<code>setSecurityAuth(bond, mitm, sc)</code> 要求繫結、中間人防護和 LE Secure Connections；IO 能力決定顯示的是配對碼還是“是/否”比對。繫結儲存在 NVS 中，重啟後依然保留。"
+      "deep": "<code>setSecurityAuth(bond, mitm, sc)</code> 要求繫結、中間人防護和 LE Secure Connections；IO 能力決定顯示的是配對碼還是「是/否」比對。繫結儲存在 NVS 中，重啟後依然保留。"
     },
     "ble-note": {
-      "short": "這個專案的快捷方式，用來向藍芽實驗的活動日誌新增一行。",
+      "short": "這個專案的快捷方式，用來向藍牙實驗的活動日誌新增一行。",
       "simple": "在實驗筆記本上快速記一筆，螢幕和序列埠日誌都會顯示。",
-      "deep": "來自 <code>kit/lib/ble-kit/src/ble_link.h</code> 的一個宏，展開為 <code>::ble::activity().add(::ble::Act::kind, ...)</code>：向一個由臨界區保護的環形緩衝區新增一條 printf 風格的記錄，這樣 NimBLE 任務中的回撥可以安全地寫入。"
+      "deep": "來自 <code>kit/lib/ble-kit/src/ble_link.h</code> 的一個巨集，展開為 <code>::ble::activity().add(::ble::Act::kind, ...)</code>：向一個由臨界區保護的環形緩衝區新增一條 printf 風格的記錄，這樣 NimBLE 任務中的回呼可以安全地寫入。"
     },
     "i2s-channel": {
-      "short": "為數字麥克風或揚聲器功放設定一個 I2S 聲音通道。",
+      "short": "為數字麥克風或喇叭功放設定一個 I2S 聲音通道。",
       "simple": "為聲音鋪設一條傳送帶：一個時鐘打著節拍，每個取樣都有一個數字隨行。",
       "deep": "ESP-IDF 5 的 I2S 驅動：<code>i2s_new_channel</code> 建立 TX 和/或 RX 通道，<code>i2s_channel_init_std_mode</code> 設定取樣率、位寬和腳位（標準 Philips I2S 格式），<code>i2s_channel_enable</code> 啟動時鐘和 DMA。"
     },
     "i2s-read-write": {
-      "short": "透過 I2S 通道，從麥克風取得采樣，或把取樣交給揚聲器。",
+      "short": "透過 I2S 通道，從麥克風取得取樣，或把取樣交給喇叭。",
       "simple": "從傳送帶上取下包裹，或者把包裹放上去。",
-      "deep": "<code>i2s_channel_read(handle, buf, bytes, &amp;got, timeoutMs)</code> 從 DMA 緩衝區複製資料，沒有就緒的緩衝區時會等待。DMA 滿了時寫入會等待，所以揚聲器任務的執行速度恰好與聲音播放的速度相同。"
+      "deep": "<code>i2s_channel_read(handle, buf, bytes, &amp;got, timeoutMs)</code> 從 DMA 緩衝區複製資料，沒有就緒的緩衝區時會等待。DMA 滿了時寫入會等待，所以喇叭任務的執行速度恰好與聲音播放的速度相同。"
     }
   },
   "topics": {
@@ -1003,12 +1003,12 @@
       "blurb": "值存放在哪裡，如何指向它們，以及如何讓它們不被改變。"
     },
     "classes": {
-      "title": "你自己構建的型別",
-      "blurb": "結構體、類、列舉和名稱空間：你自己的各種事物。"
+      "title": "你自己建置的型別",
+      "blurb": "結構、類、列舉和命名空間：你自己的各種事物。"
     },
     "modern": {
       "title": "現代 C++",
-      "blurb": "編譯期常量、模板、型別轉換，以及標準庫的幫手。"
+      "blurb": "編譯期常數、範本、型別轉換，以及標準函式庫的幫手。"
     },
     "preprocessor": {
       "title": "編譯之前",
@@ -1027,8 +1027,8 @@
       "blurb": "FreeRTOS 的任務、佇列和鎖，讓開發板能安全地多工執行。"
     },
     "libraries": {
-      "title": "庫",
-      "blurb": "各實驗使用的螢幕、Wi-Fi、Web 伺服器、JSON、藍芽和聲音助手。"
+      "title": "函式庫",
+      "blurb": "各實驗使用的螢幕、Wi-Fi、Web 伺服器、JSON、藍牙和聲音助手。"
     }
   }
 }

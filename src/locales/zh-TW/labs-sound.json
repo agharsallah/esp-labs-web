@@ -1,6 +1,6 @@
 {
   "journey": {
-    "canvasLabel": "訊號的路徑：聲音到達麥克風（KY-037 把電壓送進 ADC，或 INMP441 透過 I2S 送來數字），ESP32-S3 處理它，實驗再把它變成別的東西，通常是揚聲器裡的聲音。",
+    "canvasLabel": "訊號的路徑：聲音到達麥克風（KY-037 把電壓送進 ADC，或 INMP441 透過 I2S 送來數字），ESP32-S3 處理它，實驗再把它變成別的東西，通常是喇叭裡的聲音。",
     "optional": "{{part}}（可選）",
     "output": "→ {{out}}",
     "path": {
@@ -12,7 +12,7 @@
       "ky": "KY-037",
       "inmp": "INMP441",
       "mic": "KY-037 或 INMP441",
-      "spk": "MAX98357A + 揚聲器",
+      "spk": "MAX98357A + 喇叭",
       "wifi": "Wi-Fi (W1)"
     },
     "labs": {
@@ -23,7 +23,7 @@
       },
       "S2": {
         "title": "響度",
-        "what": "電平表（用 INMP441 時顯示 dB SPL）、10 分鐘日記、報警器",
+        "what": "準位表（用 INMP441 時顯示 dB SPL）、10 分鐘日記、報警器",
         "out": "LED · 曲調"
       },
       "S3": {
@@ -34,7 +34,7 @@
       "S4": {
         "title": "錄音機",
         "what": "聲控錄音；在手機或開發板上回放",
-        "out": "Wi-Fi · WAV · 揚聲器"
+        "out": "Wi-Fi · WAV · 喇叭"
       },
       "S5": {
         "title": "頻譜",
@@ -47,14 +47,14 @@
         "out": "遊戲 · 聲音"
       },
       "S7": {
-        "title": "揚聲器",
+        "title": "喇叭",
         "what": "合成器：波形、音符、和絃、包絡、曲子、遊戲音效",
-        "out": "揚聲器"
+        "out": "喇叭"
       },
       "S8": {
         "title": "變聲",
         "what": "鸚鵡：用花栗鼠或機器人的聲音複述你的話；實時回聲",
-        "out": "揚聲器"
+        "out": "喇叭"
       }
     }
   },
@@ -99,7 +99,7 @@
       "dma": {
         "box": "DMA",
         "title": "5 · DMA 不佔 CPU 就收集結果",
-        "text": "在連續模式下，ADC 自己的定時器啟動每一次轉換，DMA（直接記憶體存取）把每個結果（4 位元組）自己寫進 RAM。256 個結果（1 KB，16 ms）之後，它把這一幀交給核心 0 上的取樣任務。核心 1 上的螢幕迴圈從不等它。"
+        "text": "在連續模式下，ADC 自己的定時器啟動每一次轉換，DMA（直接記憶體存取）把每個結果（4 位元組）自己寫進 RAM。256 個結果（1 KB，16 ms）之後，它把這一個影格交給核心 0 上的取樣任務。核心 1 上的螢幕迴圈從不等它。"
       },
       "ring": {
         "box": "環形緩衝",
@@ -114,7 +114,7 @@
       "db": {
         "box": "int16 → dB",
         "title": "8 · 聲音程式能理解的數字",
-        "text": "×16 把 ADC 的步數變成 16 位音訊單位（−32 768 到 32 767，和 WAV 檔案一樣）。每 64 個取樣（4 ms），取樣任務測量這一幀的 RMS，也就是平均強度，電平表再把它變成分貝：既相對於 ADC 的滿量程 (dBFS)，也相對於你房間的安靜程度。"
+        "text": "×16 把 ADC 的步數變成 16 位音訊單位（−32 768 到 32 767，和 WAV 檔案一樣）。每 64 個取樣（4 ms），取樣任務測量這一個影格的 RMS，也就是平均強度，準位表再把它變成分貝：既相對於 ADC 的滿量程 (dBFS)，也相對於你房間的安靜程度。"
       }
     },
     "air": {
@@ -137,12 +137,12 @@
       "value": "原始值現在：{{raw}}（範圍 0-4095）· 衰減 {{atten}}"
     },
     "dma": {
-      "frame": "DMA 幀：256 個結果 × 4 位元組",
+      "frame": "DMA 影格：256 個結果 × 4 位元組",
       "sampler": "取樣任務",
       "samplerCore": "任務，核心 0",
       "loopCore": "螢幕，核心 1",
-      "idle": "一幀填滿的過程中 CPU 什麼也不做",
-      "value": "每秒 62.5 幀，每幀 16 ms · 只有一幀裝滿時取樣任務才醒來"
+      "idle": "一個影格填滿的過程中 CPU 什麼也不做",
+      "value": "每秒 62.5 影格，每影格 16 ms · 只有一個影格裝滿時取樣任務才醒來"
     },
     "ring": {
       "write": "寫入",
@@ -161,12 +161,12 @@
       "value": "原始值 {{raw}} − 平均值 {{dc, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} = {{diff, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} 步"
     },
     "db": {
-      "frames": "8 幀，每幀 64 個取樣（每幀 4 ms）· ×16 = int16 單位",
+      "frames": "8 影格，每影格 64 個取樣（每影格 4 ms）· ×16 = int16 單位",
       "value": "快 {{fast, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} dBFS · 底噪 {{floor, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} dBFS · 比安靜時高 {{above, number(minimumFractionDigits: 0; maximumFractionDigits: 0)}} dB"
     }
   },
   "mics": {
-    "label": "上方：KY-037 的模擬路徑和 INMP441 的數字路徑。下方：SCK、WS 和 SD 線上的一個 I2S 幀，一個逐位讀取取樣的遊標，以及變成 16 位數字的取樣。",
+    "label": "上方：KY-037 的模擬路徑和 INMP441 的數字路徑。下方：SCK、WS 和 SD 線上的一個 I2S 訊框，一個逐位讀取取樣的遊標，以及變成 16 位數字的取樣。",
     "tickLabel": "一個時鐘節拍",
     "tick": "節拍 ▶",
     "pressure": "聲壓",
@@ -187,7 +187,7 @@
       "ownAmp": "+ 自帶放大器",
       "adc24": "24 位 ADC",
       "insideMic": "在麥克風內部",
-      "frames": "I2S 幀",
+      "frames": "I2S 訊框",
       "sample24": "24 位取樣"
     },
     "frame": {
@@ -199,7 +199,7 @@
     "read": {
       "soFar": "已讀：24 位中的 {{got}} 位",
       "level": "這是 {{dbfs, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} dBFS；對正弦波約 {{spl, number(minimumFractionDigits: 0; maximumFractionDigits: 0)}} dB SPL（dBFS + 111，來自資料手冊的 94 dB SPL 時 -26 dBFS）",
-      "clock": "SCK = 16 000 個取樣 × 2 個槽位 × 32 位 = 1.024 MHz，由 ESP32 驅動 (I2S0)；揚聲器用 I2S1"
+      "clock": "SCK = 16 000 個取樣 × 2 個槽位 × 32 位 = 1.024 MHz，由 ESP32 驅動 (I2S0)；喇叭用 I2S1"
     }
   },
   "bias": {
@@ -222,7 +222,7 @@
     }
   },
   "comparator": {
-    "label": "最近兩秒的 AO 波形，帶電位器設定的閾值線，下面是 DO 輸出：波高於線的地方為高電平。",
+    "label": "最近兩秒的 AO 波形，帶電位器設定的閾值線，下面是 DO 輸出：波高於線的地方為高準位。",
     "potRange": "電位器：高於偏置的閾值",
     "potLabel": "比較器閾值，單位為高於偏置的毫伏數",
     "drag": "也可以拖動虛線",
@@ -238,7 +238,7 @@
     }
   },
   "ballistics": {
-    "label": "回放一個聲音場景：瞬時電平、快速和慢速電平表、峰值保持，以及隨時間變化的底噪。",
+    "label": "回放一個聲音場景：瞬時準位、快速和慢速準位表、峰值保持，以及隨時間變化的底噪。",
     "scene": "場景",
     "scenes": {
       "talk": "說話，然後拍一下手",
@@ -253,8 +253,8 @@
     },
     "now": "{{s, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} 秒 · 比安靜時高 {{db, number(minimumFractionDigits: 0; maximumFractionDigits: 0)}} dB",
     "caption": {
-      "fan": "風扇增加一種穩定的嗡嗡聲。底噪（青綠色）每秒上升 0.5 dB，直到嗡嗡聲成為新的“安靜”，於是 S2 不再把它叫作響。風扇一停，底噪立刻下降。最後那一下拍手依然很突出。",
-      "talk": "快速（粉色）跟隨音節；慢速（琥珀色）顯示說話的平均響度。拍手的瞬時電平遠高於兩者：4 ms 的一聲巨響幾乎推不動 1 秒的平均值。峰值保持（白色刻線）把它留住 1.5 秒，然後每秒下降 20 dB。"
+      "fan": "風扇增加一種穩定的嗡嗡聲。底噪（青綠色）每秒上升 0.5 dB，直到嗡嗡聲成為新的「安靜」，於是 S2 不再把它叫作響。風扇一停，底噪立刻下降。最後那一下拍手依然很突出。",
+      "talk": "快速（粉色）跟隨音節；慢速（琥珀色）顯示說話的平均響度。拍手的瞬時準位遠高於兩者：4 ms 的一聲巨響幾乎推不動 1 秒的平均值。峰值保持（白色刻線）把它留住 1.5 秒，然後每秒下降 20 dB。"
     }
   },
   "decibels": {
@@ -269,14 +269,14 @@
       "talking": "說話",
       "clap": "拍手"
     },
-    "caption": "比安靜時高 {{db, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} dB：波高了 {{ratio, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} 倍（功率 ×{{power, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}}）。S2 把它叫作“{{like}}”。每 +6 dB 高度翻倍；+20 dB 是十倍。",
-    "captionBig": "比安靜時高 {{db, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} dB：波高了 {{ratio, number(minimumFractionDigits: 0; maximumFractionDigits: 0)}} 倍（功率 ×{{power, number(minimumFractionDigits: 0; maximumFractionDigits: 0)}}）。S2 把它叫作“{{like}}”。每 +6 dB 高度翻倍；+20 dB 是十倍。"
+    "caption": "比安靜時高 {{db, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} dB：波高了 {{ratio, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}} 倍（功率 ×{{power, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}}）。S2 把它叫作「{{like}}」。每 +6 dB 高度翻倍；+20 dB 是十倍。",
+    "captionBig": "比安靜時高 {{db, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} dB：波高了 {{ratio, number(minimumFractionDigits: 0; maximumFractionDigits: 0)}} 倍（功率 ×{{power, number(minimumFractionDigits: 0; maximumFractionDigits: 0)}}）。S2 把它叫作「{{like}}」。每 +6 dB 高度翻倍；+20 dB 是十倍。"
   },
   "clapMachine": {
     "label": "1.2 秒內的響度包絡，帶上升和釋放閾值、一個遊標，以及檢測器的三種狀態和它到目前為止產生的事件。",
     "which": "哪種聲音",
-    "back": "退一幀",
-    "on": "進一幀",
+    "back": "退一個影格",
+    "on": "進一個影格",
     "rise": "上升",
     "riseLabel": "上升閾值，單位 dB",
     "release": "釋放",
@@ -285,7 +285,7 @@
       "clap": "一次拍手",
       "double": "兩次拍手",
       "soft": "一次輕拍",
-      "word": "一個詞（“hello”）",
+      "word": "一個詞（「hello」）",
       "whistle": "一聲口哨"
     },
     "result": {
@@ -314,7 +314,7 @@
     "back": "退 0.1 秒",
     "on": "進 0.1 秒",
     "trigger": "觸發",
-    "triggerLabel": "觸發電平，單位為高於安靜的 dB",
+    "triggerLabel": "觸發準位，單位為高於安靜的 dB",
     "hold": "保持",
     "holdLabel": "保持時間，單位毫秒",
     "start": "開始",
@@ -335,7 +335,7 @@
       "phone": {
         "1": {
           "title": "開啟頁面",
-          "text": "你的手機開啟 <code>http://bench.local/</code>。頁面本身是公開的，但不含音訊。貼上管理員令牌（序列埠命令 <code>token</code>）；它只儲存在這個標籤頁的 sessionStorage 裡。"
+          "text": "你的手機開啟 <code>http://bench.local/</code>。頁面本身是公開的，但不含音訊。貼上管理員令牌（序列埠指令 <code>token</code>）；它只儲存在這個分頁的 sessionStorage 裡。"
         },
         "2": {
           "title": "列出片段",
@@ -347,7 +347,7 @@
         },
         "4": {
           "title": "繪製並播放",
-          "text": "頁面解碼 WAV (WebAudio)，在畫布上畫出它的形狀，並帶著移動的播放頭播放。實時電平和狀態透過 WebSocket <code>/ws</code> 到達。"
+          "text": "頁面解碼 WAV (WebAudio)，在畫布上畫出它的形狀，並帶著移動的播放頭播放。實時準位和狀態透過 WebSocket <code>/ws</code> 到達。"
         }
       },
       "board": {
@@ -383,16 +383,16 @@
         },
         "4": {
           "title": "檢查並儲存",
-          "text": "工具解碼、比較位元組數和 CRC-32，並寫出 <code>clip-3.wav</code>。100 kB 在 115 200 波特率下約需 12 秒。"
+          "text": "工具解碼、比較位元組數和 CRC-32，並寫出 <code>clip-3.wav</code>。100 kB 在 115 200 鮑率下約需 12 秒。"
         }
       }
     },
-    "label": "開發板、手機和 Mac，當前這一步的訊息在它們之間傳遞。",
+    "label": "開發板、手機和 Mac，目前這一步的訊息在它們之間傳遞。",
     "path": "路徑",
     "choices": {
       "phone": "📱 手機 (Wi-Fi)",
       "usb": "🔌 USB（序列埠）",
-      "board": "🔈 開發板的揚聲器"
+      "board": "🔈 開發板的喇叭"
     },
     "previous": "上一步",
     "next": "下一步",
@@ -406,14 +406,14 @@
       "clips": "PSRAM 裡的片段",
       "you": "你",
       "serialOrButton": "序列埠或按鍵",
-      "speaker": "+ 揚聲器",
+      "speaker": "+ 喇叭",
       "phone": "手機",
       "browser": "瀏覽器"
     },
     "headline": {
       "phone": "每條音訊路由都需要令牌 · 無論誰啟動，開發板都會顯示 REC",
-      "board": "開發板自己播放：不需要手機，也不需要線纜",
-      "usb": "不需要 Wi-Fi · 開發板的 USB 序列埠，115 200 波特率"
+      "board": "開發板自己播放：不需要手機，也不需要纜線",
+      "usb": "不需要 Wi-Fi · 開發板的 USB 序列埠，115 200 鮑率"
     },
     "wavLabel": "44 位元組的 WAV 檔案頭",
     "wav": {
@@ -516,7 +516,7 @@
     "bins": "頻點相隔 {{apart, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} Hz · 到 8 kHz 共 {{bins}} 個頻點（奈奎斯特：16 000 的一半）· 最強 {{hz, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} Hz = {{note}} {{cents}} 音分"
   },
   "speaker": {
-    "label": "透過 I2S 送往 MAX98357A 的取樣，它寬度跟隨每個取樣的快速開關脈衝，跟隨脈衝平均值運動的揚聲器紙盆；一條音量曲線；以及一條時間線，顯示揚聲器播放時回聲保護讓檢測器靜音。",
+    "label": "透過 I2S 送往 MAX98357A 的取樣，它寬度跟隨每個取樣的快速開關脈衝，跟隨脈衝平均值運動的喇叭紙盆；一條音量曲線；以及一條時間線，顯示喇叭播放時回聲保護讓檢測器靜音。",
     "volume": "音量",
     "volumeLabel": "音量 0 到 100",
     "output": "{{vol}} → ×{{gain, number(minimumFractionDigits: 2; maximumFractionDigits: 2)}}（{{db, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} dB）",
@@ -528,10 +528,10 @@
     "cone": "紙盆",
     "squared": "音量 → 響度（平方關係：50 = 四分之一）",
     "whySquared": "音量取平方，因為耳朵聽的是比例：100 → 50 是 −12 dB，也就是四分之一的功率。",
-    "whyGuard": "麥克風和揚聲器共處一室：揚聲器播放時（以及之後 200 ms），檢測器收不到任何幀。嗶聲絕不會被當成拍手。S8 的實時效果讀的是環形緩衝。",
+    "whyGuard": "麥克風和喇叭共處一室：喇叭播放時（以及之後 200 ms），檢測器收不到任何影格。嗶聲絕不會被當成拍手。S8 的實時效果讀的是環形緩衝。",
     "guard": {
       "title": "回聲保護：麥克風聽到開發板自己的嗶聲",
-      "speaker": "揚聲器",
+      "speaker": "喇叭",
       "mic": "麥克風",
       "lab": "送往實驗",
       "muted": "已靜音：嗶聲 + 200 ms",
@@ -539,7 +539,7 @@
     }
   },
   "synth": {
-    "label": "波的形狀、它到 8 kHz 的諧波（折回 16 kHz 之外的用紅色標出），以及帶四個可拖動手柄的 ADSR 包絡。",
+    "label": "波的形狀、它到 8 kHz 的諧波（折回 16 kHz 之外的用紅色標出），以及帶四個可拖動手把的 ADSR 包絡。",
     "wave": "波形",
     "waves": {
       "sine": "正弦波",
@@ -551,7 +551,7 @@
     "periods": "四個週期",
     "harmonics": "諧波，0-8 kHz（開發板的 16 kHz 限制）",
     "adsr": "ADSR：起音、衰減、持續、釋放",
-    "click": "一個在滿幅度開始或結束的音符會讓紙盆猛地一跳：發出咔嗒聲。包絡讓它淡入淡出。拖動手柄 →",
+    "click": "一個在滿幅度開始或結束的音符會讓紙盆猛地一跳：發出咔嗒聲。包絡讓它淡入淡出。拖動手把 →",
     "what": {
       "sine": "正弦波：只有一個頻率，純淨",
       "square": "方波：奇次諧波 1、3、5……：空洞，像單簧管或老遊戲",
@@ -574,16 +574,16 @@
     },
     "play": "▶ 鸚鵡說出來",
     "record": "🎙 用我的麥克風錄 3 秒",
-    "useExample": "使用示例聲音",
-    "intro": "已載入一段示例聲音。用你自己的聲音是可選的：麥克風只在你按下錄音時才啟動，3 秒後停止，聲音絕不會離開這個頁面。",
+    "useExample": "使用範例聲音",
+    "intro": "已載入一段範例聲音。用你自己的聲音是可選的：麥克風只在你按下錄音時才啟動，3 秒後停止，聲音絕不會離開這個頁面。",
     "noAudio": "這個瀏覽器沒有 Web Audio。",
     "recording": "正在用你的麥克風錄音 3 秒…（紅點表示正在錄）",
     "recorded": "已錄 {{s, number(minimumFractionDigits: 1; maximumFractionDigits: 1)}} 秒，只儲存在這個頁面裡（已調大音量，和開發板一樣）。選一種聲音，按 ▶。",
-    "example": "示例聲音：由像母音一樣的諧波組成的兩個音節。",
+    "example": "範例聲音：由像母音一樣的諧波組成的兩個音節。",
     "failed": {
-      "unsupported": "這個瀏覽器無法使用麥克風：示例聲音的效果一樣。",
-      "denied": "麥克風沒有被允許（被你、瀏覽器或這個頁面的託管方拒絕）。示例聲音的效果一樣。",
-      "unreadable": "無法讀取這段錄音：示例聲音還在這裡。"
+      "unsupported": "這個瀏覽器無法使用麥克風：範例聲音的效果一樣。",
+      "denied": "麥克風沒有被允許（被你、瀏覽器或這個頁面的託管方拒絕）。範例聲音的效果一樣。",
+      "unreadable": "無法讀取這段錄音：範例聲音還在這裡。"
     },
     "heard": "它聽到的",
     "says": "鸚鵡說的（{{fx}}）",
@@ -597,7 +597,7 @@
       "whistle": "〰 吹口哨 3 秒",
       "silence": "🤫 安靜"
     },
-    "previewCaption": "一個假想的麥克風和揚聲器，畫法和開發板一樣。這些按鈕代替你的手、你的聲音、按鍵和序列埠監視器；點一下螢幕就是拍一下手。瀏覽器聲音在你開啟之前保持關閉。",
+    "previewCaption": "一個假想的麥克風和喇叭，畫法和開發板一樣。這些按鈕代替你的手、你的聲音、按鍵和序列埠監視器；點一下螢幕就是拍一下手。瀏覽器聲音在你開啟之前保持關閉。",
     "micToKy": "麥克風：INMP441 → KY-037",
     "micToInmp": "麥克風：KY-037 → INMP441",
     "browserOn": "🔈 在瀏覽器裡聽：開",
@@ -612,7 +612,7 @@
       "mics": "麥克風：兩個麥克風上下排列（INMP441 在上）：各自的安靜程度 (dBFS)、現在聲音比它高多少，以及 INMP441 比另一個聽得清楚多少 dB。只接了一個？它會告訴你另一個怎麼接（然後按 RST）。",
       "bias": "偏置 (KY-037)：一把 0-3.3 V 的尺子。陰影 = 此衰減下 ADC 的量程，線 = 偏置，色帶 = 最近 0.1 秒內波擺動的幅度。提示會告訴你更小的量程是否合適。用 INMP441 時，它變成它 24 位的階梯：聲音用了多少位（每位 6 dB）和剩下的餘量。",
       "comparator": "比較器：DO 指示燈（和模組上的 LED2 一樣）、每秒上升沿數，以及 6 秒的響度（上）對 DO（下）。調電位器，直到 DO 只在響的時刻亮起。INMP441 沒有 DO：開發板用軟體來比較（thresh，3 dB 滯回）。",
-      "numbers": "數字：來源、取樣任務的真實速率、丟失的取樣、dBFS 電平（用 INMP441 時還有 dB SPL）、安靜程度、比它高多少 dB、空閒的 PSRAM。"
+      "numbers": "數字：來源、取樣任務的真實速率、丟失的取樣、dBFS 準位（用 INMP441 時還有 dB SPL）、安靜程度、比它高多少 dB、空閒的 PSRAM。"
     },
     "actions": {
       "attenNext": "atten 下一檔",
@@ -623,9 +623,9 @@
   },
   "s2": {
     "captions": {
-      "meter": "電平表：用 INMP441 時，大字顯示 dB SPL（未加權，±2 dB），刻度 30-110：30 耳語，60 說話，85 有聽力風險，100 很響。用 KY-037 時，顯示比你房間安靜時高多少 dB、大概聽起來像什麼，以及一條帶峰值保持（白色刻線）和報警線（紅色點線）的條。",
+      "meter": "準位表：用 INMP441 時，大字顯示 dB SPL（未加權，±2 dB），刻度 30-110：30 耳語，60 說話，85 有聽力風險，100 很響。用 KY-037 時，顯示比你房間安靜時高多少 dB、大概聽起來像什麼，以及一條帶峰值保持（白色刻線）和報警線（紅色點線）的條。",
       "minute": "分鐘：最近 60 秒裡每四分之一秒中最響的時刻，按響度著色；點線是報警上限。",
-      "diary": "日記：十分鐘分成 60 個 10 秒的格子：一條從最安靜到最響時刻的細線，平均處的一個方塊，報警觸發處的紅帽。示例歷史加上你現在做的事。",
+      "diary": "日記：十分鐘分成 60 個 10 秒的格子：一條從最安靜到最響時刻的細線，平均處的一個方塊，報警觸發處的紅帽。範例歷史加上你現在做的事。",
       "alarm": "報警：待命或正在響、太響時不斷充滿的保險絲（預設 1 秒）、報警次數和最響的一次。按任意按鍵就會讓它靜音。"
     },
     "actions": {
@@ -636,7 +636,7 @@
   },
   "s3": {
     "captions": {
-      "timeline": "時間線：最近 4 秒的響度，帶上升（白色點線）和釋放（灰色點線）線。拍手有青綠色小旗；長音（一個詞、一聲口哨）是標著“long”的琥珀色條。左上：正在形成的節奏，然後是它觸發了什麼。",
+      "timeline": "時間線：最近 4 秒的響度，帶上升（白色點線）和釋放（灰色點線）線。拍手有青綠色小旗；長音（一個詞、一聲口哨）是標著「long」的琥珀色條。左上：正在形成的節奏，然後是它觸發了什麼。",
       "lamp": "燈：GPIO 4 上的 LED 畫成燈泡，RGB LED 畫成它顏色的光球。拍 4 下手開派對。",
       "patterns": "節奏：1 到 4 下拍手，畫成一對對手，以及各自執行的動作；最近一次匹配會亮 3 秒。",
       "tune": "調校：雙擊，然後像平時一樣拍 5 下手。每根柱子是一次拍手（比安靜時高多少 dB、響了多久）；sens 會變成最輕那下的 60 %。"
@@ -650,7 +650,7 @@
   "s4": {
     "captions": {
       "recorder": "錄音機：OFF、ARMED 或 REC，帶大字秒數。最近 3 秒的響度和開始線：琥珀色 = 片段從環形緩衝裡取走的預錄，紅色 = 進入片段的部分。",
-      "clips": "片段：最多四行，顯示每個片段的形狀、長度和型別（人聲或手）；右側是所選片段最響的時刻、傳送時調大了多少，以及它何時開始。雙擊會在開發板的揚聲器上播放所選片段；在這裡長按會選下一個。",
+      "clips": "片段：最多四行，顯示每個片段的形狀、長度和型別（人聲或手）；右側是所選片段最響的時刻、傳送時調大了多少，以及它何時開始。雙擊會在開發板的喇叭上播放所選片段；在這裡長按會選下一個。",
       "web": "網頁：頁面的位置 (http://bench.local)、IP、訊號、開啟了多少個頁面，以及怎麼拿令牌。沒有儲存的 Wi-Fi 時，它會指向 W1 或 sound_pull.py。"
     },
     "actions": {
@@ -692,9 +692,9 @@
     "captions": {
       "wave": "波形：一個音符的波形（四個週期）和它 0-8 kHz 的頻譜。同一個音符，不同的波形 = 不同的音色；下面那行說明原因。",
       "keys": "琴鍵：兩個八度，C4 到 B5。音符發聲時會亮起。雙擊 = 音階的下一個音，長按 = 下一個和絃。",
-      "envelope": "包絡：ADSR 曲線（起音、衰減、持續、釋放）；單個音符播放時，一個點沿著它移動。",
+      "envelope": "包絡：ADSR 曲線（起音、衰減、持續、釋放）；單一音符播放時，一個點沿著它移動。",
       "tunes": "曲子：左邊是列表，右邊是鋼琴捲簾，在琥珀色播放頭旁滾動。雙擊播放所選的曲子，長按選下一首。",
-      "fx": "音效：由配方（掃頻、噪聲、濾波器）構建的遊戲音效；最後一個的完整波形帶一個播放頭。"
+      "fx": "音效：由配方（掃頻、噪聲、濾波器）建置的遊戲音效；最後一個的完整波形帶一個播放頭。"
     },
     "actions": {
       "waveNext": "波形 下一個",
@@ -705,10 +705,10 @@
   },
   "s8": {
     "captions": {
-      "parrot": "鸚鵡：說點什麼，它就用所選的聲音複述。聆聽（弧線進入）、錄音（大眼睛，REC）、說話（嘴隨揚聲器張合）。下方：你的電平對比開始線。",
-      "echo": "回聲：實時，麥克風 → 延遲線 → 揚聲器。柱子顯示一次拍手會變成什麼：每次重複比上一次輕一個反饋量，間隔一個延遲時間。底部：輸入和輸出電平，以及延遲。",
+      "parrot": "鸚鵡：說點什麼，它就用所選的聲音複述。聆聽（弧線進入）、錄音（大眼睛，REC）、說話（嘴隨喇叭張合）。下方：你的準位對比開始線。",
+      "echo": "回聲：實時，麥克風 → 延遲線 → 喇叭。柱子顯示一次拍手會變成什麼：每次重複比上一次輕一個回饋量，間隔一個延遲時間。底部：輸入和輸出準位，以及延遲。",
       "robot": "機器人：實時，你的聲音乘以一個緩慢的正弦波（載波），再加 8 位的粗糲感；嘴巴隨輸出的聲音亮起。",
-      "scope": "示波器：麥克風 → 效果 → 揚聲器這條鏈路，青綠色是輸入，粉色是輸出。"
+      "scope": "示波器：麥克風 → 效果 → 喇叭這條鏈路，青綠色是輸入，粉色是輸出。"
     },
     "actions": {
       "saySomething2S": "🗣 說點什麼（2 秒）",

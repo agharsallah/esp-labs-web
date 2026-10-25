@@ -13,8 +13,8 @@
       "short": "接線"
     },
     "commands": {
-      "title": "命令，按順序",
-      "short": "命令"
+      "title": "指令，按順序",
+      "short": "指令"
     },
     "steps": {
       "title": "步驟",
@@ -35,7 +35,7 @@
     "lessonId": "第 {{id}} 課",
     "eyebrow": "{{track}} · 第 {{index}} / {{total}} 課",
     "goal": "目標",
-    "doneWhen": "完成的標誌",
+    "doneWhen": "完成的旗標",
     "onBoard": "在開發板上",
     "learn": "你將學到",
     "allTicked": "所有步驟已勾選",
@@ -46,7 +46,7 @@
     "usb": "COM 口"
   },
   "commands": {
-    "intro": "除非灰色標籤另有說明，請在序列埠監視器（<code>uv run pio device monitor</code>）裡輸入這些命令。彩色標籤說明程式執行時開發板旁邊應該有什麼。",
+    "intro": "除非灰色標籤另有說明，請在序列埠監視器（<code>uv run pio device monitor</code>）裡輸入這些指令。彩色標籤說明程式執行時開發板旁邊應該有什麼。",
     "does": "作用",
     "see": "你應該看到",
     "fix": "如果沒有",
@@ -54,14 +54,14 @@
       "mac": "Mac 終端",
       "button": "按鍵 / BOOT",
       "hands": "用手操作",
-      "app": "在應用裡",
+      "app": "在 App 裡",
       "phone": "在手機上",
       "serial": "序列埠監視器"
     },
     "state": {
       "off": "卡片拿開",
       "any": "卡片：無所謂",
-      "on": "卡片放在讀卡器上",
+      "on": "卡片放在讀卡機上",
       "both": "卡片和標籤一起放",
       "still": "卡片放上並保持不動",
       "move": "卡片放上後再移動",
@@ -91,7 +91,7 @@
   },
   "source": {
     "title": "在 GitHub 上開啟這個實驗的程式碼",
-    "newTab": "（在新標籤頁中開啟）"
+    "newTab": "（在新分頁中開啟）"
   },
   "tabs": {
     "label": "課程檢視",
@@ -100,7 +100,7 @@
     "code": "讀程式碼",
     "stopsRead_other": "已讀 {{count}} 站",
     "codeSub_other": "{{count}} 個檔案 · {{lines}} 行 · 導覽",
-    "codeSubEmpty": "導覽 · 點任意一行"
+    "codeSubEmpty": "導覽 · 點任何一行"
   },
   "next": {
     "label": "下一個",

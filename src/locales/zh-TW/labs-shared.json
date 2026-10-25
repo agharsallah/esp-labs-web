@@ -8,6 +8,6 @@
   "gallery": {
     "soon": "將隨這個實驗推出。",
     "views": "螢幕檢視",
-    "example": "{{view}}檢視示例"
+    "example": "{{view}}檢視範例"
   }
 }

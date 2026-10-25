@@ -21,8 +21,8 @@
       "bench": "工作臺",
       "settings": "設定"
     },
-    "footnote": "腳位佈局遵循樂鑫 DevKitC-1 v1.0。相容板幾乎一樣，但以你開發板上印的標註為準。你的勾選只儲存在這個瀏覽器裡。",
-    "partsLink": "元件庫",
+    "footnote": "腳位配置遵循樂鑫 DevKitC-1 v1.0。相容板幾乎一樣，但以你開發板上印的標註為準。你的勾選只儲存在這個瀏覽器裡。",
+    "partsLink": "元件函式庫",
     "new": "新"
   },
   "titles": {
@@ -30,22 +30,22 @@
     "lesson": "{{id}} · {{title}} · ESP32-S3 工作臺指南",
     "code": "{{id}} 程式碼 · {{title}} · ESP32-S3 工作臺指南",
     "log": "工作臺日誌 · ESP32-S3 工作臺指南",
-    "parts": "元件庫 · ESP32-S3 工作臺指南",
+    "parts": "元件函式庫 · ESP32-S3 工作臺指南",
     "settings": "設定 · ESP32-S3 工作臺指南",
     "chip": "{{page}} · 晶片 · ESP32-S3 工作臺指南"
   },
   "routeError": {
     "code": "錯誤",
     "notFound": "這個腳位上什麼也沒有。",
-    "failed": "這個頁面停止工作了。",
+    "failed": "這個頁面停止運作了。",
     "unknown": "出錯了。",
     "back": "回到你的課程",
     "reasons": {
       "noPage": "沒有這個頁面",
-      "noTheme": "沒有名為“{{id}}”的路線",
-      "noLesson": "沒有名為“{{id}}”的課程",
-      "plannedLesson": "第 {{id}} 課已列入計劃，還沒寫好",
-      "noBlock": "沒有名為“{{id}}”的模組"
+      "noTheme": "沒有名為「{{id}}」的路線",
+      "noLesson": "沒有名為「{{id}}」的課程",
+      "plannedLesson": "第 {{id}} 課已列入計畫，還沒寫好",
+      "noBlock": "沒有名為「{{id}}」的模組"
     }
   },
   "codeRoute": {
@@ -73,7 +73,7 @@
       "blurb": "透過 I2C 讀取溫度、空氣和運動"
     },
     "ble": {
-      "title": "低功耗藍芽",
+      "title": "低功耗藍牙",
       "blurb": "監聽、配對、控制：手機、鍵盤、音樂"
     },
     "sound": {
@@ -82,7 +82,7 @@
     }
   },
   "states": {
-    "legend": "標記的含義",
+    "legend": "標記的意思",
     "done": {
       "label": "你已完成",
       "hint": "每一步都已勾選"
@@ -92,11 +92,11 @@
       "hint": "已在真實開發板上確認"
     },
     "built": {
-      "label": "已構建，未燒錄",
+      "label": "已建置，未燒錄",
       "hint": "韌體能編譯；在你的開發板上試試"
     },
     "planned": {
-      "label": "計劃中",
+      "label": "計畫中",
       "hint": "在路線圖上，還沒寫好"
     }
   },
@@ -108,8 +108,8 @@
     "label": "路線",
     "soon": "即將推出",
     "count": "{{working}}/{{total}}",
-    "plannedTitle": "{{title}}：{{blurb}}（計劃中）",
-    "working": "{{title}}：{{total}} 箇中有 {{working}} 個可用",
+    "plannedTitle": "{{title}}：{{blurb}}（計畫中）",
+    "working": "{{title}}：{{total}} 個中有 {{working}} 個可用",
     "loading": "{{title}}：載入中"
   },
   "theme": {
@@ -149,19 +149,19 @@
   "ui": {
     "backToTop": "回到頂部",
     "copy": {
-      "label": "複製命令：{{command}}",
+      "label": "複製指令：{{command}}",
       "idle": "複製",
       "copied": "已複製",
       "selected": "已選中"
     },
     "errorBoundary": {
-      "message": "<b>{{name}}</b> 停止工作了：{{message}}",
+      "message": "<b>{{name}}</b> 停止運作了：{{message}}",
       "retry": "重試"
     },
     "terminal": {
       "label": "模擬序列埠監視器",
-      "placeholder": "輸入命令，按回車",
-      "command": "命令"
+      "placeholder": "輸入指令，按Enter 鍵",
+      "command": "指令"
     },
     "stage": {
       "toolbar": "旋轉和縮放 3D 檢視",
@@ -181,8 +181,8 @@
       "play": "▶ 播放",
       "pause": "❚❚ 暫停",
       "next": "下一步 ▶",
-      "frame": "第 {{frame}} 幀",
-      "label_other": "時序圖：{{lanes}}。共 {{count}} 步；下方文字解釋當前這一步。",
+      "frame": "第 {{frame}} 影格",
+      "label_other": "時序圖：{{lanes}}。共 {{count}} 步；下方文字解釋目前這一步。",
       "step": {
         "self": "第 {{step}} / {{total}} 步 · {{from}}",
         "call": "第 {{step}} / {{total}} 步 · {{from}} → {{to}}",

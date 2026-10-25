@@ -54,7 +54,7 @@
     },
     "steps": [
       "螢幕接線與第 03 課相同。按鈕（腳位 5 + GND）是可選的：它的作用和 BOOT 完全一樣。",
-      "用上面的命令燒錄（或者對 Claude 說“go”）。",
+      "用上面的指令燒錄（或者對 Claude 說「go」）。",
       "看第一次掃描。<b>單擊</b>切換各個檢視：網路、通道、雷達、狀態。",
       "開啟 <code>uv run pio device monitor</code>。在掃描表中找到你的網路編號。",
       "輸入 <code>join 3</code>（換成你的編號），然後在下一行輸入密碼。密碼會儲存在晶片上；日誌裡只顯示它的長度。",
@@ -102,7 +102,7 @@
       "lan": {
         "label": "變體 1 · 在你的 Wi-Fi 上",
         "short": "手機 → 開發板，在家中",
-        "goal": "它有自己的韌體 (wifi-lab-w2)：包含 W1 的全部功能，外加一個小型 Web 伺服器：REST API、實時 WebSocket、位於 bench.local 的手機頁面，以及一個無需線纜就能連線 Wi-Fi 的配置網路。esp-labs/apps/dashboard 中的 React + Node 儀表盤在你的 Mac 上提供同樣的控制，還有實時圖表和韌體更新。",
+        "goal": "它有自己的韌體 (wifi-lab-w2)：包含 W1 的全部功能，外加一個小型 Web 伺服器：REST API、實時 WebSocket、位於 bench.local 的手機頁面，以及一個無需纜線就能連線 Wi-Fi 的配置網路。esp-labs/apps/dashboard 中的 React + Node 儀表盤在你的 Mac 上提供同樣的控制，還有實時圖表和韌體更新。",
         "learn": [
           "REST API",
           "WebSocket",
@@ -118,7 +118,7 @@
           }
         },
         "steps": [
-          "接線與 W1 相同（按鈕可選）。用上面的命令燒錄（或者對 Claude 說“go”）。",
+          "接線與 W1 相同（按鈕可選）。用上面的指令燒錄（或者對 Claude 說「go」）。",
           "還沒連上網？狀態檢視會顯示配置網路 <code>bench-setup</code> 及其密碼。用手機連上它，在開啟的頁面裡選擇你的 Wi-Fi，輸入密碼。",
           "連上之後：在手機上開啟 <code>http://bench.local</code>。切換檢視、傳送訊息、選一種 LED 顏色、調暗螢幕。",
           "在序列埠監視器中輸入 <code>token</code>，並複製得到的值。",
@@ -126,7 +126,7 @@
           "按下按鈕或 BOOT：這次點選會實時出現在手機頁面和儀表盤上。",
           "試試無線更新：執行 <code>uv run pio run -d labs/wifi-lab-w2 -e wifi-lab-w2</code>，然後在儀表盤的 Admin 面板中上傳 <code>.pio/build/wifi-lab-w2/firmware.bin</code>。螢幕會顯示進度。"
         ],
-        "note": "日常控制對你家庭網路裡的任何人開放：這只是個工作臺玩具。重啟、忘記 Wi-Fi 和韌體更新需要令牌，令牌儲存在晶片和儀表盤的 .env（已被 git 忽略）中，絕不會出現在瀏覽器裡。頁面打不開？輸入完整的 <code>http://</code>；在 FRITZ!Box 上請勾選 “WLAN devices may communicate with each other”；在 Mac 上，請到“隱私與安全性 → 本地網路”中允許該瀏覽器。"
+        "note": "日常控制對你家庭網路裡的任何人開放：這只是個工作臺玩具。重啟、忘記 Wi-Fi 和韌體更新需要令牌，令牌儲存在晶片和儀表盤的 .env（已被 git 忽略）中，絕不會出現在瀏覽器裡。頁面打不開？輸入完整的 <code>http://</code>；在 FRITZ!Box 上請勾選 「WLAN devices may communicate with each other」；在 Mac 上，請到「隱私與安全性 → 本地網路」中允許該瀏覽器。"
       },
       "remote": {
         "label": "變體 2 · 隨時隨地",
@@ -146,9 +146,9 @@
           }
         },
         "steps": [
-          "接線相同（按鈕可選）。用上面的命令燒錄（或者對 Claude 說“go”）。首次會下載一個庫：links2004/WebSockets 2.7.3。",
-          "在 Mac 上，編輯 <code>esp-labs/apps/dashboard/.env</code>：<code>ESP_MODE=relay</code>，<code>ESP_TOKEN=</code> 填序列埠裡 <code>token</code> 命令輸出的值，<code>DASHBOARD_KEY=</code> 填 <code>openssl rand -hex 16</code> 的輸出。",
-          "啟動伺服器：<code>cd esp-labs/apps/dashboard && pnpm remote</code>（構建應用，並在 8787 埠提供服務）。",
+          "接線相同（按鈕可選）。用上面的指令燒錄（或者對 Claude 說「go」）。首次會下載一個函式庫：links2004/WebSockets 2.7.3。",
+          "在 Mac 上，編輯 <code>esp-labs/apps/dashboard/.env</code>：<code>ESP_MODE=relay</code>，<code>ESP_TOKEN=</code> 填序列埠裡 <code>token</code> 指令輸出的值，<code>DASHBOARD_KEY=</code> 填 <code>openssl rand -hex 16</code> 的輸出。",
+          "啟動伺服器：<code>cd esp-labs/apps/dashboard && pnpm remote</code>（建置應用，並在 8787 埠提供服務）。",
           "在第二個終端裡開啟隧道：<code>pnpm tunnel:cloudflare</code>（無需賬號；會列印 <code>https://…trycloudflare.com</code>，每次都不同）或 <code>pnpm tunnel:ngrok</code>（使用你的 ngrok 賬號；加上 <code>--url=&lt;your free static domain&gt;</code>，位址就永遠不變）。",
           "在序列埠監視器裡告訴開發板：<code>relay wss://&lt;tunnel host&gt;</code>。它會儲存位址並連線；之後 <code>relay</code> 會顯示 <code>online</code>，螢幕上鍊路圓點周圍會出現一個青色圓環。",
           "在手機上關掉 Wi-Fi（用移動資料），開啟隧道位址，用金鑰登入，然後切換檢視或 LED。你正在從家門外控制工作臺。",
@@ -161,7 +161,7 @@
   "W3": {
     "title": "網際網路與 AI",
     "heading": "來自網際網路的天氣，來自雲端的詩人",
-    "goal": "開發板變成了網際網路客戶端。它透過 HTTPS 以 JSON 格式獲取你所在城市的天氣（Open-Meteo，無需賬號或金鑰），並把它畫出來：動態天空、未來 24 小時、一週預報。然後是 Bench Oracle：開發板把它對此刻所知道的資訊（地點、時間、天氣、自身溫度）發給一個 AI 模型，得到一首俳句，或對你問題的回答，外加一種 LED 顏色和一個場景，都以結構化 JSON 返回。請求會經過你 Mac 上的 LiteLLM，所以任何服務商和模型都能用，而且服務商的金鑰永遠不會接觸到晶片。",
+    "goal": "開發板變成了網際網路客戶端。它透過 HTTPS 以 JSON 格式獲取你所在城市的天氣（Open-Meteo，無需賬號或金鑰），並把它畫出來：動態天空、未來 24 小時、一週預報。然後是 Bench Oracle：開發板把它對此刻所知道的資訊（地點、時間、天氣、自身溫度）發給一個 AI 模型，得到一首俳句，或對你問題的回答，外加一種 LED 顏色和一個場景，都以結構化 JSON 傳回。請求會經過你 Mac 上的 LiteLLM，所以任何服務商和模型都能用，而且服務商的金鑰永遠不會接觸到晶片。",
     "learn": [
       "HTTPS 客戶端",
       "TLS 證書",
@@ -209,9 +209,9 @@
       }
     },
     "steps": [
-      "接線相同（按鈕可選）。用上面的命令燒錄（或者對 Claude 說“go”）。它會使用 W1/W2 儲存的 Wi-Fi 網路。",
+      "接線相同（按鈕可選）。用上面的指令燒錄（或者對 Claude 說「go」）。它會使用 W1/W2 儲存的 Wi-Fi 網路。",
       "開啟 <code>uv run pio device monitor</code>，輸入 <code>city Hamburg</code>（換成你的城市）。開發板會查詢該城市、儲存它，並獲取天氣。",
-      "<b>單擊</b>切換檢視：現在（動態天空）、預報（未來 24 小時）、一週。頁尾會顯示每次請求：花了多長時間，以及返回內容有多大。",
+      "<b>單擊</b>切換檢視：現在（動態天空）、預報（未來 24 小時）、一週。頁尾會顯示每次請求：花了多長時間，以及傳回內容有多大。",
       "在 Mac 上啟動 AI 閘道器：<code>cd esp-labs/apps/ai-gateway</code>、<code>cp .env.example .env</code>（填入 <code>LITELLM_MASTER_KEY</code> 和你的服務商金鑰，例如 <code>ANTHROPIC_API_KEY</code>）、<code>uv sync</code>，然後執行 <code>uv run --env-file .env litellm --config config.yaml --port 4000</code>。",
       "在監視器裡告訴開發板閘道器在哪裡：<code>ai url http://&lt;your Mac's IP&gt;:4000</code> 和 <code>ai key &lt;LITELLM_MASTER_KEY&gt;</code>。金鑰只在這裡輸入，絕不要發到聊天裡。",
       "進入 oracle 檢視並<b>雙擊</b>：模型會寫一首關於此刻的俳句，並選定 LED 顏色。在任何檢視中按住按鈕也能得到同樣的效果。",

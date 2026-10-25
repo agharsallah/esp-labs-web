@@ -1,0 +1,48 @@
+# Closes a pull request when its author already has too many open here, so one person
+# (or one bot account) can't flood the queue. Maintainers, collaborators and Dependabot are exempt.
+#
+# pull_request_target runs this repo's copy of the workflow with a write token. That is safe
+# only because it never checks out or runs the pull request's code: keep it that way.
+name: PR limit
+
+on:
+  pull_request_target:
+    types: [opened, reopened]
+
+permissions: {}
+
+jobs:
+  limit:
+    name: Open PRs per author
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      pull-requests: write
+    env:
+      MAX_OPEN_PRS: "3"
+    steps:
+      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const author = pr.user.login;
+            const trusted = ["OWNER", "MEMBER", "COLLABORATOR"];
+            if (trusted.includes(pr.author_association) || pr.user.type === "Bot") {
+              core.info(`${author} is ${pr.author_association} (${pr.user.type}): no limit.`);
+              return;
+            }
+            const max = Number(process.env.MAX_OPEN_PRS);
+            const { owner, repo } = context.repo;
+            const open = await github.paginate(github.rest.pulls.list, { owner, repo, state: "open", per_page: 100 });
+            const mine = open.filter((p) => p.user?.login === author);
+            core.info(`${author} has ${mine.length} open pull requests (limit ${max}).`);
+            if (mine.length <= max) return;
+            const others = mine.filter((p) => p.number !== pr.number).map((p) => `- #${p.number}`).join("\n");
+            await github.rest.issues.createComment({
+              owner, repo, issue_number: pr.number,
+              body:
+                `Thanks for the contribution! You already have ${mine.length - 1} open pull requests here, ` +
+                `and each contributor can have at most ${max} open at once so reviews stay manageable:\n\n${others}\n\n` +
+                "This one is closed for now. Reopen it (or open it again) once one of the others is merged or closed.",
+            });
+            await github.rest.pulls.update({ owner, repo, pull_number: pr.number, state: "closed" });

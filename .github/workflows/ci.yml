@@ -1,0 +1,82 @@
+# The checks every pull request must pass before it can merge (see the ruleset in docs/MAINTAINING.md).
+# Runs on pull_request, so a fork's code runs with a read-only token and no secrets.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  merge_group:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  check:
+    name: Typecheck, lint, test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # The code-content tests read the firmware from the esp-labs checkout beside this one.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: agharsallah/esp-labs
+          path: esp-labs-firmware
+          persist-credentials: false
+      - name: Place the firmware beside the guide
+        run: mv esp-labs-firmware ../esp-labs
+      - uses: ./.github/actions/setup
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Lint
+        run: pnpm lint
+      # CI=true makes Vitest fail on a stale snapshot instead of rewriting it, so a lesson
+      # changed without `pnpm i18n:extract` fails here.
+      - name: Test
+        run: pnpm test
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # The code reader bundles the firmware from the esp-labs checkout beside this one.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: agharsallah/esp-labs
+          path: esp-labs-firmware
+          persist-credentials: false
+      - name: Place the firmware beside the guide
+        run: mv esp-labs-firmware ../esp-labs
+      - uses: ./.github/actions/setup
+      - name: Build
+        run: pnpm build
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: dist
+          path: dist
+          retention-days: 7
+
+  workflows:
+    name: Lint workflows
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: actionlint
+        uses: docker://rhysd/actionlint:1.7.12
+        with:
+          args: -color

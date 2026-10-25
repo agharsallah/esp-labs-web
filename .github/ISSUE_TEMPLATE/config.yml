@@ -1,5 +1,8 @@
-blank_issues_enabled: true
+blank_issues_enabled: false
 contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/agharsallah/esp-labs-web/security/advisories/new
+    about: Privately, never in a public issue. See SECURITY.md.
   - name: The board or the firmware misbehaves
     url: https://github.com/agharsallah/esp-labs/issues
     about: Crashes, wrong pins, build or flash errors belong in the esp-labs repo.

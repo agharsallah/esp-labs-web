@@ -166,7 +166,7 @@ Copy `.env.example` to `.env` to override:
 ## Deploy to Vercel
 
 <details>
-<summary>Automatic production deploys, local prebuilt deploys, Web Analytics and Speed Insights</summary>
+<summary>Production deploys from GitHub, local prebuilt deploys, Web Analytics and Speed Insights</summary>
 
 <br>
 
@@ -174,7 +174,7 @@ Configuration is in `vercel.json` (Vite preset, pnpm, cache and security headers
 
 The code reader bundles the firmware from the sibling `esp-labs` checkout at build time, and that checkout is not on Vercel's build servers. So Vercel never builds: the build runs elsewhere (`vercel build`, using `../esp-labs`) and the result is uploaded with `--prebuilt`. Git-triggered builds are turned off in `vercel.json` for the same reason.
 
-**Production deploys itself.** When CI passes on `main` (a merged PR or a push), the [Deploy](.github/workflows/deploy.yml) workflow checks out that commit and the firmware, runs `vercel build --prod` and uploads it. Run it again by hand from the Actions tab (**Deploy → Run workflow**). It needs, once (see [docs/MAINTAINING.md](docs/MAINTAINING.md#automatic-deploys)): a `VERCEL_TOKEN` secret and the `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID` variables.
+**Deploy production from GitHub.** Merging to `main` does not deploy. When you want `main` live, run the [Deploy](.github/workflows/deploy.yml) workflow (Actions → **Deploy → Run workflow**, or `gh workflow run Deploy`). It checks that CI passed on `main`'s latest commit, checks it out with the firmware, runs `vercel build --prod` and uploads it. It needs, once (see [docs/MAINTAINING.md](docs/MAINTAINING.md#production-deploys)): a `VERCEL_TOKEN` secret and the `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID` variables.
 
 Preview deploys, and production from your machine if you need it:
 

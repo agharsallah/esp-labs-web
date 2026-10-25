@@ -1,22 +1,17 @@
-# Deploys main to Vercel production once CI has passed on it, so a merged PR (or a push to main)
-# goes live without a manual `pnpm deploy:prod`. The build runs here, not on Vercel, because the
-# code reader bundles the esp-labs firmware checkout; Vercel only receives the prebuilt output.
-#
-# workflow_run runs this repo's copy of the workflow with the deploy secrets, so it only deploys
-# a successful CI run of a push to main in this repository, never a pull request's code.
+# Deploys main to Vercel production when you run it (Actions → Deploy → Run workflow, or
+# `gh workflow run Deploy`), instead of a local `pnpm deploy:prod`. The build runs here, not on
+# Vercel, because the code reader bundles the esp-labs firmware checkout; Vercel only receives
+# the prebuilt output. The production environment only accepts main, and the commit must be green.
 name: Deploy
 
 on:
-  workflow_run:
-    workflows: [CI]
-    types: [completed]
-    branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
+  actions: read
 
-# One production deploy at a time; a newer push replaces a queued one, a running one finishes.
+# One production deploy at a time; a newer run replaces a queued one, a running one finishes.
 concurrency:
   group: deploy-production
   cancel-in-progress: false
@@ -24,11 +19,6 @@ concurrency:
 jobs:
   deploy:
     name: Vercel production
-    if: >-
-      github.event_name == 'workflow_dispatch' ||
-      (github.event.workflow_run.conclusion == 'success' &&
-       github.event.workflow_run.event == 'push' &&
-       github.event.workflow_run.head_repository.full_name == github.repository)
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment:
@@ -40,10 +30,19 @@ jobs:
       VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
     steps:
-      # The commit CI checked, not whatever main is by the time this starts.
+      # Refuses a commit whose CI is still running or failed, so a red main never goes live.
+      - name: CI passed on this commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          conclusion="$(gh run list --repo "$GITHUB_REPOSITORY" --workflow CI --commit "$GITHUB_SHA" \
+            --event push --limit 1 --json conclusion --jq '.[0].conclusion // ""')"
+          if [ "$conclusion" != "success" ]; then
+            echo "::error::CI on $GITHUB_SHA is '${conclusion:-not finished}', not 'success'. Wait for it, or fix main."
+            exit 1
+          fi
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
           persist-credentials: false
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:

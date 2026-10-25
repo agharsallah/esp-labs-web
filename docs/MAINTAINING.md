@@ -7,7 +7,7 @@ What runs on every pull request, what protects `main`, and the repository settin
 | Workflow                                                     | When                              | What it does                                                                                       |
 | ------------------------------------------------------------ | --------------------------------- | -------------------------------------------------------------------------------------------------- |
 | [CI](../.github/workflows/ci.yml)                            | every PR, push to `main`, merge queue | `pnpm typecheck`, `pnpm lint`, `pnpm test` (a stale translator catalogue fails), `pnpm build` with the esp-labs firmware, actionlint on the workflows |
-| [Deploy](../.github/workflows/deploy.yml)                    | CI passed on a push to `main`, or by hand | builds that commit with the esp-labs firmware and the reference (`vercel build --prod`) and deploys it to Vercel production. Never runs a PR's code |
+| [Deploy](../.github/workflows/deploy.yml)                    | by hand (Run workflow, `gh workflow run Deploy`) | once CI passed on `main`'s latest commit, builds it with the esp-labs firmware and the reference (`vercel build --prod`) and deploys it to Vercel production. Never runs a PR's code |
 | [CodeQL](../.github/workflows/codeql.yml)                    | every PR, push to `main`, weekly  | security analysis of the TypeScript and of the workflows                                          |
 | [Dependency review](../.github/workflows/dependency-review.yml) | PRs that touch dependencies or `.github/` | fails when a PR adds a dependency with a known moderate-or-worse vulnerability          |
 | [PR title](../.github/workflows/pr-title.yml)                | PR opened or edited               | the title (the squash commit) follows Conventional Commits, lower-case subject                    |
@@ -58,9 +58,9 @@ gh api -X PATCH $R --input - <<'JSON'
 JSON
 ```
 
-## Automatic deploys
+## Production deploys
 
-[Deploy](../.github/workflows/deploy.yml) puts every green `main` on Vercel production. It reads, once:
+[Deploy](../.github/workflows/deploy.yml) puts `main` on Vercel production when you run it (merging does not deploy), and refuses a commit whose CI has not passed. It reads, once:
 
 ```sh
 R=agharsallah/esp-labs-web
@@ -76,7 +76,7 @@ gh variable set VERCEL_PROJECT_ID --repo $R --body "$(jq -r .projectId .vercel/p
 gh secret set VERCEL_TOKEN --repo $R --env production
 ```
 
-A secret set on the environment, rather than on the repository, is readable only by jobs that name that environment, so only Deploy sees the token. To pause deploys, disable the workflow (`gh workflow disable Deploy`); `pnpm deploy:prod` still works from your machine.
+A secret set on the environment, rather than on the repository, is readable only by jobs that name that environment, so only Deploy sees the token. `pnpm deploy:prod` still works from your machine.
 
 ## When it gets noisy
 

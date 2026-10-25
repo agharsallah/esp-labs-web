@@ -1,0 +1,318 @@
+/* The kit finder: a parts tray on the left, the labs it unlocks on the right. */
+.kit {
+  display: grid;
+  gap: 14px;
+}
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 20px;
+}
+.head h2 {
+  margin: 0;
+  font: 800 24px var(--font-display);
+  font-stretch: 75%;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+.head p {
+  margin: 0;
+  max-width: 62ch;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.layout {
+  display: grid;
+  gap: 12px;
+  align-items: start;
+}
+@media (min-width: 1000px) {
+  .layout {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  }
+}
+
+.picker,
+.results {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-l);
+  background: var(--surface);
+}
+.picker {
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 40%, var(--surface), transparent),
+    color-mix(in oklab, var(--bg) 60%, var(--surface));
+}
+
+.basics {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed var(--line);
+  font: 12px var(--font-mono);
+  color: var(--muted);
+}
+.basics span {
+  margin-inline-start: 6px;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.search {
+  flex: 1 1 200px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding-inline: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  background: var(--surface);
+  color: var(--muted);
+}
+.search:focus-within {
+  border-color: var(--copper);
+  outline: 2px solid color-mix(in oklab, var(--copper) 35%, transparent);
+}
+.search input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: 14px var(--font-mono);
+  outline: none;
+}
+.actions {
+  display: flex;
+  gap: 6px;
+}
+.action {
+  min-height: 40px;
+  padding-inline: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  background: transparent;
+  color: var(--ink);
+  font: 600 13px var(--font-display);
+  font-stretch: 75%;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+.action:hover:not(:disabled) {
+  border-color: var(--copper);
+  color: var(--copper);
+}
+.action:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* Each part is a toggle: tinted copper, with a tick, once it is on your bench. */
+.chips {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 190px), 1fr));
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  height: 100%;
+  padding-inline: 6px 10px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-m);
+  background: var(--surface);
+  color: var(--ink);
+  text-align: start;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+.chip:hover {
+  border-color: color-mix(in oklab, var(--copper) 60%, var(--line));
+}
+.chip[aria-pressed="true"] {
+  border-color: var(--copper);
+  background: color-mix(in oklab, var(--copper) 12%, var(--surface));
+}
+.chipIcon {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+}
+.tick {
+  position: absolute;
+  inset-block-end: -2px;
+  inset-inline-end: -2px;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface);
+}
+.chip[aria-pressed="true"] .tick {
+  border-color: var(--copper);
+  background: var(--copper);
+  color: var(--surface);
+}
+.chip:not([aria-pressed="true"]) svg {
+  opacity: 0.85;
+}
+.chipText {
+  display: grid;
+  min-width: 0;
+}
+.chipName {
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+.chipCount {
+  font: 11.5px var(--font-mono);
+  color: var(--muted);
+}
+.none {
+  margin: 0;
+  font: 13px var(--font-mono);
+  color: var(--muted);
+}
+
+/* The labs it unlocks: a readout like the progress panel's, then tiles in each theme's colour. */
+.readout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin: 0;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed var(--line);
+  font: 13px var(--font-mono);
+  color: var(--muted);
+}
+.readout b {
+  font: 800 36px / 1 var(--font-display);
+  font-stretch: 75%;
+  font-variant-numeric: tabular-nums;
+  color: var(--ok);
+}
+.readout small {
+  font: 700 18px var(--font-display);
+  color: var(--muted);
+}
+.groupHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font: 700 13px var(--font-display);
+  font-stretch: 75%;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 170px), 1fr));
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.tiles li {
+  --track: var(--copper);
+}
+.tile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 100%;
+  padding: 6px;
+  border-radius: var(--radius-m);
+  border: 1px solid transparent;
+  color: var(--ink);
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+.tile:hover {
+  background: color-mix(in oklab, var(--track) 10%, var(--bg));
+}
+.pad {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  border: 2px solid var(--track);
+  background: color-mix(in oklab, var(--track) 16%, var(--surface));
+}
+[data-fit="near"] .pad {
+  border-style: dashed;
+  border-color: color-mix(in oklab, var(--track) 55%, var(--line));
+  background: var(--surface);
+}
+.tileText {
+  display: grid;
+  min-width: 0;
+}
+.tileId {
+  font: 700 11.5px var(--font-mono);
+  color: var(--track);
+}
+.tileName {
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+.missing {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 4px;
+  margin-top: 2px;
+}
+.plus {
+  font: 700 13px var(--font-mono);
+  color: var(--warn);
+}
+.results > .action {
+  justify-self: start;
+}
+.far {
+  margin: 0;
+  font: 12px var(--font-mono);
+  color: var(--muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chip,
+  .tile {
+    transition: none;
+  }
+}

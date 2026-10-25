@@ -23,6 +23,47 @@
     "open": "Ouvrir le labo",
     "code": "Lire son code"
   },
+  "kit": {
+    "title": "Qu’y a-t-il sur votre établi ?",
+    "intro": "Cochez les composants que vous avez, ou cherchez-les : les labos que vous pouvez faire s’allument, et ceux à un seul composant près indiquent quoi ajouter.",
+    "basics": "Chaque labo : la carte et un câble USB-C de données",
+    "search": {
+      "label": "Chercher un composant",
+      "placeholder": "Chercher : écran, RC522, micro…",
+      "none": "Aucun composant ne correspond à « {{query}} »."
+    },
+    "all": "Je les ai tous",
+    "clear": "Effacer",
+    "parts": "Composants que vous avez peut-être",
+    "usedIn_one": "utilisé dans {{count}} labo",
+    "usedIn_many": "utilisé dans {{count}} labos",
+    "usedIn_other": "utilisé dans {{count}} labos",
+    "readout": "<b>{{ready}}</b><small>/{{total}}</small><span>labos faisables maintenant</span>",
+    "ready_one": "Prêt à faire : {{count}} labo",
+    "ready_many": "Prêts à faire : {{count}} labos",
+    "ready_other": "Prêts à faire : {{count}} labos",
+    "near_one": "À un composant près : {{count}} labo",
+    "near_many": "À un composant près : {{count}} labos",
+    "near_other": "À un composant près : {{count}} labos",
+    "fewer": "Afficher moins",
+    "add": "ajoutez {{part}}",
+    "far_one": "{{count}} autre labo demande deux composants ou plus.",
+    "far_many": "{{count}} autres labos demandent deux composants ou plus.",
+    "far_other": "{{count}} autres labos demandent deux composants ou plus.",
+    "items": {
+      "led": "LED + résistance 220–330 Ω",
+      "tft": "Écran ST7789 1,9″",
+      "button": "Bouton poussoir",
+      "rc522": "Lecteur de cartes RC522",
+      "tags": "Carte MIFARE et badge",
+      "wifi": "Réseau Wi-Fi 2,4 GHz",
+      "phone": "Smartphone (Bluetooth)",
+      "ky037": "Micro analogique KY-037",
+      "inmp441": "Micro I²S INMP441",
+      "amp": "Ampli MAX98357A + haut-parleur",
+      "keyboard": "Clavier ou souris Bluetooth"
+    }
+  },
   "board": {
     "title": "Découvre la carte",
     "intro": "Six pièces que tu retrouveras labo après labo. Fais glisser la carte pour la tourner ; choisis une pièce pour l'allumer et voir quels labos l'utilisent.",

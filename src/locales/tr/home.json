@@ -23,6 +23,43 @@
     "open": "Deneyi aç",
     "code": "Kodunu oku"
   },
+  "kit": {
+    "title": "Tezgâhında neler var?",
+    "intro": "Elindeki parçaları işaretle ya da ara: yapabileceğin deneyler yanar, tek parça eksik olanlar neyi eklemen gerektiğini gösterir.",
+    "basics": "Her deney: kart ve bir USB-C veri kablosu",
+    "search": {
+      "label": "Parça ara",
+      "placeholder": "Ara: ekran, RC522, mikrofon…",
+      "none": "“{{query}}” ile eşleşen parça yok."
+    },
+    "all": "Hepsi bende",
+    "clear": "Temizle",
+    "parts": "Elinde olabilecek parçalar",
+    "usedIn_one": "{{count}} deneyde kullanılıyor",
+    "usedIn_other": "{{count}} deneyde kullanılıyor",
+    "readout": "<b>{{ready}}</b><small>/{{total}}</small><span>şimdi yapabileceğin deney</span>",
+    "ready_one": "Yapmaya hazır: {{count}} deney",
+    "ready_other": "Yapmaya hazır: {{count}} deney",
+    "near_one": "Bir parça eksik: {{count}} deney",
+    "near_other": "Bir parça eksik: {{count}} deney",
+    "fewer": "Daha az göster",
+    "add": "ekle: {{part}}",
+    "far_one": "{{count}} deney daha iki veya daha fazla parça istiyor.",
+    "far_other": "{{count}} deney daha iki veya daha fazla parça istiyor.",
+    "items": {
+      "led": "LED + 220–330 Ω direnç",
+      "tft": "1,9″ ST7789 ekran",
+      "button": "Buton",
+      "rc522": "RC522 kart okuyucu",
+      "tags": "MIFARE kart ve anahtarlık",
+      "wifi": "2,4 GHz Wi-Fi ağı",
+      "phone": "Akıllı telefon (Bluetooth)",
+      "ky037": "KY-037 analog mikrofon",
+      "inmp441": "INMP441 I²S mikrofon",
+      "amp": "MAX98357A amfi + hoparlör",
+      "keyboard": "Bluetooth klavye veya fare"
+    }
+  },
   "board": {
     "title": "Kartla tanış",
     "intro": "Deney deney kullanacağın altı parça. Kartı çevirmek için sürükle; bir parça seçince ışıklanır ve hangi deneylerde kullanıldığını gösterir.",

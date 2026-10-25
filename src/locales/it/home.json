@@ -23,6 +23,47 @@
     "open": "Apri il lab",
     "code": "Leggi il suo codice"
   },
+  "kit": {
+    "title": "Cosa c’è sul tuo banco?",
+    "intro": "Spunta i componenti che hai, o cercali: si accendono i lab che puoi fare, e quelli a un solo componente di distanza ti dicono cosa aggiungere.",
+    "basics": "Ogni lab: la scheda e un cavo dati USB-C",
+    "search": {
+      "label": "Cerca i componenti",
+      "placeholder": "Cerca: schermo, RC522, microfono…",
+      "none": "Nessun componente corrisponde a «{{query}}»."
+    },
+    "all": "Li ho tutti",
+    "clear": "Azzera",
+    "parts": "Componenti che potresti avere",
+    "usedIn_one": "usato in {{count}} lab",
+    "usedIn_many": "usato in {{count}} lab",
+    "usedIn_other": "usato in {{count}} lab",
+    "readout": "<b>{{ready}}</b><small>/{{total}}</small><span>lab che puoi fare subito</span>",
+    "ready_one": "Pronto da fare: {{count}} lab",
+    "ready_many": "Pronti da fare: {{count}} lab",
+    "ready_other": "Pronti da fare: {{count}} lab",
+    "near_one": "A un componente: {{count}} lab",
+    "near_many": "A un componente: {{count}} lab",
+    "near_other": "A un componente: {{count}} lab",
+    "fewer": "Mostra meno",
+    "add": "aggiungi {{part}}",
+    "far_one": "Ancora {{count}} lab richiede due o più componenti.",
+    "far_many": "Altri {{count}} lab richiedono due o più componenti.",
+    "far_other": "Altri {{count}} lab richiedono due o più componenti.",
+    "items": {
+      "led": "LED + resistenza da 220–330 Ω",
+      "tft": "Schermo ST7789 da 1,9″",
+      "button": "Pulsante",
+      "rc522": "Lettore di schede RC522",
+      "tags": "Scheda MIFARE e portachiavi",
+      "wifi": "Rete Wi-Fi a 2,4 GHz",
+      "phone": "Smartphone (Bluetooth)",
+      "ky037": "Microfono analogico KY-037",
+      "inmp441": "Microfono I²S INMP441",
+      "amp": "Amplificatore MAX98357A + altoparlante",
+      "keyboard": "Tastiera o mouse Bluetooth"
+    }
+  },
   "board": {
     "title": "Conosci la scheda",
     "intro": "Sei componenti che userai lab dopo lab. Trascina la scheda per girarla; scegli un componente per illuminarlo e vedere quali lab lo usano.",

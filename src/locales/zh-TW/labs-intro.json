@@ -1,0 +1,16 @@
+{
+  "usb": {
+    "caption": "你的真實結果。esptool 確認這個介面後面是一塊 ESP32-S3 rev v0.2，帶 8 MB PSRAM 和 16 MB flash。"
+  },
+  "hello": {
+    "caption": "圖中開發板上的 RGB LED 會和真實的一樣迴圈變色。"
+  },
+  "led": {
+    "diagram": "麵包板：GPIO 4 接電阻，電阻接 LED，LED 接地",
+    "gndRail": "GND 電源軌",
+    "legs": "LED：長腳 (+) 在左，短腳 (−) 接 GND",
+    "duty": "佔空比 {{duty}} / 255",
+    "terminal": "$ uv run pio device monitor   （試著輸入）",
+    "quick": "快捷命令"
+  }
+}

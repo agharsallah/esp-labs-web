@@ -1,0 +1,117 @@
+{
+  "sections": {
+    "goal": {
+      "title": "目標",
+      "short": "目標"
+    },
+    "explain": {
+      "short": "原理",
+      "shortNumbered": "原理 {{number}}"
+    },
+    "wiring": {
+      "title": "接線",
+      "short": "接線"
+    },
+    "commands": {
+      "title": "命令，按順序",
+      "short": "命令"
+    },
+    "steps": {
+      "title": "步驟",
+      "short": "步驟"
+    },
+    "preview": {
+      "title": "預覽：你應該看到什麼",
+      "short": "預覽"
+    },
+    "board": {
+      "short": "引腳圖"
+    }
+  },
+  "nav": {
+    "label": "本頁內容"
+  },
+  "header": {
+    "lessonId": "第 {{id}} 課",
+    "eyebrow": "{{track}} · 第 {{index}} / {{total}} 課",
+    "goal": "目標",
+    "doneWhen": "完成的標誌",
+    "onBoard": "在開發板上",
+    "learn": "你將學到",
+    "allTicked": "所有步驟已勾選",
+    "ticked_other": "已勾選 {{ticked}} / {{count}} 步"
+  },
+  "pins": {
+    "label": "在開發板上",
+    "usb": "COM 口"
+  },
+  "commands": {
+    "intro": "除非灰色標籤另有說明，請在串列埠監視器（<code>uv run pio device monitor</code>）裡輸入這些命令。彩色標籤說明程式執行時開發板旁邊應該有什麼。",
+    "does": "作用",
+    "see": "你應該看到",
+    "fix": "如果沒有",
+    "place": {
+      "mac": "Mac 終端",
+      "button": "按鍵 / BOOT",
+      "hands": "用手操作",
+      "app": "在應用裡",
+      "phone": "在手機上",
+      "serial": "串列埠監視器"
+    },
+    "state": {
+      "off": "卡片拿開",
+      "any": "卡片：無所謂",
+      "on": "卡片放在讀卡器上",
+      "both": "卡片和標籤一起放",
+      "still": "卡片放上並保持不動",
+      "move": "卡片放上後再移動",
+      "bnone": "不需要手機",
+      "bscan": "手機：開啟掃描應用",
+      "bconn": "手機已連線",
+      "bpair": "手機已配對",
+      "bhost": "已配對為鍵盤/MIDI",
+      "bperiph": "接上你的鍵盤/滑鼠",
+      "squiet": "房間保持安靜",
+      "ssound": "發出一些聲音",
+      "sany": "聲音：無所謂",
+      "smusic": "麥克風附近有音樂"
+    }
+  },
+  "steps": {
+    "complete": "每一步都已勾選：這節課完成了。它現在算作已在你的開發板上執行。",
+    "status_other": "已勾選 {{ticked}} / {{count}}。勾選只儲存在這個瀏覽器裡。"
+  },
+  "wiring": {
+    "from": "起點",
+    "to": "終點",
+    "notes": "備註"
+  },
+  "variants": {
+    "label": "變體"
+  },
+  "source": {
+    "title": "在 GitHub 上開啟這個實驗的程式碼",
+    "newTab": "（在新標籤頁中開啟）"
+  },
+  "tabs": {
+    "label": "課程檢視",
+    "lab": "做實驗",
+    "labSub": "接線 · 燒錄 · 檢查",
+    "code": "讀程式碼",
+    "stopsRead_other": "已讀 {{count}} 站",
+    "codeSub_other": "{{count}} 個檔案 · {{lines}} 行 · 導覽",
+    "codeSubEmpty": "導覽 · 點任意一行"
+  },
+  "next": {
+    "label": "下一個",
+    "lesson": "下一課",
+    "theme": "本路線結束 · 下一條路線",
+    "last": "這是最後一課",
+    "map": "回到實驗地圖",
+    "allLabs": "所有實驗",
+    "top": "回到頂部"
+  },
+  "widget": {
+    "loading": "載入中…"
+  }
+}

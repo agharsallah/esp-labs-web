@@ -1,0 +1,105 @@
+{
+  "page": {
+    "eyebrow": "設定",
+    "heading": "讓指南更合你意",
+    "lead": "只儲存在這個瀏覽器裡。每次更改立即生效。"
+  },
+  "language": {
+    "heading": "語言",
+    "hint": "課程、講解和介面。程式碼、命令和開發板列印的內容保持英文。"
+  },
+  "levels": {
+    "heading": "深入到什麼程度",
+    "beginner": {
+      "label": "入門",
+      "blurb": "只導覽實驗自己的檔案，用詞平實，C++ 新詞一次只介紹一個。"
+    },
+    "explorer": {
+      "label": "探索",
+      "blurb": "每個實驗檔案的每一站，共享庫程式碼一點就到。"
+    },
+    "deep": {
+      "label": "深入",
+      "blurb": "全部內容，包括每一站和每個詞背後的精確來龍去脈：型別、時序、記憶體。"
+    }
+  },
+  "views": {
+    "heading": "程式碼閱讀器的外觀",
+    "simple": {
+      "label": "簡潔",
+      "blurb": "一張卡片，一個按鈕。程式碼、講解和“下一步”：螢幕上沒有別的。"
+    },
+    "full": {
+      "label": "完整",
+      "blurb": "所有工具觸手可及：檔案、地圖、詞彙表、進度環、單詞卡、專注模式。"
+    }
+  },
+  "learning": {
+    "heading": "學習",
+    "guessFirst": "先猜一猜",
+    "guessFirstHint": "每個導覽站會先問你覺得這段程式碼做什麼，再告訴你答案。先猜過更容易記住。",
+    "hints": "C++ 提示",
+    "hintsHint": "第一次遇到新詞時會出現一張小卡片；已認識的詞保留下劃線。",
+    "hintChoices": {
+      "pop": "介紹每個新詞",
+      "underline": "只加下劃線",
+      "off": "關閉"
+    },
+    "pace": "逐行播放速度",
+    "paceHint": "“播放”在每一行停留多久。",
+    "paces": {
+      "slow": "慢",
+      "normal": "正常",
+      "fast": "快"
+    }
+  },
+  "code": {
+    "heading": "程式碼顯示",
+    "size": "文字大小",
+    "sizeLabel": "程式碼文字大小",
+    "sizes": {
+      "s": "小",
+      "m": "中",
+      "l": "大"
+    },
+    "lineNumbers": "行號",
+    "wrap": "長行自動換行",
+    "wrapHint": "在手機上很方便：不用左右滾動。",
+    "comments": "淡化註釋",
+    "commentsHint": "淡化程式設計師的註釋，讓程式碼本身更突出。",
+    "fold": "摺疊長資料",
+    "foldHint": "長表格和內建網頁會摺疊成一行，直到你展開。"
+  },
+  "look": {
+    "heading": "外觀與動效",
+    "theme": "顏色主題",
+    "motion": "動效",
+    "motionHint": "“平靜”會減弱各處的滑動和脈動，模擬器也不例外。",
+    "motions": {
+      "system": "跟隨我的裝置",
+      "calm": "平靜"
+    }
+  },
+  "preview": {
+    "label": "預覽",
+    "code": "程式碼檢視預覽"
+  },
+  "progress": {
+    "heading": "你的進度",
+    "words_other": "已認識 <b>{{met}}</b> / {{count}} 個 C++ 詞",
+    "labs_other": "<b>{{count}}</b> 個實驗已讀程式碼",
+    "forgetReading": {
+      "label": "忘掉我讀過的程式碼",
+      "confirm": "是，忘掉我讀過的程式碼"
+    },
+    "forgetWords": {
+      "label": "忘掉我認識的詞",
+      "confirm": "是，忘掉我認識的詞"
+    },
+    "reset": {
+      "label": "重置這些設定",
+      "confirm": "是，重置這些設定"
+    },
+    "keep": "保留"
+  }
+}

@@ -3,7 +3,7 @@
 # ESP32 Labs: the bench guide
 
 **Wire it, flash it, watch it, then read the code.**<br>
-An interactive guide to the ESP32-S3: 32 hands-on labs with live simulators, a 3D board, a pinout, and a reader that explains the firmware line by line.
+An interactive guide to the ESP32-S3: 32 hands-on labs with live simulators, a 3D board, a pinout, a reader that explains the firmware line by line, and the chip's datasheet made readable.
 
 [![Open the live guide](https://img.shields.io/badge/open_the_live_guide-esp--labs--web.vercel.app-1f7a55?style=for-the-badge)](https://esp-labs-web.vercel.app)
 
@@ -50,6 +50,17 @@ Each lesson is one sheet: the goal, the pins it uses on a live pinout, the wirin
 **Read the code** opens the real firmware the lab flashes, taken from [esp-labs](https://github.com/agharsallah/esp-labs) at build time. **Tour** walks it a few lines at a time and asks you to guess first. **Story** follows the program as it runs, from `setup()` into every call. **Explore** explains any line you tap. New C++ words come up three at a time, and the phrasebook remembers the ones you've already met.
 
 <p align="center"><img src="docs/media/code-reader.gif" alt="The code reader: tour stops with guess-first quizzes and new-word cards, then the Story mode following setup()" width="800"></p>
+
+### The datasheet, made for makers
+
+The new **Datasheet** section ([`#/datasheet`](https://esp-labs-web.vercel.app/#/datasheet)) is about the ESP32-S3 itself. **Explore** keeps the 10% of Espressif's documents a maker needs: the chip at a glance with a 3D dive from the board down to the die, every pin and its jobs, an atlas of all 32 peripheral blocks with a page each, and memory, clocks and power modes. Each fact cites its section of the reference, the "things that bite" are called out, and the blocks your labs have used light up as you tick steps.
+
+A citation opens that section of the reference in a side reader, and **Read** turns the board guide, module datasheet, chip datasheet and technical reference into one book you can read cover to cover, with section ticks and "Continue at". Titles follow your language; the text stays Espressif's English.
+
+<p align="center"><img src="docs/media/datasheet.gif" alt="The Datasheet section: the chip at a glance, picking GPIO0 on the pin page, the peripheral atlas, the ADC block page, a citation opening the reference reader, then the Read mode's contents" width="800"></p>
+
+> [!NOTE]
+> Espressif's reference text is copyrighted, so it is never committed or bundled by default. Without it the curated pages work as usual and citations link to Espressif's official PDFs. To get the reader and the book locally, see `REFERENCE_FILE` under [Configuration](#configuration).
 
 ### In your language, on your phone
 
@@ -149,6 +160,8 @@ Copy `.env.example` to `.env` to override:
 | `VITE_LABS_SOURCE_URL` | `https://github.com/agharsallah/esp-labs/tree/main/labs/` | Where each lesson's "code on GitHub" link points          |
 | `VITE_LOG_LEVEL`       | `info`                                                | `debug`, `info`, `warn`, `error` or `silent`                  |
 | `FIRMWARE_DIR`         | `../esp-labs`                                         | Build time only: the firmware checkout the code reader shows  |
+| `REFERENCE_FILE`       | `docs-llm/esp32-s3/ESP32-S3_REFERENCE.md`             | Build time only: Espressif's reference (with its `images/`) for the datasheet reader and book; absent, they are off |
+| `VITE_REFERENCE_URL`   | `./reference/`                                        | Where the reference sections are read (set to `""` when there is no reference) |
 
 ## Deploy to Vercel
 
@@ -186,6 +199,8 @@ Web Analytics (`@vercel/analytics`) and Speed Insights (`@vercel/speed-insights`
 | `src/labs/<track>/`         | That track's simulators and explainers, registered in `widgets.ts`                                                   |
 | `src/labs/shared/`          | `Simulation` and the lab-screen engine (screen + buttons + serial)                                                   |
 | `src/features/`             | App screens: labs map, lesson sheet and dock, navigation, board pinout, code reader, bench log, settings, progress   |
+| `src/features/chip/`, `src/content/chip/` | The Datasheet section's pages and their curated, cited chip data                                        |
+| `src/features/reference/`   | The reference reader (side sheet) and the book (`#/datasheet/read`)                                                 |
 | `src/ui/`                   | Design-system pieces: Panel, Button, Terminal, SequenceDiagram, RichText…                                            |
 | `src/ui/parts/`             | The parts library: isometric illustrations of every component (`<PartIcon name="led" />`), gallery at `#/parts`      |
 | `src/ui/stage3d/`           | The shared 3D stage (three.js): orbit camera, toolbar, leaders, ink outlines, toon materials                         |
@@ -193,6 +208,7 @@ Web Analytics (`@vercel/analytics`) and Speed Insights (`@vercel/speed-insights`
 | `src/lib/`                  | Logger, storage, theme, palette, animation loop, http, clipboard                                                     |
 | `src/styles/tokens.css`     | Every colour, font and radius; light and dark themes                                                                 |
 | `tools/firmware/`           | Reads `esp-labs` (or an old `test-esp`) and ships each env's code as JSON (Vite plugin)                              |
+| `tools/reference/`          | Splits the reference into typed sections and emits them as JSON (Vite plugin, only when `REFERENCE_FILE` exists)     |
 | `public/data/`              | Bench status and log (validated with zod when fetched)                                                               |
 | `docs-llm/`                 | Offline React, React Router and TanStack Query docs used to build this (fetched, git-ignored)                        |
 

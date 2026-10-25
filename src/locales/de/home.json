@@ -23,6 +23,43 @@
     "open": "Lab öffnen",
     "code": "Code lesen"
   },
+  "kit": {
+    "title": "Was liegt auf deinem Tisch?",
+    "intro": "Hake die Bauteile an, die du hast, oder suche sie: Die Labs, die du bauen kannst, leuchten auf, und die, denen nur ein Teil fehlt, zeigen, was noch fehlt.",
+    "basics": "Jedes Lab: das Board und ein USB-C-Datenkabel",
+    "search": {
+      "label": "Bauteile suchen",
+      "placeholder": "Suche: Display, RC522, Mikrofon…",
+      "none": "Kein Bauteil passt zu „{{query}}“."
+    },
+    "all": "Ich habe alle",
+    "clear": "Leeren",
+    "parts": "Bauteile, die du haben könntest",
+    "usedIn_one": "in {{count}} Lab genutzt",
+    "usedIn_other": "in {{count}} Labs genutzt",
+    "readout": "<b>{{ready}}</b><small>/{{total}}</small><span>Labs, die du jetzt bauen kannst</span>",
+    "ready_one": "Bereit: {{count}} Lab",
+    "ready_other": "Bereit: {{count}} Labs",
+    "near_one": "Ein Teil fehlt: {{count}} Lab",
+    "near_other": "Ein Teil fehlt: {{count}} Labs",
+    "fewer": "Weniger zeigen",
+    "add": "{{part}} ergänzen",
+    "far_one": "{{count}} weiteres Lab braucht zwei oder mehr Teile.",
+    "far_other": "{{count}} weitere Labs brauchen zwei oder mehr Teile.",
+    "items": {
+      "led": "LED + 220–330-Ω-Widerstand",
+      "tft": "1,9″-Display ST7789",
+      "button": "Taster",
+      "rc522": "Kartenleser RC522",
+      "tags": "MIFARE-Karte und Schlüsselanhänger",
+      "wifi": "WLAN mit 2,4 GHz",
+      "phone": "Smartphone (Bluetooth)",
+      "ky037": "Analoges Mikrofon KY-037",
+      "inmp441": "I²S-Mikrofon INMP441",
+      "amp": "Verstärker MAX98357A + Lautsprecher",
+      "keyboard": "Bluetooth-Tastatur oder -Maus"
+    }
+  },
   "board": {
     "title": "Lern das Board kennen",
     "intro": "Sechs Teile, die du Lab für Lab brauchst. Zieh am Board, um es zu drehen; wähl ein Teil, um es leuchten zu lassen und zu sehen, welche Labs es nutzen.",

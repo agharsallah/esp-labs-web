@@ -23,6 +23,39 @@
     "open": "開啟實驗",
     "code": "讀它的程式碼"
   },
+  "kit": {
+    "title": "你的工作台上有什麼？",
+    "intro": "勾選你有的元件，或搜尋它們：能做的實驗會亮起來，只差一個元件的實驗會告訴你要加上什麼。",
+    "basics": "每個實驗：開發板和一條 USB-C 資料線",
+    "search": {
+      "label": "搜尋元件",
+      "placeholder": "搜尋：螢幕、RC522、麥克風…",
+      "none": "沒有與「{{query}}」相符的元件。"
+    },
+    "all": "我全都有",
+    "clear": "清除",
+    "parts": "你可能有的元件",
+    "usedIn_other": "用於 {{count}} 個實驗",
+    "readout": "<b>{{ready}}</b><small>/{{total}}</small><span>個實驗現在就能做</span>",
+    "ready_other": "可以開始：{{count}} 個實驗",
+    "near_other": "只差一個元件：{{count}} 個實驗",
+    "fewer": "收合",
+    "add": "加上{{part}}",
+    "far_other": "另有 {{count}} 個實驗需要兩個以上元件。",
+    "items": {
+      "led": "LED + 220–330 Ω 電阻",
+      "tft": "1.9″ ST7789 螢幕",
+      "button": "按鈕",
+      "rc522": "RC522 讀卡機",
+      "tags": "MIFARE 卡和鑰匙圈",
+      "wifi": "2.4 GHz Wi-Fi 網路",
+      "phone": "智慧型手機（藍牙）",
+      "ky037": "KY-037 類比麥克風",
+      "inmp441": "INMP441 I²S 麥克風",
+      "amp": "MAX98357A 擴大機 + 喇叭",
+      "keyboard": "藍牙鍵盤或滑鼠"
+    }
+  },
   "board": {
     "title": "認識開發板",
     "intro": "六個你會在一個又一個實驗裡用到的部件。拖動開發板可以旋轉；選一個部件，它會亮起來，並顯示哪些實驗用到它。",

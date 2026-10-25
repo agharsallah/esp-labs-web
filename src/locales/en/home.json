@@ -23,6 +23,43 @@
     "open": "Open the lab",
     "code": "Read its code"
   },
+  "kit": {
+    "title": "What's on your bench?",
+    "intro": "Tick the parts you have, or search for them: the labs you can build light up, and the ones a single part away show what to add.",
+    "basics": "Every lab: the board and a USB-C data cable",
+    "search": {
+      "label": "Search the parts",
+      "placeholder": "Search a part: screen, RC522, mic…",
+      "none": "No part matches “{{query}}”."
+    },
+    "all": "I have them all",
+    "clear": "Clear",
+    "parts": "Parts you might have",
+    "usedIn_one": "used in {{count}} lab",
+    "usedIn_other": "used in {{count}} labs",
+    "readout": "<b>{{ready}}</b><small>/{{total}}</small><span>labs you can build now</span>",
+    "ready_one": "Ready to build: {{count}} lab",
+    "ready_other": "Ready to build: {{count}} labs",
+    "near_one": "One part away: {{count}} lab",
+    "near_other": "One part away: {{count}} labs",
+    "fewer": "Show fewer",
+    "add": "add {{part}}",
+    "far_one": "{{count}} more lab needs two parts or more.",
+    "far_other": "{{count}} more labs need two parts or more.",
+    "items": {
+      "led": "LED + 220–330 Ω resistor",
+      "tft": "1.9″ ST7789 screen",
+      "button": "Push button",
+      "rc522": "RC522 card reader",
+      "tags": "MIFARE card and key fob",
+      "wifi": "2.4 GHz Wi-Fi network",
+      "phone": "Smartphone (Bluetooth)",
+      "ky037": "KY-037 analog microphone",
+      "inmp441": "INMP441 I²S microphone",
+      "amp": "MAX98357A amp + speaker",
+      "keyboard": "Bluetooth keyboard or mouse"
+    }
+  },
   "board": {
     "title": "Meet the board",
     "intro": "Six parts you will use lab after lab. Drag the board to turn it; pick a part to light it up and see which labs use it.",

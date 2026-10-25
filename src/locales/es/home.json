@@ -23,6 +23,47 @@
     "open": "Abrir el laboratorio",
     "code": "Leer su código"
   },
+  "kit": {
+    "title": "¿Qué hay en tu banco?",
+    "intro": "Marca los componentes que tienes, o búscalos: se iluminan los laboratorios que puedes hacer, y los que están a un solo componente te dicen qué añadir.",
+    "basics": "Todos los laboratorios: la placa y un cable USB-C de datos",
+    "search": {
+      "label": "Buscar componentes",
+      "placeholder": "Busca: pantalla, RC522, micrófono…",
+      "none": "Ningún componente coincide con «{{query}}»."
+    },
+    "all": "Los tengo todos",
+    "clear": "Borrar",
+    "parts": "Componentes que quizá tengas",
+    "usedIn_one": "se usa en {{count}} laboratorio",
+    "usedIn_many": "se usa en {{count}} laboratorios",
+    "usedIn_other": "se usa en {{count}} laboratorios",
+    "readout": "<b>{{ready}}</b><small>/{{total}}</small><span>laboratorios que puedes hacer ya</span>",
+    "ready_one": "Listo para hacer: {{count}} laboratorio",
+    "ready_many": "Listos para hacer: {{count}} laboratorios",
+    "ready_other": "Listos para hacer: {{count}} laboratorios",
+    "near_one": "A un componente: {{count}} laboratorio",
+    "near_many": "A un componente: {{count}} laboratorios",
+    "near_other": "A un componente: {{count}} laboratorios",
+    "fewer": "Mostrar menos",
+    "add": "añade {{part}}",
+    "far_one": "{{count}} laboratorio más necesita dos componentes o más.",
+    "far_many": "{{count}} laboratorios más necesitan dos componentes o más.",
+    "far_other": "{{count}} laboratorios más necesitan dos componentes o más.",
+    "items": {
+      "led": "LED + resistencia de 220–330 Ω",
+      "tft": "Pantalla ST7789 de 1,9″",
+      "button": "Pulsador",
+      "rc522": "Lector de tarjetas RC522",
+      "tags": "Tarjeta MIFARE y llavero",
+      "wifi": "Red Wi-Fi de 2,4 GHz",
+      "phone": "Móvil (Bluetooth)",
+      "ky037": "Micrófono analógico KY-037",
+      "inmp441": "Micrófono I²S INMP441",
+      "amp": "Amplificador MAX98357A + altavoz",
+      "keyboard": "Teclado o ratón Bluetooth"
+    }
+  },
   "board": {
     "title": "Conoce la placa",
     "intro": "Seis piezas que usarás laboratorio tras laboratorio. Arrastra la placa para girarla; elige una pieza para iluminarla y ver qué laboratorios la usan.",

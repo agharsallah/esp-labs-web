@@ -6,6 +6,7 @@ import { rfidWidgets } from "@/labs/rfid/widgets";
 import { soundWidgets } from "@/labs/sound/widgets";
 import { wifiWidgets } from "@/labs/wifi/widgets";
 import { LESSON_PART } from "./icons";
+import { LESSON_KIT } from "./kit";
 import { trackLessonsQuery } from "./queries";
 import { TRACKS } from "./tracks";
 
@@ -23,6 +24,17 @@ describe("content", () => {
     const ids = TRACKS.flatMap((t) => t.lessonIds);
     expect(ids.filter((id) => !LESSON_PART[id])).toEqual([]);
     expect(Object.keys(LESSON_PART).filter((id) => !ids.includes(id))).toEqual([]);
+  });
+
+  it("lists the kit of every open lesson, and no stray ones", async () => {
+    const lessons = await Promise.all(
+      TRACKS.filter((t) => !t.planned).map((t) =>
+        trackLessonsQuery(t.id, "en").queryFn!({} as never),
+      ),
+    );
+    const open = lessons.flat().filter((l) => l.kind === "lesson").map((l) => l.id);
+    expect(open.filter((id) => !LESSON_KIT[id])).toEqual([]);
+    expect(Object.keys(LESSON_KIT).filter((id) => !open.includes(id))).toEqual([]);
   });
 
   it("has no widget id registered by two tracks", () => {

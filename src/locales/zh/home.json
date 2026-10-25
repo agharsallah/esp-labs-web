@@ -23,6 +23,39 @@
     "open": "打开实验",
     "code": "读它的代码"
   },
+  "kit": {
+    "title": "你的工作台上有什么？",
+    "intro": "勾选你有的元件，或搜索它们：能做的实验会亮起来，只差一个元件的实验会告诉你要添加什么。",
+    "basics": "每个实验：开发板和一根 USB-C 数据线",
+    "search": {
+      "label": "搜索元件",
+      "placeholder": "搜索：屏幕、RC522、麦克风…",
+      "none": "没有与“{{query}}”匹配的元件。"
+    },
+    "all": "我全都有",
+    "clear": "清除",
+    "parts": "你可能有的元件",
+    "usedIn_other": "用于 {{count}} 个实验",
+    "readout": "<b>{{ready}}</b><small>/{{total}}</small><span>个实验现在就能做</span>",
+    "ready_other": "可以开始：{{count}} 个实验",
+    "near_other": "只差一个元件：{{count}} 个实验",
+    "fewer": "收起",
+    "add": "添加{{part}}",
+    "far_other": "另有 {{count}} 个实验需要两个或更多元件。",
+    "items": {
+      "led": "LED + 220–330 Ω 电阻",
+      "tft": "1.9″ ST7789 屏幕",
+      "button": "按钮",
+      "rc522": "RC522 读卡器",
+      "tags": "MIFARE 卡和钥匙扣",
+      "wifi": "2.4 GHz Wi-Fi 网络",
+      "phone": "智能手机（蓝牙）",
+      "ky037": "KY-037 模拟麦克风",
+      "inmp441": "INMP441 I²S 麦克风",
+      "amp": "MAX98357A 功放 + 扬声器",
+      "keyboard": "蓝牙键盘或鼠标"
+    }
+  },
   "board": {
     "title": "认识开发板",
     "intro": "六个你会在一个又一个实验里用到的部件。拖动开发板可以旋转；选一个部件，它会亮起来，并显示哪些实验用到它。",

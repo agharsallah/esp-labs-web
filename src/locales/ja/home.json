@@ -23,6 +23,39 @@
     "open": "ラボを開く",
     "code": "コードを読む"
   },
+  "kit": {
+    "title": "作業台に何がある？",
+    "intro": "持っている部品にチェックを入れるか検索すると、今できるラボが光り、あと部品ひとつのラボには足りないものが表示されます。",
+    "basics": "すべてのラボ：ボードとUSB-Cデータケーブル",
+    "search": {
+      "label": "部品を検索",
+      "placeholder": "検索：画面、RC522、マイク…",
+      "none": "「{{query}}」に一致する部品はありません。"
+    },
+    "all": "全部ある",
+    "clear": "クリア",
+    "parts": "持っているかもしれない部品",
+    "usedIn_other": "{{count}}ラボで使用",
+    "readout": "<b>{{ready}}</b><small>/{{total}}</small><span>今できるラボ</span>",
+    "ready_other": "すぐできる：{{count}}ラボ",
+    "near_other": "あと部品ひとつ：{{count}}ラボ",
+    "fewer": "折りたたむ",
+    "add": "{{part}}を追加",
+    "far_other": "ほか{{count}}ラボは部品が2つ以上必要です。",
+    "items": {
+      "led": "LED + 220–330 Ω 抵抗",
+      "tft": "1.9″ ST7789 画面",
+      "button": "押しボタン",
+      "rc522": "RC522 カードリーダー",
+      "tags": "MIFARE カードとキーホルダー",
+      "wifi": "2.4 GHz Wi-Fi ネットワーク",
+      "phone": "スマートフォン（Bluetooth）",
+      "ky037": "KY-037 アナログマイク",
+      "inmp441": "INMP441 I²S マイク",
+      "amp": "MAX98357A アンプ + スピーカー",
+      "keyboard": "Bluetooth キーボードまたはマウス"
+    }
+  },
   "board": {
     "title": "ボードを知ろう",
     "intro": "ラボのたびに使う6つのパーツです。ボードをドラッグして回し、パーツを選ぶと光って、それを使うラボがわかります。",

@@ -50,6 +50,7 @@ const PATHS = {
   book: "M4 5a2 2 0 0 1 2-2h13v15H6a2 2 0 0 0-2 2zM4 20a2 2 0 0 0 2 1h13v-3M8 7h7M8 10h5",
   external: "M14 4h6v6M20 4l-9 9M18 14v6H4V6h6",
   close: "M6 6l12 12M18 6L6 18",
+  search: `${o(10.5, 10.5, 6.5)}M15.5 15.5L21 21`,
   expand: "M4 10V4h6M20 14v6h-6M4 4l6 6M20 20l-6-6",
   volt: "M13 3L6 13h5l-1 8 7-10h-5z",
   current: `${o(12, 12, 8)}M8 12h8M13 9l3 3-3 3`,

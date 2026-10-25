@@ -25,6 +25,14 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      # The code-content tests read the firmware from the esp-labs checkout beside this one.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: agharsallah/esp-labs
+          path: esp-labs-firmware
+          persist-credentials: false
+      - name: Place the firmware beside the guide
+        run: mv esp-labs-firmware ../esp-labs
       - uses: ./.github/actions/setup
       - name: Typecheck
         run: pnpm typecheck

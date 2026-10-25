@@ -31,7 +31,7 @@ export function BookChapter({ book, chapter, read }: { book: Book; chapter: Chap
           </span>
           <Meter share={share} />
         </div>
-        <h2 id={`${entry.id}-title`} className={styles.chapterTitle} lang="en" dir="ltr">
+        <h2 id={`${entry.id}-title`} className={styles.chapterTitle}>
           <span className={reader.secNum}>§{entry.id}</span> {entry.title}
         </h2>
         <BlockBridge sectionId={entry.id} />

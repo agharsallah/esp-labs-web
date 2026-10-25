@@ -36,7 +36,7 @@ export function ReaderFooter({
               <li key={c.id}>
                 <SectionLinkTo id={c.id} className={styles.childLink}>
                   <span className={styles.secNum}>{c.id}</span>
-                  <span lang="en" dir="ltr">{c.title}</span>
+                  <span>{c.title}</span>
                 </SectionLinkTo>
               </li>
             ))}
@@ -50,7 +50,7 @@ export function ReaderFooter({
               <span className={styles.pageDir}>
                 <Icon name="back" size={14} /> {t("reader.foot.prev")}
               </span>
-              <span lang="en" dir="ltr">
+              <span>
                 <span className={styles.secNum}>{nav.prev.id}</span> {nav.prev.title}
               </span>
             </SectionLinkTo>
@@ -62,7 +62,7 @@ export function ReaderFooter({
               <span className={styles.pageDir}>
                 {t("reader.foot.next")} <Icon name="arrow" size={14} />
               </span>
-              <span lang="en" dir="ltr">
+              <span>
                 <span className={styles.secNum}>{nav.next.id}</span> {nav.next.title}
               </span>
             </SectionLinkTo>

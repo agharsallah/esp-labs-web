@@ -187,7 +187,7 @@ flowchart TB
 
 ## Chip pages
 
-`#/chip` is a section of five lazily loaded pages about the ESP32-S3 itself (plan: [CHIP_PAGES_PLAN.md](CHIP_PAGES_PLAN.md)): the chip at a glance, pins, the peripheral atlas, one page per block, and memory, clocks and power modes. They show the curated 10% of the reference a maker needs, most important first (a headline sentence or number, three to five facts, then the chart or table, then a citation of the reference section), and they light up what the labs have used.
+`#/datasheet` is a section of five lazily loaded pages about the ESP32-S3 itself (plan: [CHIP_PAGES_PLAN.md](CHIP_PAGES_PLAN.md)): the chip at a glance, pins, the peripheral atlas, one page per block, and memory, clocks and power modes. They show the curated 10% of the reference a maker needs, most important first (a headline sentence or number, three to five facts, then the chart or table, then a citation of the reference section), and they light up what the labs have used.
 
 ```mermaid
 flowchart LR

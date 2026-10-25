@@ -76,7 +76,7 @@ function SectionXref({ id, nodes }: { id: string; nodes: readonly Inline[] }) {
 export function PinChip({ n, text }: { n: number; text: string }) {
   const { pins } = useReader();
   return pins.has(n) ? (
-    <Link to={`/chip/pins?pin=${n}`} viewTransition className={styles.pin}>
+    <Link to={`/datasheet/pins?pin=${n}`} viewTransition className={styles.pin}>
       {text}
     </Link>
   ) : (
@@ -87,7 +87,7 @@ export function PinChip({ n, text }: { n: number; text: string }) {
 function BlockChip({ id, text }: { id: string; text: string }) {
   const { blocks } = useReader();
   return blocks.has(id) ? (
-    <Link to={`/chip/blocks/${id}`} viewTransition className={styles.block}>
+    <Link to={`/datasheet/blocks/${id}`} viewTransition className={styles.block}>
       {text}
     </Link>
   ) : (

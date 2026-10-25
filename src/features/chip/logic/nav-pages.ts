@@ -3,10 +3,10 @@ import type { BlockFamily, ChipBlock, Coverage } from "@/domain/chip";
 // The chip section's pages, and which blocks each page's meter counts.
 
 export const CHIP_PAGES = [
-  { id: "home", to: "/chip", families: null },
-  { id: "pins", to: "/chip/pins", families: ["connectivity", "analog", "timing"] },
-  { id: "blocks", to: "/chip/blocks", families: null },
-  { id: "inside", to: "/chip/inside", families: ["system", "memory", "security"] },
+  { id: "home", to: "/datasheet", families: null },
+  { id: "pins", to: "/datasheet/pins", families: ["connectivity", "analog", "timing"] },
+  { id: "blocks", to: "/datasheet/blocks", families: null },
+  { id: "inside", to: "/datasheet/inside", families: ["system", "memory", "security"] },
 ] as const satisfies readonly {
   id: string;
   to: string;

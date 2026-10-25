@@ -14,7 +14,7 @@ import styles from "./page.module.css";
 
 const TOP_GOTCHAS = 5;
 
-/** #/chip: the chip at a glance, the descent, your progress, the families and what bites. */
+/** #/datasheet: the chip at a glance, the descent, your progress, the families and what bites. */
 export function ChipHome() {
   const { t } = useTranslation("chip");
   const chip = useChipContent();

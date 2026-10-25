@@ -17,7 +17,7 @@
     "sections": "Bereiche",
     "nav": {
       "labs": "Labs",
-      "chip": "Chip",
+      "chip": "Datenblatt",
       "bench": "Bench",
       "settings": "Einstellungen"
     },
@@ -32,7 +32,7 @@
     "log": "Bench-Log · ESP32-S3 Bench Guide",
     "parts": "Bauteil-Bibliothek · ESP32-S3 Bench Guide",
     "settings": "Einstellungen · ESP32-S3 Bench Guide",
-    "chip": "{{page}} · Chip · ESP32-S3 Bench Guide"
+    "chip": "{{page}} · Datenblatt · ESP32-S3 Bench Guide"
   },
   "routeError": {
     "code": "Fehler",

@@ -17,7 +17,7 @@
     "sections": "Sezioni",
     "nav": {
       "labs": "Lab",
-      "chip": "Chip",
+      "chip": "Scheda tecnica",
       "bench": "Banco",
       "settings": "Impostazioni"
     },
@@ -32,7 +32,7 @@
     "log": "Registro del banco · Guida da banco ESP32-S3",
     "parts": "Libreria dei componenti · Guida da banco ESP32-S3",
     "settings": "Impostazioni · Guida da banco ESP32-S3",
-    "chip": "{{page}} · Chip · Guida da banco ESP32-S3"
+    "chip": "{{page}} · Scheda tecnica · Guida da banco ESP32-S3"
   },
   "routeError": {
     "code": "Errore",

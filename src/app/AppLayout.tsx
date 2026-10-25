@@ -12,7 +12,7 @@ import { prefetchChip } from "./prefetch-chip";
 const SECTIONS = [
   { to: "/", key: "labs", icon: "board", match: /^\/($|lessons|tracks)/ },
   // Shipped 25 Oct 2026: marked new for three days.
-  { to: "/chip", key: "chip", icon: "chip", match: /^\/chip/, newUntil: "2026-10-28" },
+  { to: "/datasheet", key: "chip", icon: "chip", match: /^\/datasheet/, newUntil: "2026-10-28" },
   { to: "/log", key: "bench", icon: "log", match: /^\/log/ },
   { to: "/settings", key: "settings", icon: "sliders", match: /^\/settings/ },
 ] as const satisfies readonly {

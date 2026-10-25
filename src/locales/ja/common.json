@@ -17,7 +17,7 @@
     "sections": "セクション",
     "nav": {
       "labs": "ラボ",
-      "chip": "チップ",
+      "chip": "データシート",
       "bench": "ベンチ",
       "settings": "設定"
     },
@@ -32,7 +32,7 @@
     "log": "ベンチログ · ESP32-S3 ベンチガイド",
     "parts": "パーツライブラリ · ESP32-S3 ベンチガイド",
     "settings": "設定 · ESP32-S3 ベンチガイド",
-    "chip": "{{page}} · チップ · ESP32-S3 ベンチガイド"
+    "chip": "{{page}} · データシート · ESP32-S3 ベンチガイド"
   },
   "routeError": {
     "code": "エラー",

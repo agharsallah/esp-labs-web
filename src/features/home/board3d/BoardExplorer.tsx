@@ -124,7 +124,7 @@ export function BoardExplorer({ lessons }: { lessons: readonly LessonEntry[] }) 
           );
         })}
       </ol>
-      <Link to="/chip" className={styles.inside}>
+      <Link to="/datasheet" className={styles.inside}>
         {t("board.goInside")}
       </Link>
     </StageBox>

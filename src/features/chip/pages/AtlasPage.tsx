@@ -9,7 +9,7 @@ import { DieFloorplan } from "../scenes/DieFloorplan";
 import { PageTitle } from "../ui/PageTitle";
 import styles from "./page.module.css";
 
-/** #/chip/blocks: every block on the die, as tiles grouped by family, with filters in the URL. */
+/** #/datasheet/blocks: every block on the die, as tiles grouped by family, with filters in the URL. */
 export function AtlasPage() {
   const { t } = useTranslation("chip");
   const chip = useChipContent();
@@ -34,7 +34,7 @@ export function AtlasPage() {
       </header>
       <DieFloorplan
         blocks={chip.blocks.map((b) => ({ id: b.id, family: b.family, name: b.name, coverage: coverage.get(b.id) ?? "none" }))}
-        onBlockPick={(id) => void navigate(`/chip/blocks/${id}`, { viewTransition: true })}
+        onBlockPick={(id) => void navigate(`/datasheet/blocks/${id}`, { viewTransition: true })}
       />
       <div className={styles.tight}>
         <AtlasFilters filter={filter} onChange={change} />

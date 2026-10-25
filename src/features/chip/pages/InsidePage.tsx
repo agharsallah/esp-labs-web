@@ -9,7 +9,7 @@ import styles from "./page.module.css";
 
 const SECTIONS = ["memory", "clocks", "power"] as const;
 
-/** #/chip/inside: where code and data live, what clocks what, and what sleep saves. */
+/** #/datasheet/inside: where code and data live, what clocks what, and what sleep saves. */
 export function InsidePage() {
   const { t } = useTranslation("chip");
   const chip = useChipContent();

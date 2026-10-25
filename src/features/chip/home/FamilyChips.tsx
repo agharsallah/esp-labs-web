@@ -13,7 +13,7 @@ export function FamilyChips({ blocks }: { blocks: readonly ChipBlock[] }) {
       {BLOCK_FAMILIES.map((family) => (
         <li key={family}>
           <Link
-            to={`/chip/blocks?family=${family}`}
+            to={`/datasheet/blocks?family=${family}`}
             viewTransition
             className={styles.family}
             style={{ "--fam": `var(--fam-${family})` } as CSSProperties}

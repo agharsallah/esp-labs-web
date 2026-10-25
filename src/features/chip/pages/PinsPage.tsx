@@ -13,7 +13,7 @@ import { PageTitle } from "../ui/PageTitle";
 import { Reveal } from "../ui/Reveal";
 import styles from "./page.module.css";
 
-/** #/chip/pins: which pin can do what, which our labs used, and which pins bite. */
+/** #/datasheet/pins: which pin can do what, which our labs used, and which pins bite. */
 export function PinsPage() {
   const { t } = useTranslation("chip");
   const chip = useChipContent();

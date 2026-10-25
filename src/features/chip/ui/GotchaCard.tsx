@@ -12,7 +12,7 @@ export function GotchaCard({ gotcha, linked = true }: { gotcha: Gotcha; linked?:
   const pin = gotcha.pins?.[0];
   const block = gotcha.blocks?.[0];
   const to =
-    pin !== undefined ? `/chip/pins?pin=${pin}` : block !== undefined ? `/chip/blocks/${block}` : null;
+    pin !== undefined ? `/datasheet/pins?pin=${pin}` : block !== undefined ? `/datasheet/blocks/${block}` : null;
   return (
     <article className={styles.gotcha}>
       <h3 className={styles.gotchaTitle}>

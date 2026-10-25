@@ -1,0 +1,241 @@
+{
+  "03": {
+    "title": "Wyświetlacz",
+    "heading": "Ekran IPS 1,9″",
+    "goal": "Steruj wyświetlaczem ST7789 przez SPI. Każdą klatkę rysuj w PSRAM, a potem wyślij ją za jednym razem, żeby nic nie migotało.",
+    "learn": [
+      "magistrala SPI",
+      "kolor RGB565",
+      "bufor klatki",
+      "PSRAM"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "BLK"
+      },
+      "2": {
+        "role": "RES"
+      },
+      "3": {
+        "role": "DC"
+      },
+      "4": {
+        "role": "CS"
+      },
+      "5": {
+        "role": "SDA"
+      },
+      "6": {
+        "role": "SCL"
+      },
+      "7": {
+        "role": "GND"
+      }
+    },
+    "wiring": {
+      "head": [
+        "Pin wyświetlacza",
+        "ESP32-S3",
+        "Funkcja"
+      ],
+      "rows": [
+        [
+          "GND",
+          "GND",
+          "masa (lewy dolny pin)"
+        ],
+        [
+          "VCC",
+          "3V3",
+          "zasilanie (lewy górny pin)"
+        ],
+        [
+          "SCL",
+          "GPIO 12",
+          "zegar SPI"
+        ],
+        [
+          "SDA",
+          "GPIO 11",
+          "dane SPI (MOSI)"
+        ],
+        [
+          "RES",
+          "GPIO 8",
+          "reset"
+        ],
+        [
+          "DC",
+          "GPIO 9",
+          "dane / komenda"
+        ],
+        [
+          "CS",
+          "GPIO 10",
+          "wybór układu (chip select)"
+        ],
+        [
+          "BLK",
+          "GPIO 7",
+          "podświetlenie"
+        ]
+      ]
+    },
+    "panels": {
+      "0": {
+        "title": "Jak podłączony jest ekran"
+      }
+    },
+    "steps": [
+      "Odłącz USB. Podłącz 8 pinów wyświetlacza zgodnie z tabelą (przewody żeńsko-męskie).",
+      "Sprawdź jeszcze raz, czy VCC idzie do <b>3V3</b>, a nie do 5V.",
+      "Uruchom polecenie. Przez 2,5 s powinieneś widzieć czerwony, zielony i niebieski pasek.",
+      "Potem pojawi się wykres testowy: poruszająca się fala sinusoidalna, czas działania i liczba klatek na sekundę.",
+      "Podaj Claude’owi fps z monitora i wszystko, co wygląda podejrzanie."
+    ],
+    "note": "Same białe albo czarne? Sprawdź BLK i RES. Kolory odwrócone? Przełączamy invertDisplay. Bałagan na ekranie? Zmniejsz SPI do 20 MHz."
+  },
+  "03b": {
+    "title": "Pokaz",
+    "heading": "Wyciśnij z ekranu więcej",
+    "variants": {
+      "boot": {
+        "label": "Wariant 1 · przycisk BOOT",
+        "short": "nic nie trzeba podłączać",
+        "goal": "Takie samo podłączenie jak w lekcji 03. Cztery sceny pokazują, co S3 potrafi narysować: grafikę 3D w czasie rzeczywistym, efekty piksel po pikselu, cząsteczki i żywy panel z danymi o twoim układzie. Wbudowany przycisk BOOT przełącza sceny.",
+        "learn": [
+          "rzutowanie 3D",
+          "tablice przeglądowe (lookup tables)",
+          "systemy cząsteczek",
+          "wewnętrzna pamięć RAM a PSRAM",
+          "pomiary"
+        ],
+        "pins": {
+          "0": {
+            "role": "VCC"
+          },
+          "1": {
+            "role": "BLK"
+          },
+          "2": {
+            "role": "RES"
+          },
+          "3": {
+            "role": "DC"
+          },
+          "4": {
+            "role": "CS"
+          },
+          "5": {
+            "role": "SDA"
+          },
+          "6": {
+            "role": "SCL"
+          },
+          "7": {
+            "role": "GND"
+          },
+          "8": {
+            "role": "BOOT"
+          }
+        },
+        "steps": [
+          "Wyświetlacz podłącz dokładnie jak w lekcji 03. Nic nowego nie trzeba podłączać.",
+          "Wgraj program poleceniem powyżej (albo napisz Claude’owi „go”, a on uruchomi je za ciebie).",
+          "Obserwuj obracający się torus 3D, a potem naciśnij <b>BOOT</b>, żeby przełączać się między Plasma, Fireworks i Dashboard.",
+          "Przytrzymaj BOOT (0,6 s), aby zatrzymać lub wznowić 12-sekundowe automatyczne przełączanie.",
+          "Otwórz <code>uv run pio device monitor</code> i wpisz <code>scene 2</code>, <code>hud</code>, <code>auto off</code>.",
+          "Zanotuj fps, czas rysowania (draw ms) i czas wysyłki (send ms) dla każdej sceny i podaj je Claude’owi. Posłużą w lekcji o szybkości."
+        ],
+        "note": "BOOT ma znaczenie tylko przy włączaniu. Nie przytrzymuj go przy naciskaniu RST ani podłączaniu USB, bo układ czeka wtedy w trybie flash. Jeśli tak się stanie, po prostu naciśnij RST."
+      },
+      "button": {
+        "label": "Wariant 2 · przycisk",
+        "short": "2 dodatkowe przewody na GPIO 5",
+        "goal": "Te same cztery sceny, tym razem sterowane twoim przyciskiem na GPIO 5: kliknięcie, podwójne kliknięcie, długie przytrzymanie. Ekran to wyjście na 8 przewodach, a przycisk to wejście na 2. Ten wariant pokazuje oba razem.",
+        "learn": [
+          "wejścia a wyjścia",
+          "rezystory podciągające (pull-up)",
+          "przerwania",
+          "eliminacja drgań styków (debouncing)",
+          "gesty"
+        ],
+        "pins": {
+          "0": {
+            "role": "VCC"
+          },
+          "1": {
+            "role": "BLK"
+          },
+          "2": {
+            "role": "RES"
+          },
+          "3": {
+            "role": "DC"
+          },
+          "4": {
+            "role": "CS"
+          },
+          "5": {
+            "role": "SDA"
+          },
+          "6": {
+            "role": "SCL"
+          },
+          "7": {
+            "role": "GND"
+          },
+          "8": {
+            "role": "BTN"
+          },
+          "9": {
+            "role": "BOOT"
+          }
+        },
+        "wiring": {
+          "title": "Podłączenie przycisku (2 nowe przewody)",
+          "head": [
+            "Skąd",
+            "Dokąd",
+            "Gdzie"
+          ],
+          "rows": [
+            [
+              "nóżka A przycisku (dowolny róg)",
+              "GPIO 5",
+              "płytka rozszerzeń: gniazdo opisane 5 (4 i 5 stoją obok siebie, sprawdź opis). Płytka na płytce stykowej: wolny otwór w rzędzie pinu 5"
+            ],
+            [
+              "nóżka D przycisku (po przekątnej względem A)",
+              "GND",
+              "dowolne gniazdo GND albo zacisk"
+            ]
+          ]
+        },
+        "panels": {
+          "0": {
+            "title": "Podłączenie ESP32: ekran i przycisk"
+          },
+          "1": {
+            "title": "Ekran a przycisk"
+          },
+          "2": {
+            "title": "Jak podłączony jest przycisk"
+          }
+        },
+        "steps": [
+          "Odłącz USB. Wyświetlacz zostaje podłączony dokładnie jak w lekcji 03.",
+          "Włóż przycisk do płytki stykowej tak, by leżał w poprzek środkowej przerwy, z dala od płytki.",
+          "Przewód z nóżki A do <b>pinu 5</b> ESP32. Na płytce rozszerzeń to gniazdo opisane 5, dwa miejsca dalej niż przewód BLK wyświetlacza (na 7). Przewód z nóżki <b>D</b> (po przekątnej) do dowolnego <b>GND</b>. Otwory płytki stykowej nie są połączone z ESP32, więc oba przewody muszą kończyć się na gniazdach samego ESP32.",
+          "Podłącz USB i wgraj program poleceniem powyżej (albo napisz Claude’owi „go”).",
+          "Naciśnij przycisk: <b>kliknięcie</b> = następna scena, <b>podwójne kliknięcie</b> = poprzednia, <b>długie przytrzymanie</b> = automatyczne przełączanie wł./wył. BOOT działa tak samo.",
+          "Otwórz <code>uv run pio device monitor</code>: każde kliknięcie zapisuje, ile drgań styku zostało odfiltrowanych."
+        ],
+        "note": "Przycisk nie reaguje? Sprawdź, czy przewód sygnałowy naprawdę kończy się na 5, a nie na sąsiednim 4, i czy oba przewody kończą się na ESP32, a nie na otworach płytki stykowej. Stale „wciśnięty”? Użyj nóżek leżących po przekątnej."
+      }
+    }
+  }
+}

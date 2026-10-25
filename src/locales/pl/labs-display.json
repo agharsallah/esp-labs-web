@@ -1,0 +1,217 @@
+{
+  "press": {
+    "label": "NACIŚNIJ",
+    "aria": "Naciśnij narysowany przycisk"
+  },
+  "preview": {
+    "aria": "Symulowany wyświetlacz 320 na 170: test kolorów, potem poruszająca się fala sinusoidalna",
+    "captions": {
+      "check": "Krok 1: test kolorów (2,5 s). Od lewej do prawej ma wyjść czerwony, zielony, niebieski.",
+      "scope": "Krok 2: oscyloskop na ławce. Twój prawdziwy ekran uruchamia go z prędkością 22 klatek na sekundę."
+    }
+  },
+  "wiring": {
+    "prev": "◀ Wstecz",
+    "play": "Odtwórz",
+    "pause": "Pauza",
+    "next": "Dalej ▶",
+    "showAll": "Pokaż wszystkie",
+    "signals": "Sygnały",
+    "count_one": "{{step}} / {{count}} przewód",
+    "count_few": "{{step}} / {{count}} przewody",
+    "count_many": "{{step}} / {{count}} przewodów",
+    "count_other": "{{step}} / {{count}} przewodów",
+    "aria": "Schemat połączeń: 8 przewodów zworkowych od złącza wyświetlacza do lewego złącza ESP32",
+    "displayModule": "MODUŁ WYŚWIETLACZA 1.9″",
+    "leftHeader": "ESP32-S3 · LEWE ZŁĄCZE",
+    "start": {
+      "title": "Najpierw odłącz USB",
+      "text": "Potem naciśnij Odtwórz albo Dalej, żeby kłaść po jednym przewodzie."
+    },
+    "done": {
+      "title_one": "Wszystko gotowe: {{count}} przewód połączony",
+      "title_few": "Wszystko gotowe: {{count}} przewody połączone",
+      "title_many": "Wszystko gotowe: {{count}} przewodów połączonych",
+      "title_other": "Wszystko gotowe: {{count}} przewodów połączonych",
+      "text": "Sprawdź jeszcze raz, czy VCC jest na 3V3. Naciśnij Sygnały, żeby zobaczyć, co płynie każdym przewodem."
+    },
+    "wire": "Przewód {{step}}: wyświetlacz {{disp}} → {{esp}}"
+  },
+  "wires": {
+    "GND": "Najpierw masa. Obie płytki potrzebują tego samego odniesienia 0 V, inaczej żaden sygnał nie ma sensu.",
+    "VCC": "Zasilanie ekranu. Użyj 3V3, nie 5V: piny ESP32 działają na 3,3 V.",
+    "SCL": "Zegar SPI. ESP podbija tę linię raz na bit, 40 milionów razy na sekundę.",
+    "SDA": "Dane SPI (MOSI). Same bity: ekran odczytuje jeden przy każdym takcie zegara.",
+    "RES": "Reset. Przy starcie na chwilę ściągany w dół, żeby zrestartować kontroler ekranu.",
+    "DC": "Data/Command. Niski stan oznacza, że bajt jest poleceniem, wysoki, że to dane pikseli.",
+    "CS": "Wybór układu. Niski stan oznacza „mówię do ciebie”. Pozwala kilku urządzeniom dzielić jedną magistralę SPI.",
+    "BLK": "Podświetlenie. Wysoki stan włącza światło. Bez niego ekran wygląda na martwy, nawet gdy coś rysuje."
+  },
+  "analyzer": {
+    "aria": "Widok analizatora stanów logicznych jednego transferu SPI",
+    "data": "dane",
+    "cmd": "polecenie",
+    "bitCommand": "CS niski · DC niski · bit {{bit}} =",
+    "bitData": "CS niski · DC wysoki · bit {{bit}} =",
+    "notes": {
+      "command": "polecenie: „zapisz do pamięci ekranu”",
+      "high": "dane pikseli, starszy bajt",
+      "low": "dane pikseli, młodszy bajt → 0xF800 = jeden czerwony piksel"
+    },
+    "csHigh": "CS wysoki:",
+    "ignored": "ekran ignoruje magistralę",
+    "still": "SCL stoi w miejscu, nic nie jest wysyłane",
+    "csLow": "CS niski:",
+    "listening": "ekran nasłuchuje",
+    "switching": "DC przełącza między poleceniem a danymi"
+  },
+  "full": {
+    "show": "Pokaż",
+    "modes": {
+      "both": "Oba",
+      "screen": "Ekran · 8 przewodów",
+      "button": "Przycisk · 2 przewody"
+    },
+    "captions": {
+      "both": {
+        "title": "10 przewodów na jednym złączu",
+        "text": "8 idzie do ekranu (wyjście), 2 do przycisku (wejście). Oba potrzebują GND; działa dowolny pin GND. Pin 5 leży tuż obok 4, więc sprawdź opis."
+      },
+      "screen": {
+        "title": "Ekran: wyjście na 8 przewodach",
+        "text": "Zasilanie (VCC, GND), magistrala SPI (SCL, SDA) i linie sterujące (CS, DC, RES, BLK). Dane płyną z ESP32 do ekranu, miliony bitów na sekundę."
+      },
+      "button": {
+        "title": "Przycisk: wejście na 2 przewodach",
+        "text": "GPIO 5 i GND. Brak przewodu zasilającego: wewnętrzne podciągnięcie (pull-up) układu trzyma GPIO 5 w stanie HIGH, a naciśnięcie łączy go z GND (LOW). Naciśnij przycisk, żeby zobaczyć, jak sygnał wpływa."
+      }
+    },
+    "aria": "Lewe złącze ESP32 z wyświetlaczem podłączonym do 8 pinów i przyciskiem chwilowym podłączonym do GPIO 5 i GND",
+    "screen": "EKRAN",
+    "output": "wyjście",
+    "display": "WYŚWIETLACZ 1.9″ · WYJŚCIE",
+    "button": "PRZYCISK CHWILOWY · WEJŚCIE",
+    "out": "WYJŚCIE → ESP32 rozmawia z ekranem",
+    "in": "WEJŚCIE ← ESP32 nasłuchuje przycisku",
+    "gnd": "masa ekranu i przycisku: działa dowolny pin GND",
+    "pinLow": "GPIO 5 = LOW (wciśnięty)",
+    "pinHigh": "GPIO 5 = HIGH"
+  },
+  "button": {
+    "aria": "Wnętrze 4-nóżkowego przycisku i to, jak siedzi na płytce stykowej, podłączony do GPIO 5 i GND",
+    "inside": "WNĘTRZE PRZYCISKU (WIDOK Z GÓRY)",
+    "joined": "A–C i B–D są zawsze połączone.",
+    "pressing": "Naciśnięcie łączy obie strony.",
+    "breadboard": "NA PŁYTCE STYKOWEJ",
+    "gap": "przerwa środkowa",
+    "toPin": "do pinu 5 ESP32",
+    "toGnd": "do GND ESP32",
+    "diagonal": "użyj nóżek po przekątnej",
+    "orientation1": "A i D: działa w",
+    "orientation2": "dowolnej orientacji",
+    "readsLow": "GPIO 5 odczytuje LOW (0 V)",
+    "readsHigh": "GPIO 5 odczytuje HIGH (3,3 V)",
+    "pressed": {
+      "title": "Wciśnięty: GPIO 5 połączony z GND",
+      "text": "Pin jest ściągnięty do 0 V, więc odczytuje LOW. Wewnętrzne podciągnięcie przepuszcza tylko drobny prąd."
+    },
+    "released": {
+      "title": "Zwolniony: podciągnięcie trzyma pin w HIGH",
+      "text": "Rezystor wewnątrz układu łączy GPIO 5 z 3,3 V, więc rozwarty przycisk odczytuje HIGH. Naciśnij i przytrzymaj przycisk powyżej."
+    },
+    "scopeAria": "Sygnał na GPIO 5: surowy z drganiami i po eliminacji drgań",
+    "canvas": {
+      "raw": "SUROWY PIN",
+      "debounced": "BEZ DRGAŃ",
+      "window": "ostatnie 1,2 s",
+      "zoom": "POWIĘKSZENIE: pierwsze 7 ms naciśnięcia",
+      "spike": "każdy szpic = jedno drganie",
+      "capture": "naciśnij, aby przechwycić"
+    },
+    "scope": {
+      "press": "Naciśnij przycisk powyżej.",
+      "traces": "Żółta linia to to, co pin naprawdę robi; zielona to to, czemu ufa program.",
+      "try": "Spróbuj kliknięcia, podwójnego kliknięcia i długiego przytrzymania.",
+      "gesture": "gest:",
+      "debounce": "eliminacja drgań czeka {{ms}} ms ciszy, zanim uwierzy zmianie"
+    },
+    "gestures": {
+      "click_one": "Kliknięcie → następna scena (odfiltrowano {{count}} drganie)",
+      "click_few": "Kliknięcie → następna scena (odfiltrowano {{count}} drgania)",
+      "click_many": "Kliknięcie → następna scena (odfiltrowano {{count}} drgań)",
+      "click_other": "Kliknięcie → następna scena (odfiltrowano {{count}} drgań)",
+      "double": "Podwójne kliknięcie → poprzednia scena",
+      "long": "Długie przytrzymanie → auto-cykl wł./wył."
+    }
+  },
+  "compare": {
+    "aria": "Ekran kontra przycisk",
+    "aspect": "Aspekt",
+    "output": "WYJŚCIE",
+    "input": "WEJŚCIE",
+    "screen": "Ekran",
+    "button": "Przycisk",
+    "rows": {
+      "direction": {
+        "label": "Kierunek",
+        "screen": "<b>Wyjście.</b> ESP32 wysyła; ekran tylko nasłuchuje.",
+        "button": "<b>Wejście.</b> ESP32 nasłuchuje; przycisk tylko zgłasza."
+      },
+      "wires": {
+        "label": "Przewody",
+        "screen": "8: VCC + GND do zasilania, SCL + SDA do danych, CS, DC, RES, BLK do sterowania",
+        "button": "2: GPIO 5 i GND"
+      },
+      "power": {
+        "label": "Zasilanie",
+        "screen": "Potrzebuje 3V3 z płytki, żeby się zaświecić",
+        "button": "Brak. Przycisk to tylko przełącznik"
+      },
+      "signal": {
+        "label": "Sygnał",
+        "screen": "Magistrala SPI: zegar (SCL) i dane (SDA), 40 milionów bitów na sekundę",
+        "button": "Jeden poziom: HIGH (w górze) lub LOW (wciśnięty), kilka zmian na sekundę"
+      },
+      "pins": {
+        "label": "Które piny",
+        "screen": "SCL/SDA na szybkich pinach SPI S3: 12/11; pozostałe 4 na dowolnym bezpiecznym GPIO",
+        "button": "Dowolny bezpieczny GPIO. Wybraliśmy 5"
+      },
+      "helper": {
+        "label": "Pomocnik w układzie",
+        "screen": "Peryferium SPI taktuje bity za nas",
+        "button": "Wewnętrzny rezystor podciągający trzyma pin w HIGH, aż do naciśnięcia"
+      },
+      "code": {
+        "label": "Kod"
+      },
+      "wrong": {
+        "label": "Jeśli coś pójdzie nie tak",
+        "screen": "Czarny lub biały ekran: sprawdź VCC, BLK, RES",
+        "button": "Zawsze albo nigdy wciśnięty: użyj nóżek po przekątnej"
+      }
+    }
+  },
+  "showcase": {
+    "scenes": {
+      "torus": "Torus 3D",
+      "plasma": "Plazma",
+      "fireworks": "Fajerwerki",
+      "dashboard": "Panel na żywo"
+    },
+    "choice": "{{n}} {{name}}",
+    "scenesLabel": "Sceny",
+    "aria": "Symulowany wyświetlacz pokazujący scenę {{n}}: {{name}}",
+    "autoOn": "auto-cykl włączony · 12 s na scenę",
+    "autoOff": "auto-cykl wyłączony",
+    "terminal": "$ uv run pio device monitor   (oczekiwane wyjście)",
+    "boot": {
+      "aria": "Przycisk BOOT: kliknięcie – następna scena, przytrzymanie – auto-cykl",
+      "caption": "Kliknij BOOT, żeby przejść do następnej sceny, przytrzymaj 0,6 s, żeby przełączyć auto-cykl, tak jak prawdziwy przycisk BOOT. Panel tutaj pokazuje przykładowe liczby; twoja płytka pokazuje prawdziwą temperaturę, pamięć i czasy klatek."
+    },
+    "button": {
+      "aria": "Przycisk chwilowy: kliknięcie – następna scena, podwójne kliknięcie – poprzednia, przytrzymanie – auto-cykl",
+      "caption": "Kliknij PRZYCISK, żeby przejść do następnej sceny, podwójnie kliknij, żeby wrócić, przytrzymaj 0,6 s, żeby przełączyć auto-cykl, tak jak twój przycisk. Panel tutaj pokazuje przykładowe liczby; twoja płytka pokazuje prawdziwą temperaturę, pamięć i czasy klatek."
+    }
+  }
+}

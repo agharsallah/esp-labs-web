@@ -1,0 +1,1214 @@
+{
+  "R1": {
+    "title": "Połącz i porozmawiaj",
+    "heading": "Podłącz czytnik i porozmawiaj z jego układem",
+    "goal": "Własny firmware (rfid-lab-r1; każde laboratorium RFID ma swój) z naszym sterownikiem w kit/lib/rfid-kit: bez biblioteki RFID, więc każdy bajt jest widoczny. Osiem przewodów podłącza RC522 do drugiej magistrali SPI w S3, więc nigdy nie dzieli jej z ekranem. Pierwsza rozmowa jest z samym układem, a nie z kartą: jego rejestr wersji, autotest z noty katalogowej oraz 3200 bajtów przez jego FIFO i z powrotem.",
+    "goalLine": "Udowodnij, że ESP32 i układ czytnika niezawodnie rozmawiają ze sobą przez SPI, zanim zaangażujesz jakąkolwiek kartę. Na razie trzymaj kartę i znacznik z dala.",
+    "goalCheck": [
+      "Monitor pokazuje <code>VersionReg 0x92: MFRC522 v2.0</code> (albo 0x91, albo wartość klona), a nie 0x00 ani 0xFF.",
+      "<code>selftest</code> kończy się wierszem <code>self-test passed: 64/64 bytes match</code> przy oryginalnym układzie NXP (91h/92h) albo <code>self-test consistent: 2 runs, same 64 bytes</code> przy klonie, np. FM17522 (88h/B2h).",
+      "<code>loopback</code> podaje <code>0 of 3200 bytes wrong</code>.",
+      "W widoku <b>chip</b> kwadrat świeci na turkusowo, a liczniki magistrali rosną."
+    ],
+    "learn": [
+      "bajt adresu SPI",
+      "rejestry",
+      "FIFO",
+      "autotest z noty katalogowej",
+      "dwie magistrale SPI",
+      "odczyt błędu magistrali"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "RC 3.3V"
+      },
+      "2": {
+        "role": "BLK"
+      },
+      "3": {
+        "role": "RES"
+      },
+      "4": {
+        "role": "DC"
+      },
+      "5": {
+        "role": "CS"
+      },
+      "6": {
+        "role": "SDA"
+      },
+      "7": {
+        "role": "SCL"
+      },
+      "8": {
+        "role": "GND"
+      },
+      "9": {
+        "role": "RC SDA"
+      },
+      "10": {
+        "role": "RC SCK"
+      },
+      "11": {
+        "role": "MOSI"
+      },
+      "12": {
+        "role": "MISO"
+      },
+      "13": {
+        "role": "RC RST"
+      },
+      "14": {
+        "role": "IRQ"
+      },
+      "15": {
+        "role": "RC GND"
+      },
+      "16": {
+        "role": "BTN"
+      },
+      "17": {
+        "role": "BOOT"
+      }
+    },
+    "wiring": {
+      "title": "Połączenia RC522 (8 nowych przewodów, ekran bez zmian)",
+      "head": [
+        "Pin RC522",
+        "ESP32-S3",
+        "Rola"
+      ],
+      "rows": [
+        [
+          "SDA",
+          "GPIO 15",
+          "wybór układu (NSS) w trybie SPI, nie dane I2C"
+        ],
+        [
+          "SCK",
+          "GPIO 16",
+          "zegar SPI, z ESP32"
+        ],
+        [
+          "MOSI",
+          "GPIO 17",
+          "dane ESP32 → układ"
+        ],
+        [
+          "MISO",
+          "GPIO 18",
+          "dane układ → ESP32"
+        ],
+        [
+          "IRQ",
+          "GPIO 13",
+          "opcjonalnie: układ sygnalizuje „gotowe”"
+        ],
+        [
+          "GND",
+          "GND",
+          "górny pin prawego rzędu złącza"
+        ],
+        [
+          "RST",
+          "GPIO 14",
+          "reset; stan niski = wyłączenie zasilania"
+        ],
+        [
+          "3.3V",
+          "3V3",
+          "drugi pin 3V3. Nigdy 5 V"
+        ]
+      ]
+    },
+    "commands": {
+      "0": {
+        "does": "Buduje firmware laboratorium R1 i zapisuje go na płytce (bez nowych pobrań: używa tylko bibliotek wyświetlacza, które już masz).",
+        "see": "<code>Hard resetting via RTS pin…</code>. Ekran startuje w widoku <b>card</b>: pierścienie i „Hold a card or tag”.",
+        "fix": "„Failed to connect”: przytrzymaj BOOT, dotknij RST, puść BOOT i uruchom ponownie."
+      },
+      "1": {
+        "does": "Otwiera monitor portu szeregowego. Jego otwarcie restartuje płytkę, więc widzisz linie startowe.",
+        "see": "<code>RC522 on SPI3: SS 15 SCK 16 MOSI 17 MISO 18 RST 14 IRQ 13 · 4 MHz</code>, potem <code>VersionReg 0x92: MFRC522 v2.0</code> i lista poleceń.",
+        "fix": "<code>0x00</code>: układ nie ma zasilania albo MISO jest na stałe w stanie niskim: sprawdź 3.3V, GND, RST. <code>0xFF</code>: nikt nie steruje MISO: sprawdź MISO (18) i SDA (15)."
+      },
+      "2": {
+        "does": "Odczytuje VersionReg (37h) jeszcze raz: pokazany wyżej 2-bajtowy transfer, na żywo.",
+        "see": "Ta sama linia co przy starcie (<code>0x92</code> albo np. <code>0xB2: FM17522 (clone)</code>). Uruchom kilka razy i ponownie po poruszeniu kartą: wartość nigdy się nie może zmienić.",
+        "fix": "Jeśli się zmienia albo zamienia w 00h/FFh po dotknięciu czytnika, to luźny przewód. Dociśnij listwę RC522 albo ją przylutuj, potem <code>reset</code>."
+      },
+      "3": {
+        "does": "Impuls na przewodzie RST (twardy reset układu), ponowne ustawienie i odczyt VersionReg. Firmware sam sprawdza VersionReg co 2 s i robi to samo, gdy układ przestanie odpowiadać.",
+        "see": "<code>hard reset: VersionReg 0x92</code> (albo wartość Twojego klona). Jeśli układ wcześniej umilkł: <code>chip back after a hard reset</code> = zawiesił się; <code>still 0x00 after a reset</code> = przewód.",
+        "fix": "Nadal 00h/FFh: wyłącz zasilanie, dociśnij piny listwy (albo je przylutuj), sprawdź 3.3V, GND, MISO (18), SDA (15)."
+      },
+      "4": {
+        "does": "Cyfrowy autotest z noty katalogowej (rozdział 16.1.1): resetuje układ i każe mu obliczyć stały ciąg 64 bajtów. Oryginalny układ NXP (91h/92h) jest porównywany z tabelą z noty. Klon nie ma tabeli, więc test wykonuje się dwa razy i porównuje oba wyniki. Odpytywanie wstrzymuje się na czas testu, więc karta może zostać na miejscu.",
+        "see": "4 wiersze po 16 bajtów bez znaków <code>!</code>, potem <code>self-test passed: 64/64 bytes match</code> (NXP) albo <code>self-test consistent: 2 runs, same 64 bytes</code> (klon). Widok chip pokazuje <b>passed</b> albo <b>consistent</b>.",
+        "fix": "<code>self-test skipped: chip silent (0x00)</code> = układ nie odpowiadał już przed testem: przewód, zobacz <code>reset</code>. Znaki <code>!</code> = bajty się różnią: dociśnij SCK/MOSI/MISO i uruchom ponownie. <code>doesn't run the self-test</code> = niektóre klony po prostu go nie mają; wtedy liczy się loopback."
+      },
+      "5": {
+        "does": "Zapisuje do FIFO układu 64-bajtowe wzorce i odczytuje je z powrotem, 50 razy: po 3200 bajtów w każdą stronę.",
+        "see": "<code>FIFO loopback: 0 of 3200 bytes wrong at 4 MHz</code> na turkusowo w prawym dolnym rogu ekranu.",
+        "fix": "Błędy przy 4 MHz = słaby styk na SCK, MOSI lub MISO, albo przewody dłuższe niż 20 cm."
+      },
+      "6": {
+        "does": "Wypisuje 15 rejestrów wraz z ich bitami i znaczeniem.",
+        "see": "<code>VersionReg 92h</code>, <code>TxControlReg 83h</code> (antena włączona), <code>RFCfgReg 40h</code> (wzmocnienie 33 dB), <code>TPrescalerReg A9h</code> + <code>TReloadReg 03 E8</code> (timer 25 ms: 1000 taktów po 25 µs).",
+        "fix": "TxControlReg 80h = antena wyłączona: układ został zresetowany bez naszej konfiguracji. Odłącz i podłącz ponownie płytkę."
+      },
+      "7": {
+        "does": "Opcjonalny podgląd laboratorium o krawędzi: prowadzi magistralę przy 20 MHz, czyli dwukrotności nominału układu, a potem wraca do ustawienia domyślnego.",
+        "see": "Być może kilka błędnych bajtów przy 20 MHz, a być może żadnych: zależy to od przewodów. Wskaźnik zegara SPI w widoku chip robi się bursztynowy powyżej 10.",
+        "fix": "Zawsze kończ poleceniem <code>spi 4</code>. Laboratorium krawędzi R6 mierzy to dokładnie."
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Jeden odczyt rejestru, bit po bicie",
+        "intro": "Każde polecenie w tej lekcji składa się z takich transferów. To, co pokazałby analizator stanów logicznych na czterech przewodach SPI, gdy ESP32 czyta jeden rejestr: 16 taktów zegara, dwa bajty. Pierwszy bajt idzie na MOSI i mówi, <b>który</b> rejestr oraz <b>odczyt czy zapis</b>; podczas drugiego bajtu układ odpowiada na MISO. <code>chip</code> robi dokładnie to z VersionReg. Użyj ◀ ▶, by przechodzić bit po bicie, wybrać inny rejestr albo wybrać usterkę i zobaczyć, w co luźny przewód zmienia odpowiedź: tak rozpoznasz 00h lub FFh we własnym monitorze."
+      },
+      "1": {
+        "title": "Co pokazuje ekran",
+        "intro": "Ekran płytki ma sześć widoków. Kliknięcie przycisku (albo BOOT) przechodzi do następnego, podwójne kliknięcie uruchamia akcję zapisaną w lewym dolnym rogu, a długie przytrzymanie wstrzymuje odpytywanie karty. Wybierz widok, by zobaczyć, co oznacza każda część; numery odpowiadają liście poniżej."
+      }
+    },
+    "steps": [
+      "Odłącz USB. Zostaw ekran podłączony jak w lekcji 03. Dodaj RC522 ośmioma przewodami żeński-męski według tabeli: SDA, SCK, MOSI i MISO idą do 15, 16, 17, 18, obok siebie, w tej samej kolejności co na module.",
+      "Sprawdź dwa razy: 3.3V modułu idzie do <b>3V3</b>, nigdy do 5V. MFRC522 pracuje przy 2,5–3,6 V, a jego piny nie znoszą 5 V.",
+      "Wgraj, potem otwórz monitor (dwa pierwsze polecenia powyżej). <b>Punkt kontrolny 1:</b> VersionReg 0x92 (albo 0x91, albo wartość klona).",
+      "Wpisz <code>selftest</code>. <b>Punkt kontrolny 2:</b> „passed” (oryginalny układ NXP) albo „consistent” (klon).",
+      "Wpisz <code>loopback</code>, potem <code>regs</code>. <b>Punkt kontrolny 3:</b> 0 błędnych bajtów i wartości rejestrów z tabeli.",
+      "Przejdź do widoku <b>chip</b> i porównaj go z „Co pokazuje ekran”: turkusowy kwadrat, passed, 4 MHz, liczniki magistrali rosnące. To jest cel. Połóż kartę na czytniku na chwilę jako zapowiedź R2: wbudowana dioda LED mignie jasną zielenią i zostanie zielona, dopóki karta leży."
+    ],
+    "note": "Wbudowana dioda RGB pokazuje, co widzi czytnik: jasny zielony błysk za każdym odczytem karty, stałe zielone światło, gdy karta leży na czytniku, czerwone, gdy układ czytnika przestaje odpowiadać (przewód), wyłączona w pozostałych przypadkach. Wiele modułów RC522 ma luźną listwę: wciskane piny tracą styk, więc przylutuj je albo mocno dociśnij. IRQ jest opcjonalne: bez niego firmware odpytuje, a widok chip pokazuje „polling” (R6 porównuje oba sposoby). Położenie karty nie zmienia wyników R1. Ale to właśnie przy czytniku luźne piny listwy tracą styk: jeśli potem VersionReg pokaże 00h/FFh, firmware zauważy to w ciągu 2 s, spróbuje twardego resetu i powie, czy to zawieszenie, czy przewód."
+  },
+  "R2": {
+    "title": "Obudź kartę",
+    "heading": "Pole i pierwsze „cześć”",
+    "goal": "Antena czytnika wytwarza pole magnetyczne 13,56 MHz. Karta nie ma baterii: jej cewka zbiera energię z tego pola, jej układ się budzi i odpowiada, obciążając pole w rytmie, który czytnik słyszy. Najpierw w 3D, potem klatka po klatce, a na końcu naprawdę w snifferze.",
+    "goalLine": "Zobacz, jak karta się budzi i odpowiada, odczytaj jej tożsamość i znajdź zasięg swojego czytnika.",
+    "goalCheck": [
+      "Widok card pokazuje UID Twojej karty, „MIFARE Classic 1K”, ATQA 00 04 i SAK 08.",
+      "Widok trace wylicza ramki wybudzenia: WUPA, ATQA, ANTICOLL, UID + BCC, SELECT, SAK, HLTA.",
+      "Wiesz, na jakiej mniej więcej wysokości zaczyna spadać skuteczność odczytu (Twój zasięg)."
+    ],
+    "learn": [
+      "pole bliskie 13,56 MHz",
+      "sprzężenie indukcyjne",
+      "pauzy ASK 100 %",
+      "modulacja obciążenia",
+      "REQA · WUPA · ATQA",
+      "zadanie odpytywania",
+      "podsłuchiwanie ramek"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "RC 3.3V"
+      },
+      "2": {
+        "role": "BLK"
+      },
+      "3": {
+        "role": "RES"
+      },
+      "4": {
+        "role": "DC"
+      },
+      "5": {
+        "role": "CS"
+      },
+      "6": {
+        "role": "SDA"
+      },
+      "7": {
+        "role": "SCL"
+      },
+      "8": {
+        "role": "GND"
+      },
+      "9": {
+        "role": "RC SDA"
+      },
+      "10": {
+        "role": "RC SCK"
+      },
+      "11": {
+        "role": "MOSI"
+      },
+      "12": {
+        "role": "MISO"
+      },
+      "13": {
+        "role": "RC RST"
+      },
+      "14": {
+        "role": "IRQ"
+      },
+      "15": {
+        "role": "RC GND"
+      },
+      "16": {
+        "role": "BTN"
+      },
+      "17": {
+        "role": "BOOT"
+      }
+    },
+    "commands": {
+      "0": {
+        "does": "Wgrywa firmware laboratorium R2: wszystko z R1, plus widok trace oraz polecenia poll i trace. <code>help</code> wypisuje dokładnie polecenia tego laboratorium.",
+        "see": "<code>rfid-lab-r2: reader task started</code>, potem lista poleceń i widoków tego laboratorium.",
+        "fix": "„Failed to connect”: przytrzymaj BOOT, dotknij RST, puść BOOT i uruchom ponownie."
+      },
+      "1": {
+        "does": "Jedno kliknięcie przycisku albo BOOT przechodzi do następnego widoku; kropki u góry pokazują, który jest aktywny.",
+        "see": "Pierścienie wokół anteny i „Hold a card or tag flat on the reader”, plus liczba dotknięć.",
+        "fix": ""
+      },
+      "2": {
+        "does": "Zadanie czytnika odpytuje ok. 12 razy na sekundę; pierwsze odpytanie, które znajdzie kartę, ją budzi, odczytuje jej UID, a potem ją usypia.",
+        "see": "Wbudowana dioda mignie jasną zielenią, potem zostanie zielona, dopóki karta leży. Widok card pokazuje UID, typ, ATQA/SAK i wskaźnik skuteczności odczytu, który wypełnia się do 100 %. Monitor wypisuje <code>card 9C:4F:… · MIFARE Classic 1K · ATQA 0004 SAK 08</code> i ramki.",
+        "fix": "Nic? Uruchom ponownie <code>chip</code> z R1; potem połóż kartę płasko na środku anteny."
+      },
+      "3": {
+        "does": "Pole słabnie z wysokością; odpytania zaczynają chybiać.",
+        "see": "Wskaźnik skuteczności robi się bursztynowy, potem koralowy. Po 3 chybieniach z rzędu (~0,3 s) monitor pisze <code>card removed</code>.",
+        "fix": ""
+      },
+      "4": {
+        "does": "Sniffer: ramki ostatniego wybudzenia z czasami w ms.",
+        "see": "<code>&gt; 52 WUPA</code>, <code>&lt; 04 00 ATQA</code>, <code>&gt; 93 20 ANTICOLL CL1</code>, <code>&lt; UID + BCC</code>, <code>&gt; SELECT CL1</code>, <code>&lt; SAK</code>, <code>&gt; HLTA</code>.",
+        "fix": "„Sniffer off”: wpisz <code>trace on</code>."
+      },
+      "5": {
+        "does": "Sniffer jest domyślnie włączony i wypisuje ramki każdej nowej karty w monitorze. Wyłączenie wycisza monitor i widok trace.",
+        "see": "<code>sniffer off</code> / <code>sniffer on</code> w prawym dolnym rogu.",
+        "fix": ""
+      },
+      "6": {
+        "does": "Wzmocnienie odbiornika 18 dB (0), 48 dB (7), domyślnie 33 dB (4). Trzymaj kartę na krawędzi zasięgu dla każdej wartości.",
+        "see": "Skuteczność odczytu na tej samej wysokości zmienia się ze wzmocnieniem, ale tylko do pewnego momentu: daleko karta nie ma zasilania, bez względu na wzmocnienie.",
+        "fix": "Zakończ poleceniem <code>gain 4</code>."
+      },
+      "7": {
+        "does": "Wstrzymuje i wznawia odpytywanie karty.",
+        "see": "Widok card mówi „polling paused”; nowe karty są ignorowane do czasu <code>poll on</code>.",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Pole w 3D",
+        "intro": "Model czytnika i karty: przeciągnij, by obrócić, przesuwaj kartę w górę i w dół, zmieniaj wzmocnienie i naciśnij Wyślij WUPA, by zobaczyć jedno wybudzenie. Wykres pod nim pokazuje, dlaczego zasięg kończy się tam, gdzie się kończy."
+      },
+      "1": {
+        "title": "Śledź jedno wybudzenie krok po kroku",
+        "intro": "Co dzieje się w pierwszej milisekundzie po przybyciu karty: od zapisów SPI z ESP32 do odpowiedzi karty. Te same ramki pojawiają się w Twoim snifferze."
+      },
+      "2": {
+        "title": "Co pokazuje ekran",
+        "intro": "Ekran płytki ma sześć widoków. Kliknięcie przycisku (albo BOOT) przechodzi do następnego, podwójne kliknięcie uruchamia akcję zapisaną w lewym dolnym rogu, a długie przytrzymanie wstrzymuje odpytywanie karty. Wybierz widok, by zobaczyć, co oznacza każda część; numery odpowiadają liście poniżej."
+      }
+    },
+    "steps": [
+      "Takie samo połączenie jak w R1. Wgraj <code>rfid-lab-r2</code> (polecenie powyżej), potem przejdź do widoku <b>card</b>.",
+      "Połóż białą kartę płasko na czytniku. <b>Punkt kontrolny:</b> dioda mignie jasną zielenią i zostanie zielona; UID, MIFARE Classic 1K, skuteczność odczytu 100 %.",
+      "Przejdź do widoku <b>trace</b> i znajdź 7 ramek; porównaj z diagramem krok po kroku powyżej.",
+      "Powoli podnoś kartę i zapamiętaj wysokość, przy której skuteczność spada: to Twój zasięg.",
+      "Powtórz na krawędzi zasięgu z <code>gain 0</code> i <code>gain 7</code>, potem z <code>gain 4</code>. Porównaj z przewidywaniem modelu 3D.",
+      "Wypróbuj breloczek: ma własny UID, ten sam typ."
+    ],
+    "note": "Czytnik odpytuje ok. 12 razy na sekundę w swoim zadaniu na rdzeniu 0, więc ekran nigdy nie czeka. Karta uznawana jest za usuniętą dopiero po 3 kolejnych chybionych odpytaniach (~0,3 s), więc jedno słabe odpytanie na krawędzi zasięgu nie powoduje migotania. Model 3D jest celowo uproszczony: zmierz prawdziwy zasięg w R6."
+  },
+  "R3": {
+    "title": "Kto tu jest",
+    "heading": "Dwie karty naraz: antykolizja",
+    "goal": "Połóż kartę i znacznik razem na czytniku. Oba odpowiadają w tej samej chwili, bit po bicie, a tam, gdzie ich UID-y się różnią, czytnik słyszy kolizję. Antykolizja schodzi w dół po bitach jak drzewo binarne: wybierz gałąź, zapytaj ponownie z tym prefiksem, wybierz pozostałą kartę, uśpij ją i powtarzaj, aż nikt nie odpowie.",
+    "goalLine": "Znajdź obie karty naraz i wskaż dokładny bit, w którym ich UID-y się zderzyły.",
+    "goalCheck": [
+      "<code>inventory</code> wymienia 2 karty wraz z obydwoma UID-ami.",
+      "Podaje bit kolizji, a przejście krok po kroku powyżej trafia w ten sam bit z Twoimi dwoma UID-ami."
+    ],
+    "learn": [
+      "kolizje bitów",
+      "przejście drzewa binarnego",
+      "NVB",
+      "BCC",
+      "poziomy kaskady",
+      "SAK",
+      "HALT · WUPA"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "RC 3.3V"
+      },
+      "2": {
+        "role": "BLK"
+      },
+      "3": {
+        "role": "RES"
+      },
+      "4": {
+        "role": "DC"
+      },
+      "5": {
+        "role": "CS"
+      },
+      "6": {
+        "role": "SDA"
+      },
+      "7": {
+        "role": "SCL"
+      },
+      "8": {
+        "role": "GND"
+      },
+      "9": {
+        "role": "RC SDA"
+      },
+      "10": {
+        "role": "RC SCK"
+      },
+      "11": {
+        "role": "MOSI"
+      },
+      "12": {
+        "role": "MISO"
+      },
+      "13": {
+        "role": "RC RST"
+      },
+      "14": {
+        "role": "IRQ"
+      },
+      "15": {
+        "role": "RC GND"
+      },
+      "16": {
+        "role": "BTN"
+      },
+      "17": {
+        "role": "BOOT"
+      }
+    },
+    "commands": {
+      "0": {
+        "does": "Wgrywa firmware laboratorium R3: wszystko z R2, plus inventory (a podwójne kliknięcie widoku card je uruchamia). <code>help</code> wypisuje dokładnie polecenia tego laboratorium.",
+        "see": "<code>rfid-lab-r3: reader task started</code>, potem lista poleceń i widoków tego laboratorium.",
+        "fix": "„Failed to connect”: przytrzymaj BOOT, dotknij RST, puść BOOT i uruchom ponownie."
+      },
+      "1": {
+        "does": "Obie karty budzą się na tym samym WUPA. Odpytanie rozwiązuje kolizję i wybiera jedną z nich.",
+        "see": "Widok card pokazuje jeden UID (zawsze ten sam) i bursztynową linię: <code>collision at bit 23</code> (Twój bit będzie inny).",
+        "fix": "Znaleziono tylko jedną kartę? Nałóż je bardziej na siebie: obie muszą leżeć w obrębie pętli anteny."
+      },
+      "2": {
+        "does": "Wyłącza pole na 10 ms, by każda karta się zrestartowała, potem REQA → select → halt, w kółko, aż nikt nie odpowie.",
+        "see": "<code>#1 9C:4F:6A:0D … collision at level 1 bit 23 -&gt; chose 1</code>, <code>#2 9C:4F:2A:1B …</code>, potem <code>inventory: 2 cards in the field</code>.",
+        "fix": "<code>select failed (collision)</code>: przesuń nieco karty i uruchom ponownie."
+      },
+      "3": {
+        "does": "Ten sam przebieg, nic do rozwiązania.",
+        "see": "<code>1 card</code> bez linii kolizji, potem <code>0 cards</code>.",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Antykolizja: zejście w dół po bitach",
+        "intro": "Dwa wiersze to bity UID-ów dwóch kart, w kolejności, w jakiej docierają (najmniej znaczący bit bajtu 0 jako pierwszy). Przechodź krok po kroku: tam, gdzie bity się różnią, czytnik słyszy kolizję, wybiera 1 i tylko pasująca karta dalej odpowiada. Wpisz własne UID-y z monitora."
+      },
+      "1": {
+        "title": "Co pokazuje ekran",
+        "intro": "Ekran płytki ma sześć widoków. Kliknięcie przycisku (albo BOOT) przechodzi do następnego, podwójne kliknięcie uruchamia akcję zapisaną w lewym dolnym rogu, a długie przytrzymanie wstrzymuje odpytywanie karty. Wybierz widok, by zobaczyć, co oznacza każda część; numery odpowiadają liście poniżej."
+      }
+    },
+    "steps": [
+      "Wgraj <code>rfid-lab-r3</code> poleceniem powyżej (to samo połączenie co R1). <code>help</code> pokazuje polecenia tego laboratorium.",
+      "Połóż kartę i znacznik razem na czytniku, nakładając je.",
+      "Obserwuj widok card: jeden UID i bit kolizji na bursztynowo.",
+      "Wpisz <code>inventory</code> (albo kliknij dwukrotnie widok card). <b>Punkt kontrolny:</b> 2 karty i bit kolizji.",
+      "Wpisz oba UID-y do przejścia powyżej i przejdź do kroku 2: kolizja trafia w ten sam bit.",
+      "Zostaw obie na czytniku: widok card zawsze pokazuje tę samą kartę. Przejście przy kolizji zawsze wybiera 1, więc za każdym razem wygrywa ta sama karta."
+    ],
+    "note": "Bity są przesyłane od najmniej znaczącego, więc „bit 23” to bit 6 trzeciego bajtu UID. Nasz sterownik jest testowany dla dwóch kart naraz: przy trzech lub więcej pozycja kolizji układu po pierwszym rozgałęzieniu jest trudniejsza do zaufania. UID-y 7-bajtowe wymagają dwóch poziomów kaskady; pierwsza część zaczyna się od 88h, znacznika kaskady."
+  },
+  "R4": {
+    "title": "W środku karty",
+    "heading": "Otwórz pamięć karty",
+    "goal": "MIFARE Classic 1K ma 1024 bajty: 16 sektorów × 4 bloki × 16 bajtów. Każdy sektor ma własną blokadę, czyli trailer: dwa klucze plus bity dostępu, które mówią, kto może czytać lub zapisywać każdy blok. Otwórz każdy sektor swojej karty kluczem fabrycznym i zrzuć jego zawartość.",
+    "goalLine": "Zrzuć całą pamięć swojej karty i wyjaśnij bajt po bajcie blok 0 oraz jeden trailer sektora.",
+    "goalCheck": [
+      "<code>dump</code> kończy się wierszem <code>dump: 16 sectors read</code>, a widok pamięci jest cały kolorowy (bez szarych sektorów „zamkniętych”).",
+      "W zrzucie możesz wskazać UID w bloku 0 i <code>FF 07 80 69</code> w trailerze, a dekoder powyżej wyjaśnia, na co pozwala FF 07 80."
+    ],
+    "learn": [
+      "sektory i bloki",
+      "trailery sektorów",
+      "bity dostępu (zapisane dwukrotnie)",
+      "uwierzytelnianie w 3 przebiegach",
+      "szyfrowane ramki",
+      "blok producenta"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "RC 3.3V"
+      },
+      "2": {
+        "role": "BLK"
+      },
+      "3": {
+        "role": "RES"
+      },
+      "4": {
+        "role": "DC"
+      },
+      "5": {
+        "role": "CS"
+      },
+      "6": {
+        "role": "SDA"
+      },
+      "7": {
+        "role": "SCL"
+      },
+      "8": {
+        "role": "GND"
+      },
+      "9": {
+        "role": "RC SDA"
+      },
+      "10": {
+        "role": "RC SCK"
+      },
+      "11": {
+        "role": "MOSI"
+      },
+      "12": {
+        "role": "MISO"
+      },
+      "13": {
+        "role": "RC RST"
+      },
+      "14": {
+        "role": "IRQ"
+      },
+      "15": {
+        "role": "RC GND"
+      },
+      "16": {
+        "role": "BTN"
+      },
+      "17": {
+        "role": "BOOT"
+      }
+    },
+    "commands": {
+      "0": {
+        "does": "Wgrywa firmware laboratorium R4: wszystko z R3, plus widok pamięci, dump oraz read. <code>help</code> wypisuje dokładnie polecenia tego laboratorium.",
+        "see": "<code>rfid-lab-r4: reader task started</code>, potem lista poleceń i widoków tego laboratorium.",
+        "fix": "„Failed to connect”: przytrzymaj BOOT, dotknij RST, puść BOOT i uruchom ponownie."
+      },
+      "1": {
+        "does": "Dla każdego z 16 sektorów: uwierzytelnia kluczem A fabrycznym, czyta jego 4 bloki i dekoduje trailer. Ok. 1,5 s; trzymaj kartę nieruchomo.",
+        "see": "64 linie (blok, 16 bajtów, ASCII, znaczenie), potem <code>dump: 16 sectors read</code>. Widok pamięci: blok 0 bursztynowy, puste bloki ciemne, trailery koralowe.",
+        "fix": "Szare sektory „zamknięte”: ich klucz nie jest fabryczny (karta, którą ktoś skonfigurował): laboratorium je zostawia. „no card”: karta się przesunęła; uruchom ponownie."
+      },
+      "2": {
+        "does": "Uwierzytelnia sektor 0 i czyta tylko blok 0.",
+        "see": "UID (4 bajty), BCC, potem 08 04 00 (SAK, ATQA), potem bajty producenta.",
+        "fix": ""
+      },
+      "3": {
+        "does": "To samo dla bloku 1, z ramkami pokazanymi w snifferze.",
+        "see": "<code>AUTH key A</code> oznaczone jako wykonane wewnątrz układu, potem <code>READ</code> i 16 bajtów, obie z „[encrypted on air]”.",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Pamięć karty w 3D",
+        "intro": "Każda szafka to sektor, każda płyta to blok, a najwyższa płyta to trailer z jego blokadą. Kliknij sektor, potem Uwierzytelnij: dopiero wtedy można czytać jego bloki."
+      },
+      "1": {
+        "title": "Dekoder bitów dostępu",
+        "intro": "Bajty 6–8 każdego trailera decydują, kto może co robić w tym sektorze. Zaznacz bity albo wpisz trzy bajty ze swojego zrzutu."
+      },
+      "2": {
+        "title": "Uwierzytelnij i czytaj krok po kroku",
+        "intro": "Co jedno <code>read 4</code> robi na magistrali i w powietrzu."
+      },
+      "3": {
+        "title": "Co pokazuje ekran",
+        "intro": "Ekran płytki ma sześć widoków. Kliknięcie przycisku (albo BOOT) przechodzi do następnego, podwójne kliknięcie uruchamia akcję zapisaną w lewym dolnym rogu, a długie przytrzymanie wstrzymuje odpytywanie karty. Wybierz widok, by zobaczyć, co oznacza każda część; numery odpowiadają liście poniżej."
+      }
+    },
+    "steps": [
+      "Wgraj <code>rfid-lab-r4</code> poleceniem powyżej (to samo połączenie co R1). <code>help</code> pokazuje polecenia tego laboratorium.",
+      "Trzymaj białą kartę na czytniku i nieruchomo. Wpisz <code>dump</code> (albo kliknij dwukrotnie widok pamięci). <b>Punkt kontrolny:</b> 16 sectors read.",
+      "W zrzucie przeczytaj blok 0: UID, BCC, SAK, ATQA, bajty producenta.",
+      "Znajdź trailer (bloki 3, 7, 11…): klucz A odczytuje się jako 00 (karta nigdy go nie ujawnia), potem <code>FF 07 80 69</code>, potem klucz B.",
+      "Wpisz <code>FF 07 80</code> w dekoder bitów dostępu powyżej: bloki danych 000, trailer 001.",
+      "<code>read 1</code> z otwartym widokiem trace: AUTH i zaszyfrowany READ."
+    ],
+    "note": "Uwierzytelnianie działa wewnątrz MFRC522 (jego polecenie MFAuthent): ESP32 przekazuje klucz i nigdy nie widzi uzgadniania, a klucz nigdy nie trafia do śladu. Firmware używa tylko klucza fabrycznego, na kartach, które należą do Ciebie, i nigdy nie zapisuje bloku 0 ani trailera: trailer z uszkodzonymi bitami dostępu blokuje sektor na zawsze."
+  },
+  "R5": {
+    "title": "Zapisz i licz",
+    "heading": "Zapisz etykietę, prowadź licznik",
+    "goal": "Zapisz własne 16 bajtów w bloku danych i odczytaj je z powrotem. Potem użyj wbudowanej arytmetyki MIFARE: blok wartości przechowuje liczbę trzy razy (raz odwróconą), a karta sama dodaje lub odejmuje i zatwierdza wynik jednym krokiem. Blok kopii zapasowej zachowuje wartość sprzed zmiany.",
+    "goalLine": "Zapisz tekst na swojej karcie i prowadź na niej licznik kredytów, który karta sama aktualizuje.",
+    "goalCheck": [
+      "<code>write 4 hello bench</code> podaje „written and read back”.",
+      "Po <code>credits init 50</code> i <code>credits use 3</code> widok kredytów pokazuje 47 z kopią zapasową 50.",
+      "<code>dump</code> pokazuje blok 4 jako dane, a bloki 8 i 9 jako bloki wartości."
+    ],
+    "learn": [
+      "zapisy bloków · ACK / NAK",
+      "kontrole odczytu zwrotnego",
+      "format bloku wartości",
+      "INCREMENT · DECREMENT · TRANSFER",
+      "bloki kopii zapasowej",
+      "bariery bezpieczeństwa"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "RC 3.3V"
+      },
+      "2": {
+        "role": "BLK"
+      },
+      "3": {
+        "role": "RES"
+      },
+      "4": {
+        "role": "DC"
+      },
+      "5": {
+        "role": "CS"
+      },
+      "6": {
+        "role": "SDA"
+      },
+      "7": {
+        "role": "SCL"
+      },
+      "8": {
+        "role": "GND"
+      },
+      "9": {
+        "role": "RC SDA"
+      },
+      "10": {
+        "role": "RC SCK"
+      },
+      "11": {
+        "role": "MOSI"
+      },
+      "12": {
+        "role": "MISO"
+      },
+      "13": {
+        "role": "RC RST"
+      },
+      "14": {
+        "role": "IRQ"
+      },
+      "15": {
+        "role": "RC GND"
+      },
+      "16": {
+        "role": "BTN"
+      },
+      "17": {
+        "role": "BOOT"
+      }
+    },
+    "commands": {
+      "0": {
+        "does": "Wgrywa firmware laboratorium R5: wszystko z R4, plus widok kredytów, write oraz credits. <code>help</code> wypisuje dokładnie polecenia tego laboratorium.",
+        "see": "<code>rfid-lab-r5: reader task started</code>, potem lista poleceń i widoków tego laboratorium.",
+        "fix": "„Failed to connect”: przytrzymaj BOOT, dotknij RST, puść BOOT i uruchom ponownie."
+      },
+      "1": {
+        "does": "Otwiera sektor 1, sprawdza, czy jego bity dostępu pozwalają zapisywać kluczem A, zapisuje 16 bajtów (tekst dopełniony zerami) i odczytuje je z powrotem.",
+        "see": "Bajty bloku 4, <code>|hello bench.....|</code> i <code>written and read back</code>.",
+        "fix": "<code>READ BACK DIFFERS</code>: karta przesunęła się w trakcie zapisu; uruchom ponownie."
+      },
+      "2": {
+        "does": "Próbuje zapisać trailer sektora.",
+        "see": "Odrzucone przed wysłaniem czegokolwiek: <code>not writable here (block 0 and trailers are off limits)</code>.",
+        "fix": ""
+      },
+      "3": {
+        "does": "Zapisuje 50 jako blok wartości w bloku 8 i to samo w kopii, bloku 9.",
+        "see": "Widok kredytów: 50, kopia 50, stos monet.",
+        "fix": ""
+      },
+      "4": {
+        "does": "Kopiuje wartość do kopii zapasowej, potem karta odejmuje (albo dodaje) i zatwierdza przez TRANSFER.",
+        "see": "47, kopia 50; potem 57, kopia 47.",
+        "fix": "<code>no credits on this card yet</code>: najpierw uruchom credits init."
+      },
+      "5": {
+        "does": "Firmware najpierw sprawdza saldo.",
+        "see": "<code>only 57 credits, can't use 999</code>: nic nie zostaje wysłane na kartę.",
+        "fix": ""
+      },
+      "6": {
+        "does": "Czyta bloki 8 i 9 i je dekoduje.",
+        "see": "Bieżąca wartość i kopia zapasowa.",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Blok wartości, bajt po bajcie",
+        "intro": "Jak karta przechowuje liczbę, by mogła ją sama sprawdzić. Zmień wartość i obserwuj, które bajty się przesuwają."
+      },
+      "1": {
+        "title": "credits use 3, krok po kroku",
+        "intro": "Cztery polecenia karty stojące za jednym <code>credits use 3</code>."
+      },
+      "2": {
+        "title": "Co pokazuje ekran",
+        "intro": "Ekran płytki ma sześć widoków. Kliknięcie przycisku (albo BOOT) przechodzi do następnego, podwójne kliknięcie uruchamia akcję zapisaną w lewym dolnym rogu, a długie przytrzymanie wstrzymuje odpytywanie karty. Wybierz widok, by zobaczyć, co oznacza każda część; numery odpowiadają liście poniżej."
+      }
+    },
+    "steps": [
+      "Wgraj <code>rfid-lab-r5</code> poleceniem powyżej (to samo połączenie co R1). <code>help</code> pokazuje polecenia tego laboratorium.",
+      "Karta na czytniku. <code>write 4 hello bench</code>. <b>Punkt kontrolny:</b> written and read back.",
+      "<code>write 3 test</code>: odrzucone, bo to trailer. Tak samo blok 0.",
+      "<code>credits init 50</code>, potem <code>credits use 3</code>. <b>Punkt kontrolny:</b> 47, kopia 50.",
+      "<code>credits add 10</code>: 57, kopia 47. Przejdź przez diagram powyżej, by zobaczyć cztery polecenia karty.",
+      "<code>dump</code> jeszcze raz: blok 4 to dane, bloki 8 i 9 to bloki wartości."
+    ],
+    "note": "Kredyty na MIFARE Classic to zabawka edukacyjna, a nie pieniądze: każdy, kto ma klucz, może przepisać blok. Systemy płatnicze i transportowe używają kart z nowoczesną kryptografią (np. MIFARE DESFire) i sprawdzają każdą transakcję na serwerze."
+  },
+  "R6": {
+    "title": "Laboratorium granic",
+    "heading": "Znajdź granice na własnym stanowisku",
+    "goal": "Siedem eksperymentów, z których każdy podkręca jedno ustawienie, aż coś się zepsuje: zegar SPI, wzmocnienie odbiornika względem odległości, jak szybko karta odpowiada, ile trwa każdy krok, odpytywanie kontra przewód IRQ, jednostka CRC układu kontra ESP32 oraz setki odczytów pod rząd. Każdy rysuje wykres na ekranie i wypisuje tabelę, którą możesz wkleić poniżej.",
+    "goalLine": "Zmierz, gdzie Twoje stanowisko się psuje, i porównaj to z notą katalogową.",
+    "goalCheck": [
+      "Znasz najwyższy zegar SPI bez błędów, czas odpowiedzi swojej karty i stały wskaźnik sukcesu odczytu.",
+      "Twoje tabele są wklejone w panelu Experiments powyżej, obok przykładu."
+    ],
+    "learn": [
+      "zmierzone kontra nota katalogowa",
+      "integralność sygnału SPI",
+      "limity czasu i czas odpowiedzi",
+      "IRQ kontra odpytywanie",
+      "odciążanie",
+      "statystyki niezawodności"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "RC 3.3V"
+      },
+      "2": {
+        "role": "BLK"
+      },
+      "3": {
+        "role": "RES"
+      },
+      "4": {
+        "role": "DC"
+      },
+      "5": {
+        "role": "CS"
+      },
+      "6": {
+        "role": "SDA"
+      },
+      "7": {
+        "role": "SCL"
+      },
+      "8": {
+        "role": "GND"
+      },
+      "9": {
+        "role": "RC SDA"
+      },
+      "10": {
+        "role": "RC SCK"
+      },
+      "11": {
+        "role": "MOSI"
+      },
+      "12": {
+        "role": "MISO"
+      },
+      "13": {
+        "role": "RC RST"
+      },
+      "14": {
+        "role": "IRQ"
+      },
+      "15": {
+        "role": "RC GND"
+      },
+      "16": {
+        "role": "BTN"
+      },
+      "17": {
+        "role": "BOOT"
+      }
+    },
+    "commands": {
+      "0": {
+        "does": "Wgrywa firmware laboratorium R6: wszystko z R5, plus widok edge i siedem eksperymentów krawędziowych. <code>help</code> wypisuje dokładnie polecenia tego laboratorium.",
+        "see": "<code>rfid-lab-r6: reader task started</code>, potem lista poleceń i widoków tego laboratorium.",
+        "fix": "„Failed to connect”: przytrzymaj BOOT, dotknij RST, puść BOOT i uruchom ponownie."
+      },
+      "1": {
+        "does": "Loopback FIFO przy 1–40 MHz, potem reset układu. Ok. 1 s.",
+        "see": "Tabela % błędów na MHz i wykres słupkowy; słupek 10 MHz ma obrys (limit z noty katalogowej).",
+        "fix": ""
+      },
+      "2": {
+        "does": "300 sum kontrolnych przez układ i przez ESP32.",
+        "see": "0 niezgodności; układ znacznie wolniejszy (przejścia SPI w obie strony).",
+        "fix": ""
+      },
+      "3": {
+        "does": "30 odpytań WUPA, 30 w uśpieniu na przewodzie IRQ. Uruchom z kartą, potem bez.",
+        "see": "Dostępy SPI na polecenie dla każdego; różnica bardzo rośnie bez karty.",
+        "fix": "„IRQ never fired”: przewód IRQ (13) jest luźny."
+      },
+      "4": {
+        "does": "Skraca licznik czasu oczekiwania układu z 25 ms do 40 µs. Ok. 5 s.",
+        "see": "100 % do ok. 100 µs, potem 0 %: czas odpowiedzi karty.",
+        "fix": "Same 0 %: karta nie była na czytniku."
+      },
+      "5": {
+        "does": "40 pełnych cykli, każdy krok mierzony czasowo.",
+        "see": "min / avg / max µs dla WUPA, SELECT, AUTH, READ.",
+        "fix": "„no complete cycle”: trzymaj kartę nieruchomo."
+      },
+      "6": {
+        "does": "30 prób na każdym kroku wzmocnienia, na jednej wysokości. Uruchom z bliska, potem przy ok. 3 cm.",
+        "see": "% znalezionych przy każdym wzmocnieniu: z bliska wszystkie 100; niskie wzmocnienia zawodzą najpierw z dalszej odległości.",
+        "fix": ""
+      },
+      "7": {
+        "does": "500 pełnych cykli odczytu (~10 s). Podnoś lub przechylaj kartę powoli w trakcie.",
+        "see": "Liczniki dla każdego wyniku: ok, absent, CRC, protocol… oraz odczyty na sekundę.",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Eksperymenty",
+        "intro": "Jedna karta na eksperyment: co podkręca, na co zwrócić uwagę, przykładowy wynik i pole na własną tabelę."
+      },
+      "1": {
+        "title": "Co pokazuje ekran",
+        "intro": "Ekran płytki ma sześć widoków. Kliknięcie przycisku (albo BOOT) przechodzi do następnego, podwójne kliknięcie uruchamia akcję zapisaną w lewym dolnym rogu, a długie przytrzymanie wstrzymuje odpytywanie karty. Wybierz widok, by zobaczyć, co oznacza każda część; numery odpowiadają liście poniżej."
+      }
+    },
+    "steps": [
+      "Wgraj <code>rfid-lab-r6</code> poleceniem powyżej (to samo połączenie co R1). <code>help</code> pokazuje polecenia tego laboratorium.",
+      "Karta na czytniku, trzymana nieruchomo (książka na wierzchu pomaga). Przejdź do widoku <b>edge</b>: podwójne kliknięcie uruchamia tam kolejny eksperyment.",
+      "<code>edge spi</code>, <code>edge crc</code>, <code>edge irq</code> (karta na miejscu, potem bez).",
+      "<code>edge timeout</code> i <code>edge timing</code> z kartą nieruchomo. <b>Punkt kontrolny:</b> czas odpowiedzi Twojej karty.",
+      "<code>edge gain</code> z bliska, potem z ok. 3 cm.",
+      "<code>edge stress 500</code>, podczas gdy powoli podnosisz kartę.",
+      "Wklej każdą tabelę do odpowiedniej zakładki powyżej."
+    ],
+    "note": "Podwójne kliknięcie widoku edge uruchamia kolejny eksperyment. edge spi resetuje układ po zakończeniu, na wypadek gdyby szybki, zniekształcony zapis zmienił jakieś ustawienie. Wyciągnij przewód IRQ i uruchom edge irq: firmware to zauważy i przejdzie na odpytywanie."
+  },
+  "R7": {
+    "title": "Zarządca kart",
+    "heading": "Zarządzaj kartami z aplikacji React",
+    "goal": "Własny firmware (rfid-lab-r7) zamienia stanowisko w drzwi, którymi zarządzasz z małej aplikacji React (esp-labs/apps/door-app) przez Wi-Fi. Płytka trzyma listę kart we flashu i sama decyduje o każdym przyłożeniu; karta tylko przynosi swój UID. Z aplikacji dodajesz karty, nadajesz im nazwy, przydzielasz rolę, blokujesz je, ograniczasz do godzin, daty końcowej lub liczby użyć, kopiujesz zasady jednej karty na inną, zastępujesz zgubioną kartę, zapisujesz na nich etykietę z nazwą, czyścisz dane zapisane przez laboratoria, zapisujesz dane karty i wpisujesz je z powrotem albo kopiujesz na inną kartę, zdalnie otwierasz drzwi, włączasz blokadę i na żywo obserwujesz każde przyłożenie. Są dwa symulowane zamki (ekran i dioda LED): drzwi frontowe, dla każdej roli, i pokój administracyjny, tylko dla kart administratora; jeden czytnik jest montowany w jednym z nich naraz.",
+    "goalLine": "Uruchom swoje dwa znaczniki jako mały system dostępu: jeden mieszkaniec, jeden gość, i zobacz, jak każda zasada rozstrzyga przyłożenie.",
+    "goalCheck": [
+      "Aplikacja pokazuje <b>live</b> i oba znaczniki są na liście: biała karta jako mieszkaniec, breloczek jako gość.",
+      "Przyłożenie białej karty pokazuje OPEN na ekranie i w aplikacji; po <b>Block</b> to samo przyłożenie pokazuje DENIED · blocked.",
+      "Liczba użyć gościa maleje z każdym przyłożeniem; przy 0 jest odrzucany z „no uses left”.",
+      "Każde przyłożenie i każda zmiana pojawia się w dzienniku dostępu, w widoku dziennika na płytce i w aplikacji.",
+      "Dane białej karty są zapisane, skopiowane na breloczek i porównane: te same dane, a breloczek nadal otwiera jako <b>Key tag</b>, bo kopia nigdy nie przenosi UID-u."
+    ],
+    "learn": [
+      "REST API + WebSocket",
+      "decyzje po stronie serwera",
+      "kolejność reguł",
+      "zamknięcie przy błędzie",
+      "magazyn NVS",
+      "token administratora przez proxy deweloperskie",
+      "React + zod",
+      "kopia, przywracanie, weryfikacja",
+      "kopia to nie klon"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "RC 3.3V"
+      },
+      "2": {
+        "role": "BLK"
+      },
+      "3": {
+        "role": "RES"
+      },
+      "4": {
+        "role": "DC"
+      },
+      "5": {
+        "role": "CS"
+      },
+      "6": {
+        "role": "SDA"
+      },
+      "7": {
+        "role": "SCL"
+      },
+      "8": {
+        "role": "GND"
+      },
+      "9": {
+        "role": "RC SDA"
+      },
+      "10": {
+        "role": "RC SCK"
+      },
+      "11": {
+        "role": "MOSI"
+      },
+      "12": {
+        "role": "MISO"
+      },
+      "13": {
+        "role": "RC RST"
+      },
+      "14": {
+        "role": "IRQ"
+      },
+      "15": {
+        "role": "RC GND"
+      },
+      "16": {
+        "role": "BTN"
+      },
+      "17": {
+        "role": "BOOT"
+      }
+    },
+    "commands": {
+      "0": {
+        "does": "Wgrywa firmware drzwi. Pierwsza kompilacja kopiuje biblioteki webowe, których już używa W2 (ESPAsyncWebServer, AsyncTCP, ArduinoJson), do esp-labs/.pio.",
+        "see": "Ekran pokazuje <b>DOOR door</b>, LOCKED, „0 cards in the list” i <code>http://bench.local</code> na dole, gdy Wi-Fi się połączy.",
+        "fix": "„no Wi-Fi saved: run W1 once”: R7 używa sieci zapisanej przez W1/W2. Wgraj W1, <code>join</code>, potem wgraj R7 ponownie."
+      },
+      "1": {
+        "does": "Wypisuje token administratora (wspólny z W2). Każda zmiana w aplikacji go wymaga.",
+        "see": "<code>Admin token: 3f…</code> i gdzie go wpisać.",
+        "fix": "Trzymaj go z dala od czatów i gita. <code>token new</code> go zastępuje."
+      },
+      "2": {
+        "does": "Tworzy plik ustawień aplikacji: <code>BENCH_URL=http://bench.local</code> (albo IP z <code>status</code>) i <code>BENCH_TOKEN=</code> token.",
+        "see": "Plik .env obok package.json. Jest ignorowany przez git.",
+        "fix": ""
+      },
+      "3": {
+        "does": "Instaluje aplikację (React 19, Vite 8, zod: te same wersje co w dashboardzie) i ją uruchamia. Vite przekierowuje /api i /ws do płytki i po drodze dodaje token, więc przeglądarka nigdy go nie trzyma.",
+        "see": "Otwórz <code>http://localhost:5174</code>: panel drzwi pokazuje <b>live</b>, układ pokazuje B2h · FM17522 (Twój klon), zegar pokazuje czas.",
+        "fix": "„connecting…” w nieskończoność: czy płytka jest w Wi-Fi (stopka ekranu)? Czy <code>http://bench.local/api</code> otwiera się w przeglądarce? FRITZ!Box: zezwól urządzeniom Wi-Fi na komunikację między sobą (W2)."
+      },
+      "4": {
+        "does": "Płytka czeka 20 s na kartę, której jeszcze nie widziała; ekran pokazuje ADD A CARD, a dioda LED miga na niebiesko. Potem połóż białą kartę na czytniku.",
+        "see": "Powiadomienie „White card added”, karta na liście z <b>opens now</b>, linia „enrolled” w dzienniku.",
+        "fix": "„already in the list”: ta karta jest już zarejestrowana; przyłóż inną albo najpierw ją usuń."
+      },
+      "5": {
+        "does": "To samo dla breloczka. Goście zaczynają z 5 użyciami.",
+        "see": "Key tag · gość · <b>zostało 5 użyć</b>.",
+        "fix": ""
+      },
+      "6": {
+        "does": "Płytka decyduje na podstawie swojej listy: OPEN 5 s (zielona dioda, kłódka się otwiera) albo DENIED 2 s (czerwona dioda, z powodem).",
+        "see": "Panel drzwi i dziennik w aplikacji aktualizują się w ciągu sekundy; liczba użyć gościa idzie 5 → 4 → 3.",
+        "fix": "Nic się nie dzieje albo „card can't be read”: spójrz na komórkę <b>Reader chip</b> w aplikacji i baner pod nią. „settings restored” oznacza, że RC522 zresetował się sam, gdy jego 3,3 V spadło (często podczas nadawania przez Wi-Fi): krótkie przewody do pinu 3.3V, piny listwy wciśnięte albo przylutowane. „IRQ wire stays quiet” jest nieszkodliwe: płytka odpytuje zamiast tego. Przez port szeregowy <code>status</code> wypisuje to samo."
+      },
+      "7": {
+        "does": "Najprostsza zasada: zablokowana karta jest odrzucana, zanim sprawdzi się cokolwiek innego.",
+        "see": "<b>blocked</b> na karcie; jej następne przyłożenie pokazuje DENIED · blocked.",
+        "fix": ""
+      },
+      "8": {
+        "does": "Godziny biura (08-18), Zmiana nocna (22-06, przez północ), Gość weekendowy (10 użyć do niedzieli 20:00), Jedna wizyta (1 użycie, 24 h), Zgubiona karta (zablokowana). Zapisz wysyła tylko to, co się zmieniło.",
+        "see": "Wiersz zasad karty i jej znacznik „otwiera teraz” zmieniają się od razu.",
+        "fix": "„no clock yet”: karty z datą lub godziną są odrzucane, dopóki płytka nie uzyska czasu z internetu (zamknięcie przy błędzie)."
+      },
+      "9": {
+        "does": "Czwarta rola: karty administratora otwierają drzwi frontowe jak mieszkaniec i są jedynymi kartami, które otwierają pokój administracyjny. Otwierają też podczas blokady.",
+        "see": "Wiersz karty pokazuje <b>drzwi frontowe ✓</b> i <b>pokój administracyjny ✓</b>; wiersz mieszkańca: <b>pokój administracyjny · tylko administratorzy</b>.",
+        "fix": ""
+      },
+      "10": {
+        "does": "Stanowisko ma jeden czytnik, więc jest montowany przy jednym zamku naraz (zapisane na płytce). Port szeregowy: <code>at admin</code>, <code>at front</code>.",
+        "see": "Kafelek pokoju administracyjnego dostaje turkusową ramkę i „czytnik tutaj”; ekran pokazuje ADMIN ROOM nad kłódką.",
+        "fix": ""
+      },
+      "11": {
+        "does": "Ta sama płytka, ta sama lista, inny zamek: sprawdzenie roli następuje zaraz po „blocked”, przed godzinami i datami.",
+        "see": "Karta administratora: pokój administracyjny OPEN 5 s. Karta mieszkańca: DENIED · <b>tylko administratorzy</b>, zapisane z „admin room”. Przesuń czytnik z powrotem: mieszkaniec znów otwiera drzwi frontowe.",
+        "fix": "Mieszkaniec nadal widzi OPEN? Sprawdź, który kafelek mówi „czytnik tutaj”."
+      },
+      "12": {
+        "does": "Otwiera jeden zamek z aplikacji lub portu szeregowego, niezależnie od karty w pobliżu; sama <code>open</code> to drzwi frontowe.",
+        "see": "Ten kafelek zieleni się na 5 s; dziennik mówi „opened from the app” z nazwą zamka.",
+        "fix": ""
+      },
+      "13": {
+        "does": "Otwierają tylko karty konserwacyjne i administracyjne. Dioda LED świeci na bursztynowo w bezczynności.",
+        "see": "LOCKDOWN na ekranie, każde przyłożenie mieszkańca i gościa daje DENIED · lockdown.",
+        "fix": ""
+      },
+      "14": {
+        "does": "Zapisuje nazwę w bloku 4, a rolę w bloku 5 tej karty (klucz fabryczny, tylko sektor 1), potem je odczytuje.",
+        "see": "„label written”. Odczytaj kartę na czytniku: blok 4 pokazuje jej nazwę.",
+        "fix": "Drzwi nadal ignorują etykietę: decydują na podstawie własnej listy. Wpisz tam dowolną nazwę, a nic się nie zmieni."
+      },
+      "15": {
+        "does": "Drugie kliknięcie, by potwierdzić. Bloki 4-6 i 8-10 wracają do zer tam, gdzie pozwalają bity dostępu (etykieta, kredyty z R5). Klucze, trailery i blok 0 nigdy nie są ruszane.",
+        "see": "„6 of 6 data blocks cleared”.",
+        "fix": ""
+      },
+      "16": {
+        "does": "Drugie kliknięcie, by potwierdzić. Płytka zapomina kartę; sama karta nie jest ruszana.",
+        "see": "Jej następne przyłożenie: DENIED · unknown card.",
+        "fix": ""
+      },
+      "17": {
+        "does": "Wypełnia formularz rolą, godzinami, datą końcową i użyciami innej karty (nie jej nazwą ani blokadą). Zapisz wysyła to, co się zmieniło.",
+        "see": "Obie karty mają teraz ten sam wiersz zasad.",
+        "fix": ""
+      },
+      "18": {
+        "does": "Czyta bloki 4-6 i 8-10 kluczem fabrycznym i zachowuje je na płytce jako nazwaną migawkę (do 8, w NVS). Port szeregowy: <code>save White</code>, <code>saved</code>.",
+        "see": "„6 of 6 blocks saved as …” i migawka z jej sześcioma komórkami: tekst, wartości (kredyty z R5), zera.",
+        "fix": "„no lab block opens”: sektory 1-2 tej karty używają innego klucza: nie ma czego zapisać."
+      },
+      "19": {
+        "does": "Pobiera migawkę jako plik JSON na Twój Mac; Import wgrywa taki plik z powrotem na płytkę (tylko bloki laboratorium, sprawdzane dwa razy: przez aplikację i przez płytkę).",
+        "see": "Plik <code>card-data-….json</code>; po imporcie migawka „from a file”.",
+        "fix": ""
+      },
+      "20": {
+        "does": "Odczytuje kartę na czytniku, potem ekran pokazuje COPY: 2ND CARD, a dioda LED miga na fioletowo. Podnieś ją i połóż drugą kartę w ciągu 20 s: każdy blok jest zapisywany i odczytywany zwrotnie. Port szeregowy: <code>copy</code>, <code>cancel</code>.",
+        "see": "„6 of 6 blocks copied from White card onto 9C4F6A0D”, wiersz „data copied here” w dzienniku.",
+        "fix": "Ponowne przyłożenie tej samej karty nic nie robi (czeka na inną). Cancel nic nie zapisuje."
+      },
+      "21": {
+        "does": "Odczytuje kartę na czytniku i porównuje ją z migawką, blok po bloku.",
+        "see": "<b>same</b> dla każdego skopiowanego bloku. Teraz przyłóż breloczek: nadal otwiera jako <b>Key tag</b>.",
+        "fix": ""
+      },
+      "22": {
+        "does": "Drugie kliknięcie, by potwierdzić. Migawka wraca na kartę, z której pochodzi (przywrócenie), np. po tym, jak R5 wydał kredyty, albo na inną kartę. Port szeregowy: <code>restore 1</code>.",
+        "see": "„… written to 9C4F2A1B (the card it came from)”.",
+        "fix": ""
+      },
+      "23": {
+        "does": "Dla zgubionej lub zepsutej karty: następna nowa karta, którą przyłożysz, przejmuje jej nazwę, rolę i zasady; stara zostaje na liście, zablokowana, przemianowana na „… old”.",
+        "see": "Dwa wpisy: nowa karta otwiera, stara pokazuje DENIED · blocked, jeśli się kiedykolwiek pojawi.",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Która zasada rozstrzyga?",
+        "intro": "Płytka sprawdza zasady w tej kolejności, a pierwsza, która mówi nie, wygrywa. Ustaw kartę, zegar i blokadę i zobacz, która zasada rozstrzyga. To ta sama kolejność co w kit/lib/door-rules/src/access_rules.h (testowana na Macu)."
+      },
+      "1": {
+        "title": "Śledź jedno przyłożenie, jeden blok, jedną nową kartę, jedną kopię",
+        "intro": "Co przechodzi przez przewody i Wi-Fi: aplikacja nigdy nie rozmawia bezpośrednio z czytnikiem, a karta niczego nie decyduje."
+      },
+      "2": {
+        "title": "Co przenosi kopia",
+        "intro": "Zapisz dane białej karty, skopiuj je na breloczek i obserwuj, które bloki się przenoszą. Blok 0 (UID) i trailery sektorów (klucze, bity dostępu) nigdy się nie przenoszą, a sektor, który nie otwiera się kluczem fabrycznym, jest pomijany, a nie wymuszany."
+      }
+    },
+    "steps": [
+      "Takie samo połączenie jak w R1. Wgraj <code>rfid-lab-r7</code>. Płytka potrzebuje zapisanej sieci Wi-Fi W1/W2.",
+      "W monitorze: <code>token</code>. Skopiuj go do <code>esp-labs/apps/door-app/.env</code> jako <code>BENCH_TOKEN=</code>.",
+      "<code>pnpm install</code> i <code>pnpm dev</code> w esp-labs/apps/door-app, otwórz <code>http://localhost:5174</code>. <b>Punkt kontrolny:</b> live, chip B2h, zegar.",
+      "Dodaj białą kartę jako mieszkańca, a breloczek jako gościa. <b>Punkt kontrolny:</b> oba na liście, „otwiera teraz”.",
+      "Przyłóż oba kilka razy: OPEN, liczba użyć gościa maleje, każde przyłożenie w dzienniku.",
+      "Zablokuj białą kartę i przyłóż ją (DENIED · blocked), potem odblokuj. Wypróbuj presety i blokadę oraz obserwuj, czy panel „Która zasada rozstrzyga?” się zgadza.",
+      "Zapisz etykietę na karcie, odczytaj ją z powrotem, wyczyść. Potem usuń breloczek z listy i przyłóż go: unknown card.",
+      "Zapisz dane białej karty, skopiuj je na breloczek, porównaj. <b>Punkt kontrolny:</b> te same dane na obu, a każda karta nadal otwiera jako siebie.",
+      "Pobierz migawkę, wyczyść białą kartę, wpisz migawkę z powrotem, porównaj: przywrócone."
+    ],
+    "note": "Dlaczego decyduje płytka, a nie karta: UID i dane na MIFARE Classic może odczytać każdy, kto ma czytnik, więc nadają się jako etykieta, a nie jako dowód. Prawdziwe systemy dostępu trzymają decyzję na serwerze i używają kart z nowoczesną kryptografią (np. MIFARE DESFire); to laboratorium uczy strony serwerowej tego. Odczyt API jest otwarty w Twojej sieci Wi-Fi; każda zmiana wymaga tokenu. Lista kart leży w NVS płytki i przetrwa ponowne wgranie firmware; jest oddzielona od laboratoriów R1-R6. Kopiowanie przenosi tylko dane: blok 0 jest zapisany raz, fabrycznie, więc kopia zachowuje własny UID, a drzwi traktują ją jako inną kartę. Dlatego dostęp nigdy nie opiera się na danych: zostałyby skopiowane razem z nimi."
+  },
+  "R8": {
+    "title": "Przyjaciele z kart",
+    "heading": "Na każdej karcie mieszka przyjaciel",
+    "goal": "Laboratorium dla dzieci, zbudowane z części R7. Własny firmware (rfid-lab-r8) sprawia, że każda karta staje się domem przyjaciela: lisa, robota, smoka, pingwina, kosmity, kota, żaby albo jednorożca. Dotknij karty, a jej przyjaciel wyskakuje na ekranie płytki z gwiazdkami w swoich kolorach, a w 3D w małej aplikacji React (esp-labs/apps/friends-app), z własnym ruchem, iskrami, niebem i melodią. Karta 1 i karta 2 pokazują różnych przyjaciół; dotknij obu, a zagrają razem. Nowa karta dodaje się sama przy pierwszym dotknięciu, a przyjaciela przeciągasz na nią. Aplikacja ma dwie zakładki: Zabawa dla dzieci i Ustawienia dla dorosłego (prawdziwa lub udawana płytka, stan czytnika, lista kart, dźwięk, spokojny ruch, dzień lub noc).",
+    "goalLine": "Daj białej karcie i breloczkowi po przyjacielu, potem dotknij ich i patrz, jak obaj przyjaciele się bawią.",
+    "goalCheck": [
+      "Zakładka Ustawienia w aplikacji pokazuje <b>live</b>, układ czytnika B2h, a liczba kart rośnie, gdy dotykasz nowe karty.",
+      "Nowa karta pokazuje na ekranie chwiejące się <b>?</b>, a w aplikacji „Nowa karta! Kto tu mieszka?”.",
+      "Po przeciągnięciu przyjaciela na kartę przyjaciel wyskakuje na ekranie i w 3D w tym samym momencie.",
+      "Dotknięcie karty 1, potem karty 2 stawia dwóch różnych przyjaciół na scenie 3D, każdego na jego ponumerowanej karcie.",
+      "Szturchnięcie przyjaciela na scenie 3D sprawia, że znów wykonuje swój ruch."
+    ],
+    "learn": [
+      "UID jako klucz",
+      "automatyczna rejestracja",
+      "stan na płytce, pokaz w aplikacji",
+      "push przez WebSocket",
+      "przeciągnij i upuść zdarzeniami wskaźnika",
+      "cieniowanie toon w three.js",
+      "Web Audio",
+      "dostępne alternatywy (dotyk, klawiatura)"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "RC 3.3V"
+      },
+      "2": {
+        "role": "BLK"
+      },
+      "3": {
+        "role": "RES"
+      },
+      "4": {
+        "role": "DC"
+      },
+      "5": {
+        "role": "CS"
+      },
+      "6": {
+        "role": "SDA"
+      },
+      "7": {
+        "role": "SCL"
+      },
+      "8": {
+        "role": "GND"
+      },
+      "9": {
+        "role": "RC SDA"
+      },
+      "10": {
+        "role": "RC SCK"
+      },
+      "11": {
+        "role": "MOSI"
+      },
+      "12": {
+        "role": "MISO"
+      },
+      "13": {
+        "role": "RC RST"
+      },
+      "14": {
+        "role": "IRQ"
+      },
+      "15": {
+        "role": "RC GND"
+      },
+      "16": {
+        "role": "BTN"
+      },
+      "17": {
+        "role": "BOOT"
+      }
+    },
+    "commands": {
+      "0": {
+        "does": "Wgrywa firmware przyjaciół. Używa bibliotek webowych R7 i zapisanej sieci Wi-Fi W1/W2.",
+        "see": "<b>FRIENDS stage</b>, oddychający zarys karty i „Tap a card!”, <code>http://bench.local</code> na dole, gdy Wi-Fi się połączy.",
+        "fix": "„no Wi-Fi saved: run W1 once”: wgraj W1, <code>join</code>, potem R8 ponownie."
+      },
+      "1": {
+        "does": "Wypisuje token administratora (ten sam, którego używają W2 i R7). Przeniesienie przyjaciela na kartę go wymaga.",
+        "see": "<code>Admin token: 3f…</code>",
+        "fix": "Trzymaj go z dala od czatów i gita."
+      },
+      "2": {
+        "does": "<code>BENCH_URL=http://bench.local</code> (albo IP z <code>status</code>), <code>BENCH_TOKEN=</code> token.",
+        "see": "Plik .env ignorowany przez git, obok package.json.",
+        "fix": ""
+      },
+      "3": {
+        "does": "Uruchamia aplikację na porcie 5175 (może działać obok door-app). Vite przekierowuje /api i /ws do płytki i dodaje token. Tablet w tej samej sieci Wi-Fi może ją otworzyć pod adresem Maca.",
+        "see": "<code>http://localhost:5175</code>: zakładki Zabawa i Ustawienia, „board live” na górze.",
+        "fix": "Nie masz płytki pod ręką? Ustawienia → <b>Udawana płytka</b> gra według tych samych zasad w przeglądarce."
+      },
+      "4": {
+        "does": "Płytka dodaje ją jako następną kartę (do 12), z nikim na niej.",
+        "see": "Ekran: chwiejąca się karta ?, „New card! Give it a friend”. Aplikacja: nowy kafelek wołający o przyjaciela.",
+        "fix": "„12 cards!”: zapomnij jedną w Ustawieniach albo przez port szeregowy <code>forget 3</code>."
+      },
+      "5": {
+        "does": "Albo dotknij przyjaciela, potem kartę (albo Enter, Enter z klawiaturą). Wysyła <code>PUT /api/card?uid=… {\"character\":\"robot\"}</code>, potem to pokazuje. Port szeregowy: <code>give 2 robot</code>.",
+        "see": "Przyjaciel wyskakuje na ekranie i na scenie 3D; kafelek pokazuje jego twarz.",
+        "fix": "401: BENCH_TOKEN brakuje albo jest stary; po zmianie .env uruchom ponownie <code>pnpm dev</code>."
+      },
+      "6": {
+        "does": "Każde dotknięcie: ruch przyjaciela, iskry, niebo i melodia. Dwie karty w ciągu 30 s grają razem; najwyżej trzy.",
+        "see": "Dwóch przyjaciół na scenie, każdy stoi na swojej ponumerowanej karcie.",
+        "fix": "Brak dźwięku: dotknij strony raz (przeglądarki tego wymagają) albo sprawdź Ustawienia → Dźwięk."
+      },
+      "7": {
+        "does": "Imię dla tego przyjaciela na tej karcie (do 15 zwykłych znaków). Port szeregowy: <code>name 1 Rusty</code>, <code>name 1 -</code>, by wrócić.",
+        "see": "„Hi again! Rusty” na ekranie i w dymku.",
+        "fix": ""
+      },
+      "8": {
+        "does": "Wypisuje każdą kartę z jej przyjacielem i wizytami oraz przyjaciół znanych temu firmware.",
+        "see": "<code>1  9C4F2A1B  fox  Foxy  taps 5</code>",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Poznaj obsadę",
+        "intro": "Ośmiu przyjaciół, narysowanych tak, jak rysuje ich płytka (koła i trójkąty, bez obrazków we flashu). Naciśnij jednego, by zobaczyć, co robi. Płytka przechowuje tylko jego id; aplikacja zna jego ruch, iskry, niebo i melodię."
+      },
+      "1": {
+        "title": "Śledź jedno dotknięcie i nową kartę, która dostaje przyjaciela",
+        "intro": "Karta przynosi tylko swój UID. Płytka decyduje, kto tu mieszka, pokazuje to na własnym ekranie i informuje każdą aplikację."
+      }
+    },
+    "steps": [
+      "Takie samo połączenie jak w R1. Wgraj <code>rfid-lab-r8</code>. Płytka potrzebuje zapisanej sieci Wi-Fi W1/W2.",
+      "W monitorze: <code>token</code>, do <code>esp-labs/apps/friends-app/.env</code> jako <code>BENCH_TOKEN=</code>.",
+      "<code>pnpm install</code> i <code>pnpm dev</code> w esp-labs/apps/friends-app, otwórz <code>http://localhost:5175</code>. <b>Punkt kontrolny:</b> Ustawienia mówią live, chip B2h.",
+      "Dotknij raz białą kartę i breloczek. <b>Punkt kontrolny:</b> dwa kafelki w Zabawie, każdy pyta „Kto tu mieszka?”.",
+      "Przeciągnij przyjaciela na każdą kartę. Obserwuj razem ekran płytki i scenę 3D.",
+      "Dotknij kartę 1, potem kartę 2: dwaj różni przyjaciele grają razem. Szturchnij jednego na scenie.",
+      "Wypróbuj Ustawienia → Spokojny ruch i Noc, potem podaj tablet dziecku."
+    ],
+    "note": "Przyjaciel nie siedzi na karcie: płytka trzyma listę (UID → id przyjaciela) w swoim NVS, w przestrzeni nazw friends, oddzielnie od listy drzwi R7. Dzięki temu działa każda karta, nawet taka, której nie możesz zapisać, a przeniesienie przyjaciela jest natychmiastowe. To ta sama idea co w R7 (karta przynosi tylko UID), w przyjaźniejszym przebraniu. Postacie 3D są zbudowane w kodzie z kul, stożków i pudełek z cieniowaniem toon, więc nie ma plików modeli, a ekran płytki rysuje te same kształty w 2D."
+  }
+}

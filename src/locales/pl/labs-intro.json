@@ -1,0 +1,16 @@
+{
+  "usb": {
+    "caption": "Twój prawdziwy wynik. esptool potwierdził ESP32-S3 rev v0.2 z 8 MB PSRAM i 16 MB pamięci flash za tym portem."
+  },
+  "hello": {
+    "caption": "Dioda RGB na płytce zmienia kolory cyklicznie, tak jak ta prawdziwa."
+  },
+  "led": {
+    "diagram": "Płytka stykowa: GPIO 4 do rezystora, rezystor do diody LED, dioda LED do masy",
+    "gndRail": "szyna GND",
+    "legs": "LED: długa nóżka (+) po lewej, krótka nóżka (−) do GND",
+    "duty": "wypełnienie {{duty}} / 255",
+    "terminal": "$ uv run pio device monitor   (spróbuj coś wpisać)",
+    "quick": "Szybkie polecenia"
+  }
+}

@@ -55,7 +55,7 @@
       "weak": "weak",
       "barely": "barely there"
     },
-    "caption": "dBm is logarithmic: every 3 dB less means half the power. −90 is a billion times weaker than −30."
+    "caption": "dBm is logarithmic: every 3 dB less means half the power. −90 is a million times weaker than −30."
   },
   "web": {
     "drawing": "Architecture drawing",

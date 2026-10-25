@@ -1,0 +1,399 @@
+{
+  "pages": {
+    "home": "Wnętrze ESP32-S3",
+    "pins": "Piny i zasilanie",
+    "blocks": "Atlas bloków peryferyjnych",
+    "inside": "Pamięć, zegary i tryby zasilania",
+    "read": "Czytaj notę katalogową"
+  },
+  "scenes": {
+    "descent": {
+      "model": "ESP32-S3 DevKitC, od płytki aż do krzemu",
+      "fallback": "płaski plan poniżej",
+      "stepper": "Warstwy",
+      "prev": "Poprzednia warstwa",
+      "next": "Następna warstwa",
+      "layer": "Warstwa {{n}} z {{count}}: {{caption}}"
+    },
+    "die": {
+      "model": "Krzem ESP32-S3: kafelki bloków pogrupowane według rodzin, podniesione zależnie od tego, jak bardzo ćwiczenia ich używały",
+      "fallback": "lista bloków",
+      "list": "Bloki na krzemie",
+      "legend": "Rodziny bloków i ich kolory",
+      "pick": "{{name}}, {{coverage}}"
+    },
+    "coverage": {
+      "done": "gotowe",
+      "works": "działa",
+      "built": "zbudowane",
+      "planned": "zaplanowane",
+      "none": "jeszcze nieużywane"
+    },
+    "families": {
+      "system": "System",
+      "memory": "Pamięć",
+      "security": "Bezpieczeństwo",
+      "connectivity": "Łączność",
+      "timing": "Czasowanie",
+      "analog": "Analogowe",
+      "radio": "Radio"
+    },
+    "bus": {
+      "model": "CPU rozmawia z blokiem {{name}} przez jego linie sygnałowe",
+      "cpu": "CPU",
+      "bus": "Magistrala",
+      "peripheral": "Peryferium",
+      "fallback": "linie sygnałowe wymienione poniżej",
+      "lines": "Linie sygnałowe"
+    },
+    "flat": {
+      "label": "Plan krzemu"
+    }
+  },
+  "nav": {
+    "label": "Strony układu",
+    "pill": "{{title}}: {{used}} z {{total}} bloków używanych w ćwiczeniach"
+  },
+  "markers": {
+    "key": "Kluczowa informacja",
+    "gotcha": "Pułapka",
+    "used": "Używane w naszych ćwiczeniach"
+  },
+  "source": {
+    "read": "Przeczytaj całą sekcję",
+    "cite": "{{doc}} §{{section}}",
+    "note": "Sekcja referencji ESP32-S3, na której oparto przewodnik",
+    "docs": {
+      "A": "Przewodnik po płytce",
+      "M": "Nota katalogowa modułu",
+      "C": "Nota katalogowa układu",
+      "T": "Dokumentacja techniczna",
+      "X": "Dodatek"
+    }
+  },
+  "coverage": {
+    "none": "Jeszcze nie"
+  },
+  "gotchas": {
+    "seePin": "Zobacz GPIO{{n}}",
+    "seeBlock": "Zobacz blok"
+  },
+  "home": {
+    "kicker": "Układ na twojej płytce",
+    "lead": "Dwurdzeniowy komputer 240 MHz z Wi-Fi i Bluetooth, na płytce wielkości palca.",
+    "numbers": "Układ w liczbach",
+    "layerStep": "Warstwa {{n}} z {{count}}",
+    "layers": {
+      "board": {
+        "title": "Płytka",
+        "text": "DevKitC: porty USB, przyciski, stabilizator i dwie listwy pinów wokół jednego modułu."
+      },
+      "module": {
+        "title": "Moduł",
+        "text": "Moduł WROOM: układ, jego pamięć flash i PSRAM, kwarc i antena, pod jedną metalową obudową."
+      },
+      "can": {
+        "title": "Pod obudową",
+        "text": "Podnieś ekranowanie, a pojawią się elementy: obudowa ESP32-S3 leży obok swojej pamięci i kwarcu 40 MHz."
+      },
+      "package": {
+        "title": "Obudowa",
+        "text": "QFN 7 × 7 mm z 56 padami: każdy pin, który podłączasz do listwy, kończy się na jednym z nich."
+      },
+      "die": {
+        "title": "Krzem",
+        "text": "Sam krzem, narysowany jako 32 bloki według rodzin. Te, których użyły twoje ćwiczenia, są wyższe."
+      }
+    },
+    "progress": "Twój postęp przez układ",
+    "ringCaption": "Bloki układu według tego, jak daleko zaszły twoje ćwiczenia",
+    "ringCenter": "{{used}}/{{total}}",
+    "sentence": "Twoje ćwiczenia użyły {{used}} z {{total}} bloków.",
+    "next": "Następne bloki do odblokowania",
+    "nextLesson": "{{id}} · {{title}}",
+    "nextNone": "Każdy blok, do którego sięgają ćwiczenia, jest gotowy. Reszta czeka na nowe ćwiczenia.",
+    "families": "Rodziny",
+    "familyCount_one": "{{count}} blok",
+    "familyCount_few": "{{count}} bloki",
+    "familyCount_many": "{{count}} bloków",
+    "familyCount_other": "{{count}} bloku",
+    "gotchas": "Pięć rzeczy, które gryzą"
+  },
+  "atlas": {
+    "kicker": "Każdy blok na krzemie",
+    "lead": "Wszystkich bloków ESP32-S3: {{count}}, pogrupowanych według rodzin. Wyższe kafelki na krzemie i stan na każdej karcie pokazują, jak daleko zaszły ćwiczenia.",
+    "filters": "Filtruj bloki",
+    "family": "Rodzina",
+    "all": "Wszystkie",
+    "usedLabel": "Używane przez ćwiczenia",
+    "used": {
+      "all": "Wszystkie",
+      "yes": "Używany",
+      "no": "Jeszcze nie"
+    },
+    "search": "Szukaj bloków",
+    "results_one": "Pokazano {{count}} blok",
+    "results_few": "Pokazano {{count}} bloki",
+    "results_many": "Pokazano {{count}} bloków",
+    "results_other": "Pokazano {{count}} bloku",
+    "count_one": "{{count}} blok",
+    "count_few": "{{count}} bloki",
+    "count_many": "{{count}} bloków",
+    "count_other": "{{count}} bloku",
+    "spark": "{{value}} {{unit}}"
+  },
+  "pins": {
+    "kicker": "Który pin do czego",
+    "lead": "{{count}} GPIO, każdy z kilkoma zadaniami. Nasze ćwiczenia podłączyły {{used}} z nich.",
+    "matrixTitle": "Funkcje pinów",
+    "legend": "Wyróżnione wiersze to piny użyte w ćwiczeniach; trójkąt oznacza pułapkę pinu.",
+    "matrix": "Każdy GPIO i rodzaje funkcji, jakie może przyjąć",
+    "filter": "Pokaż piny z",
+    "all": "Wszystkie",
+    "kinds": {
+      "adc": "ADC",
+      "touch": "Dotyk",
+      "rtc": "RTC",
+      "uart": "UART",
+      "spi": "SPI",
+      "usb": "USB",
+      "jtag": "JTAG",
+      "clock": "Zegar",
+      "strap": "Strapping"
+    },
+    "pick": "Wybierz pin",
+    "pickHint": "Wybierz pin, aby zobaczyć jego funkcje, rolę przy strappingu i pułapki, które go dotyczą.",
+    "pickLegend": "Pasek pod numerem: używany w naszych ćwiczeniach. Trójkąt w rogu: pułapka pinu. Przerywana linia: nie na listwie.",
+    "pin": "GPIO{{n}}",
+    "used": "Używany w naszych ćwiczeniach",
+    "offHeader": "Nie ma go na listwie DevKitC: należy do pamięci flash lub PSRAM modułu.",
+    "strapping": "Strapping:",
+    "strappingTitle": "Piny strappingu",
+    "strappingLead": "Te piny są odczytywane w chwili wyjścia układu z resetu. Cokolwiek do nich podłączysz, nie może ciągnąć ich w złą stronę przy włączaniu.",
+    "gotchasTitle": "Piny, które gryzą",
+    "gotchasLead": "Kilka pinów ma zadanie, zanim wykona się twój kod, albo należy do czegoś innego. Pozostałe zasady dotyczą każdego pinu.",
+    "gotchasPins": "Konkretne piny",
+    "gotchasChip": "Cały układ"
+  },
+  "block": {
+    "back": "Wszystkie bloki",
+    "facts": "Kluczowe fakty",
+    "gotchas": "Pułapki",
+    "labs": "W naszych ćwiczeniach",
+    "labsNone": "Żadne ćwiczenie jeszcze nie używa tego bloku.",
+    "labsLead_one": "{{count}} ćwiczenie używa tego bloku, w {{tracks}} dziale. Otwórz dział, aby je zobaczyć.",
+    "labsLead_few": "{{count}} ćwiczenia używają tego bloku, w {{tracks}} działach. Otwórz dział, aby je zobaczyć.",
+    "labsLead_many": "{{count}} ćwiczeń używa tego bloku, w {{tracks}} działach. Otwórz dział, aby je zobaczyć.",
+    "labsLead_other": "{{count}} ćwiczenia używają tego bloku, w {{tracks}} działach. Otwórz dział, aby je zobaczyć.",
+    "labsCount_one": "{{count}} ćwiczenie",
+    "labsCount_few": "{{count}} ćwiczenia",
+    "labsCount_many": "{{count}} ćwiczeń",
+    "labsCount_other": "{{count}} ćwiczenia",
+    "registers": "Kluczowe rejestry",
+    "offset": "przesunięcie {{offset}}",
+    "bits": "Bity",
+    "field": "Pole",
+    "does": "Co robi",
+    "pager": "Inne bloki",
+    "prev": "Poprzedni blok",
+    "next": "Następny blok",
+    "listedNote": "Tylko lista: najważniejsze informacje w kilku wierszach, a pełny rozdział o jedno odwołanie dalej.",
+    "lines": {
+      "default": [
+        "Dane",
+        "Zegar"
+      ],
+      "gpio": [
+        "IN",
+        "OUT",
+        "OE"
+      ],
+      "uart": [
+        "TX",
+        "RX",
+        "RTS",
+        "CTS"
+      ],
+      "i2c": [
+        "SDA",
+        "SCL"
+      ],
+      "spi": [
+        "SCK",
+        "MOSI",
+        "MISO",
+        "CS"
+      ],
+      "ledc": [
+        "PWM",
+        "Licznik"
+      ],
+      "adc": [
+        "AIN",
+        "VREF"
+      ],
+      "touch": [
+        "TOUCH",
+        "Ładowanie"
+      ],
+      "i2s": [
+        "BCLK",
+        "WS",
+        "DIN",
+        "DOUT"
+      ],
+      "rmt": [
+        "TX",
+        "RX",
+        "Nośna"
+      ],
+      "wifi": [
+        "RF",
+        "MAC",
+        "Pasmo podstawowe"
+      ],
+      "ble": [
+        "RF",
+        "Łącze",
+        "HCI"
+      ],
+      "usb-serial-jtag": [
+        "D+",
+        "D−"
+      ]
+    }
+  },
+  "inside": {
+    "kicker": "Pod maską",
+    "lead": "Gdzie żyją twój kod i dane, jaki zegar czym steruje i ile oszczędza każdy tryb zasilania.",
+    "memory": {
+      "title": "Mapa adresów",
+      "lead": "CPU widzi jedną dużą przestrzeń adresową: ROM, wewnętrzną SRAM, flash i PSRAM przez pamięci podręczne oraz rejestry peryferiów.",
+      "caption": "Mapa adresów ESP32-S3, niskie adresy u góry",
+      "yours": "Gdzie leży twój szkic"
+    },
+    "clocks": {
+      "title": "Drzewo zegarów",
+      "lead": "Jeden kwarc 40 MHz zasila PLL; dzielniki z niego robią zegary CPU, APB i peryferiów, a wolne oscylatory RC utrzymują RTC w ruchu podczas snu.",
+      "caption": "Źródła zegarów, dzielniki i bloki, które taktują",
+      "mhz": "{{value}} MHz"
+    },
+    "power": {
+      "title": "Tryby zasilania",
+      "lead": "Każdy stopień w dół wyłącza więcej układu, a prąd spada o rzędy wielkości.",
+      "caption": "Typowy prąd w każdym trybie zasilania, w skali logarytmicznej, i co pozostaje włączone",
+      "gain": "{{last}} pobiera {{gain}} razy mniej niż {{first}}."
+    }
+  },
+  "reader": {
+    "dialog": "Sekcja referencji",
+    "close": "Zamknij referencję",
+    "loading": "Otwieranie sekcji…",
+    "missing": "Tej sekcji nie ma w referencji.",
+    "unavailable": "Referencji nie ma w tej wersji.",
+    "breadcrumb": "Gdzie leży ta sekcja",
+    "minutes_one": "{{count}} min czytania",
+    "minutes_few": "{{count}} min czytania",
+    "minutes_many": "{{count}} min czytania",
+    "minutes_other": "{{count}} min czytania",
+    "related": "O bloku {{block}}",
+    "why": {
+      "title": "Po co tu jesteś",
+      "lead": "Przewodnik cytuje tę sekcję dla:",
+      "highlighted": "Pasujący fragment jest podświetlony poniżej.",
+      "jump": "Pokaż mi"
+    },
+    "key": {
+      "title": "Kluczowe informacje",
+      "numbers": "Liczby",
+      "warnings": "Uwaga",
+      "jump": "Przejdź do tego fragmentu: {{text}}"
+    },
+    "body": "Tekst sekcji",
+    "warning": "Ostrzeżenie",
+    "table": {
+      "source": "Pokaż tabelę źródłową",
+      "fallback": "Tabela"
+    },
+    "register": {
+      "fields": "Wszystkie pola",
+      "bits": "Bity",
+      "field": "Pole",
+      "access": "Dostęp",
+      "reset": "Reset",
+      "description": "Opis"
+    },
+    "figure": {
+      "enlarge": "Powiększ: {{caption}}",
+      "close": "Zamknij rysunek"
+    },
+    "pins": "Otwórz pin",
+    "chart": {
+      "untitled": "Wartości z tej tabeli",
+      "unit": "{{caption}} ({{unit}})",
+      "timing": "Czasowanie, w {{unit}}",
+      "parameter": "Parametr"
+    },
+    "foot": {
+      "nav": "Pobliskie sekcje",
+      "prev": "Poprzednia",
+      "next": "Następna",
+      "children": "W tej sekcji",
+      "back": "Wróć tam, gdzie byłeś",
+      "pdf": "Otwórz w PDF Espressifa",
+      "book": "Czytaj dalej w pełnej nocie katalogowej"
+    },
+    "cite": {
+      "open": "Otwórz {{doc}} §{{section}} w czytniku",
+      "pdf": "PDF",
+      "pdfLabel": "Otwórz {{doc}} na stronie Espressifa (nowa karta)"
+    },
+    "newTab": "(otwiera się w nowej karcie)"
+  },
+  "mode": {
+    "label": "Jak przechodzić przez notę katalogową",
+    "explore": "Eksploruj",
+    "read": "Czytaj"
+  },
+  "book": {
+    "kicker": "Nota katalogowa od deski do deski",
+    "lead": "Pięć dokumentów Espressifa, na których oparto przewodnik, jako jedna książka: przewodnik po płytce, noty katalogowe modułu i układu, dokumentacja techniczna i jej dodatki. Rozdział po rozdziale, z tymi samymi wykresami, tabelami, kluczowymi liczbami i rejestrami co w czytniku.",
+    "continue": "Kontynuuj od",
+    "start": "Zacznij od początku",
+    "stats": {
+      "documents": "Dokumenty",
+      "chapters": "Rozdziały",
+      "reading": "Czas czytania",
+      "read": "Przeczytane dotąd"
+    },
+    "hours_one": "{{count}} godzina",
+    "hours_few": "{{count}} godziny",
+    "hours_many": "{{count}} godzin",
+    "hours_other": "{{count}} godziny",
+    "chapters_one": "{{count}} rozdział",
+    "chapters_few": "{{count}} rozdziały",
+    "chapters_many": "{{count}} rozdziałów",
+    "chapters_other": "{{count}} rozdziału",
+    "min_one": "{{count}} min",
+    "min_few": "{{count}} min",
+    "min_many": "{{count}} min",
+    "min_other": "{{count}} min",
+    "parts": "Pięć dokumentów, jedna książka",
+    "about": {
+      "A": "Płytka DevKitC-1: listwy, opcje zasilania, zamawianie.",
+      "M": "Moduł WROOM-1: piny, parametry elektryczne i RF, układ.",
+      "C": "Układ w skrócie: piny, rozruch, funkcje, limity elektryczne.",
+      "T": "Każde peryferium i jego rejestry, szczegółowo.",
+      "X": "Słowniczek, konwencje rejestrów i źródła."
+    },
+    "progress": "Przeczytano {{read}} z {{total}} sekcji",
+    "contents": "Spis treści",
+    "closeContents": "Zamknij spis treści",
+    "read": "Przeczytane",
+    "link": "Link do §{{section}}",
+    "explore": "Eksploruj {{block}} w 3D",
+    "prev": "Poprzedni rozdział",
+    "next": "Następny rozdział",
+    "end": "To cała nota katalogowa. Dobra robota!"
+  }
+}

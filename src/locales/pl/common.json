@@ -1,0 +1,223 @@
+{
+  "app": {
+    "title": "Przewodnik stanowiskowy ESP32-S3",
+    "loading": "Ładowanie przewodnika stanowiskowego…",
+    "loadingSettings": "Ładowanie ustawień…"
+  },
+  "language": {
+    "label": "Język",
+    "auto": "Auto",
+    "autoHint": "Zgodnie z przeglądarką: {{name}}",
+    "button": "Język: {{name}}. Zmień język"
+  },
+  "layout": {
+    "skip": "Przejdź do treści",
+    "loading": "Ładowanie",
+    "brand": "ESP32-S3 <part>przewodnik stanowiskowy</part>",
+    "sections": "Sekcje",
+    "nav": {
+      "labs": "Ćwiczenia",
+      "chip": "Nota katalogowa",
+      "bench": "Stanowisko",
+      "settings": "Ustawienia"
+    },
+    "footnote": "Układ pinów odpowiada płytce Espressif DevKitC-1 v1.0. Klony są niemal identyczne, ale napisy nadrukowane na twojej płytce mają zawsze pierwszeństwo. Twoje odhaczenia zapisują się tylko w tej przeglądarce.",
+    "partsLink": "Biblioteka części",
+    "new": "Nowe"
+  },
+  "titles": {
+    "labs": "Ćwiczenia · Przewodnik stanowiskowy ESP32-S3",
+    "lesson": "{{id}} · {{title}} · Przewodnik stanowiskowy ESP32-S3",
+    "code": "{{id}} kod · {{title}} · Przewodnik stanowiskowy ESP32-S3",
+    "log": "Dziennik stanowiska · Przewodnik stanowiskowy ESP32-S3",
+    "parts": "Biblioteka części · Przewodnik stanowiskowy ESP32-S3",
+    "settings": "Ustawienia · Przewodnik stanowiskowy ESP32-S3",
+    "chip": "{{page}} · Nota katalogowa · Przewodnik stanowiskowy ESP32-S3"
+  },
+  "routeError": {
+    "code": "Błąd",
+    "notFound": "Na tym pinie nic nie ma.",
+    "failed": "Ta strona przestała działać.",
+    "unknown": "Coś poszło nie tak.",
+    "back": "Wróć do lekcji",
+    "reasons": {
+      "noPage": "Nie ma takiej strony",
+      "noTheme": "Nie ma działu o nazwie „{{id}}”",
+      "noLesson": "Nie ma lekcji o nazwie „{{id}}”",
+      "plannedLesson": "Lekcja {{id}} jest zaplanowana, ale jeszcze nie napisana",
+      "noBlock": "Nie ma bloku o nazwie „{{id}}”"
+    }
+  },
+  "codeRoute": {
+    "none": "Ta lekcja przygotowuje narzędzia: na razie nie ma programu dla płytki. Pierwszy kod do przeczytania jest w lekcji 01."
+  },
+  "tracks": {
+    "intro": {
+      "title": "Wprowadzenie",
+      "blurb": "Narzędzia, pierwszy program, pierwszy obwód"
+    },
+    "display": {
+      "title": "Ekran i wejście",
+      "blurb": "Ekran 1,9″ i przyciski"
+    },
+    "wifi": {
+      "title": "Wi-Fi",
+      "blurb": "Skanowanie, łączenie, serwowanie stron, aktualizacje przez powietrze"
+    },
+    "rfid": {
+      "title": "RFID i NFC",
+      "blurb": "Karty, znaczniki i pole 13,56 MHz"
+    },
+    "sensors": {
+      "title": "Czujniki",
+      "blurb": "Temperatura, powietrze, ruch przez I2C"
+    },
+    "ble": {
+      "title": "Bluetooth LE",
+      "blurb": "Nasłuch, parowanie, sterowanie: telefony, klawiatury, muzyka"
+    },
+    "sound": {
+      "title": "Dźwięk",
+      "blurb": "Słuchanie, pomiar, klaskanie, nagrywanie, wysokość tonu, odtwarzanie"
+    }
+  },
+  "states": {
+    "legend": "Co znaczą oznaczenia",
+    "done": {
+      "label": "zrobione przez ciebie",
+      "hint": "każdy krok odhaczony"
+    },
+    "works": {
+      "label": "działa na płytce",
+      "hint": "potwierdzone na prawdziwej płytce"
+    },
+    "built": {
+      "label": "zbudowane, niewgrane",
+      "hint": "firmware się kompiluje; wypróbuj go na swojej płytce"
+    },
+    "planned": {
+      "label": "zaplanowane",
+      "hint": "na mapie drogowej, jeszcze nienapisane"
+    }
+  },
+  "stepper": {
+    "label": "Lekcje w tym dziale",
+    "state": ", {{state}}"
+  },
+  "trackNav": {
+    "label": "Działy",
+    "soon": "wkrótce",
+    "count": "{{working}}/{{total}}",
+    "plannedTitle": "{{title}}: {{blurb}} (zaplanowane)",
+    "working": "{{title}}: działa {{working}} z {{total}}",
+    "loading": "{{title}}: ładowanie"
+  },
+  "theme": {
+    "label": "Motyw kolorystyczny",
+    "system": "Auto",
+    "light": "Jasny",
+    "dark": "Ciemny"
+  },
+  "board": {
+    "label": "Układ pinów płytki",
+    "legend": {
+      "label": "Legenda",
+      "used": "używany w tej lekcji",
+      "safe": "bezpieczny GPIO",
+      "avoid": "unikać",
+      "power": "zasilanie",
+      "ground": "masa",
+      "button": "wejście przycisku",
+      "rfid": "RC522"
+    },
+    "between": {
+      "title": "Między lekcjami",
+      "close": "<code>Ctrl+C</code> zamyka monitor tylko na Macu. Płytka dalej działa.",
+      "unplug": "Odłącz USB: to zatrzymuje program i ekran",
+      "rewire": "Przepinaj przy wyłączonym zasilaniu",
+      "check": "Sprawdź, czy VCC jest na 3V3 i czy nie ma luźnych przewodów",
+      "flash": "Podłącz i wgraj następną lekcję",
+      "warning": "Nigdy nie odłączaj podczas <code>Writing at 0x…</code>. Pin zmienia się z wyjścia na wejście? Najpierw wgraj, potem przepinaj."
+    },
+    "pinout": {
+      "title": "Układ pinów ESP32-S3 DevKitC",
+      "use": "{{role}} na {{pin}}",
+      "uses": "Ta lekcja używa: {{uses}}.",
+      "none": "Ta lekcja nie używa pinów listwy."
+    }
+  },
+  "ui": {
+    "backToTop": "Wróć na górę",
+    "copy": {
+      "label": "Kopiuj polecenie: {{command}}",
+      "idle": "Kopiuj",
+      "copied": "Skopiowano",
+      "selected": "Zaznaczono"
+    },
+    "errorBoundary": {
+      "message": "<b>{{name}}</b> przestał działać: {{message}}",
+      "retry": "Spróbuj ponownie"
+    },
+    "terminal": {
+      "label": "Symulowany monitor portu szeregowego",
+      "placeholder": "wpisz polecenie i naciśnij Enter",
+      "command": "Polecenie"
+    },
+    "stage": {
+      "toolbar": "Obracaj i powiększaj widok 3D",
+      "turnLeft": "Obróć w lewo",
+      "turnRight": "Obróć w prawo",
+      "zoomOut": "Pomniejsz",
+      "zoomIn": "Powiększ",
+      "recenter": "Wróć do widoku startowego",
+      "hint": "przeciągnij, by obrócić · rozsuń palce, by powiększyć",
+      "loading": "Ładowanie widoku 3D…",
+      "failed": "Widok 3D nie może wystartować w tej przeglądarce (wymaga WebGL). {{fallback}}"
+    },
+    "sequence": {
+      "flow": "Który przepływ",
+      "playback": "Odtwarzanie",
+      "back": "◀ Wstecz",
+      "play": "▶ Odtwórz",
+      "pause": "❚❚ Pauza",
+      "next": "Dalej ▶",
+      "frame": "klatka {{frame}}",
+      "label_one": "Diagram sekwencji: {{lanes}}. {{count}} krok; tekst poniżej opisuje bieżący krok.",
+      "label_few": "Diagram sekwencji: {{lanes}}. {{count}} kroki; tekst poniżej opisuje bieżący krok.",
+      "label_many": "Diagram sekwencji: {{lanes}}. {{count}} kroków; tekst poniżej opisuje bieżący krok.",
+      "label_other": "Diagram sekwencji: {{lanes}}. {{count}} kroku; tekst poniżej opisuje bieżący krok.",
+      "step": {
+        "self": "Krok {{step}} z {{total}} · {{from}}",
+        "call": "Krok {{step}} z {{total}} · {{from}} → {{to}}",
+        "selfTimed": "Krok {{step}} z {{total}} · {{from}} · ok. {{duration}}",
+        "callTimed": "Krok {{step}} z {{total}} · {{from}} → {{to}} · ok. {{duration}}"
+      }
+    }
+  },
+  "charts": {
+    "showTable": "Pokaż jako tabelę",
+    "hideTable": "Ukryj tabelę",
+    "item": "Pozycja",
+    "value": "Wartość",
+    "valueIn": "Wartość ({{unit}})",
+    "min": "Min",
+    "typical": "Typowa",
+    "max": "Maks",
+    "start": "Początek",
+    "end": "Koniec",
+    "size": "Rozmiar",
+    "region": "Obszar",
+    "from": "Od",
+    "to": "Do",
+    "via": "Przez",
+    "state": "Stan",
+    "count": "Liczba",
+    "keeps": "Pozostaje włączone",
+    "gain": "×{{ratio}} mniej",
+    "none": "Jeszcze nieużywane",
+    "highlight": "Wyróżnione",
+    "warn": "Uwaga",
+    "yes": "Tak",
+    "outOf": "{{value}} z {{max}}"
+  }
+}

@@ -1,0 +1,1041 @@
+{
+  "B1": {
+    "title": "Słuchaj",
+    "heading": "Usłysz każde urządzenie Bluetooth wokół Ciebie",
+    "goal": "Telefony, zegarki, słuchawki, głośniki, klawiatury i beacony ogłaszają się przez cały dzień: krótkie pakiety <b>advertising</b> na trzech kanałach radiowych, kilka razy na sekundę, czy ktoś słucha, czy nie. B1 zamienia płytkę w słuchacza. Rysuje urządzenia na radarze, zgaduje, czym jest każde z nich, i rozbiera pakiet na bajty. Radio używa NimBLE, lekkiego stosu Bluetooth; firmware jest własny (<code>ble-lab-b1</code>), a wspólny kod leży w <code>kit/lib/ble-kit</code>.",
+    "goalLine": "Znajdź własny telefon wśród urządzeń wokół, odczytaj jego pakiety bajt po bajcie i zmierz, jak często się ogłasza.",
+    "goalCheck": [
+      "Widok <b>radar</b> pokazuje kropki, a polecenie monitora <code>list</code> wypisuje tabelę urządzeń z rodzajem (telefon, audio, klawiatura…).",
+      "Wybrałeś własny telefon (przybliż go: stanie się najsilniejszy), a <code>bytes</code> pokazuje jego struktury AD: Flags, potem dane producenta (Apple, Samsung, Google…).",
+      "<code>watch</code> wypisuje jedną linię na każdy pakiet telefonu, a z przerw <code>+… ms</code> odczytasz jego interwał ogłaszania.",
+      "Przełączenie na <code>mode passive</code> sprawia, że odpowiedzi na skan (i część nazw) znikają; <code>mode active</code> je przywraca."
+    ],
+    "learn": [
+      "rozgłaszanie (advertising)",
+      "kanały 37 · 38 · 39",
+      "struktury AD",
+      "skan aktywny vs pasywny",
+      "RSSI → odległość",
+      "prywatne adresy",
+      "cykl pracy skanowania"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "BLK"
+      },
+      "2": {
+        "role": "RES"
+      },
+      "3": {
+        "role": "DC"
+      },
+      "4": {
+        "role": "CS"
+      },
+      "5": {
+        "role": "SDA"
+      },
+      "6": {
+        "role": "SCL"
+      },
+      "7": {
+        "role": "GND"
+      },
+      "8": {
+        "role": "BTN"
+      },
+      "9": {
+        "role": "BOOT"
+      }
+    },
+    "commands": {
+      "0": {
+        "does": "Buduje lekcję B1 i wgrywa ją na płytkę. Pierwszy build pobiera NimBLE-Arduino 2.5.1 (stos Bluetooth).",
+        "see": "<code>Hard resetting via RTS pin…</code>. Ekran pokazuje radar z przesuwającą się linią.",
+        "fix": "„Failed to connect”: przytrzymaj BOOT, dotknij RST, puść BOOT i uruchom ponownie."
+      },
+      "1": {
+        "does": "Otwiera monitor portu szeregowego (płytka się zrestartuje).",
+        "see": "<code>ble-lab-b1: NimBLE 2.5.1 up, address …</code>, <code>+ active scan, 100/100 ms (100% listening)</code>, potem lista poleceń.",
+        "fix": "Brak linii <code>NimBLE … up</code>: stos się nie uruchomił; odłącz i podłącz płytkę ponownie."
+      },
+      "2": {
+        "does": "Wypisuje każde urządzenie usłyszane w ostatnich 30 s, od najsilniejszego: RSSI, zgadnięcie odległości, rodzaj, adres i jego typ, liczbę pakietów, nazwę lub producenta.",
+        "see": "Tabela, np. <code>1  -46  0.6  phone  5A:3C:…  private (RPA)  412  Apple</code>. Dziesięć do pięćdziesięciu wierszy na otwartej przestrzeni, mniej w domu.",
+        "fix": "Pusto: czy Bluetooth jest włączony w pobliżu? Telefony często ogłaszają się tylko przy włączonym ekranie albo gdy aplikacja tego chce."
+      },
+      "3": {
+        "does": "Twój telefon staje się najsilniejszym urządzeniem. Odblokuj go: iPhone ogłasza się częściej przy włączonym ekranie.",
+        "see": "Na <b>radarze</b> jedna kropka przesuwa się na środek; na <b>list</b> skacze do wiersza 1 z około −40 dBm.",
+        "fix": "Telefony z Androidem mogą milczeć: otwórz nRF Connect i użyj zakładki Advertiser albo na chwilę włącz Nearby Share / Quick Share."
+      },
+      "4": {
+        "does": "Wybiera wiersz 1 dla widoku <b>inspect</b> i wypisuje jego ogłoszenie oraz odpowiedź na skan, strukturę po strukturze.",
+        "see": "<code>[02 01 | 1A] Flags</code>, <code>[0A FF | 4C 00 10 …] Manufacturer data</code> (Apple: Nearby info), może <code>[02 0A | 0C] TX power</code>.",
+        "fix": "<code>no scan response</code>: niektóre urządzenia nie wysyłają odpowiedzi; w trybie pasywnym nikt o nią nie prosi."
+      },
+      "5": {
+        "does": "Wypisuje jedną linię na pakiet wybranego urządzenia, z czasem od poprzedniego.",
+        "see": "Linie <code>&lt; +  182 ms  -47 dBm  31 B</code>. Część przerw to zgubione pakiety (telefon wysłał na kanale, na którym płytka nie nasłuchiwała); najkrótsza powtarzająca się przerwa to jego interwał.",
+        "fix": "<code>watch off</code> zatrzymuje. Za dużo linii: najpierw <code>near -60</code>."
+      },
+      "6": {
+        "does": "Pasywny: płytka tylko nasłuchuje. Aktywny: wysyła też żądanie skanowania do każdego urządzenia, które na nie pozwala, i dostaje z powrotem drugi pakiet, odpowiedź na skan.",
+        "see": "W trybie pasywnym widok <b>inspect</b> traci wiersz <i>scan rsp</i>, a część nazw zamienia się w producentów. Widok powietrza pokazuje tryb.",
+        "fix": ""
+      },
+      "7": {
+        "does": "Nasłuch przez 30 ms na każde 100 ms (cykl pracy 30 %) zamiast cały czas.",
+        "see": "Liczba pakietów na sekundę na widoku <b>air</b> spada do około jednej trzeciej. Telefony skanują w ten sposób, by oszczędzać baterię. <code>timing 100 100</code> przywraca.",
+        "fix": "Okno musi być ≤ interwał."
+      },
+      "8": {
+        "does": "Bierze średni RSSI wybranego urządzenia jako punkt odniesienia 1 m dla zgadywania odległości.",
+        "see": "<code>+ 1 m = -58 dBm now: distances use it</code>. Odejdź: kropka dryfuje na zewnątrz.",
+        "fix": "Odległości skaczą o ±1 m: to RSSI. Ciała, ściany i ustawienie telefonu zmieniają go o 5–10 dB."
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Ścieżka Bluetooth, od słuchania do hostowania",
+        "intro": "Osiem lekcji, każda z własnym firmware. Płytka zaczyna jako czysty słuchacz, a kończy, hostując Twoją klawiaturę. Wybierz lekcję, by zobaczyć rolę płytki i kierunek przepływu danych; kłódka oznacza lekcje, w których parowanie i szyfrowanie mają znaczenie."
+      },
+      "1": {
+        "title": "Trzy kanały, dużo krzyku",
+        "intro": "Bluetooth LE dzieli pasmo 2,4 GHz na 40 kanałów po 2 MHz. Ogłaszanie używa tylko trzech z nich, 37, 38 i 39, umieszczonych w lukach między zwykłymi kanałami Wi-Fi 1, 6 i 11. Każde zdarzenie ogłaszania wysyła ten sam pakiet na wszystkich trzech, jeden po drugim. Skaner nasłuchuje na jednym kanale naraz: pakiet się liczy tylko wtedy, gdy trafi w okno nasłuchu na swoim kanale. Przesuń suwak okna i zobacz, ile pakietów łapie płytka; przełącz na aktywny, by zobaczyć żądanie i odpowiedź skanowania."
+      },
+      "2": {
+        "title": "Jeden pakiet ogłoszeniowy, bajt po bajcie",
+        "intro": "Co radio faktycznie wysyła, od pierwszego bitu do sumy kontrolnej. Wybierz urządzenie, a potem przechodź przez pola strzałkami ◀ ▶. Struktury AD w środku to dokładnie to, co pokazują widok <b>inspect</b> i polecenie <code>bytes</code>."
+      },
+      "3": {
+        "title": "Co pokazuje ekran",
+        "intro": "Cztery widoki. Kliknięcie przycisku (lub BOOT) przechodzi do następnego, podwójne kliknięcie uruchamia akcję zapisaną na dole po lewej, długie przytrzymanie wstrzymuje lub wznawia skanowanie. Ikona w prawym górnym rogu to radio: przesuwający się radar, gdy skanuje."
+      }
+    },
+    "steps": [
+      "Zostaw ekran podłączony jak w lekcji 03 (przycisk opcjonalny). Wgraj <code>ble-lab-b1</code> i otwórz monitor. <b>Punkt kontrolny 1:</b> <code>NimBLE 2.5.1 up</code> i przesuwający się radar.",
+      "Wpisz <code>list</code>. <b>Punkt kontrolny 2:</b> tabela urządzeń z rodzajami; szukaj <i>audio</i> (Twój JBL ogłasza się dla swojej aplikacji), <i>keyboard/mouse</i> i producentów Apple lub Microsoft.",
+      "Trzymaj odblokowany telefon przy płytce, wpisz <code>pick 1</code> i kliknij, by <b>inspect</b>. <b>Punkt kontrolny 3:</b> jego bajty w kolorowych strukturach AD, a typ adresu to <i>private (RPA)</i>.",
+      "Wpisz <code>watch</code> na dziesięć sekund, potem <code>watch off</code>. <b>Punkt kontrolny 4:</b> potrafisz podać interwał ogłaszania swojego telefonu.",
+      "Wypróbuj <code>mode passive</code> / <code>mode active</code> oraz <code>timing 100 30</code> / <code>timing 100 100</code>, patrząc na widok <b>air</b>.",
+      "Opcjonalnie: <code>calib</code> z telefonem 1 m od płytki, potem przejdź na drugi koniec pokoju i obserwuj radar."
+    ],
+    "note": "Wszystko, co tu widać, urządzenia nadają do każdego; płytka nigdy się z nimi nie łączy. Mimo to lista to gadżety Twoich sąsiadów: nie publikuj ich adresów (nie trafiają do logów w repozytorium). Telefony zmieniają prywatny adres mniej więcej co 15 minut, więc ten sam telefon może pojawić się dwa razy. Odległości to zgadywanie na podstawie siły sygnału, dobre do czynnika dwóch. ESP32-S3 ma tylko Bluetooth LE: klasyczny Bluetooth (większość strumieniowania audio, starsze klawiatury) jest dla niego niewidoczny."
+  },
+  "B2": {
+    "title": "Bądź widziany",
+    "heading": "Płytka krzyczy własnymi danymi",
+    "goal": "W B1 płytka słuchała. Teraz staje się <b>beaconem</b>: upycha żywe wartości (naciśnięcia przycisku, temperaturę układu, czas działania) w swoje 31-bajtowe ogłoszenie, dzięki czemu każdy pobliski telefon może je odczytać <i>bez łączenia się</i>. Ten sam budżet pomieści potem <b>iBeacon</b>, <b>Eddystone-URL</b> albo samą nazwę. Wybierasz, jak często płytka krzyczy (interwał) i jak głośno (moc TX), i widzisz, ile by to kosztowało beacon na baterię pastylkową.",
+    "goalLine": "Spraw, by płytka nadawała żywe wartości, które telefon odczyta, nigdy się z nią nie łącząc.",
+    "goalCheck": [
+      "nRF Connect pokazuje <b>Bench B2</b> i <b>Manufacturer data 0xFFFF</b>, której bajty zmieniają się co sekundę (czas działania) i wtedy, gdy klikniesz dwukrotnie (naciśnięcia).",
+      "Widok <b>packet</b> pokazuje 24 z 31 bajtów w kolorowych strukturach, a zmieniające się bajty migają na biało.",
+      "<code>mode ibeacon</code> pojawia się jako iBeacon na Androidzie (na iPhone aplikacje nie widzą iBeaconów: to iOS, nie Ty), a <code>mode url</code> jako Eddystone URL w nRF Connect.",
+      "Przy <code>connectable off</code> i <code>scanresp off</code> widok pakietu mówi <b>ADV_NONCONN_IND</b>, nRF Connect nie oferuje już Connect, a interwał nie może spaść poniżej 100 ms.",
+      "Potrafisz wyjaśnić z widoku <b>budget</b>, dlaczego beacony ogłaszają się co 500–1000 ms, a nie co 20."
+    ],
+    "learn": [
+      "rola nadawcy",
+      "budżet 31 bajtów",
+      "struktury AD",
+      "dane producenta",
+      "iBeacon i Eddystone",
+      "ADV_IND · SCAN_IND · NONCONN",
+      "interwał i advDelay",
+      "moc TX a bateria"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "BLK"
+      },
+      "2": {
+        "role": "RES"
+      },
+      "3": {
+        "role": "DC"
+      },
+      "4": {
+        "role": "CS"
+      },
+      "5": {
+        "role": "SDA"
+      },
+      "6": {
+        "role": "SCL"
+      },
+      "7": {
+        "role": "GND"
+      },
+      "8": {
+        "role": "BTN"
+      },
+      "9": {
+        "role": "BOOT"
+      }
+    },
+    "commands": {
+      "0": {
+        "does": "Buduje lekcję B2 i wgrywa ją na płytkę.",
+        "see": "Widok <b>packet</b>: <code>bench ADV_IND every 100 ms</code> i dwa rzędy kolorowych komórek.",
+        "fix": "„Failed to connect”: przytrzymaj BOOT, dotknij RST, puść BOOT i uruchom ponownie."
+      },
+      "1": {
+        "does": "Otwiera monitor portu szeregowego.",
+        "see": "<code>+ bench ADV_IND every 100 ms, 24+7 B</code> i lista poleceń.",
+        "fix": ""
+      },
+      "2": {
+        "does": "Telefon jest teraz skanerem (jedna płytka nie usłyszy samej siebie). Stuknięcie wiersza otwiera szczegóły ogłoszenia.",
+        "see": "Complete Local Name <code>Bench B2</code>, Manufacturer data <code>0xFFFF 0x01…</code>; ostatnie dwa bajty (czas działania) zmieniają się co sekundę. Stuknij RAW, by zobaczyć wszystkie 24 bajty.",
+        "fix": "Nie ma na liście: pociągnij, by odświeżyć; <code>adv on</code>. Na iPhone Manufacturer data pokazuje się jako jeden ciąg hex: te same bajty."
+      },
+      "3": {
+        "does": "Liczy naciśnięcie do pakietu. Płytka podmienia dane ogłoszenia; kontroler wysyła nowe bajty od następnego zdarzenia.",
+        "see": "<code>- presses 1: in the next packet</code>; na widoku pakietu dwie komórki migają na biało; w nRF Connect bajty 4–5 danych producenta zmieniają się na <code>01 00</code>.",
+        "fix": ""
+      },
+      "4": {
+        "does": "Wypisuje oba pakiety strukturę po strukturze.",
+        "see": "<code>[02 01 | 06] Flags</code>, <code>[09 09 | 42 65 6E 63 68 20 42 32] Name</code>, <code>[0A FF | FF FF 01 01 00 2E 10 2C 01] Manufacturer data</code>.",
+        "fix": ""
+      },
+      "5": {
+        "does": "Układ Apple: 4C 00 02 15, 16-bajtowy UUID, major, minor, moc na 1 m. 30 z 31 bajtów: nazwa przechodzi do odpowiedzi na skan.",
+        "see": "<code>+ ibeacon ADV_IND every 100 ms, 30+10 B</code>. Android nRF Connect: „iBeacon”, UUID BA5E0000-B1E5-…, Major 1, Minor 2. B1 na innej płytce pokazałaby rodzaj beacon fioletowo.",
+        "fix": "iPhone nic nie pokazuje albo nie pokazuje beacona: iOS filtruje ramki iBeacon z każdego skanu aplikacji. Widzi je tylko Core Location (monitorowanie regionów)."
+      },
+      "6": {
+        "does": "Eddystone-URL: dane usługi FEAA ze skompresowanym URL (https:// = 1 bajt, .com/ = 1 bajt).",
+        "see": "nRF Connect pokazuje <b>Eddystone URL</b> https://github.com/. Zbyt długi URL: <code>x the URL doesn't fit…</code>, a stary zostaje.",
+        "fix": "Android kiedyś wyświetlał je jako powiadomienia (Physical Web); to zniknęło w 2018 roku. Aplikacje nadal je dekodują."
+      },
+      "7": {
+        "does": "Najpierw ADV_SCAN_IND (może być skanowane, ale nie połączone), potem ADV_NONCONN_IND: czysta transmisja, która nikomu nie odpowiada.",
+        "see": "Tytuł widoku pakietu się zmienia; przycisk Connect w nRF Connect znika; wiersz odpowiedzi na skan się opróżnia.",
+        "fix": "<code>interval</code> podniesiony do 100 ms: minimum dla ogłoszeń niepołączalnych (reguła Bluetooth 4.x; 5.0 dopuszcza 20, beacony zostają przy 100+)."
+      },
+      "8": {
+        "does": "Jak często płytka krzyczy. Kliknij na widoki <b>air</b> i <b>budget</b>, by zobaczyć każdy.",
+        "see": "<code>+ … every 1000 ms</code>; kolumna interwału w nRF Connect (Android) albo wykres RSSI aktualizują się wolniej; czas życia baterii pastylkowej na widoku budżetu skacze z tygodni do lat.",
+        "fix": "<code>interval 20</code> odrzucone przy connectable off: najpierw włącz connectable."
+      },
+      "9": {
+        "does": "Moc TX w dBm (wbudowane polecenie powłoki). Niżej = krótszy zasięg i mniejszy prąd.",
+        "see": "RSSI w nRF Connect spada o około 20 dB na tej samej odległości; pole mocy TX w trybie nazwy też się zmienia.",
+        "fix": ""
+      },
+      "10": {
+        "does": "Zatrzymuje ogłaszanie. Płytka jest niewidoczna.",
+        "see": "<code>- advertising off: the board is invisible</code>; nRF Connect szarzeje ją po kilku sekundach.",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Zbuduj ogłoszenie",
+        "intro": "Każde pole, które dodasz, kosztuje swoje dane plus 2 bajty (długość i typ). Umieść je w ogłoszeniu, w odpowiedzi na skan (wysyłanej tylko wtedy, gdy skaner o nią poprosi) albo pomiń i patrz, jak wypełnia się budżet 31 bajtów. Cztery tryby płytki to gotowe ustawienia."
+      },
+      "1": {
+        "title": "Kiedy skaner to usłyszy?",
+        "intro": "Płytka wysyła każde zdarzenie ogłaszania na kanałach 37, 38 i 39 po kolei, co interwał plus losowe 0–10 ms. Telefon nasłuchuje na jednym kanale naraz, przez okno w każdym interwale skanowania. Przesuwaj liczby i licz, co zostaje złapane. Wyłącz losowe opóźnienie, by zobaczyć, po co istnieje."
+      },
+      "2": {
+        "title": "Co pokazuje ekran",
+        "intro": "Cztery widoki. Kliknięcie przechodzi do następnego; podwójne kliknięcie gdziekolwiek liczy naciśnięcie do pakietu; długie przytrzymanie włącza lub wyłącza ogłaszanie."
+      }
+    },
+    "steps": [
+      "Takie samo okablowanie jak w B1. Wgraj <code>ble-lab-b2</code> i otwórz monitor. <b>Punkt kontrolny 1:</b> <code>bench ADV_IND every 100 ms, 24+7 B</code>.",
+      "Zainstaluj nRF Connect (lub LightBlue) na telefonie i znajdź <b>Bench B2</b>; otwórz go dotknięciem, nie łącz się. <b>Punkt kontrolny 2:</b> Manufacturer data 0xFFFF z bajtami zmieniającymi się co sekundę.",
+      "Kliknij dwukrotnie przycisk płytki kilka razy. <b>Punkt kontrolny 3:</b> licznik naciśnięć zmienia się na telefonie bez żadnego połączenia.",
+      "Wypróbuj <code>mode ibeacon</code> (Android to pokaże) i <code>mode url</code>. Porównaj z kreatorem powyżej: które pola przeszły do odpowiedzi na skan i dlaczego?",
+      "<code>connectable off</code>, <code>scanresp off</code>. <b>Punkt kontrolny 4:</b> ADV_NONCONN_IND, na telefonie brak przycisku Connect.",
+      "Kliknij na <b>air</b> i <b>budget</b>, potem wypróbuj <code>interval 1000</code> i <code>power -12</code>. <b>Punkt kontrolny 5:</b> potrafisz powiedzieć, ile każde kosztuje i co daje."
+    ],
+    "note": "Każdy w pobliżu może odczytać to, co płytka nadaje: nigdy nie umieszczaj niczego prywatnego w ogłoszeniu. 0xFFFF to identyfikator firmy, który Bluetooth SIG rezerwuje do testów: dobry na stole warsztatowym, nie do produktu. Aplikacje na iPhone w ogóle nie widzą ramek iBeacon (iOS usuwa je ze skanów), więc testuj ten tryb na Androidzie albo z B1 na drugiej płytce. Widok budżetu to szacunek dla typowego beacona na baterię pastylkową przy podanych założeniach: ta płytka ESP32-S3 sama pobiera około 80 mA przy włączonym ekranie, za dużo jak na baterię pastylkową. Jedno radio nie słyszy samego siebie, więc w tej lekcji telefon jest skanerem."
+  },
+  "B3": {
+    "title": "Połącz i rozmawiaj",
+    "heading": "Telefon łączy się, czyta i zapisuje",
+    "goal": "Ogłaszanie to krzyk; <b>połączenie</b> to prywatna rozmowa. Telefon (<i>central</i>) łączy się z płytką (<i>peripheral</i>) i od tej chwili spotykają się w stałym rytmie, interwale połączenia, przeskakując między 37 kanałami danych. Na płytce leży mała baza danych, tabela <b>GATT</b>: usługa Bench z LED, Message, Button, Temperature i Uptime. Z nRF Connect lub LightBlue zapiszesz kolor LED, wyślesz wiadomość na ekran, odczytasz temperaturę układu i zasubskrybujesz przycisk.",
+    "goalLine": "Steruj płytką z telefonu przez Bluetooth i zobacz, jak każda operacja trafia do widoku gatt.",
+    "goalCheck": [
+      "nRF Connect (lub LightBlue) pokazuje <b>Bench B3</b>, łączy się i wypisuje usługę Bench z pięcioma nazwanymi charakterystykami oraz Device Information i Battery.",
+      "Zapisanie <code>FF5000</code> do <b>LED</b> zapala pomarańczowo diodę na płytce, a wiersz LED miga na niebiesko w widoku gatt.",
+      "Zapisanie tekstu do <b>Message</b> pokazuje go dużymi literami na widoku message.",
+      "Po zasubskrybowaniu <b>Button</b> każde kliknięcie płytki dociera do telefonu jako powiadomienie; Temperature powiadamia co 2 s.",
+      "Widok <b>link</b> pokazuje interwał połączenia, MTU i RSSI, a <code>params slow</code> wyraźnie zmienia interwał."
+    ],
+    "learn": [
+      "central i peripheral",
+      "GATT: usługi i charakterystyki",
+      "UUID (16 i 128-bitowe)",
+      "read · write · notify",
+      "CCCD (subskrypcja)",
+      "MTU",
+      "interwał połączenia"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "BLK"
+      },
+      "2": {
+        "role": "RES"
+      },
+      "3": {
+        "role": "DC"
+      },
+      "4": {
+        "role": "CS"
+      },
+      "5": {
+        "role": "SDA"
+      },
+      "6": {
+        "role": "SCL"
+      },
+      "7": {
+        "role": "GND"
+      },
+      "8": {
+        "role": "BTN"
+      },
+      "9": {
+        "role": "BOOT"
+      }
+    },
+    "commands": {
+      "0": {
+        "does": "Buduje lekcję B3 i wgrywa ją na płytkę.",
+        "see": "Widok <b>gatt</b> z pięcioma wierszami; ikona radia pokazuje kręgi: ogłaszanie.",
+        "fix": "„Failed to connect”: przytrzymaj BOOT, dotknij RST, puść BOOT i uruchom ponownie."
+      },
+      "1": {
+        "does": "Otwiera monitor portu szeregowego.",
+        "see": "<code>- advertising as \"Bench B3\"</code>, potem lista poleceń.",
+        "fix": ""
+      },
+      "2": {
+        "does": "Twój telefon się łączy. Zainstaluj nRF Connect for Mobile (Nordic, za darmo; iPhone i Android) lub LightBlue. Na iPhone nigdy nie łącz się z poziomu Ustawienia → Bluetooth: robią to aplikacje.",
+        "see": "Monitor: <code>+ connected: 5A:3C:…</code> i <code>- interval 30.00 ms …</code>, wkrótce <code>- MTU 255: 252 bytes of data per packet</code>. Ikona radia zmienia się w dwa kręgi, dioda LED świeci stale na niebiesko.",
+        "fix": "Bench B3 nie na liście: przewiń albo filtruj po nazwie „Bench”. Nadal nic: <code>adv on</code>."
+      },
+      "3": {
+        "does": "Zapisuje 3 bajty: czerwony FF, zielony 50, niebieski 00.",
+        "see": "<code>&lt; write LED FF 50 00</code>; dioda na płytce świeci pomarańczowo; wiersz LED miga na niebiesko i pokazuje próbkę koloru.",
+        "fix": "<code>LED wants 3 bytes, got 1</code>: wybierz Byte Array, nie Text ani UINT8."
+      },
+      "4": {
+        "does": "Zapisuje tekst UTF-8 (do 40 bajtów).",
+        "see": "<code>&lt; write Message \"hello bench\"</code>; kliknij na widok <b>message</b>: duży tekst, „written 3s ago”.",
+        "fix": "Akcenty pokazują się jako kwadraty: czcionka ekranu to zwykły ASCII."
+      },
+      "5": {
+        "does": "Subskrypcja zapisuje 01 00 do CCCD przycisku. Każdy gest wysyła potem wartość 3-bajtową: gest, licznik (2 bajty).",
+        "see": "<code>&lt; subscribe Button (CCCD = 1)</code>, potem przy każdym kliknięciu <code>&gt; notify Button: click #3</code>; telefon pokazuje <code>01-03-00</code>. Przy wierszu Button pojawia się dzwonek.",
+        "fix": "<code>(nobody subscribed)</code> w monitorze: najpierw zasubskrybuj."
+      },
+      "6": {
+        "does": "Odczytuje 2 bajty (°C × 100, little-endian). Deskryptor 2904 mówi aplikacjom, jak to pokazać.",
+        "see": "nRF Connect pokazuje <code>41.42 °C</code> (surowe <code>2E-10</code>); po subskrypcji odświeża się co 2 s.",
+        "fix": ""
+      },
+      "7": {
+        "does": "Prosi telefon o interwał 100–200 ms (i by płytka mogła pomijać 4 zdarzenia), potem o 15–30 ms. Decyduje telefon.",
+        "see": "<code>- new params: 112.50 ms, latency 4</code>; kropka na widoku <b>link</b> zwalnia. Powiadomienia przychodzą teraz seriami.",
+        "fix": "<code>params</code> odrzucone lub zignorowane: iPhone odrzuca niektóre wartości; spróbuj ponownie po kilku sekundach."
+      },
+      "8": {
+        "does": "Rozłącza. Płytka sama znów zaczyna ogłaszać.",
+        "see": "<code>! disconnected 0x16: we hung up</code>; widok link zachowuje przyczynę.",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Od ogłoszenia do rozmowy, krok po kroku",
+        "intro": "Co dzieje się, gdy dotkniesz Connect w nRF Connect i gdy zapiszesz LED albo płytka powiadomi o kliknięciu. Każdy krok pokazuje prawdziwe bajty ATT: pierwszy bajt to opcode, kolejne dwa to uchwyt (numer wiersza w tabeli płytki), reszta to wartość."
+      },
+      "1": {
+        "title": "Usługa Bench na żywo",
+        "intro": "Tabela GATT płytki tak, jak pokazuje ją nRF Connect. Naciśnij operację, by ją wysłać: pakiet przechodzi, wiersz płytki zapala się jak w widoku gatt, a bajty są odkodowane pod spodem."
+      },
+      "2": {
+        "title": "Co pokazuje ekran",
+        "intro": "Cztery widoki. Kliknięcie przechodzi do następnego; każdy gest (kliknięcie, podwójne kliknięcie, długie przytrzymanie) jest też wysyłany do subskrybującego telefonu jako powiadomienie Button. Podwójne kliknięcie na widokach gatt i message wysyła dodatkowe kliknięcie."
+      }
+    },
+    "steps": [
+      "Takie samo okablowanie jak w B1. Wgraj <code>ble-lab-b3</code> i otwórz monitor. <b>Punkt kontrolny 1:</b> <code>advertising as \"Bench B3\"</code>.",
+      "Na telefonie zainstaluj nRF Connect (lub LightBlue), znajdź <b>Bench B3</b> i połącz się. <b>Punkt kontrolny 2:</b> <code>connected</code> w monitorze i usługa Bench z LED, Message, Button, Temperature i Uptime w telefonie.",
+      "Zapisz <code>FF5000</code> do LED i tekst do Message. <b>Punkt kontrolny 3:</b> dioda jest pomarańczowa, wiadomość jest na ekranie.",
+      "Zasubskrybuj Button i Temperature, potem kliknij przycisk płytki. <b>Punkt kontrolny 4:</b> wartości docierają do telefonu; dzwonki na widoku gatt.",
+      "Przejdź do widoku <b>link</b> i wypróbuj <code>params slow</code> / <code>params fast</code> oraz <code>phy 2m</code>. <b>Punkt kontrolny 5:</b> interwał zmienia się na ekranie.",
+      "Wpisz <code>led auto</code>, by oddać diodę statusowi radia, potem <code>disconnect</code>."
+    ],
+    "note": "Każdy w pobliżu może połączyć się z Bench B3 i zmienić LED: na razie nie ma parowania, wszystko płynie jako zwykły tekst. Tym zajmuje się B4. iPhone'y buforują tabelę GATT urządzenia: jeśli późniejsza lekcja zmieni tabelę, a iPhone pokazuje stare wiersze, wyłącz i włącz Bluetooth. ESP32-S3 ma jedno radio: B3 nie używa Wi-Fi, więc nie ma współistnienia, o które trzeba się martwić."
+  },
+  "B4": {
+    "title": "Sparuj i zaufaj",
+    "heading": "Uczyń połączenie prywatnym i zapamiętaj, kto ma dostęp",
+    "goal": "W B3 każdy w pobliżu mógł połączyć się i przeczytać każdy bajt. B4 dodaje charakterystykę <b>Vault</b>, którą płytka obsługuje tylko przez <b>zaszyfrowane, uwierzytelnione</b> połączenie. Dotknij jej z telefonu, a zaczyna się <b>parowanie</b>: passkey pojawia się wielkimi cyframi na TFT, albo oba ekrany pokazują te same sześć cyfr i potwierdzasz przyciskiem. Potem płytka się <b>wiąże</b>: trzyma klucze we flash, rozpoznaje Twój telefon za jego zmieniającym się prywatnym adresem i może odrzucić wszystkich innych.",
+    "goalLine": "Sparuj telefon każdą z trzech metod, odczytaj Vault i zablokuj płytkę dla swojego telefonu.",
+    "goalCheck": [
+      "Z <code>pair passkey</code> odczyt Vault na telefonie otwiera okno kodu, TFT pokazuje sześć cyfr, a po ich wpisaniu telefon odczytuje <b>the bench's secret: 42</b>.",
+      "Widok <b>ceremony</b> wypełnia się fazami aż do <b>bonded</b>, a nagłówek pokazuje fioletową kłódkę i bursztynowy klucz.",
+      "Z <code>pair justworks</code> (po <code>forget all</code> i zapomnieniu płytki w telefonie) połączenie jest szyfrowane, ale Vault nadal jest odrzucany: potrafisz wyjaśnić dlaczego.",
+      "Z <code>pair compare</code> akceptujesz zgodne liczby kliknięciem na płytce i stuknięciem w telefonie.",
+      "Po <code>allow bonded</code> Twój telefon nadal się łączy, a drugi telefon (albo ten sam po zapomnieniu płytki) nie może."
+    ],
+    "learn": [
+      "parowanie a wiązanie",
+      "możliwości IO",
+      "Just Works · Passkey · Numeric Comparison",
+      "LE Secure Connections (ECDH)",
+      "ochrona MITM",
+      "LTK i IRK",
+      "prywatne adresy",
+      "lista akceptowanych filtrów"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "BLK"
+      },
+      "2": {
+        "role": "RES"
+      },
+      "3": {
+        "role": "DC"
+      },
+      "4": {
+        "role": "CS"
+      },
+      "5": {
+        "role": "SDA"
+      },
+      "6": {
+        "role": "SCL"
+      },
+      "7": {
+        "role": "GND"
+      },
+      "8": {
+        "role": "BTN"
+      },
+      "9": {
+        "role": "BOOT"
+      }
+    },
+    "commands": {
+      "0": {
+        "does": "Buduje lekcję B4 i wgrywa ją na płytkę.",
+        "see": "Widok <b>ceremony</b>: „Waiting for a phone to connect...” i osiem szarych faz.",
+        "fix": "„Failed to connect”: przytrzymaj BOOT, dotknij RST, puść BOOT i uruchom ponownie."
+      },
+      "1": {
+        "does": "Otwiera monitor portu szeregowego.",
+        "see": "<code>- pairing: Passkey · lock off · anyone may connect</code>, potem lista poleceń. Metoda zapisuje się we flash: przetrwa ponowne wgranie B4.",
+        "fix": ""
+      },
+      "2": {
+        "does": "Vault odrzuca zwykłe połączenie komunikatem „Insufficient Authentication”; telefon reaguje, rozpoczynając parowanie.",
+        "see": "Telefon pyta o kod; TFT pokazuje <b>PASSKEY ENTRY</b> i sześć cyfr; monitor <code>! passkey 482915: type it on the other device</code>. Fazy 1–5 widoku ceremony się wypełniają, „check” pulsuje na bursztynowo.",
+        "fix": "Brak okna na iPhone: odczytaj Vault ponownie. Na Androidzie okno może być powiadomieniem."
+      },
+      "3": {
+        "does": "Obie strony sprawdzają passkey bit po bicie (20 rund potwierdzeń i losowych wartości), potem szyfrują i wymieniają klucze.",
+        "see": "<code>+ secured: authenticated, bonded, key 16 B</code>, <code>- identity: 4C:…</code>; telefon odczytuje <b>the bench's secret: 42</b>. Ikony kłódki i klucza w nagłówku; ścieżka ceremony jest kompletna.",
+        "fix": "<code>x … confirm failed: wrong passkey</code>: literówka. Odczytaj Vault ponownie, by dostać nowy kod."
+      },
+      "4": {
+        "does": "Sparowany telefon ma klucze: bez ceremonii, szyfrowanie startuje od razu.",
+        "see": "Widok ceremony mówi <b>stored keys: bonded before, no ceremony</b> i przeskakuje z połączenia do zaszyfrowanego.",
+        "fix": ""
+      },
+      "5": {
+        "does": "Wypisuje sparowane urządzenia po adresie tożsamości (IRK rozwiązuje prywatny adres telefonu do niego).",
+        "see": "<code>1 bonded device …</code> i <code>1  4C:…  random static</code> (iPhone i większość Androidów używa losowego statycznego adresu tożsamości). Widok <b>bonds</b> oznacza go „&lt;- here”.",
+        "fix": ""
+      },
+      "6": {
+        "does": "Kasuje wiązania na płytce. Telefon nadal ma swoją połowę: zapomnij urządzenie w Ustawienia → Bluetooth (iPhone: ⓘ → Forget This Device; Android: koło zębate → Unpair; macOS: prawy przycisk → Forget).",
+        "see": "<code>! forgot every bond</code>, <code>- now forget \"Bench B4\" on the phone too</code>. Jeśli pominiesz część telefonu: <code>x ENC_CHANGE failed 0x206: key missing: one side forgot the bond</code>.",
+        "fix": ""
+      },
+      "7": {
+        "does": "Płytka mówi teraz „no input, no output”: nikt nic nie może potwierdzić. Połączenie jest szyfrowane, ale nieuwierzytelnione.",
+        "see": "<code>+ secured: Just Works, bonded</code>, fioletowa kłódka, ale odczyt Vault znów zawodzi z Insufficient Authentication: Vault wymaga ochrony MITM.",
+        "fix": "To jest właśnie lekcja: Just Works powstrzymuje podsłuchujących, ale nie człowieka pośredniczącego."
+      },
+      "8": {
+        "does": "Oba ekrany pokazują te same sześć cyfr. Kliknięcie na płytce mówi tak, długie przytrzymanie nie; telefon ma własny przycisk.",
+        "see": "<b>NUMERIC COMPARISON</b> na TFT, ta sama liczba w telefonie; po obu „tak”: <code>+ secured: authenticated, bonded</code>.",
+        "fix": "Długie przytrzymanie (nie) kończy się: <code>numbers didn't match: said no</code>."
+      },
+      "9": {
+        "does": "Tylko związane tożsamości trafiają na listę akceptowanych filtrów; kontroler rozwiązuje każdy prywatny adres zapisanymi IRK i odrzuca resztę.",
+        "see": "<code>+ only bonded phones may connect (saved)</code>. Twój telefon się łączy; inny (albo Twój po zapomnieniu) nie dostaje połączenia wcale.",
+        "fix": "Zablokowałeś sam siebie: <code>allow anyone</code> przez port szeregowy."
+      },
+      "10": {
+        "does": "LED i Message też wymagają zaszyfrowanego połączenia. Uprawnienia są częścią tabeli GATT, budowanej raz przy starcie, więc płytka zapisuje ustawienie i restartuje się.",
+        "see": "<code>lock on saved. … the board restarts now...</code>; potem zapisanie LED z niesparowanego telefonu też uruchamia parowanie.",
+        "fix": "iPhone pokazuje stare uprawnienia: wyłącz i włącz Bluetooth (buforuje tabelę)."
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Która metoda parowania? Zależy od obu stron",
+        "intro": "Na początku parowania każda strona mówi, co potrafi: pokazać liczbę, wpisać ją, nacisnąć tak lub nie albo nic. Obie odpowiedzi decydują o metodzie. Wybierz możliwości telefonu i płytki (te z <code>pair</code> ustawia dla płytki) i zobacz, kto pokazuje, a kto wpisuje."
+      },
+      "1": {
+        "title": "Jedno parowanie, pakiet po pakiecie",
+        "intro": "Komunikaty Security Manager Protocol (SMP), które przechodzą przez powietrze, gdy telefon czyta Vault, z prawdziwymi bajtami. Każda metoda różni się tylko w środku: tym, jak człowiek udowadnia, że nikt nie stoi pomiędzy."
+      },
+      "2": {
+        "title": "Co pokazuje ekran",
+        "intro": "Pięć widoków. Kliknięcie przechodzi do następnego; podwójne kliknięcie uruchamia akcję w stopce (secure, bonds, press). Gdy liczby czekają na porównanie, zamiast tego odpowiada przycisk: kliknięcie = tak, długie przytrzymanie = nie."
+      }
+    },
+    "steps": [
+      "Takie samo okablowanie jak w B3. Wgraj <code>ble-lab-b4</code> i otwórz monitor. <b>Punkt kontrolny 1:</b> <code>pairing: Passkey</code> w liniach startowych.",
+      "Połącz się z nRF Connect i odczytaj <b>Vault</b>. Wpisz sześć cyfr z TFT. <b>Punkt kontrolny 2:</b> telefon odczytuje sekret; widok ceremony jest kompletny; kłódka i klucz w nagłówku.",
+      "Rozłącz się i połącz ponownie. <b>Punkt kontrolny 3:</b> „stored keys”: tym razem bez passkey.",
+      "<code>forget all</code> i zapomnij płytkę w telefonie. <code>pair justworks</code>, odczytaj Vault. <b>Punkt kontrolny 4:</b> zaszyfrowane, a mimo to odrzucone. Dlaczego?",
+      "Znów zapomnij po obu stronach, <code>pair compare</code>, odczytaj Vault i kliknij, by potwierdzić. <b>Punkt kontrolny 5:</b> uwierzytelnione i związane.",
+      "<code>allow bonded</code>. <b>Punkt kontrolny 6:</b> Twój telefon się łączy; po zapomnieniu go w telefonie już nie. Na koniec <code>allow anyone</code>."
+    ],
+    "note": "Parowanie ma dwie połowy: ilekroć robisz <code>forget</code> na płytce, zapomnij też płytkę w telefonie (iPhone: Ustawienia → Bluetooth → ⓘ → Forget This Device; Android: Bluetooth → koło zębate → Unpair; macOS: Ustawienia systemowe → Bluetooth → prawy przycisk → Forget), inaczej następne połączenie się nie uda z „key missing”. Jeśli zapomniał tylko telefon, NimBLE akceptuje nowe parowanie i sam zastępuje stare wiązanie (parowanie powtórne). Ustawienia metody, blokady i zezwoleń są zapisane we flash (przestrzeń b4) i przetrwają restarty. NimBLE nie raportuje po kolei funkcji, metody i faz wymiany kluczy: widok ceremony rysuje je jako wnioskowane (pierścień), gdy późniejsza faza dowiedzie, że zaszły. Płytka startuje z sekretem „the bench's secret: 42”; <code>vault &lt;text&gt;</code> zmienia go do następnego restartu."
+  },
+  "B5": {
+    "title": "Aplikacja telefonu",
+    "heading": "Własna aplikacja, prosto do płytki",
+    "goal": "nRF Connect to śrubokręt; teraz budujesz narzędzie. <b>esp-labs/apps/ble-app</b> to mała aplikacja React, która używa <b>Web Bluetooth</b>: sama przeglądarka staje się klientem GATT, więc strona internetowa na Macu albo telefonie rozmawia z płytką bez Wi-Fi, bez serwera i bez sklepu z aplikacjami. Firmware zachowuje usługę Bench z B3 i dodaje cztery charakterystyki: <b>Canvas</b>, po którym rysujesz z telefonu, <b>Sensors</b>, które strumieniują pięć razy na sekundę, test <b>Speed</b>, który wysyła powiadomienia tak szybko, jak pozwala radio, oraz sterowanie <b>Link</b>, by zmieniać połączenie, patrząc, jak zmienia się prędkość.",
+    "goalLine": "Steruj płytką i rysuj na niej z poziomu strony internetowej, i zmierz, ile bajtów na sekundę faktycznie niesie Twoje łącze.",
+    "goalCheck": [
+      "Zakładka Connect w aplikacji wypisuje usługę Bench z LED … Uptime oraz Canvas, Sensors, Speed i Link (ba5e0010-0013), a jej dziennik bajtów pokazuje każdą operację.",
+      "Pociągnięcie narysowane w zakładce Sketch pojawia się na widoku <b>sketch</b> płytki w ułamku sekundy.",
+      "Zakładka Live rysuje cztery linie; dotknięcie kabelka na GPIO 1 powoduje skok linii dotyku.",
+      "Przebieg prędkości 50 kB kończy się wartością kB/s w aplikacji i tym samym przebiegiem jako słupek na widoku <b>speed</b> płytki; po <b>Fast interval</b> albo <b>2M PHY</b> kolejny przebieg jest wyraźnie szybszy (albo potrafisz wyjaśnić, czemu nie)."
+    ],
+    "learn": [
+      "Web Bluetooth",
+      "klient GATT w JavaScript",
+      "zapis bez odpowiedzi",
+      "protokoły binarne",
+      "strumienie powiadomień",
+      "przepustowość = MTU × pakiety ÷ interwał",
+      "2M PHY i długie pakiety"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "BLK"
+      },
+      "2": {
+        "role": "RES"
+      },
+      "3": {
+        "role": "DC"
+      },
+      "4": {
+        "role": "CS"
+      },
+      "5": {
+        "role": "SDA"
+      },
+      "6": {
+        "role": "SCL"
+      },
+      "7": {
+        "role": "GND"
+      },
+      "8": {
+        "role": "BTN"
+      },
+      "9": {
+        "role": "BOOT"
+      }
+    },
+    "commands": {
+      "0": {
+        "does": "Buduje lekcję B5 i wgrywa ją na płytkę.",
+        "see": "Widok <b>sketch</b>: „Open the ble-app, connect”. Ikona radia pokazuje kręgi: ogłaszanie jako <b>Bench B5</b>.",
+        "fix": "„Failed to connect”: przytrzymaj BOOT, dotknij RST, puść BOOT i uruchom ponownie."
+      },
+      "1": {
+        "does": "Instaluje aplikację raz (React, Vite, TypeScript, dokładne wersje) i serwuje ją pod <code>http://localhost:5177</code>. Brak kodu serwera: Vite tylko przekazuje stronę przeglądarce.",
+        "see": "<code>➜ Local: http://localhost:5177/</code>",
+        "fix": "Port zajęty: działa aplikacja innej lekcji; zatrzymaj ją albo uruchom <code>pnpm dev --port 5178</code>."
+      },
+      "2": {
+        "does": "Otwiera się własny wybieracz urządzeń przeglądarki (strona nigdy nie połączy się sama). Lista pokazuje płytki z usługą Bench, nazwy zaczynające się od „Bench” albo instrumenty BLE-MIDI.",
+        "see": "Wybierz <b>Bench B5</b>. Zakładka Connect pokazuje eksplorator GATT; monitor wypisuje <code>+ connected: …</code>. Za pierwszym razem macOS pyta, czy pozwolić Chrome używać Bluetooth.",
+        "fix": "„Web Bluetooth isn't available here”: użyj Chrome lub Edge i localhost (nie 127.0.0.1 ani IP Maca)."
+      },
+      "3": {
+        "does": "Każdy ruch zapisuje 3 bajty do LED (ograniczone do jednego zapisu na 80 ms); Send zapisuje do 40 bajtów UTF-8 do Message.",
+        "see": "LED podąża za palcem; linie <code>&lt; write LED 1F 5C 99</code> w monitorze i niebieskie pakiety przechodzące przez pasek powietrza aplikacji.",
+        "fix": "LED stoi po <code>led auto</code>: przesuń koło jeszcze raz, a płytka odbierze diodę."
+      },
+      "4": {
+        "does": "Pociągnięcia idą do Canvas (ba5e0010) jako <b>zapisy bez odpowiedzi</b>: <code>02 cc cc w n</code> + 3 bajty na punkt, co 50 ms. Płytka ustawia je w kolejce w zadaniu NimBLE i rysuje w loop().",
+        "see": "Te same linie na widoku <b>sketch</b> płytki; na dole <code>412 cmds 96 writes 9120 B</code>.",
+        "fix": "<code>DROPPED</code> na płytce: rysujesz szybciej niż 16 zapisów w kolejce; nic się nie psuje, kilka pociągnięć znika. <code>sketch: a command was cut off</code>: aplikacja przeszła na zapisy po 20 bajtów (MTU 23)."
+      },
+      "5": {
+        "does": "Subskrybuje Sensors: 12 bajtów co 200 ms (temperatura, dotyk, wolna sterta, RSSI, numer sekwencji).",
+        "see": "Cztery poruszające się linie w aplikacji i te same cztery sparklines na widoku <b>live</b> płytki; „notifying the app: 230 sent”. Dotknięcie wolnego końca kabla skacze wartość dotyku o tysiące.",
+        "fix": "Linia dotyku płaska: GPIO 1 nie ma kabla; każdy kabelek się nada, gołe zakończenie metalu jest czujnikiem."
+      },
+      "6": {
+        "does": "Subskrybuje Speed i zapisuje <code>01 50 C3 00 00</code>. Małe zadanie na płytce wysyła powiadomienia po 50 000 bajtów w pakietach (MTU − 3) bajtów, aż bufory stosu się zapełnią, czeka i kontynuuje; potem 15-bajtowe podsumowanie.",
+        "see": "Monitor: <code>&lt; write Speed: start 50000 bytes</code>, potem <code>+ speed: 50000 B in 2310 ms = 21.6 kB/s</code>. Aplikacja pokazuje słupek w tym samym rzędzie wielkości.",
+        "fix": "<code>speed: subscribe to Speed (ba5e0012) first</code>: otwórz raz zakładkę Speed, zanim uruchomisz test z portu szeregowego."
+      },
+      "7": {
+        "does": "Zapisuje 1, 3 i 5 do Link: płytka prosi centralę o interwał 7,5–15 ms, PHY 2M i pakiety radiowe po 251 bajtów.",
+        "see": "<code>- new params: 15.00 ms …</code>, <code>- PHY now 2M / 2M</code>; kolejny przebieg jest szybszy. Widok <b>speed</b> płytki trzyma jeden słupek na przebieg z MTU, interwałem i PHY.",
+        "fix": "Brak zmiany: decyduje central. macOS często zostaje przy 15 ms i pozwala na 2M; niektóre telefony odrzucają 7,5 ms albo 2M. To jest właśnie lekcja: peripheral może tylko poprosić."
+      },
+      "8": {
+        "does": "Tunel szybki cloudflared daje aplikacji adres <code>https://…trycloudflare.com</code>, bo telefony dopuszczają Web Bluetooth tylko przez https.",
+        "see": "Android: Chrome go otwiera i pojawia się ten sam wybieracz. iPhone: otwórz w darmowej przeglądarce <b>Bluefy</b> (Safari nie ma Web Bluetooth).",
+        "fix": "Bluefy mówi, że strona nie jest bezpieczna: użyj adresu https, nie http."
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Jedna zmiana koloru, od JavaScript do diody",
+        "intro": "Co dzieje się między <code>navigator.bluetooth.requestDevice()</code> w aplikacji a zmianą koloru diody i jak powiadomienie wraca do wykresu. Każdy krok pokazuje prawdziwe wywołanie albo prawdziwe bajty w powietrzu. Wybierz przepływ, potem przechodź strzałkami ◀ ▶."
+      },
+      "1": {
+        "title": "Jak szybko to może pójść?",
+        "intro": "Przepustowość zależy od czterech liczb: jak duży może być pakiet (MTU), jak często spotykają się dwa radia (interwał połączenia), ile pakietów mieści się w jednym spotkaniu i jak szybko lecą bity (PHY). Przesuwaj suwaki: oś czasu pokazuje trzy zdarzenia połączenia z każdym pakietem w skali, a wynik to ta sama formuła, którą mierzy zakładka Speed."
+      },
+      "2": {
+        "title": "Co pokazuje ekran",
+        "intro": "Sześć widoków. Kliknij, by przejść do następnego; podwójne kliknięcie na sketch czyści go, na speed uruchamia przebieg 50 kB, na gatt wysyła kliknięcie Button. Każdy gest dociera też do aplikacji jako powiadomienie Button, jak w B3."
+      }
+    },
+    "steps": [
+      "Takie samo okablowanie jak w B1 (ekran, przycisk opcjonalny). Opcjonalnie: jeden kabelek w GPIO 1, wolny koniec luźno: Twój czujnik dotyku.",
+      "Wgraj <code>ble-lab-b5</code>. <b>Punkt kontrolny 1:</b> widok sketch i kręgi ogłaszania.",
+      "Uruchom aplikację (raz <code>pnpm install</code>, potem <code>pnpm dev</code>), otwórz <code>http://localhost:5177</code> w Chrome i połącz się z Bench B5. <b>Punkt kontrolny 2:</b> eksplorator GATT wypisuje dziewięć charakterystyk Bench.",
+      "Koło kolorów, wiadomość, potem coś narysuj w Sketch. <b>Punkt kontrolny 3:</b> Twój rysunek jest na płytce.",
+      "Otwórz Live i dotknij kabla. <b>Punkt kontrolny 4:</b> linia dotyku skacze w aplikacji i na płytce.",
+      "Speed: uruchom 50 kB, potem Fast interval + 2M PHY + Long packets i uruchom ponownie. <b>Punkt kontrolny 5:</b> dwa słupki; zapisz oba wyniki kB/s i interwał, jakiego użył każdy przebieg.",
+      "Opcjonalnie: <code>pnpm tunnel</code> i powtórz z telefonu (Chrome na Androidzie, Bluefy na iPhone). Porównaj jego prędkość z prędkością Maca."
+    ],
+    "note": "Nadal bez parowania: każdy w pobliżu może się połączyć, rysować i czytać czujniki. Blokada z B4 działa tu tak samo, jeśli je połączysz. Aplikacja widzi tylko płytki, które wybierzesz w wybieraczu przeglądarki, a przeglądarka celowo ukrywa niektóre standardowe usługi przed stronami. iPhone'y i Maci buforują tabelę GATT urządzenia po adresie: jeśli eksplorator pokazuje stare wiersze z B3, wyłącz i włącz Bluetooth. Przepustowość zależy głównie od centrali: ta sama płytka jest często 2–4× szybsza z Makiem niż z telefonem."
+  },
+  "B6": {
+    "title": "Klawiatura i media",
+    "heading": "Bluetooth-owa klawiatura i pilot do muzyki",
+    "goal": "Płytka staje się prawdziwą klawiaturą Bluetooth: ta sama usługa HID, którą ma każda bezprzewodowa klawiatura, więc telefony, Maci i PC używają jej ze swoim sterownikiem. Jej przycisk zamienia się w pilota: odtwarzanie i pauza oraz przeskakiwanie muzyki w telefonie (który może grać przez Twój głośnik JBL), zmiana głośności, przewijanie slajdów albo pisanie tekstu, który wyślesz z monitora portu szeregowego. Piszesz Report Map, która mówi komputerowi, co znaczą nasze bajty, i widzisz, dlaczego klawiatura nigdy nie wysyła liter, tylko numery klawiszy.",
+    "goalLine": "Sparuj płytkę jako klawiaturę, steruj muzyką przyciskiem i pisz tekst w odpowiednim układzie.",
+    "goalCheck": [
+      "Telefon lub Mac pokazuje <b>Bench B6</b> jako połączoną klawiaturę, a pasek stanu ekranu pokazuje kłódkę (szyfrowanie) i klucz (wiązanie).",
+      "Kliknięcie w widoku media wstrzymuje i wznawia muzykę; podwójne kliknięcie przeskakuje utwór; dotknięcie GPIO 2 podgłasza.",
+      "<code>type yes</code> wpisuje „yes”, a nie „zes”: <code>layout</code> pasuje do ustawienia klawiatury komputera.",
+      "Na widoku keys możesz odczytać naciśnięcie jako bajty: bity modyfikatorów, numer klawisza i zerowe zwolnienie po nim."
+    ],
+    "learn": [
+      "HID over GATT",
+      "report map",
+      "numery klawiszy a znaki",
+      "układy klawiatury",
+      "consumer control",
+      "wiązanie",
+      "pilot multimediów"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "BLK"
+      },
+      "2": {
+        "role": "RES"
+      },
+      "3": {
+        "role": "DC"
+      },
+      "4": {
+        "role": "CS"
+      },
+      "5": {
+        "role": "SDA"
+      },
+      "6": {
+        "role": "SCL"
+      },
+      "7": {
+        "role": "GND"
+      },
+      "8": {
+        "role": "BTN"
+      },
+      "9": {
+        "role": "BOOT"
+      }
+    },
+    "commands": {
+      "0": {
+        "does": "Buduje lekcję B6 i wgrywa ją na płytkę (bez nowych pobrań: NimBLE przyszedł z B1).",
+        "see": "<code>ble-lab-b6: NimBLE 2.5.1 up</code>, <code>advertising as keyboard \"Bench B6\"</code>, lista poleceń. Ekran otwiera się na widoku media: „pair me: Bluetooth settings &gt; Bench B6”.",
+        "fix": "„Failed to connect”: przytrzymaj BOOT, dotknij RST, puść BOOT i uruchom ponownie."
+      },
+      "1": {
+        "does": "Telefon lub Mac się łączy, czyta Report Map, prosi o parowanie (HID wymaga szyfrowania) i zapisuje wiązanie, by następnym razem połączyć się samo.",
+        "see": "<code>+ connected</code>, potem <code>+ secured: Just Works, bonded, key 16 B</code>. Pasek stanu pokazuje połączone kręgi, fioletową kłódkę i klucz. Mac może otworzyć Asystenta konfiguracji klawiatury: zamknij go albo naciśnij klawisz, o który prosi, i wybierz ISO (niemiecki) lub ANSI (US).",
+        "fix": "Widoczna, ale się nie łączy: <code>forget</code> tutaj ORAZ „Forget This Device” w telefonie, potem sparuj ponownie. Wiązanie zachowane tylko po jednej stronie to typowa przyczyna."
+      },
+      "2": {
+        "does": "Uruchom muzykę w telefonie (na jego głośnik, słuchawki albo JBL). Kliknięcie = odtwarzanie/pauza, podwójne kliknięcie = następny utwór, przytrzymanie poniżej 2 s = wyciszenie, dotknięcie kabla na GPIO 2 / 1 (po <code>touch on</code>) = głośniej / ciszej.",
+        "see": "Ikona się marszczy, kropka biegnie płytka → telefon → głośnik, a muzyka reaguje. Monitor wypisuje <code>&gt; media key: play/pause (usage 0CD)</code>.",
+        "fix": "Nic się nie dzieje? Aplikacja musi mieć fokus audio: najpierw coś odtwórz. Na Macu reagują Music i Spotify; karta przeglądarki może nie."
+      },
+      "3": {
+        "does": "Otwórz Notatki (lub dowolne pole tekstowe) na sparowanym urządzeniu, potem wpisz to w monitorze. Płytka ustawia w kolejce 2 raporty na znak (naciśnięcie, zwolnienie) i wysyła 6 na ramkę, co 8 ms.",
+        "see": "„hello bench” pojawia się na telefonie lub Macu. Widok typer wypełnia pasek postępu, potem pokazuje <code>typed 11 keys</code>.",
+        "fix": "Tylko linia mówi <code>not paired yet</code>? Najpierw sparuj. Litery wychodzą źle: zobacz <code>layout</code>."
+      },
+      "4": {
+        "does": "Mówi płytce, na jaki układ ustawiony jest KOMPUTER, by wybrała właściwy klawisz dla każdego znaku. Zapisywane w NVS.",
+        "see": "<code>layout German (QWERTZ) (saved)</code>. Teraz <code>type yes</code> daje „yes” na niemieckim Macu. Znaki, do których układ potrzebuje AltGr/Option (@ [ ] { } \\ | ~), są pomijane z ostrzeżeniem.",
+        "fix": "Nadal y/z zamienione: układ komputera to inny. Sprawdź menu wejścia na pasku menu Maca."
+      },
+      "5": {
+        "does": "Jeden klawisz albo kombinacja: modyfikatory (cmd, ctrl, alt, shift) plus klawisz (enter, tab, esc, strzałki, f1–f12, litera).",
+        "see": "Na Macu otwiera się Spotlight (na iPhone z klawiaturą też wyszukiwanie). Widok keys pokazuje bajt modyfikatora <code>08</code> (left GUI) i klawisz <code>2C</code> (spacja).",
+        "fix": "Windows: <code>key win+r</code> otwiera Uruchom, <code>key ctrl+alt+delete</code> ekran zabezpieczeń."
+      },
+      "6": {
+        "does": "Zapisuje tekst w NVS; podwójne kliknięcie na widoku typer (albo samo <code>snippet</code>) go wpisuje. Mały pad makr.",
+        "see": "<code>snippet saved</code> i tekst na widoku typer.",
+        "fix": ""
+      },
+      "7": {
+        "does": "Otwórz prezentację (Keynote, PowerPoint, Prezentacje Google w trybie prezentacji). Kliknięcie = strzałka w prawo (dalej), podwójne kliknięcie = strzałka w lewo, przytrzymanie poniżej 2 s = b (czarny ekran).",
+        "see": "Slajd na ekranie wjeżdża z boku, w którym przesunąłeś; talia na komputerze podąża.",
+        "fix": ""
+      },
+      "8": {
+        "does": "Ostatnie raporty, bajt po bajcie: bity modyfikatorów, numery klawiszy i to, co każde naciśnięcie wpisuje w układzie płytki.",
+        "see": "<code>down mod 02 key 04 types 'A'</code>, potem <code>up all zero</code> dla dużej litery A.",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Naciśnięcie klawisza, od przycisku do litery",
+        "intro": "Pisz w polu albo naciśnij klawisz poniżej i śledź: płytka zamienia znak w numer klawisza ZA POMOCĄ swojego ustawienia układu, wysyła 8 bajtów, a komputer zamienia numer z powrotem w znak ZA POMOCĄ swojego układu. Ustaw oba układy inaczej i wpisz <code>yes</code>: to jest błąd, który naprawia <code>layout de</code>."
+      },
+      "1": {
+        "title": "Dlaczego płytka nie może grać na Twój głośnik?",
+        "intro": "Twój JBL odtwarza muzykę przez Classic Bluetooth audio. ESP32-S3 ma tylko Bluetooth LE, więc nie może do niego strumieniować, ale może być pilotem dla telefonu, który to robi. Naciśnij klawisz mediów, by to prześledzić, albo spróbuj ścieżki bezpośredniej, żeby zobaczyć, gdzie się zepsuje."
+      },
+      "2": {
+        "title": "Co pokazuje ekran",
+        "intro": "Sześć widoków. Media i slajdy to tryby: tam przycisk jest pilotem (kliknięcie, podwójne kliknięcie, przytrzymanie), a 2-sekundowe przytrzymanie przechodzi dalej. Na pozostałych widokach kliknięcie przechodzi dalej jak zwykle."
+      }
+    },
+    "steps": [
+      "Ten sam ekran i okablowanie. Opcjonalnie: dwa kabelki w GPIO 1 i GPIO 2 z luźnymi drugimi końcami (dotykowe klawisze głośności). Wgraj <code>ble-lab-b6</code>.",
+      "Na telefonie lub Macu otwórz ustawienia Bluetooth i sparuj <b>Bench B6</b>. <b>Punkt kontrolny 1:</b> kłódka i klucz na pasku stanu, <code>secured: Just Works, bonded</code> w monitorze.",
+      "Odtwórz muzykę w telefonie (jeśli chcesz, na JBL). Na widoku media: kliknięcie, podwójne kliknięcie. <b>Punkt kontrolny 2:</b> muzyka się zatrzymuje, wznawia i przeskakuje.",
+      "Wpisz <code>touch on</code> (ręce z kabli), potem dotknij kabla GPIO 2. <b>Punkt kontrolny 3:</b> głośność rośnie.",
+      "Otwórz Notatki, ustaw <code>layout</code> zgodnie z komputerem i wpisz <code>type yes, this is the bench</code>. <b>Punkt kontrolny 4:</b> pojawia się dokładnie ten tekst.",
+      "Przytrzymaj przycisk 2 s, by dojść do slajdów, otwórz prezentację i przeklikaj ją.",
+      "Przejdź na widok keys i odczytaj jedno naciśnięcie: bity modyfikatorów, numer klawisza, potem zwolnienie."
+    ],
+    "note": "Gdy iPhone lub iPad jest połączony z fizyczną klawiaturą, jego klawiatura ekranowa się chowa: odłącz płytkę (albo wyłącz Bluetooth), by ją odzyskać. Aby rozparować, zapomnij płytkę po obu stronach (<code>forget</code> tutaj, „Forget This Device” tam). ESP32-S3 ma tylko Bluetooth LE: nie może strumieniować audio na głośnik ani słuchawki (to Classic Bluetooth, A2DP), więc płytka steruje telefonem, a telefon gra na Twój JBL. Głośność i klawisze utworów trafiają do tej aplikacji, która ma fokus audio. Hosty różnie traktują to, które znaki Option/AltGr gdzie leżą, więc tabela niemiecka wpisuje tylko to, co da się wpisać tak samo na Macu i Windowsie."
+  },
+  "B7": {
+    "title": "Muzyka",
+    "heading": "Instrument MIDI przez Bluetooth",
+    "goal": "Płytka staje się instrumentem MIDI przez Bluetooth LE, używając standardowej usługi BLE-MIDI, którą rozumieją GarageBand, Audio MIDI Setup, aplikacje syntezatorów na Androida i Chrome. MIDI niesie nuty, nie dźwięk: dźwięk tworzy syntezator po drugiej stronie (i może wysłać go na Twój JBL). Graj przyciskiem, pięcioma kabelkami dotykowymi, poleceniami portu szeregowego i 16-krokową maszyną perkusyjną; nuty grane po drugiej stronie zapalają pasek pianina płytki i jej diodę. Zobaczysz, jak nuty są pakowane ze znacznikami czasu i dlaczego interwał połączenia wyznacza opóźnienie.",
+    "goalLine": "Graj nuty z płytki do syntezatora i zobacz nuty syntezatora na płytce.",
+    "goalCheck": [
+      "GarageBand (lub zakładka Music w ble-app) wypisuje <b>Bench B7</b> i wydaje dźwięk, gdy klikniesz przycisk.",
+      "<code>tune twinkle</code> odgrywa melodię; <code>beat house</code> + <code>seq on</code> gra perkusję na kanale 10.",
+      "Nuty grane na klawiaturze syntezatora zapalają pasek pianina płytki na niebiesko, a dioda przyjmuje kolor każdej nuty.",
+      "Widok link pokazuje Twój interwał połączenia, a Ty potrafisz powiedzieć, jak długo nuta może czekać na radio."
+    ],
+    "learn": [
+      "wiadomości MIDI",
+      "pakiety BLE-MIDI",
+      "znaczniki czasu",
+      "running status",
+      "interwał połączenia = opóźnienie",
+      "dotyk pojemnościowy",
+      "perkusja General MIDI"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "BLK"
+      },
+      "2": {
+        "role": "RES"
+      },
+      "3": {
+        "role": "DC"
+      },
+      "4": {
+        "role": "CS"
+      },
+      "5": {
+        "role": "SDA"
+      },
+      "6": {
+        "role": "SCL"
+      },
+      "7": {
+        "role": "GND"
+      },
+      "8": {
+        "role": "BTN"
+      },
+      "9": {
+        "role": "BOOT"
+      }
+    },
+    "commands": {
+      "0": {
+        "does": "Buduje lekcję B7 i wgrywa ją na płytkę.",
+        "see": "<code>advertising as MIDI instrument \"Bench B7\"</code>, lista poleceń, widok keys z pięcioma klawiszami i paskiem pianina.",
+        "fix": "„Failed to connect”: przytrzymaj BOOT, dotknij RST, puść BOOT i uruchom ponownie."
+      },
+      "1": {
+        "does": "macOS łączy się z płytką jako z urządzeniem MIDI (może poprosić o parowanie: zaakceptuj). Potem otwórz GarageBand z instrumentem programowym: słyszy każde urządzenie MIDI.",
+        "see": "<code>+ connected</code>, <code>asked for a 7.5-15 ms interval (low latency)</code>, <code>+ a synth is listening (subscribed)</code>. Widok keys mówi „synth listening”.",
+        "fix": "iPhone/iPad: GarageBand → otwórz klawiaturę → ustawienia (koło zębate) → Advanced → Bluetooth MIDI Devices → Bench B7. Android: aplikacja BLE-MIDI (np. „MIDI BLE Connect”) plus dowolny syntezator. Chrome: zakładka Music w ble-app."
+      },
+      "2": {
+        "does": "Gra następną nutę skali (300 ms). Podwójne kliknięcie = akord. Przytrzymanie poniżej 2 s = wszystkie nuty wyłączone.",
+        "see": "Dźwięk z GarageBand; klawisz zapala się na fioletowo na pasku pianina; roll rysuje fioletowy słupek.",
+        "fix": "Brak dźwięku, a jest „synth listening”: w GarageBand wybierz ścieżkę instrumentu programowego (nie audio) i podkręć głośność."
+      },
+      "3": {
+        "does": "Planuje całą melodię z domeny publicznej w bieżącym tempie. loop() wysyła każdą nutę, gdy nadejdzie jej czas.",
+        "see": "<code>tune twinkle: 14 notes, 8.4 s</code> i melodia z syntezatora.",
+        "fix": ""
+      },
+      "4": {
+        "does": "Automat perkusyjny: 4 bębny × 16 kroków na kanale MIDI 10, gdzie General MIDI trzyma perkusję (36 kick, 38 snare, 42 hi-hat, 39 clap).",
+        "see": "Głowica sekwencera przesuwa się po siatce; GarageBand gra perkusję (wybierz ścieżkę zestawu perkusyjnego dla prawdziwego brzmienia).",
+        "fix": "Perkusja brzmi jak nuty pianina: instrument ścieżki to nie zestaw perkusyjny."
+      },
+      "5": {
+        "does": "Pięć kabelków na GPIO 1, 2, 6, 13, 14 (luźne końce) staje się klawiszami skali pentatonicznej. Ręce z dala, gdy mierzy linię bazową.",
+        "see": "<code>touch on: 5 keys, pentatonic from C4</code>; dotknięcie końca kabla zapala jego klawisz i gra nutę, mocniejszy dotyk = głośniej.",
+        "fix": "GPIO 13 i 14 to przewody RC522 z ścieżki RFID: odłącz czytnik albo używaj pierwszych trzech klawiszy."
+      },
+      "6": {
+        "does": "GarageBand (lub pianino ble-app) wysyła MIDI z powrotem do płytki jako zapisy.",
+        "see": "Niebieskie klawisze na pasku pianina, niebieskie słupki na rollu, dioda w kolorze nuty, linie <code>&lt; note E4 vel 96 ch 1</code>.",
+        "fix": "Na Macu GarageBand nie wysyła do urządzeń MIDI: użyj pianina ble-app albo DAW z wyjściem MIDI."
+      },
+      "7": {
+        "does": "Wyjaśnia opóźnienie: nuty czekają na następne zdarzenie połączenia.",
+        "see": "Twój interwał (7,5–15 ms, jeśli host się zgodził, często 11,25 albo 15 na urządzeniach Apple) i naciśnięcie przeskakujące na następny takt.",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Jedna nuta, bajt po bajcie",
+        "intro": "Zagraj na małej klawiaturze (kliknięciem albo klawiszami A do K na komputerze). Nuty naciśnięte w jednym zdarzeniu połączenia dzielą jeden pakiet. Obserwuj nagłówek, znaczniki czasu, bajt statusu i running status, czyli sztuczkę pomijania powtarzających się bajtów statusu."
+      },
+      "1": {
+        "title": "Dlaczego nuty czekają: interwał połączenia",
+        "intro": "Połączone urządzenie może mówić tylko w zdarzeniach połączenia, jednym co interwał. Wybierz interwał i zagraj: każda nuta czeka na następne zdarzenie. Potem porównaj syntezator, który gra nuty, gdy nadejdą, z tym, który używa znaczników czasu."
+      },
+      "2": {
+        "title": "Co pokazuje ekran",
+        "intro": "Pięć widoków. Na keys, sequencer i roll przycisk jest instrumentem (kliknięcie nuty, podwójne kliknięcie akordu albo start/stop perkusji, przytrzymanie wycisza wszystkie nuty, przytrzymanie 2 s przechodzi dalej)."
+      }
+    },
+    "steps": [
+      "Ten sam ekran i okablowanie. Opcjonalnie: pięć kabelków w GPIO 1, 2, 6, 13, 14 (najpierw odłącz RC522). Wgraj <code>ble-lab-b7</code>.",
+      "Połącz się z GarageBand (iPhone/iPad), Audio MIDI Setup + GarageBand (Mac), aplikacją BLE-MIDI (Android) albo zakładką Music w ble-app (Chrome). <b>Punkt kontrolny 1:</b> „synth listening” na widoku keys.",
+      "Kliknij przycisk kilka razy, potem kliknij dwukrotnie. <b>Punkt kontrolny 2:</b> nuty i akord z syntezatora.",
+      "<code>tune ode</code>, potem <code>beat funk</code> i <code>seq on</code>. <b>Punkt kontrolny 3:</b> melodia i groove perkusyjny.",
+      "Zagraj na klawiaturze syntezatora. <b>Punkt kontrolny 4:</b> niebieskie klawisze i kolorowa dioda na płytce.",
+      "Otwórz widok link i odczytaj swój interwał. Wypróbuj <code>bpm 200</code> z perkusją i posłuchaj: czy nadal brzmi zwarcie?"
+    ],
+    "note": "MIDI to instrukcje, nie dźwięk: płytka sama nie wydaje dźwięku (nie ma głośnika). Audio syntezatora może pójść gdziekolwiek, gdzie może grać, także na Twój JBL, przez własny Bluetooth telefonu albo Maca. Hosty Apple zwykle przyznają interwały połączenia 11,25–15 ms dla MIDI, więc nuta czeka do jednego interwału; znaczniki czasu w każdym pakiecie pozwalają dobremu syntezatorowi utrzymać rytm mimo to. Jeśli Mac prosi o parowanie, zaakceptuj: płytka dopuszcza wiązanie Just Works. W grze są tylko melodie z domeny publicznej."
+  },
+  "B8": {
+    "title": "Host",
+    "heading": "Zamień role: Twoja klawiatura pisze na płytce",
+    "goal": "Dotąd telefon albo laptop był centralą, a płytka odpowiadała. Tutaj płytka jest centralą, tak jak Twój laptop. Znajduje urządzenia, do których można się połączyć, łączy się z nimi i bada ich tabele GATT (tylko do odczytu: jedynie publiczne podstawy, jak nazwa, producent i bateria). Potem hostuje Twoją własną klawiaturę i mysz BLE: paruje się (płytka pokazuje passkey, a Ty wpisujesz go na klawiaturze), czyta opis raportów klawiatury (Report Map), subskrybuje i zamienia surowe bajty w tekst oraz kursor rysowania na ekranie.",
+    "goalLine": "Sparuj klawiaturę BLE z płytką, pisz na jej ekranie i zrozum każdy bajt, który klawiatura wysyła.",
+    "goalCheck": [
+      "<code>host</code> kończy się <code>+ hosting: keyboard media keys</code> (albo <code>mouse</code>) po wpisaniu passkey na klawiaturze.",
+      "To, co piszesz, pojawia się na widoku <b>keyboard</b>; Shift, Ctrl, Alt i Cmd świecą, gdy są wciśnięte; <code>layout de</code> zamienia Y i Z i pokazuje ä ö ü ß.",
+      "Na widoku <b>reports</b> możesz nazwać każdy kolorowy bajt: modyfikatory (bursztyn), kody klawiszy (morski), mysz X (niebieski), Y (fioletowy), kółko (koralowy).",
+      "Po wyłączeniu i włączeniu zasilania płytka połączy się sama ze sparowaną klawiaturą, bez passkey."
+    ],
+    "learn": [
+      "rola centrali",
+      "wykrywanie usług",
+      "HID over GATT (HOGP)",
+      "parsowanie Report Map",
+      "wpisywanie passkey jako central",
+      "subskrypcja CCCD",
+      "kody klawiszy a układy",
+      "wiązanie i ponowne połączenie"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "BLK"
+      },
+      "2": {
+        "role": "RES"
+      },
+      "3": {
+        "role": "DC"
+      },
+      "4": {
+        "role": "CS"
+      },
+      "5": {
+        "role": "SDA"
+      },
+      "6": {
+        "role": "SCL"
+      },
+      "7": {
+        "role": "GND"
+      },
+      "8": {
+        "role": "BTN"
+      },
+      "9": {
+        "role": "BOOT"
+      }
+    },
+    "commands": {
+      "0": {
+        "does": "Buduje lekcję B8 i wgrywa ją na płytkę. NimBLE-Arduino jest już pobrane (B1).",
+        "see": "<code>ble-lab-b8: NimBLE 2.5.1 up, address …</code>, lista poleceń i wypełniający się widok <b>devices</b>.",
+        "fix": "„Failed to connect”: przytrzymaj BOOT, dotknij RST, puść BOOT i uruchom ponownie."
+      },
+      "1": {
+        "does": "Otwiera monitor portu szeregowego (i restartuje płytkę).",
+        "see": "<code>Bluetooth lab B8 Host (ble-lab-b8)</code> i polecenia.",
+        "fix": ""
+      },
+      "2": {
+        "does": "Klawiatura już sparowana z Makiem rozmawia tylko z Makiem. Tryb parowania sprawia, że ogłasza się każdemu: zwykle przytrzymaj klawisz Bluetooth lub kanału przez 3 s, aż jej lampka zacznie szybko migać. Klawiatury wielokanałowe: wybierz kanał, którego Mac nie używa.",
+        "see": "Widok <b>devices</b>: Twoja klawiatura blisko góry, z ikoną klawiatury i <b>HID</b>.",
+        "fix": "Nie ma jej: nadal jest połączona z Makiem (zmień kanał albo usuń ją w ustawieniach Bluetooth Maca). Apple Magic Keyboard używa Classic Bluetooth i nigdy się tu nie pojawi."
+      },
+      "3": {
+        "does": "Wypisuje urządzenia, do których można się połączyć, od najsilniejszego. Beacony są pominięte: nie da się z nimi połączyć.",
+        "see": "<code>  1   -48 dBm  keyboard/mouse  C4:7D:2A:91:0E:33  Bench Keys  [HID]</code>",
+        "fix": ""
+      },
+      "4": {
+        "does": "Wysyła CONNECT_IND do urządzenia 1 (teraz płytka wybiera czas połączenia), potem bada: wykrywa każdą usługę, charakterystykę i deskryptor oraz czyta publiczne podstawy.",
+        "see": "<code>&gt; CONNECT_IND to Bench Keys</code>, <code>+ connected: we are the central</code>, <code>+ 5 services, 19 characteristics in 820 ms</code>, <code>- it is a keyboard/mouse (1812): type host</code>. Widok <b>explore</b> pokazuje drzewo; wartości HID mówią „locked until paired”.",
+        "fix": "<code>no answer from …</code>: urządzenie przestało się ogłaszać (tryb parowania wygasa po ~60 s): uruchom je ponownie."
+      },
+      "5": {
+        "does": "Paruje (wiązanie + passkey + Secure Connections), czyta Report Map, znajduje każdy raport wejściowy przez deskryptor 2908 i subskrybuje (zapisuje 01 00 do jego CCCD).",
+        "see": "Sześć wielkich cyfr na ekranie i <code>! type 482915 on the keyboard, then Enter</code>. Wpisz je na klawiaturze, naciśnij Enter: <code>+ secured: passkey, bonded, key 16 B</code>, <code>&lt; Report Map: 72 bytes, 11 input fields</code>, <code>&gt; CCCD 01 00: report 1 (keyboard)</code>, <code>+ hosting: keyboard media keys</code>. Widok przeskakuje na <b>keyboard</b>.",
+        "fix": "<code>pairing failed</code>: klawiatura opuściła tryb parowania albo nadal ma stare wiązanie z płytką: <code>forget</code>, usuń ją po stronie klawiatury (znów tryb parowania), <code>connect</code>, <code>host</code>."
+      },
+      "6": {
+        "does": "Każde naciśnięcie klawisza to powiadomienie: płytka porównuje je z poprzednim i dodaje nowo wciśnięte klawisze. Backspace kasuje, Enter zaczyna nową linię, Esc czyści.",
+        "see": "Twój tekst na widoku <b>keyboard</b> z migającym kursorem; przyciski modyfikatorów świecą bursztynowo, gdy trzymasz Shift, Ctrl, Alt lub Cmd; klawisze mediów pokazują fioletowy komunikat.",
+        "fix": "Złe litery (y i z zamienione)? Zobacz następne polecenie."
+      },
+      "7": {
+        "does": "Kody klawiszy to pozycje, nie litery. Płytka zamienia je na znaki według wybranego układu: US albo niemiecki.",
+        "see": "<code>- layout German (QWERTZ): the same keys, other letters</code>. Teraz klawisz z Z daje z, a pojawiają się ä ö ü ß.",
+        "fix": ""
+      },
+      "8": {
+        "does": "Surowe raporty wejściowe, najnowszy na dole, każdy bajt pokolorowany wg pola Report Map, do którego należy.",
+        "see": "<code>#1 kbd 02 00 0B 00 00 00 00 00</code> z 02 bursztynowym (Left Shift) i 0B morskim (klawisz H), a pod spodem odkodowana linia.",
+        "fix": ""
+      },
+      "9": {
+        "does": "Protokół rozruchowy: stały 8-bajtowy format, który rozumie każdy BIOS, bez czytania Report Map. Porównaj z report protocol.",
+        "see": "<code>&gt; CCCD 01 00: report 0 (boot keyboard)</code> i wiersze <code>bootK</code> na widoku reports. <code>boot off</code> wraca.",
+        "fix": "<code>no Protocol Mode: this device has no boot mode</code>: niektóre klawiatury tego nie oferują."
+      },
+      "10": {
+        "does": "Mysz nie ma klawiszy ani ekranu, więc parowanie wraca do Just Works (bez cyfr). Jej Report Map opisuje przyciski, X, Y i kółko przy dowolnych rozmiarach bitów.",
+        "see": "<code>+ secured: Just Works, bonded</code>, <code>+ hosting: mouse</code>, i widok <b>mouse</b>: lewy przycisk rysuje, prawy zmienia kolor, środkowy czyści, kółko ustawia pędzel.",
+        "fix": "Kursor pędzi: ta mysz raportuje duże kroki; płytka już je zmniejsza o połowę."
+      },
+      "11": {
+        "does": "Wiązanie (klucze) zapisuje się w NVS. Gdy klawiatura znów się ogłasza (naciśnij klawisz, by ją obudzić), płytka rozpoznaje jej adres i łączy się ponownie.",
+        "see": "<code>+ bonded Bench Keys is back: reconnecting</code>, potem <code>+ secured: …</code> bez passkey i <code>+ hosting</code>.",
+        "fix": "Klawiatury ukryte za zmieniającym się prywatnym adresem (RPA) mogą nie zostać rozpoznane: wtedy ręcznie <code>connect</code> + <code>host</code>."
+      },
+      "12": {
+        "does": "Bada urządzenie, które nie jest klawiaturą. Czyta tylko publiczne podstawy, niczego nie zapisuje.",
+        "see": "Kilka usług, głównie jedna długa UUID producenta, i <code>- JBL app's own service only: audio uses Classic BT</code>. Sam dźwięk nigdy nie idzie przez BLE w tym głośniku, a ten układ nie ma Classic Bluetooth.",
+        "fix": "Nie ma go na liście: ogłasza BLE tylko wtedy, gdy aplikacja JBL go szuka, albo tuż po włączeniu."
+      },
+      "13": {
+        "does": "Kasuje każde wiązanie na płytce.",
+        "see": "<code>- every bond deleted: pair again to use a keyboard</code>. Usuń też płytkę po stronie klawiatury (tryb parowania), inaczej odrzuci następne parowanie.",
+        "fix": ""
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Od skanu do naciśnięcia, krok po kroku",
+        "intro": "Wszystko, co dzieje się między ogłaszaniem klawiatury a pojawieniem się <b>h</b> na płytce, pakiet po pakiecie. Wybierz historię: pierwsze parowanie, powrót po wyłączeniu i włączeniu zasilania albo eksplorację Twojego głośnika JBL. Używaj ◀ ▶ albo pozwól mu grać; ramka pod każdym krokiem pokazuje prawdziwe bajty."
+      },
+      "1": {
+        "title": "Odkoduj raport samodzielnie",
+        "intro": "Klawiatura nigdy nie wysyła liter, tylko pozycje klawiszy i bity. Wybierz Report Map, potem naciskaj klawisze na małej klawiaturze albo przeciągaj po padzie myszy: raport leci na płytkę, a każde pole zapala się po kolei, z pozycją Report Map, która je definiuje. Przełącz US/DE: ten sam kod klawisza staje się inną literą."
+      },
+      "2": {
+        "title": "Co pokazuje ekran",
+        "intro": "Siedem widoków. Kliknięcie przechodzi do następnego, podwójne kliknięcie uruchamia akcję w lewym dolnym rogu, długie przytrzymanie wykonuje następny krok: połącz, potem host, potem rozłącz."
+      }
+    },
+    "steps": [
+      "Takie samo okablowanie jak w każdej lekcji BLE (ekran; przycisk opcjonalny). Wgraj <code>ble-lab-b8</code> i otwórz monitor.",
+      "Ustaw klawiaturę BLE w tryb parowania na kanale, którego Mac nie używa. <b>Punkt kontrolny 1:</b> pojawia się na widoku <b>devices</b> z <b>HID</b>.",
+      "<code>connect 1</code> (albo kliknij dwukrotnie, by wybrać, potem długie przytrzymanie). <b>Punkt kontrolny 2:</b> widok <b>explore</b> wypisuje 1800, 180A, 180F i 1812 Human Interface Device z jego charakterystykami Report.",
+      "<code>host</code> (albo długie przytrzymanie). Wpisz sześć cyfr na klawiaturze i naciśnij Enter. <b>Punkt kontrolny 3:</b> <code>+ hosting: keyboard</code> i widok <b>keyboard</b>.",
+      "Napisz zdanie, przytrzymaj Shift, wypróbuj Backspace i Enter. Jeśli masz niemiecką klawiaturę: <code>layout de</code>. <b>Punkt kontrolny 4:</b> Twój tekst na TFT, z umlautami.",
+      "Kliknij na <b>reports</b> i nazwij każdy kolorowy bajt; porównaj z „Decode a report yourself” powyżej. Potem <code>boot on</code>, <code>host</code>: 8 stałych bajtów.",
+      "Opcjonalnie: <code>disconnect</code>, sparuj mysz tak samo i maluj na widoku <b>mouse</b>.",
+      "Wyjmij i włóż ponownie zasilanie płytki, potem naciśnij klawisz na klawiaturze. <b>Punkt kontrolny 5:</b> łączy się ponownie i hostuje bez passkey.",
+      "Zbadaj swój głośnik JBL: <code>connect &lt;n&gt;</code>. Zobacz, dlaczego nie pokazuje nic o audio."
+    ],
+    "note": "Explore łączy się tylko z urządzeniami, które wybierzesz, i czyta tylko standardowe publiczne wartości (nazwa, wygląd, producent, model, firmware, bateria, PnP ID); nigdy nie zapisuje do urządzenia, z wyjątkiem dwóch standardowych ustawień HID na klawiaturze lub myszy, którą hostujesz (CCCD do subskrypcji, Protocol Mode dla bootu). Łącz się tylko z własnymi urządzeniami. Jedno łącze naraz: rozłącz przed połączeniem z następnym urządzeniem. Klawiatura związana z płytką może przestać działać z Makiem na tym kanale, dopóki nie sparujesz jej tam ponownie. Widok klawiatury używa wbudowanej czcionki ekranu, która ma ä ö ü Ä Ö Ü ß, ale nie ma €. BLE trzyma identyfikator raportu poza powiadomieniem: żyje w deskryptorze Report Reference (2908), dlatego bajty na widoku reports zaczynają się od danych."
+  }
+}

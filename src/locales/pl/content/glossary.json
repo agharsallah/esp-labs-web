@@ -1,0 +1,1034 @@
+{
+  "entries": {
+    "assign": {
+      "short": "Wkłada wartość z prawej strony do nazwy po lewej.",
+      "simple": "Jak napisanie nowej liczby na podpisanym pudełku: to, co w nim było wcześniej, znika.",
+      "deep": "Przypisanie, a nie pytanie: porównanie zapisuje się <code>==</code>. W deklaracji, na przykład <code>uint8_t r = 0;</code>, znak <code>=</code> nadaje zmiennej pierwszą wartość (inicjalizacja)."
+    },
+    "arithmetic": {
+      "short": "Dodawanie, odejmowanie i dzielenie, jak na kalkulatorze.",
+      "simple": "Matematyka ze szkoły, z jednym zaskoczeniem: dzielenie dwóch liczb całkowitych odrzuca resztę, więc <code>7 / 2</code> daje <code>3</code>.",
+      "deep": "Dzielenie liczb całkowitych obcina wynik w stronę zera; zapisz <code>7 / 2.0f</code>, by dostać <code>3.5</code>. Małe typy, takie jak <code>uint8_t</code>, są przed obliczeniem zamieniane na <code>int</code>, więc <code>pos * 3</code> nie przepełni się, dopóki nie zapiszesz wyniku z powrotem."
+    },
+    "modulo": {
+      "short": "Reszta z dzielenia: <code>7 % 3</code> to <code>1</code>.",
+      "simple": "Jak tarcza zegara: po liczbie 12 zaczynasz znowu od 1. Dlatego <code>%</code> świetnie nadaje się do rzeczy, które kręcą się w kółko.",
+      "deep": "Działa tylko na liczbach całkowitych (dla liczb zmiennoprzecinkowych użyj <code>fmodf</code>). Gdy lewa strona jest ujemna, wynik też jest ujemny, więc <code>-1 % 6</code> to <code>-1</code>, a nie <code>5</code>."
+    },
+    "compound-assign": {
+      "short": "Skrót, który aktualizuje zmienną na podstawie jej własnej wartości: <code>x += 5</code> znaczy <code>x = x + 5</code>.",
+      "simple": "Jak dolewanie do słoika: nie opróżniasz go i nie napełniasz od nowa, po prostu dodajesz trochę więcej.",
+      "deep": "Lewa strona jest obliczana tylko raz, co ma znaczenie, gdy jest to coś w rodzaju <code>buf_[i++]</code>. Wynik jest zamieniany z powrotem na typ zmiennej, więc <code>uint8_t</code> po cichu zawija się po 255."
+    },
+    "increment": {
+      "short": "Dodaje jeden (<code>++</code>) albo odejmuje jeden (<code>--</code>) od zmiennej.",
+      "simple": "Licznik kliknięć: jedno kliknięcie, jeden więcej.",
+      "deep": "<code>i++</code> zwraca starą wartość, a potem dodaje jeden; <code>++i</code> najpierw dodaje. W samej pętli <code>for</code> działają tak samo. Bez znaku <code>uint8_t hue</code> zawija się od 255 do 0, na czym polega tęcza z lekcji 01."
+    },
+    "compare": {
+      "short": "Porównuje dwie wartości i odpowiada <code>true</code> albo <code>false</code>; po nazwie typu &lt; &gt; oznaczają argumenty typu zamiast porównania.",
+      "simple": "Pytania z odpowiedzią tak lub nie: czy są równe? czy jest mniejsza? Zwróć uwagę na podwójne <code>==</code>: pojedyncze <code>=</code> zmieniłoby wartość zamiast o nią zapytać.",
+      "deep": "Porównanie liczby ze znakiem z liczbą bez znaku zamienia stronę ze znakiem na bez znaku, więc <code>-1 &lt; 1u</code> jest fałszywe; kompilator ostrzega o tym. W <code>std::vector&lt;Card&gt;</code> lub <code>static_cast&lt;int&gt;</code> nawiasy ostre są nawiasami szablonu, a nie porównaniem."
+    },
+    "logic": {
+      "short": "Łączy odpowiedzi tak/nie: <code>&amp;&amp;</code> znaczy i, <code>||</code> znaczy lub, <code>!</code> znaczy nie.",
+      "simple": "„Jeśli pada deszcz <b>i</b> jestem na zewnątrz, otwórz parasol.” <code>!</code> odwraca odpowiedź: nie pada.",
+      "deep": "Skrócona ewaluacja: <code>a &amp;&amp; b</code> nigdy nie sprawdza <code>b</code>, gdy <code>a</code> jest fałszywe, dlatego <code>queue_ &amp;&amp; xQueueReceive(queue_, ...)</code> jest bezpieczne przy pustej kolejce. Po typie (<code>T &amp;&amp;</code>) podwójny ampersand oznacza referencję przenoszącą."
+    },
+    "ternary": {
+      "short": "Jednowierszowe if/else, które wybiera wartość: <code>test ? this : that</code>.",
+      "simple": "„Czy HUD jest włączony? To powiedz »włączony«, a jeśli nie, to »wyłączony«.” Pytanie z dwiema możliwymi odpowiedziami.",
+      "deep": "Obie gałęzie muszą dać się sprowadzić do jednego wspólnego typu. Obliczana jest tylko wybrana gałąź, więc bezpiecznie chroni się nią dzielenie lub wskaźnik."
+    },
+    "shift": {
+      "short": "Przesuwa bity liczby w lewo albo w prawo; jeden krok w lewo podwaja liczbę, jeden krok w prawo ją dzieli na pół.",
+      "simple": "Jak przesuwanie cyfr liczby wzdłuż rzędu włączników światła: wszystko się przesuwa, a na końcu pojawia się nowe 0.",
+      "deep": "Używane do pakowania i rozpakowywania bajtów: <code>(r &amp; 0xF8) &lt;&lt; 8</code> umieszcza czerwony w pięciu najwyższych bitach koloru RGB565. Przesunięcie o szerokość typu lub więcej to niezdefiniowane zachowanie."
+    },
+    "bit-ops": {
+      "short": "Działa na pojedynczych bitach liczby: <code>|</code> ustawia bity, <code>^</code> je odwraca, <code>~</code> odwraca wszystkie.",
+      "simple": "Wyobraź sobie liczbę jako rząd 8, 16 lub 32 włączników światła. Te operatory przełączają wybrane włączniki, nie dotykając reszty.",
+      "deep": "<code>flags |= bit</code> włącza bit, <code>flags &amp;= ~bit</code> wyłącza go, <code>flags ^= bit</code> przełącza go. Sterowniki rejestrów, jak nasz MFRC522, opierają się na tym. ArduinoJson używa <code>|</code> do wartości domyślnej: <code>in[\"type\"] | \"\"</code>."
+    },
+    "scope": {
+      "short": "Sięga do wnętrza przestrzeni nazw, klasy lub wyliczenia, by znaleźć nazwę: <code>std::min</code> to <code>min</code> z przestrzeni <code>std</code>.",
+      "simple": "Jak adres: <i>London::Baker Street</i>. Dwie ulice mogą mieć tę samą nazwę, o ile są w różnych miastach.",
+      "deep": "Operator rozwiązywania zakresu. <code>Button::Event::Click</code> schodzi dwa poziomy niżej; wiodące <code>::</code> (jak w <code>::ble::activity()</code>) zaczyna od przestrzeni globalnej, więc nazwa lokalna nigdy go nie przesłoni."
+    },
+    "arrow": {
+      "short": "Używa składowej obiektu, na który wskazuje wskaźnik: <code>p->x</code> to to samo co <code>(*p).x</code>.",
+      "simple": "Kropka (<code>.</code>) zwraca się do obiektu, który trzymasz; strzałka do obiektu, którego tylko znasz adres.",
+      "deep": "Dostęp do składowej przez wskaźnik. Obsługi serwera WWW dostają <code>AsyncWebServerRequest *req</code>, więc pisze się <code>req->send(...)</code>. Gdy wejdziesz w <code>nullptr</code>, ESP32 zawiesi się z paniką LoadProhibited lub StoreProhibited, dlatego wskaźniki sprawdza się najpierw."
+    },
+    "maths": {
+      "short": "Funkcje matematyczne z biblioteki C: sinus, cosinus, pierwiastek, zaokrąglanie, wartość bezwzględna i inne.",
+      "simple": "Przyciski naukowe kalkulatora, gotowe do użycia w kodzie. Kąty są w radianach: pełny obrót to około 6,283.",
+      "deep": "Wersje z <code>f</code> (<code>sinf</code>, <code>sqrtf</code>) działają na <code>float</code>, który sprzętowa jednostka FPU ESP32-S3 liczy szybko; wersje <code>double</code> liczą programowo i są kilka razy wolniejsze. <code>lroundf</code> zaokrągla do najbliższej liczby całkowitej."
+    },
+    "snprintf": {
+      "short": "Buduje tekst z wzorca i wartości, w pudełku o stałym rozmiarze.",
+      "simple": "Formularz do uzupełnienia: <code>\"%d/%d\"</code> ma dwa puste miejsca, a podane liczby wpisują się w nie po kolei.",
+      "deep": "<code>snprintf(buf, sizeof(buf), fmt, ...)</code> nigdy nie pisze poza bufor i zawsze kończy tekst znakiem <code>'\\0'</code>; zbyt długi tekst zostaje ucięty. Te same kody <code>%</code> co w <code>Serial.printf</code>: <code>%d</code> int, <code>%u</code> bez znaku, <code>%lu</code> unsigned long, <code>%.1f</code> float, <code>%s</code> tekst, <code>%02X</code> liczba szesnastkowa."
+    },
+    "void": {
+      "short": "Oznacza „nic”: funkcja <code>void</code> wykonuje swoją pracę, ale nic nie zwraca.",
+      "simple": "Jak dzwonek do drzwi: naciskasz, coś się dzieje, ale nie dostajesz niczego w ręce.",
+      "deep": "Jako typ zwracany oznacza brak wyniku. <code>void *</code> to wskaźnik do pamięci o nieznanym typie, jak <code>void *arg</code>, które dostają zadania FreeRTOS i obsługi przerwań; przed użyciem trzeba go rzutować z powrotem."
+    },
+    "bool": {
+      "short": "Wartość tak/nie: albo <code>true</code>, albo <code>false</code>.",
+      "simple": "Wyłącznik światła: włączony albo wyłączony, nic pomiędzy.",
+      "deep": "Zajmuje jeden bajt. Liczby i wskaźniki zamieniają się na <code>bool</code> automatycznie (zero i <code>nullptr</code> to false), dlatego <code>if (buf_)</code> działa. <code>boolean</code> z Arduino to ten sam typ."
+    },
+    "true-false": {
+      "short": "Dwie wartości, jakie może przyjąć <code>bool</code>.",
+      "simple": "Tak i nie, zapisane tak, jak rozumie je kompilator.",
+      "deep": "Słowa kluczowe typu <code>bool</code>; zamienione na liczby dają 1 i 0. FreeRTOS używa własnych <code>pdTRUE</code>/<code>pdFALSE</code> do tego samego."
+    },
+    "int": {
+      "short": "Liczba całkowita, która może być ujemna, codzienny wybór do liczenia.",
+      "simple": "Pudełko na liczby całkowite, jak -3, 0 czy 42. Ułamków nie wolno.",
+      "deep": "Na ESP32 <code>int</code> ma 32 bity: od około -2,1 miliarda do +2,1 miliarda. Jego rozmiar zależy od układu (16 bitów na Arduino Uno), dlatego kod sprzętowy często woli <code>int32_t</code> i podobne, które mówią, jaki mają rozmiar."
+    },
+    "long": {
+      "short": "Typ liczby całkowitej co najmniej tak duży jak <code>int</code>; na ESP32 oba mają 32 bity.",
+      "simple": "Kolejne pudełko na liczby całkowite. Na tym układzie mieści dokładnie to, co <code>int</code>.",
+      "deep": "<code>long</code> ma 32 bity na Xtensa ESP32, a <code>long long</code> 64. <code>millis()</code> zwraca <code>unsigned long</code>, więc wypisując ją, potrzebujesz <code>%lu</code>; kod często rzutuje przez <code>static_cast&lt;unsigned long&gt;</code>, by dopasować typ dokładnie."
+    },
+    "unsigned": {
+      "short": "Liczba całkowita, która nie może spaść poniżej zera, dzięki czemu sięga dwa razy wyżej.",
+      "simple": "Jak licznik kilometrów w samochodzie: liczy tylko w górę od 0, a po ostatniej cyfrze przewija się z powrotem do 0.",
+      "deep": "Obliczenia bez znaku zawijają się zamiast się przepełniać: <code>0u - 1</code> to największa wartość. Dzięki temu zawijaniu <code>now - last >= interval</code> działa, gdy <code>millis()</code> się przewija. <code>unsigned(x)</code> to szybkie rzutowanie, wygodne dla <code>%u</code> w printf."
+    },
+    "float": {
+      "short": "Liczba z kropką dziesiętną, jak <code>3.14</code> albo <code>-0.5</code>.",
+      "simple": "Linijka z drobnymi podziałkami: dobra do pomiarów, ale wkrada się drobny błąd zaokrąglenia, więc nigdy nie porównuj dwóch liczb float pod kątem dokładnej równości.",
+      "deep": "32 bity, około 7 cyfr znaczących. FPU ESP32-S3 działa w pojedynczej precyzji, więc obliczenia na <code>float</code> są szybkie; stałe zapisuj jako <code>0.5f</code>, by kompilator nie przełączył się na wolne <code>double</code>."
+    },
+    "double": {
+      "short": "Liczba dziesiętna o około dwukrotnie większej precyzji niż <code>float</code>.",
+      "simple": "Ta sama linijka co <code>float</code>, z jeszcze drobniejszymi podziałkami, ale na tym układzie wolniejsza w odczycie.",
+      "deep": "64 bity, około 15 cyfr znaczących. FPU ESP32-S3 liczy tylko pojedynczą precyzję, więc <code>double</code> liczy się programowo: nadaje się do rzadkiego obliczenia, ale jest za wolny na każdy piksel czy próbkę dźwięku."
+    },
+    "char": {
+      "short": "Jeden znak tekstu, przechowywany jako mała liczba; <code>const char *</code> to cały kawałek tekstu.",
+      "simple": "Pojedynczy kafelek z literą z gry słownej. Ustaw kafelki w rzędzie, zakończ niewidocznym kafelkiem stopu <code>'\\0'</code> i masz słowo.",
+      "deep": "Jeden bajt. Łańcuch C to tablica <code>char</code> kończąca się na <code>'\\0'</code>; <code>char text[32]</code> mieści do 31 liter. <code>\"hello\"</code> to <code>const char *</code> wskazujący na tekst przechowywany we flashu, a <code>'h'</code> (apostrofy) to jeden <code>char</code>."
+    },
+    "size-t": {
+      "short": "Liczba całkowita bez znaku, stworzona na rozmiary i liczby rzeczy w pamięci.",
+      "simple": "Liczba na miarce krawieckiej dla pamięci: ile bajtów, ile elementów. Nigdy nie może być ujemna.",
+      "deep": "32 bity na ESP32, typ, który zwraca <code>sizeof</code> i przyjmuje <code>malloc</code>. Wypisz go przez <code>%u</code> po rzutowaniu albo <code>%zu</code>."
+    },
+    "uint8-t": {
+      "short": "Liczba całkowita od 0 do 255: dokładnie jeden bajt.",
+      "simple": "Najmniejsze pudełko: jeden bajt, osiem włączników. Idealne na kanał koloru, numer pinu albo jasność.",
+      "deep": "<code>u</code> = unsigned (bez znaku), <code>int</code>, <code>8</code> bitów, <code>_t</code> = typ. Zdefiniowany w <code>&lt;stdint.h&gt;</code>, więc jego rozmiar jest taki sam na każdym układzie. <code>byte</code> z Arduino to ten sam typ. Po 255 zawija się do 0."
+    },
+    "uint16-t": {
+      "short": "Liczba całkowita od 0 do 65 535: dwa bajty.",
+      "simple": "Pudełko dwa razy większe od bajtu. Każdy kolor ekranu w tych labach mieści się w jednym.",
+      "deep": "Bez znaku, 16 bitów. ST7789 używa RGB565: 5 bitów czerwieni, 6 zieleni, 5 niebieskiego, upakowanych w jednym <code>uint16_t</code>. Używany też dla uchwytów BLE i 16-bitowych UUID."
+    },
+    "uint32-t": {
+      "short": "Liczba całkowita od 0 do około 4,29 miliarda: cztery bajty.",
+      "simple": "Duże pudełko na duże liczby, jak milisekundy od uruchomienia płytki.",
+      "deep": "Bez znaku, 32 bity: naturalny rozmiar słowa ESP32, więc odczyt i zapis to pojedyncze instrukcje. Czasy z <code>millis()</code> mieszczą się w nim i zawijają się po około 49,7 dnia."
+    },
+    "uint64-t": {
+      "short": "Ogromna liczba całkowita, od 0 do około 18 trylionów: osiem bajtów.",
+      "simple": "Pudełko tak duże, że w praktyce nigdy się nie zapełni. 48-bitowy adres MAC układu mieści się w nim bez trudu.",
+      "deep": "Bez znaku, 64 bity. Na 32-bitowym procesorze każda operacja to kilka instrukcji, a odczyt wartości współdzielonej między przerwaniem a głównym kodem nie jest pojedynczym krokiem, dlatego lab trzyma wspólne znaczniki czasu w 32 bitach."
+    },
+    "int8-t": {
+      "short": "Mała liczba całkowita od -128 do 127: jeden bajt, który może być ujemny.",
+      "simple": "Jednobajtowe pudełko z miejscem na znak minus. Dobre na rzeczy takie jak siła sygnału Wi-Fi w dBm.",
+      "deep": "Ze znakiem, 8 bitów, uzupełnienie do dwóch. Moc nadawania BLE i wartości RSSI są podawane jako <code>int8_t</code>."
+    },
+    "int16-t": {
+      "short": "Liczba całkowita od -32 768 do 32 767: dwa bajty, które mogą być ujemne.",
+      "simple": "Dwubajtowe pudełko ze znakiem minus. Współrzędne ekranu używają go, więc kształty mogą zacząć się tuż za krawędzią.",
+      "deep": "Ze znakiem, 16 bitów. Adafruit GFX przyjmuje <code>int16_t</code> dla x, y, szerokości i wysokości, a 16-bitowe próbki audio z mikrofonu też są <code>int16_t</code>."
+    },
+    "int32-t": {
+      "short": "Liczba całkowita od około -2,1 miliarda do +2,1 miliarda: cztery bajty, które mogą być ujemne.",
+      "simple": "To samo pudełko co <code>int</code> na tym układzie, ale jego nazwa obiecuje rozmiar na każdym układzie.",
+      "deep": "Ze znakiem, 32 bity. Mikrofon INMP441 wysyła próbki 24-bitowe w 32-bitowych slotach I2S, które odczytuje się jako <code>int32_t</code>, a potem przesuwa w dół."
+    },
+    "int64-t": {
+      "short": "Ogromna liczba całkowita, która może być ujemna: osiem bajtów.",
+      "simple": "Pudełko, które nigdy się nie wyczerpie, na zegary liczące mikrosekundy.",
+      "deep": "Ze znakiem, 64 bity. <code>esp_timer_get_time()</code> zwraca <code>int64_t</code> mikrosekund od startu, a przepełnienie zajęłoby około 292 000 lat."
+    },
+    "string-class": {
+      "short": "Typ tekstowy Arduino: kawałek tekstu, który może rosnąć, maleć i być przeszukiwany.",
+      "simple": "Rozciągliwa kartka na słowa: dopisujesz do niej, wycinasz kawałki, szukasz słowa, nie licząc liter samemu.",
+      "deep": "Trzyma swoje litery na stercie (krótkie inline), więc powtarzane <code>+</code> w ciasnej pętli obciąża pamięć. Lab używa <code>String</code> dla poleceń portu szeregowego i odpowiedzi WWW, a stałych tablic <code>char</code> tam, gdzie liczy się szybkość lub przerwania. <code>String(42)</code> zamienia liczbę na tekst."
+    },
+    "auto": {
+      "short": "Pozwala kompilatorowi ustalić typ na podstawie podanej wartości.",
+      "simple": "Jak powiedzieć „włóż to do pudełka właściwego rozmiaru” zamiast nazywać pudełko.",
+      "deep": "Typ i tak jest ustalany podczas kompilacji, a nie dynamicznie. <code>auto *self = static_cast&lt;Button *&gt;(arg);</code> pozwala nie pisać <code>Button</code> dwa razy; <code>auto</code> to także sposób na przechowanie lambd, bo ich typ nie ma nazwy."
+    },
+    "nullptr": {
+      "short": "Wskaźnik, który nic nie wskazuje.",
+      "simple": "Puste oznaczenie adresu: nie ma domu, do którego można pójść, więc sprawdź przed wyjściem.",
+      "deep": "Bezpieczna dla typów stała wskaźnikowa zerowa (C++11), zastępująca <code>NULL</code> i <code>0</code>. Funkcje alokacji, jak <code>heap_caps_malloc</code>, zwracają ją przy niepowodzeniu, a wiele wywołań ESP-IDF przyjmuje ją jako „nie potrzebuję tego”."
+    },
+    "if": {
+      "short": "Wykonuje następny blok tylko wtedy, gdy test w nawiasie jest prawdziwy.",
+      "simple": "„Jeśli pada, weź parasol.” Gdy nie pada, krok z parasolem jest pomijany.",
+      "deep": "Warunek jest zamieniany na <code>bool</code>, więc liczby i wskaźniki działają bezpośrednio. Deklaracja w teście (<code>if (DeserializationError e = deserializeJson(...))</code>) trzyma zmienną wewnątrz if."
+    },
+    "else": {
+      "short": "Druga ścieżka: wykonuje się, gdy test <code>if</code> był fałszywy.",
+      "simple": "„...a jeśli nie, włóż okulary przeciwsłoneczne.” Dzieje się dokładnie jedna z dwóch ścieżek.",
+      "deep": "<code>else if</code> to po prostu <code>else</code>, którego blokiem jest kolejny <code>if</code>, więc łańcuchy są sprawdzane od góry i zatrzymują się na pierwszym prawdziwym teście."
+    },
+    "for": {
+      "short": "Powtarza blok określoną liczbę razy albo raz dla każdego elementu listy.",
+      "simple": "„Dla każdego z 6 bajtów wypisz go.” Zacznij od 0, sprawdź, czy skończone, wykonaj robotę, licz w górę, powtórz.",
+      "deep": "<code>for (init; test; step)</code>. Forma zakresowa <code>for (const auto &amp;card : cards)</code> odwiedza każdy element tablicy lub kontenera bez indeksu."
+    },
+    "while": {
+      "short": "Powtarza blok tak długo, jak długo jego test pozostaje prawdziwy.",
+      "simple": "„Dopóki w skrzynce są listy, wyjmuj jeden.” Gdy jest pusta, przestań.",
+      "deep": "Test działa przed każdą rundą, więc ciało może wykonać się zero razy. <code>while</code>, które nigdy się nie kończy w <code>loop()</code>, zagłodzi resztę programu; lab czyta wejście przez <code>while (Serial.available())</code>, które kończy się, gdy bufor jest pusty."
+    },
+    "do-while": {
+      "short": "Jak <code>while</code>, ale blok zawsze wykona się co najmniej raz przed testem.",
+      "simple": "Spróbuj zupy, a potem zdecyduj, czy potrzebuje więcej soli. Zawsze najpierw próbujesz.",
+      "deep": "Test stoi po ciele i wymaga średnika: <code>do { ... } while (cond);</code>. Przydatne do „losuj wartość, aż będzie dobra”."
+    },
+    "switch": {
+      "short": "Wybiera jedną z kilku ścieżek, porównując wartość z ustalonymi wyborami.",
+      "simple": "Panel windy: wciśnij 3 i jedziesz na trzecie piętro. Każdy <code>case</code> to jeden przycisk.",
+      "deep": "Działa na liczbach całkowitych i wyliczeniach, nie na tekście. Wykonanie przechodzi do następnego case, chyba że użyjesz <code>break</code> lub <code>return</code>. Przy <code>enum class</code> kompilator ostrzega o zapomnianych przypadkach."
+    },
+    "case": {
+      "short": "Jeden wybór w <code>switch</code>: kod do wykonania, gdy wartość pasuje.",
+      "simple": "Jeden przycisk na panelu windy, z numerem piętra obok.",
+      "deep": "Etykieta musi być stałą znaną podczas kompilacji. Kilka etykiet może dzielić jedno ciało, jeśli je ustawisz jedna pod drugą; ciało bez <code>break</code> przechodzi dalej do następnego case."
+    },
+    "default": {
+      "short": "W <code>switch</code> ścieżka wybierana, gdy żaden <code>case</code> nie pasował.",
+      "simple": "Przycisk „cokolwiek innego”.",
+      "deep": "Opcjonalne i może stać w dowolnym miejscu switcha. W klasie <code>= default</code> znaczy coś innego: poproś kompilator, by sam napisał dany konstruktor lub operator."
+    },
+    "break": {
+      "short": "Natychmiast opuszcza bieżącą pętlę albo <code>switch</code>.",
+      "simple": "Wyjście awaryjne: przestań krążyć i kontynuuj po pętli.",
+      "deep": "Opuszcza tylko najbardziej wewnętrzną pętlę lub switch. Wewnątrz switcha, który stoi w pętli, <code>break</code> opuszcza switch, a nie pętlę."
+    },
+    "continue": {
+      "short": "Pomija resztę tej rundy pętli i zaczyna następną.",
+      "simple": "„Ten list nie jest dla mnie: odłóż go na bok i otwórz następny.”",
+      "deep": "W pętli <code>for</code> krok (<code>i++</code>) nadal wykonuje się przed następnym testem. Często używany do wczesnego pomijania złych danych zamiast zagnieżdżania <code>if</code>."
+    },
+    "return": {
+      "short": "Kończy funkcję natychmiast, opcjonalnie zwracając wartość temu, kto ją wywołał.",
+      "simple": "Oddawanie gotowej pracy domowej: robota skończona, oto odpowiedź.",
+      "deep": "W funkcji <code>void</code> samo <code>return;</code> po prostu wychodzi wcześniej, co jest częstym sposobem na odrzucenie złego wejścia (klauzula ochronna). Zmienne lokalne są niszczone po drodze, i tak <code>std::lock_guard</code> odblokowuje."
+    },
+    "setup-loop": {
+      "short": "Każdy program Arduino ma te dwie: <code>setup()</code> uruchamia się raz po włączeniu zasilania, potem <code>loop()</code> działa bez końca.",
+      "simple": "Otwieranie sklepu: <code>setup()</code> odblokowuje drzwi i zapala światła raz; <code>loop()</code> obsługuje klienta za klientem do zamknięcia (wyłączenia zasilania).",
+      "deep": "<code>main</code> rdzenia Arduino uruchamia zadanie FreeRTOS (\"loopTask\", rdzeń 1, domyślnie stos 8 KB), które wywołuje <code>setup()</code>, a potem <code>loop()</code> w kółko. Trzymaj <code>loop()</code> szybką i nieblokującą: sprawdzaj <code>millis()</code> zamiast długich <code>delay()</code>. <code>lab.loop()</code> labu to praca labu w każdej rundzie."
+    },
+    "lambda": {
+      "short": "Mała funkcja napisana dokładnie tam, gdzie jest potrzebna, często przekazywana innej funkcji, by wywołała ją później.",
+      "simple": "Samoprzylepna karteczka z instrukcją, którą przekazujesz komuś: „gdy przyjdzie żądanie dla /, zrób to”.",
+      "deep": "<code>[capture](params) { body }</code>. Lista przechwytywania mówi, czego może użyć z otoczenia: <code>[this]</code> bieżący obiekt, <code>[&amp;]</code> wszystko przez referencję, <code>[]</code> nic. Trasy WWW, zdarzenia Wi-Fi i sortowanie przyjmują tu lambdy."
+    },
+    "variadic": {
+      "short": "Oznacza „dowolną liczbę dodatkowych argumentów”, jak wartości, których potrzebuje wzorzec printf.",
+      "simple": "„...i tak dalej”: funkcja przyjmuje tyle dodatkowych argumentów, ile jej podasz.",
+      "deep": "W <code>void warn(const char *fmt, ...)</code> dodatkowe argumenty czyta się przez <code>va_list</code> i przekazuje do <code>vsnprintf</code>; atrybut <code>[[gnu::format(printf, 2, 3)]]</code> pozwala kompilatorowi sprawdzić je względem wzorca. W makrze <code>__VA_ARGS__</code> wkleja je."
+    },
+    "inline": {
+      "short": "Pozwala zdefiniować funkcję lub zmienną w nagłówku, który włącza wiele plików.",
+      "simple": "Przepis wydrukowany w każdej książce kucharskiej, która go potrzebuje: kuchnia zgadza się, że to ten sam przepis, a nie konkurencja.",
+      "deep": "Jego prawdziwe zadanie to reguła jednej definicji: funkcja <code>inline</code> w <code>.h</code> może pojawić się w wielu plikach <code>.cpp</code> bez konfliktu linkera. To, czy wywołanie zostanie faktycznie wstawione, zależy od optymalizatora. Funkcje <code>constexpr</code> i funkcje zdefiniowane w klasie są automatycznie inline."
+    },
+    "operator": {
+      "short": "Uczy typ, co ma robić symbol, jak <code>==</code>, <code>[]</code> albo <code>+</code>, gdy go dostanie.",
+      "simple": "Jak nauczenie nowego pionka zasad gry: teraz <code>a == b</code> działa też dla twojego własnego rodzaju rzeczy.",
+      "deep": "<code>bool operator==(const Uid &amp;o) const</code> to po prostu funkcja o specjalnej nazwie; <code>explicit operator bool()</code> pozwala testować obiekt w <code>if</code>."
+    },
+    "noexcept": {
+      "short": "Obietnica, że funkcja nigdy nie rzuci wyjątku.",
+      "simple": "Tabliczka na drzwiach: „tu żadnych niespodzianek”.",
+      "deep": "Jeśli mimo to rzuci, <code>std::terminate</code> kończy program. Kontenery standardowe używają tego, by sprawdzić, czy przeniesienie elementu jest bezpieczne. Buildy Arduino-ESP32 mają wyjątki dostępne, ale lab nigdy ich nie rzuca."
+    },
+    "override": {
+      "short": "<code>virtual</code> pozwala klasie potomnej zastąpić funkcję; <code>override</code> oznacza to zastąpienie.",
+      "simple": "Formularz z pustym miejscem: biblioteka zostawia „jak narysować jeden piksel” do wypełnienia, a <code>override</code> mówi „to jest moja odpowiedź na to puste miejsce”.",
+      "deep": "Wywołania idą przez tablicę wskaźników do funkcji (vtable), więc kod <code>Adafruit_GFX</code> trafia do naszego <code>FrameBuffer::drawPixel</code>. <code>override</code> sprawdza, czy istnieje pasująca funkcja wirtualna. Callbacki NimBLE, jak <code>onConnect</code>, działają tak samo."
+    },
+    "explicit": {
+      "short": "Nie pozwala kompilatorowi po cichu zamienić jednego typu w inny przez konstruktor.",
+      "simple": "„Zapytaj najpierw”: liczba nie zamieni się w <code>Button</code> tylko dlatego, że <code>Button</code> da się zbudować z liczby.",
+      "deep": "Bez tego konstruktor z jednym argumentem byłby niejawną konwersją, więc funkcja przyjmująca <code>BootButton</code> mogłaby zostać wywołana zwykłą liczbą. Używa się tego też przy <code>operator bool</code>."
+    },
+    "constructor": {
+      "short": "Specjalna funkcja o nazwie klasy, która przygotowuje nowy obiekt.",
+      "simple": "Instrukcja montażu, która wykonuje się raz, gdy nowa rzecz wyjdzie z pudełka.",
+      "deep": "Bez typu zwracanego. Lista po <code>:</code> (<code>: pin_(pin), name_(name)</code>) wypełnia składowe przed ciałem, w kolejności ich deklaracji. Destruktor <code>~Name()</code> wykonuje się, gdy obiekt znika, tak jak <code>FrameBuffer</code> zwalnia swoje piksele."
+    },
+    "address-reference": {
+      "short": "Trzy zadania: po typie tworzy referencję (inną nazwę), przed zmienną pobiera jej adres, między liczbami to bitowe AND.",
+      "simple": "Referencja to przezwisko: <code>uint8_t &amp;r</code> pozwala funkcji pisać prosto do twojego pudełka. <code>&amp;x</code> to adres ulicy pudełka. <code>a &amp; b</code> zostawia tylko bity włączone w obu.",
+      "deep": "<code>T &amp;</code> wiąże się z istniejącym obiektem i nie może być pusta ani przepięta; <code>const T &amp;</code> przekazuje duże rzeczy bez kopiowania. <code>&amp;lock_</code> daje <code>portMUX_TYPE *</code>. <code>x &amp; 0xFF</code> maskuje najniższy bajt."
+    },
+    "pointer": {
+      "short": "Trzy zadania: po typie deklaruje wskaźnik, przed wskaźnikiem podąża za nim, między liczbami mnoży.",
+      "simple": "Wskaźnik to karteczka z adresem. <code>*p</code> znaczy „idź pod ten adres i użyj tego, co tam jest”. Między dwiema liczbami to po prostu mnożenie.",
+      "deep": "Wskaźniki mają 4 bajty na ESP32. <code>uint16_t *buf_</code> trzyma miejsce, gdzie zaczynają się piksele; <code>buf_[i]</code> jest tym samym co <code>*(buf_ + i)</code>. <code>const char *</code> to wskaźnik do tekstu, który wolno czytać, ale nie zmieniać."
+    },
+    "array": {
+      "short": "Stały rząd wartości tego samego typu, numerowanych od 0.",
+      "simple": "Pudełko na jajka: stała liczba przegródek, wszystkie tego samego kształtu. Numery przegródek zaczynają się od 0, więc pudełko na 6 jajek ma przegródki od 0 do 5.",
+      "deep": "<code>char text[32]</code> rezerwuje 32 bajty właśnie tutaj, bez sterty. Nikt nie sprawdza indeksu, więc zapis do <code>text[32]</code> po cichu zdepcze to, co stoi dalej; <code>sizeof(text)</code> podaje pełny rozmiar w bajtach, dlatego wywołania buforów go przekazują."
+    },
+    "const": {
+      "short": "Oznacza wartość jako tylko do odczytu: po ustawieniu kod nie może jej zmienić.",
+      "simple": "Etykieta napisana długopisem, nie ołówkiem.",
+      "deep": "W przeciwieństwie do <code>constexpr</code>, wartość może pochodzić z działającego kodu (<code>const uint32_t now = millis();</code>). Po nawiasach funkcji składowej <code>const</code> obiecuje, że funkcja nie zmieni obiektu. <code>const char *p</code> chroni tekst; <code>char *const p</code> chroni wskaźnik."
+    },
+    "static": {
+      "short": "Utrzymuje zmienną przy życiu przez cały program albo dzieli jedną kopię między wszystkie obiekty klasy.",
+      "simple": "W funkcji to notatnik, który zostaje na biurku między wizytami, więc <code>loop()</code> pamięta swoją ostatnią wartość.",
+      "deep": "Trzy znaczenia. Lokalna <code>static</code> powstaje raz i przetrwa między wywołaniami. Składowa <code>static</code> należy do klasy, a nie do każdego obiektu (obsługa przerwania <code>onEdge</code> jest static i dostaje obiekt przez <code>arg</code>). Na poziomie pliku czyni nazwę prywatną dla tego pliku."
+    },
+    "volatile": {
+      "short": "Mówi kompilatorowi, że ta wartość może się zmienić za jego plecami, więc musi czytać ją za każdym razem na nowo.",
+      "simple": "Skrzynka pocztowa, która może się zapełnić, gdy nie patrzysz: musisz podejść i sprawdzić, a nie zakładać, że nadal jest pusta.",
+      "deep": "Potrzebne dla zmiennych zapisywanych przez przerwanie i czytanych przez zwykły kod. To <b>nie</b> jest blokada ani operacja atomowa: 64-bitowa wartość nadal może zostać rozdarta. Dla danych współdzielonych między zadaniami lepiej <code>std::atomic</code>, mutex lub sekcja krytyczna."
+    },
+    "sizeof": {
+      "short": "Mówi, ile bajtów zajmuje typ albo zmienna.",
+      "simple": "Jak przeczytanie pojemności wypisanej na słoiku, zanim cokolwiek do niego nalejesz.",
+      "deep": "Liczony podczas kompilacji, więc nic nie kosztuje w czasie działania. <code>sizeof(text)</code> dla tablicy to pełny rozmiar w bajtach, ale dla wskaźnika wynosi tylko 4. <code>sizeof(arr) / sizeof(arr[0])</code> liczy elementy."
+    },
+    "new-delete": {
+      "short": "<code>new</code> buduje obiekt w wolnej pamięci (na stercie); <code>delete</code> go niszczy i oddaje pamięć.",
+      "simple": "Wynajmowanie magazynu: <code>new</code> wynajmuje, <code>delete</code> oddaje klucz. Zapomnisz oddać, a miejsce przepada do restartu.",
+      "deep": "Każde <code>new</code> potrzebuje dokładnie jednego <code>delete</code> (<code>new[]</code> potrzebuje <code>delete[]</code>). Na ESP32 zwykłe <code>new</code> może trafić do wewnętrznego RAM albo PSRAM, zależnie od rozmiaru i ustawień builda; by wybrać, użyj <code>heap_caps_malloc</code>. <code>= delete</code> przy funkcji tego zabrania, na przykład kopiowania."
+    },
+    "progmem": {
+      "short": "Prosi, by dane zostały we pamięci flash zamiast być kopiowane do RAM.",
+      "simple": "Zostaw wielką księgę na półce w bibliotece i czytaj ją tam, zamiast kserować ją na swoje mały biurko.",
+      "deep": "Niezbędne na AVR Arduino; na ESP32 jest zdefiniowane jako nic, bo dane <code>const</code> i tak zostają we flashu mapowanym w pamięci. Zostało dla przejrzystości i przenośności, jak strona WWW w <code>kPage</code>."
+    },
+    "iram-attr": {
+      "short": "Umieszcza funkcję w szybkim wewnętrznym RAM układu, aby mogła działać natychmiast po wywołaniu przerwania.",
+      "simple": "Gaśnica trzymana przy drzwiach, a nie w piwnicy: musi być od razu pod ręką.",
+      "deep": "Zwykły kod działa z zewnętrznego flasha przez pamięć podręczną, a pamięć podręczna jest wyłączana podczas zapisu do flasha (NVS, OTA). Obsługa przerwania leżąca we flashu zawiesiłaby układ; <code>IRAM_ATTR</code> trzyma ją w IRAM. To, co ona wywołuje, też powinno być w IRAM, więc obsługi trzymaj małe."
+    },
+    "c-strings": {
+      "short": "Narzędzia C do tekstu w tablicach <code>char</code>: kopiowanie, porównywanie, mierzenie.",
+      "simple": "Praca z kafelkami liter ręcznie: skopiuj słowo do swojego rzędu, porównaj dwa rzędy, policz kafelki przed kafelkiem stopu.",
+      "deep": "<code>strlcpy(dst, src, sizeof(dst))</code> kopiuje bezpiecznie i zawsze kończy znakiem <code>'\\0'</code>. <code>strcmp</code> zwraca 0, gdy dwa teksty są równe (nie true!), dlatego kod czyta <code>strcmp(a, b) == 0</code>. <code>strlen</code> liczy litery, nie kończący <code>'\\0'</code>."
+    },
+    "memcpy": {
+      "short": "Kopiuje, wypełnia lub porównuje blok surowych bajtów.",
+      "simple": "Przenoszenie całej tacy jajek naraz zamiast jednego jajka na raz.",
+      "deep": "Działają na bajtach i nic nie wiedzą o typach: długość zawsze podaje się w bajtach, więc użyj <code>sizeof</code>. <code>memcpy</code> nie może nakładać się na siebie (użyj <code>memmove</code>); <code>memcmp</code> zwraca 0 dla równych. UID-y kart i ładunki BLE obsługuje się tak."
+    },
+    "struct": {
+      "short": "Zbiera kilka nazwanych wartości w jeden nowy typ.",
+      "simple": "Formularz z podpisanymi polami: jedna karta ma UID, nazwę i kolor, i wszystkie trzy podróżują razem.",
+      "deep": "Identyczne z <code>class</code>, tylko składowe są domyślnie <code>public</code>. Lab używa struktur do zwykłych danych (<code>HttpsResult</code>, <code>Frame</code>), a klas do rzeczy, które mają zachowanie."
+    },
+    "class": {
+      "short": "Definiuje nowy rodzaj obiektu: dane, które przechowuje, i rzeczy, które potrafi zrobić.",
+      "simple": "Schemat gadżetu: jakie ma części w środku i jakie przyciski są na zewnątrz.",
+      "deep": "Składowe są domyślnie <code>private</code>. <code>class FrameBuffer : public Adafruit_GFX</code> dziedziczy wszystko, co potrafi powierzchnia rysowania GFX. <code>enum class</code> używa tego słowa do czegoś innego: wyliczenia o zasięgu."
+    },
+    "enum": {
+      "short": "Lista nazwanych wyborów, jak <code>Click</code>, <code>DoubleClick</code>, <code>LongPress</code>.",
+      "simple": "Pytanie wielokrotnego wyboru: odpowiedź musi być jedną z opcji wydrukowanych na karcie.",
+      "deep": "<code>enum class Event { ... }</code> ma zasięg (pisze się <code>Event::Click</code>) i nie zamieni się przypadkiem w <code>int</code>. <code>: uint8_t</code> wybiera typ przechowywania. Zwykłe <code>enum</code> wycieka swoje nazwy do otaczającego zasięgu."
+    },
+    "namespace": {
+      "short": "Nazwany folder na funkcje i typy, by nazwy z różnych części nigdy się nie zderzały.",
+      "simple": "Nazwiska dla kodu: <code>pal::ink</code> i <code>sv::ink</code> mogą istnieć obok siebie, jak dwóch Samów z różnych rodzin.",
+      "deep": "Nienazwana <code>namespace { }</code> sprawia, że wszystko w środku jest prywatne dla tego pliku <code>.cpp</code> (linkowanie wewnętrzne), jak w lekcji 01 z jej pomocnikami. <code>using namespace x;</code> z powrotem wyciąga nazwy; w nagłówkach unikaj tego."
+    },
+    "std": {
+      "short": "Przestrzeń nazw biblioteki standardowej C++: <code>std::min</code>, <code>std::vector</code>, <code>std::mutex</code>...",
+      "simple": "Zestaw narzędzi, który przychodzi z każdym kompilatorem C++. <code>std::</code> mówi „weź to narzędzie ze standardowego pudełka”.",
+      "deep": "Arduino-ESP32 dostarcza pełną bibliotekę standardową C++ (libstdc++ z GCC), z kontenerami, algorytmami, <code>&lt;atomic&gt;</code> i <code>&lt;mutex&gt;</code> na bazie FreeRTOS. Pilnuj zużycia sterty: kontenery alokują."
+    },
+    "access": {
+      "short": "Decyduje, kto może używać składowych klasy: wszyscy, tylko sama klasa, czy klasa i jej potomkowie.",
+      "simple": "Przyciski z przodu radia są <code>public</code>; płytka w środku jest <code>private</code>.",
+      "deep": "Klasa trzyma dane jako <code>private</code> (tu z końcowym <code>_</code>, jak w <code>pin_</code>) i oferuje funkcje <code>public</code>, więc może zmienić wnętrze bez psucia wywołujących. W <code>: public Adafruit_GFX</code> to słowo określa, jak dziedziczone są składowe rodzica."
+    },
+    "this": {
+      "short": "Wewnątrz funkcji składowej wskaźnik do obiektu, na którym funkcja pracuje.",
+      "simple": "„Ja”: obiekt wskazujący na samego siebie.",
+      "deep": "Zwykle domyślne (<code>pin_</code> znaczy <code>this->pin_</code>). Przekazywane jawnie, gdy callback w stylu C musi wrócić do obiektu, jak w <code>attachInterruptArg(..., onEdge, this, CHANGE)</code> albo w parametrze zadania, i przechwytywane przez lambdy z <code>[this]</code>."
+    },
+    "using": {
+      "short": "Nadaje typowi krótszą lub bardziej czytelną nazwę.",
+      "simple": "Przezwisko: powiedz <code>JsonFn</code> zamiast całego długiego typu za każdym razem.",
+      "deep": "<code>using JsonFn = std::function&lt;...&gt;;</code> to nowoczesna forma <code>typedef</code>, czytana od lewej do prawej. <code>using namespace std;</code> i <code>using Base::f;</code> to inne zastosowania tego słowa."
+    },
+    "union": {
+      "short": "Kilka składowych dzieli te same bajty, więc tylko jedna ma sens naraz.",
+      "simple": "Jedno miejsce parkingowe z kilkoma możliwymi samochodami: ten, który zaparkował ostatni, tam stoi.",
+      "deep": "Unia ma rozmiar swojej największej składowej. Odczyt składowej innej niż ostatnio zapisana jest technicznie niezdefiniowany w C++ (GCC na to pozwala); <code>memcpy</code> lub <code>std::bit_cast</code> to czyste sposoby reinterpretacji bajtów."
+    },
+    "extern": {
+      "short": "Mówi, że zmienna istnieje, ale jest zdefiniowana gdzie indziej w programie.",
+      "simple": "„Klucz jest w drugim pokoju”: możesz o nim mówić tutaj, a linker dostarczy go później.",
+      "deep": "Deklaracja bez definicji. Klient HTTPS używa jej, by sięgnąć do pakietu certyfikatów Mozilli, który build wlinkowuje do flasha, po nazwach symboli linkera."
+    },
+    "constexpr": {
+      "short": "Wartość ustalona podczas kompilacji programu, więc nigdy nie zmieni się, gdy płytka działa.",
+      "simple": "Jak liczba wydrukowana na pudełku, a nie zapisana na karteczce: ustalona, zanim płytka w ogóle zostanie włączona.",
+      "deep": "Zmienne <code>constexpr</code> oblicza kompilator i nie zużywają RAM w czasie działania; funkcja <code>constexpr</code>, jak <code>rgb()</code>, może działać podczas kompilacji, gdy jej wejścia są stałymi. Lab nazywa je <code>kSomething</code>."
+    },
+    "static-cast": {
+      "short": "Zamienia wartość na inny typ celowo i na widoku.",
+      "simple": "Przelanie napoju do innej szklanki, świadomie i na oczach wszystkich.",
+      "deep": "Sprawdzane przez kompilator i darmowe w czasie działania dla typów liczbowych. Częste tu: <code>static_cast&lt;unsigned long&gt;</code>, by pasować do <code>%lu</code>, oraz zamiana <code>void *</code> z powrotem na obiekt, którym był. Krótka forma <code>uint8_t(x)</code> robi to samo dla prostych typów."
+    },
+    "reinterpret-cast": {
+      "short": "Traktuje te same bajty jako zupełnie inny typ, bez ich zmieniania.",
+      "simple": "Czytanie strony liczb tak, jakby to były litery: atrament ten sam, zmienia się tylko sposób czytania.",
+      "deep": "Nic się nie konwertuje; po prostu przepisuje etykietę wskaźnika (na przykład <code>uint8_t *</code> na <code>const char *</code> dla bufora bajtów z tekstem). Łatwo go nadużyć: nadal obowiązują reguły wyrównania i ścisłego aliasingu."
+    },
+    "const-cast": {
+      "short": "Zdejmuje <code>const</code> ze wskaźnika, by można go przekazać starej funkcji.",
+      "simple": "Pożyczenie etykiety napisanej długopisem funkcji, która przyjmuje tylko ołówkowe: obiecujesz, że naprawdę nie zapisze.",
+      "deep": "Bezpieczne tylko wtedy, gdy obiekt nie był naprawdę stały, albo gdy wywoływana funkcja go nie zmienia (wiele API C po prostu zapomniało o <code>const</code>). Pisanie przez to do naprawdę stałych danych jest niezdefiniowane."
+    },
+    "template": {
+      "short": "Pisze funkcję lub klasę raz dla dowolnego typu; kompilator tworzy kopię dla każdego użytego typu.",
+      "simple": "Foremka do ciastek: jeden kształt, dowolne ciasto. <code>T</code> jest zastępcą ciasta, dopóki go nie wybierzesz.",
+      "deep": "<code>template &lt;typename F&gt; void withChip(F &amp;&amp;fn)</code> przyjmuje dowolne wywoływalne, łącznie z lambdami, bez kosztu w czasie działania. Każdy nowy typ oznacza nową skompilowaną kopię, więc intensywne użycie rozrasta firmware. Nawiasy ostre dostarczają typ: <code>std::vector&lt;Card&gt;</code>."
+    },
+    "std-min-max": {
+      "short": "Zwraca mniejszą lub większą z dwóch wartości.",
+      "simple": "„Która jest niższa” i „która jest wyższa”: przydatne do trzymania liczb w zakresie.",
+      "deep": "Oba argumenty muszą mieć ten sam typ albo podajesz go jawnie: <code>std::min&lt;uint32_t&gt;(n, 320)</code>. <code>std::max(0, n - 9)</code> nie pozwala wartości zejść poniżej zera."
+    },
+    "std-clamp": {
+      "short": "Wciska wartość w zakres: poniżej dolnej granicy daje dolną granicę, powyżej górnej daje górną.",
+      "simple": "Bramka dziecięca na schodach: możesz się poruszać, ale nie przejdziesz przez bramki na żadnym końcu.",
+      "deep": "C++17, z <code>&lt;algorithm&gt;</code>. Wszystkie trzy argumenty muszą mieć jeden typ, stąd <code>0.0f</code> i <code>1.0f</code>. Funkcja <code>constrain()</code> z Arduino robi to samo."
+    },
+    "std-algorithms": {
+      "short": "Gotowe pętle z biblioteki standardowej: wypełnianie, kopiowanie, sortowanie, szukanie największego...",
+      "simple": "Kuchenne urządzenia: mógłbyś kroić ręcznie, ale urządzenie jest szybsze i się nie omsknie.",
+      "deep": "Z <code>&lt;algorithm&gt;</code>; działają na każdym zakresie podanym jako wskaźnik początku i końca (lub iterator), z końcem za ostatnim elementem. <code>std::fill_n(buf_, n, c)</code> maluje cały ekran; <code>std::sort</code> przyjmuje lambdę mówiącą, co znaczy „idzie pierwsze”."
+    },
+    "std-move": {
+      "short": "Przekazuje zawartość obiektu innemu zamiast ją kopiować.",
+      "simple": "Przeprowadzka z pudełkami takimi, jakie są, zamiast kupowania kopii wszystkiego do nowego mieszkania.",
+      "deep": "To tylko rzutowanie na referencję rvalue (<code>T &amp;&amp;</code>); właściwe przeniesienie robi konstruktor przenoszący przyjmującego typu. Potem źródło jest poprawne, lecz prawie puste, więc nie polegaj na jego wartości. Tanie dla <code>String</code>, <code>std::vector</code> i <code>std::function</code>."
+    },
+    "std-vector": {
+      "short": "Lista, która może rosnąć i maleć, przechowująca elementy jednego typu.",
+      "simple": "Rozrastający się segregator: dodajesz kartki, a on robi miejsce, i nadal możesz powiedzieć „daj mi kartkę 3”.",
+      "deep": "Przechowuje elementy w jednym ciągłym bloku na stercie i podwaja go, gdy jest pełny, co przenosi (i może fragmentować) pamięć. Lab wypełnia wektory poza krytycznymi czasowo ścieżkami, na przykład kopiując listę kart dla ekranu. <code>v.size()</code>, <code>v.push_back(x)</code>, <code>v[i]</code>."
+    },
+    "std-function": {
+      "short": "Pudełko, które może przechować dowolną funkcję lub lambdę o danym kształcie, do wywołania później.",
+      "simple": "Kieszonka na karteczkę z instrukcją: pasuje każda, o ile przyjmuje te same dane wejściowe.",
+      "deep": "<code>std::function&lt;void(Card &amp;)&gt;</code> przyjmuje <code>Card &amp;</code> i nic nie zwraca. Elastyczne, ale cięższe niż szablon: wywołanie idzie pośrednio, a duże przechwycenia trafiają na stertę. Dobre dla callbacków przechowywanych w klasie."
+    },
+    "std-atomic": {
+      "short": "Zmienna, którą dwa zadania mogą jednocześnie czytać i zapisywać, nigdy nie widząc połowy zmiany.",
+      "simple": "Jeden wspólny włącznik światła: bez względu na to, kto go dotknie, zawsze jest wyraźnie włączony albo wyłączony.",
+      "deep": "<code>std::atomic&lt;bool&gt;</code> i <code>std::atomic&lt;uint32_t&gt;</code> są bez blokad na ESP32. Używaj ich dla jednej małej wartości, jak flaga czy licznik; dla kilku wartości, które muszą się zmieniać razem, użyj mutexu."
+    },
+    "memory-order": {
+      "short": "Mówi, jak ściśle odczyt lub zapis atomowy musi się zgadzać z otaczającą pamięcią.",
+      "simple": "„Release” to jak wysłanie listu dopiero po zaklejeniu koperty; „acquire” to otwarcie go przed czytaniem. Razem gwarantują, że czytelnik widzi wszystko, co przygotował pisarz.",
+      "deep": "<code>relaxed</code> czyni atomowym tylko tę jedną wartość. Zapis <code>release</code> sparowany z odczytem <code>acquire</code> sprawia, że wszystko zapisane przed zapisem jest widoczne po odczycie, między dwoma rdzeniami ESP32. Domyślny (<code>seq_cst</code>) jest najściślejszy."
+    },
+    "std-mutex": {
+      "short": "Blokada, która wpuszcza do kodu lub danych tylko jedno zadanie naraz.",
+      "simple": "Jeden klucz do wspólnej łazienki: kto go ma, wchodzi, a reszta czeka pod drzwiami.",
+      "deep": "W Arduino-ESP32 jest oparty na mutexie FreeRTOS, więc czekające zadanie śpi zamiast kręcić się w miejscu. Nigdy nie blokuj go w przerwaniu. Blokuj go przez <code>std::lock_guard</code>, by zawsze się odblokował, nawet przy wczesnym <code>return</code>."
+    },
+    "lock-guard": {
+      "short": "Blokuje mutex przy utworzeniu i automatycznie odblokowuje na końcu bloku.",
+      "simple": "Klucz, który sam się oddaje: bierze klucz od łazienki, wchodząc, i sam go odkłada, wychodząc, jakkolwiek wyjdziesz.",
+      "deep": "RAII: konstruktor wywołuje <code>lock()</code>, a destruktor <code>unlock()</code>, gdy zmienna wychodzi poza zasięg. Dzięki temu nie da się zapomnieć odblokowania przy wczesnym <code>return</code>. Trzymaj blok krótki."
+    },
+    "decltype": {
+      "short": "Pyta kompilator „jakiego typu jest to wyrażenie?” i używa odpowiedzi jako typu.",
+      "simple": "„Daj mi pudełko dokładnie takie jak tamto.”",
+      "deep": "Liczone podczas kompilacji; wyrażenie nigdy nie jest wykonywane. Przydatne w szablonach i do nazywania typu lambdy."
+    },
+    "static-assert": {
+      "short": "Sprawdzenie wykonywane podczas kompilacji; jeśli nie przejdzie, build zatrzymuje się z twoim komunikatem.",
+      "simple": "Strażnik w fabryce: część, która nie pasuje, nigdy nie opuszcza budynku.",
+      "deep": "Nic nie kosztuje w czasie działania. Typowe użycie: sprawdzić, czy spakowana struktura ma rozmiar bajtów, jakiego oczekuje protokół, albo czy tabela ma jeden wpis na wartość wyliczenia."
+    },
+    "mutable": {
+      "short": "Pozwala składowej zmieniać się nawet wewnątrz funkcji <code>const</code>, dla księgowania, które nie jest częścią wartości obiektu.",
+      "simple": "Notatnik przypięty do zapieczętowanego dokumentu: dokument pozostaje taki sam, notatki mogą się zmieniać.",
+      "deep": "Typowe dla mutexu albo pamięci podręcznej wewnątrz obiektu, którego funkcje odczytu są <code>const</code>: zablokowanie zmienia mutex, ale nie to, co oznacza obiekt. Przy lambdzie <code>mutable</code> pozwala zmieniać jej własne przechwycone kopie."
+    },
+    "include": {
+      "short": "Wkleja inny plik tutaj, by ten plik mógł używać tego, co deklaruje.",
+      "simple": "Jak napisanie „zobacz załączony przepis” na górze przepisu: składniki, które tam są, są teraz dostępne.",
+      "deep": "<code>&lt;Arduino.h&gt;</code> w nawiasach ostrych szuka w ścieżkach bibliotek i systemu; <code>\"pins.h\"</code> w cudzysłowach najpierw szuka obok tego pliku (i w <code>include/</code> projektu). To zwykłe wklejanie tekstu, wykonywane przed kompilacją."
+    },
+    "pragma-once": {
+      "short": "Dba, by plik nagłówkowy został wklejony tylko raz, bez względu na to, ile plików go włącza.",
+      "simple": "Zakładka „już to czytałeś”: za drugim razem strona jest pomijana.",
+      "deep": "Obsługiwane przez GCC i każdy główny kompilator; zastępuje starszy wzorzec <code>#ifndef X / #define X / #endif</code>. Bez niego struktura zdefiniowana dwa razy byłaby błędem kompilacji."
+    },
+    "define": {
+      "short": "Tworzy nazwę, która zostaje zastąpiona tekstem, zanim kod zostanie skompilowany.",
+      "simple": "Znajdź i zamień wykonane przez komputer tuż przed przeczytaniem kodu: każde <code>PIN_RGB</code> staje się <code>48</code>.",
+      "deep": "Makra nic nie wiedzą o typach ani zasięgu. <code>pins.h</code> używa ich, by flaga builda, jak <code>-DPIN_RGB=38</code>, mogła nadpisać pin; dla zwykłych stałych wybieraj <code>constexpr</code>. Makro z nawiasami, jak <code>BLE_NOTE(kind, ...)</code>, wkleja swoje argumenty."
+    },
+    "conditional-compile": {
+      "short": "Zachowuje lub usuwa linie kodu przed kompilacją, zależnie od tego, czy nazwa jest zdefiniowana.",
+      "simple": "„Jeśli nikt nie wybrał pinu, użyj 48.” Linie, które się nie stosują, są wycinane, zanim kompilator je zobaczy.",
+      "deep": "<code>#ifndef PIN_RGB</code> ... <code>#endif</code> pozwala flagom builda w <code>platformio.ini</code> wygrać z domyślnymi wartościami w <code>pins.h</code>. <code>#if</code> sprawdza wyrażenie stałe; każde <code>#if</code>/<code>#ifdef</code>/<code>#ifndef</code> potrzebuje pasującego <code>#endif</code>."
+    },
+    "serial-begin": {
+      "short": "Otwiera łącze szeregowe z komputerem z wybraną prędkością, by płytka mogła wypisywać komunikaty.",
+      "simple": "Podniesienie słuchawki i uzgodnienie, jak szybko będziecie rozmawiać. 115200 to prędkość, na której słucha monitor portu szeregowego.",
+      "deep": "Prędkość w bodach (bitach na sekundę); musi zgadzać się z <code>monitor_speed</code> w <code>platformio.ini</code>. W tych labach <code>Serial</code> to UART0, dostępny przez układ USB-na-szeregowy na porcie <code>COM</code>, więc nic nie czeka, aż USB się wyliczy."
+    },
+    "serial-printf": {
+      "short": "Wypisuje linię na monitorze portu szeregowego, wstawiając wartości przez kody <code>%</code>.",
+      "simple": "Formularz do uzupełnienia: <code>\"%d cores\"</code> ma puste miejsce, a podana liczba je wypełnia.",
+      "deep": "Formatuje przez <code>vsnprintf</code>, potem zapisuje do UART0 przy 115200 bodach (około 11,5 KB/s, więc długie wypisy spowalniają pętlę). Kody: <code>%d</code> int, <code>%u</code> bez znaku, <code>%lu</code> unsigned long, <code>%.1f</code> float, <code>%s</code> łańcuch C (użyj <code>.c_str()</code> dla <code>String</code>), <code>%02X</code> dwucyfrowy hex. Dodaj <code>\\n</code> sam."
+    },
+    "serial-print": {
+      "short": "Wypisuje tekst lub liczbę na monitorze portu szeregowego; <code>println</code> dodatkowo zaczyna nową linię.",
+      "simple": "Mówienie na głos do komputera. <code>println</code> to jak naciśnięcie Enter na końcu.",
+      "deep": "Przyjmuje tekst, liczby i <code>String</code>; <code>Serial.print(x, HEX)</code> wypisuje w hex. Zapisuje do bufora nadawczego i czeka tylko wtedy, gdy ten bufor jest pełny."
+    },
+    "serial-read": {
+      "short": "<code>available()</code> mówi, ile wpisanych liter czeka; <code>read()</code> bierze następną.",
+      "simple": "Sprawdzanie skrzynki na listy: <code>available()</code> mówi, ile listów w niej jest, <code>read()</code> wyjmuje jeden.",
+      "deep": "Obie zwracają od razu; <code>read()</code> daje -1, gdy nic nie czeka. Lab zbiera litery do bufora aż do nowej linii, potem wykonuje polecenie, więc pisanie nigdy nie blokuje ekranu. <code>flush()</code> czeka, aż wszystko wypisane zostanie wysłane."
+    },
+    "pin-mode": {
+      "short": "Ustawia pin GPIO jako wejście albo wyjście, zanim go użyjesz.",
+      "simple": "Decyzja, czy drzwi służą do wchodzenia (odczyt przycisku), czy do wychodzenia (zapalanie diody LED).",
+      "deep": "Konfiguruje matrycę GPIO dla tego pinu. <code>INPUT_PULLUP</code> włącza też słaby wewnętrzny rezystor do 3,3 V, więc przycisk do GND nie potrzebuje dodatkowych części. Unikaj pinów strapping, flash i PSRAM wymienionych na początku <code>pins.h</code>."
+    },
+    "pin-modes": {
+      "short": "Sposoby ustawienia pinu: nasłuchiwać, sterować albo nasłuchiwać z wbudowanym rezystorem.",
+      "simple": "<code>OUTPUT</code> to kurek, który otwierasz i zamykasz. <code>INPUT</code> to manometr, który czytasz. <code>INPUT_PULLUP</code> to manometr, który spoczywa na „wysokim”, dopóki coś go nie pociągnie w dół.",
+      "deep": "Pływający <code>INPUT</code> łapie szumy; <code>INPUT_PULLUP</code>/<code>INPUT_PULLDOWN</code> włączają słabe wewnętrzne rezystory ESP32 (dziesiątki kiloomów). Dlatego wciśnięte przyciski odczytują <code>LOW</code> w tych labach."
+    },
+    "digital-write": {
+      "short": "Włącza wyjściowy pin na 3,3 V albo wyłącza go na 0 V.",
+      "simple": "Przełączenie wyłącznika światła: <code>HIGH</code> to włączone, <code>LOW</code> to wyłączone.",
+      "deep": "Piny ESP32-S3 pracują na 3,3 V, nigdy na 5 V. Każdy pin może oddać lub pochłonąć około 20 mA domyślnie (regulowane przez <code>gpio_set_drive_capability</code>), więc dioda LED zawsze potrzebuje rezystora szeregowego."
+    },
+    "digital-read": {
+      "short": "Odczytuje, czy wejściowy pin jest w stanie wysokim (blisko 3,3 V), czy niskim (blisko 0 V).",
+      "simple": "Pytanie przycisku dzwonka: czy ktoś teraz go wciska?",
+      "deep": "Zwraca <code>HIGH</code> (1) albo <code>LOW</code> (0). Z <code>INPUT_PULLUP</code> wciśnięty przycisk odczytuje <code>LOW</code>, stąd <code>== LOW</code> oznacza „wciśnięty”. Mechaniczne styki drgają przez kilka ms, co filtruje <code>Button</code>."
+    },
+    "high-low": {
+      "short": "Dwa poziomy pinu cyfrowego: <code>HIGH</code> to 3,3 V, <code>LOW</code> to 0 V.",
+      "simple": "Włączone i wyłączone, w wersji napięciowej.",
+      "deep": "To po prostu 1 i 0. Na ESP32 wejście odczytuje <code>HIGH</code> powyżej mniej więcej trzech czwartych 3,3 V, a <code>LOW</code> poniżej jednej czwartej; pomiędzy nie ma gwarancji."
+    },
+    "analog-read": {
+      "short": "Mierzy napięcie na pinie jako liczbę od 0 do 4095.",
+      "simple": "Odczyt pokrętła ściemniacza zamiast włącznika: jak wysoko jest napięcie, w skali od 0 do 4095?",
+      "deep": "Przetwornik ADC ESP32-S3 ma 12 bitów. Używaj pinów ADC1 (GPIO 1-10): ADC2 dzieli zasoby z Wi-Fi. Jedno wywołanie to jedna wolna próbka, dlatego laby dźwiękowe używają trybu ciągłego ADC z DMA."
+    },
+    "millis": {
+      "short": "Ile milisekund minęło od uruchomienia płytki.",
+      "simple": "Stoper, który startuje przy włączeniu zasilania i nigdy się nie zatrzymuje. Porównaj go z wcześniejszym odczytem, by wiedzieć, ile czasu minęło.",
+      "deep": "Zwraca 32-bitowy <code>unsigned long</code> wyprowadzony z 64-bitowego <code>esp_timer</code>. Zawija się do 0 po około 49,7 dnia, a <code>millis() - last >= interval</code> działa poprawnie przez zawinięcie dzięki arytmetyce bez znaku. Tak pętle robią coś „co N ms” bez <code>delay()</code>."
+    },
+    "micros": {
+      "short": "Ile mikrosekund (milionowych części sekundy) minęło od uruchomienia płytki.",
+      "simple": "Ten sam stoper co <code>millis()</code>, odczytany tysiąc razy dokładniej.",
+      "deep": "32-bitowy, więc zawija się po około 71,6 minuty; dobry do mierzenia krótkich rzeczy, a dla 64-bitowego zegara, który w praktyce się nie zawija, użyj <code>esp_timer_get_time()</code>."
+    },
+    "delay": {
+      "short": "Wstrzymuje bieżący kod na określoną liczbę milisekund.",
+      "simple": "Drzemka: nic innego w <code>loop()</code> się nie dzieje, dopóki się nie obudzisz.",
+      "deep": "Na ESP32 wywołuje <code>vTaskDelay</code>, więc CPU jest wolne dla innych zadań (Wi-Fi, BLE, próbkowanie), gdy to śpi. Tu takt FreeRTOS to 1 ms. Długie opóźnienia nadal zamrażają przyciski i ekran, dlatego laby głównie używają sprawdzania <code>millis()</code>."
+    },
+    "delay-microseconds": {
+      "short": "Czeka krótką liczbę mikrosekund, dla sprzętu, który potrzebuje bardzo krótkich pauz.",
+      "simple": "Wstrzymanie oddechu na mgnienie: za krótko, żeby się zdrzemnąć, więc po prostu czekasz w miejscu.",
+      "deep": "Aktywne czekanie: CPU się kręci i inne zadania na tym rdzeniu nie działają. W porządku przez kilkaset mikrosekund (na ustabilizowanie pull-upa), nigdy na długie czekanie."
+    },
+    "ledc-attach": {
+      "short": "Zamienia pin na wyjście PWM o wybranej częstotliwości i rozdzielczości, do przyciemniania diod LED lub podświetlenia.",
+      "simple": "Ustawienie bardzo szybkiego włącznika, który miga tysiące razy na sekundę, tak że oko widzi „na pół jasności”.",
+      "deep": "API Arduino-ESP32 3.x na peryferium LEDC: <code>ledcAttach(pin, freq, bits)</code> zwraca <code>false</code>, jeśli żaden kanał lub częstotliwość nie pasują. 5 kHz przy 8 bitach daje wartości duty 0-255 bez widocznego migotania."
+    },
+    "ledc-write": {
+      "short": "Ustawia, jaką część każdego cyklu PWM pin pozostaje włączony: 0 to wyłączony, górna wartość to w pełni włączony.",
+      "simple": "Przekręcanie pokrętła ściemniacza na tym szybkim włączniku.",
+      "deep": "W Arduino-ESP32 3.x przyjmuje pin (w 2.x przyjmował kanał). Zakres duty to 0 do 2^bits - 1 (0-255 dla 8 bitów) z <code>ledcAttach</code>; sprzęt LEDC utrzymuje przebieg bez pracy CPU."
+    },
+    "rgb-led-write": {
+      "short": "Ustawia kolor wbudowanej diody RGB płytki z wartości czerwieni, zieleni i niebieskiego (0-255 każda).",
+      "simple": "Mieszanie farb: trochę czerwieni, dużo zieleni, bez niebieskiego. Dioda pokazuje mieszankę.",
+      "deep": "Wbudowana dioda to WS2812, który przyjmuje kolor jako precyzyjnie taktowany ciąg impulsów; Arduino-ESP32 generuje go przez peryferium RMT. Świeci bardzo jasno, więc laby zmniejszają wartości. W starszych rdzeniach nazywała się <code>neopixelWrite</code>."
+    },
+    "attach-interrupt": {
+      "short": "Uruchamia funkcję w chwili zmiany pinu, nawet gdy reszta kodu jest zajęta.",
+      "simple": "Dzwonek zamiast zaglądania przez okno: płytka zostaje przerwana w chwili, gdy ktoś naciśnie.",
+      "deep": "<code>CHANGE</code>, <code>RISING</code> albo <code>FALLING</code> wybiera, które zbocza wywołują. <code>attachInterruptArg</code> przekazuje też <code>void *</code> (tu <code>this</code>), by statyczna obsługa mogła znaleźć swój obiekt. Obsługi muszą być krótkie, oznaczone <code>IRAM_ATTR</code> i dotykać tylko <code>volatile</code> lub danych atomowych."
+    },
+    "digital-pin-to-interrupt": {
+      "short": "Zamienia numer pinu w numer przerwania, którego oczekuje <code>attachInterrupt</code>.",
+      "simple": "Sprawdzanie, który przewód dzwonka należy do których drzwi.",
+      "deep": "Na ESP32 każdy GPIO może wywołać przerwanie, a numer to sam pin, ale zapisanie tego zachowuje przenośność kodu na płytki, w których jest inaczej."
+    },
+    "random": {
+      "short": "Wybiera losową liczbę całkowitą: <code>random(40, 200)</code> daje od 40 do 199.",
+      "simple": "Rzut kostką, której ścianki wybierasz. Górnej liczby nigdy nie wyrzucisz.",
+      "deep": "<code>random(max)</code> daje od 0 do max-1, <code>random(min, max)</code> od min do max-1. <code>randomSeed(esp_random())</code> zaczyna ciąg od sprzętowej liczby losowej, więc każdy start wygląda inaczej."
+    },
+    "constrain": {
+      "short": "Trzyma wartość między najniższą a najwyższą dozwoloną wartością.",
+      "simple": "Bandy na torze kręgielnym: kula może toczyć się wszędzie między nimi, nigdy poza nie.",
+      "deep": "Wersja Arduino <code>std::clamp</code>: <code>constrain(x, lo, hi)</code>. Nuty i prędkości MIDI muszą zostać w zakresie 0-127, więc lab BLE MIDI je przycina."
+    },
+    "min-max": {
+      "short": "Skrót Arduino dla mniejszej lub większej z dwóch wartości.",
+      "simple": "„Która jest mniejsza” albo „która jest większa”. <code>max(2, s / 6)</code> znaczy „co najmniej 2”.",
+      "deep": "Podaj oba argumenty tego samego typu, by uniknąć niespodzianek. Gdzie indziej laby piszą <code>std::min</code>/<code>std::max</code>, które też przyjmują jawny typ: <code>std::min&lt;uint32_t&gt;(n, 320)</code>."
+    },
+    "string-c-str": {
+      "short": "Zwraca tekst <code>String</code> jako zwykły łańcuch C, dla funkcji, które chcą <code>const char *</code>.",
+      "simple": "Wyjmowanie liter z rozciągliwego notatnika i układanie ich na stole, dla kogoś, kto czyta tylko kafelki.",
+      "deep": "Wskaźnik jest ważny tylko, dopóki <code>String</code> istnieje i się nie zmienia; nigdy nie przechowuj go z tymczasowego, jak <code>a.toString().c_str()</code>, poza tą linią. Potrzebne dla <code>%s</code> w printf."
+    },
+    "string-is-empty": {
+      "short": "Pytasz <code>String</code>, czy nie ma liter, albo ile ma liter.",
+      "simple": "Czy strona notatnika jest pusta? Ile liter na niej jest?",
+      "deep": "<code>length()</code> liczy znaki (bajty, więc emoji liczy się jako kilka) i nie zawiera ukrytego <code>'\\0'</code>. <code>isEmpty()</code> to to samo co <code>length() == 0</code> i lepiej się czyta."
+    },
+    "string-substring": {
+      "short": "<code>indexOf</code> znajduje, gdzie pojawia się tekst; <code>substring</code> wycina kawałek.",
+      "simple": "Znajdowanie słowa w zdaniu palcem, a potem wycinanie potrzebnej części nożyczkami.",
+      "deep": "Pozycje liczone od 0. <code>substring(from)</code> idzie do końca, <code>substring(from, to)</code> kończy tuż przed <code>to</code>. <code>indexOf</code> zwraca -1, gdy nic nie znajdzie. Każdy <code>substring</code> tworzy nowy <code>String</code> na stercie."
+    },
+    "string-starts-with": {
+      "short": "Sprawdza, czy <code>String</code> zaczyna się (lub kończy) jakimś tekstem.",
+      "simple": "„Czy to polecenie zaczyna się od 'vol '?” Szybkie tak albo nie.",
+      "deep": "Rozróżnia wielkość liter, dlatego polecenia najpierw zamienia się na małe litery (<code>lower.startsWith(...)</code>). Tak parser poleceń portu szeregowego każdego labu rozpoznaje swoje słowa."
+    },
+    "string-trim": {
+      "short": "Porządkuje tekst w miejscu: usuwa spacje z końców, zmienia wielkość liter albo podmienia jeden tekst na inny.",
+      "simple": "Wyprostowanie notatki przed czytaniem: bez zbędnych spacji, wszystko małymi literami, więc „Help ” i „help” znaczą to samo.",
+      "deep": "Te funkcje zmieniają sam <code>String</code> i nic nie zwracają, więc wywołuj je na kopii, którą posiadasz: <code>String lower = line; lower.toLowerCase();</code>. <code>trim</code> usuwa też <code>\\r</code>, który wysyłają niektóre terminale."
+    },
+    "string-to-int": {
+      "short": "Zamienia tekst, jak <code>\"42\"</code>, w liczbę 42.",
+      "simple": "Odczytanie cyfr z karteczki i wpisanie ich na kalkulatorze.",
+      "deep": "Zwraca <code>long</code> (lub <code>float</code>). Tekst, który nie zaczyna się od liczby, daje 0, więc wpisane <code>0</code> i bzdura wyglądają tak samo; sprawdzaj tekst, gdy to ważne."
+    },
+    "spi-begin": {
+      "short": "Startuje magistralę SPI na wybranych pinach, by płytka mogła szybko rozmawiać z ekranem lub czytnikiem RFID.",
+      "simple": "Założenie prywatnej linii telefonicznej z osobnymi przewodami do mówienia, słuchania i wspólnego taktu, według którego obie strony się trzymają.",
+      "deep": "<code>SPI.begin(sck, miso, mosi, ss)</code>; -1 pomija pin (wyświetlacz nie ma MISO). <code>SPI</code> to SPI2 (FSPI) S3; ścieżka RFID tworzy drugi <code>SPIClass</code> na SPI3, by obie nigdy nie dzieliły przewodów ani taktowania."
+    },
+    "log-macros": {
+      "short": "Wypisuje oznaczoną linię logu: <code>i</code> info, <code>w</code> ostrzeżenie, <code>e</code> błąd, <code>d</code> debug.",
+      "simple": "Notatki w dzienniku pokładowym, każda z pieczątką mówiącą, jak poważna jest.",
+      "deep": "Makra Arduino-ESP32 ze wzorcami w stylu printf. Każda linia ma przed sobą poziom, plik, numer linii i funkcję, a linie powyżej <code>CORE_DEBUG_LEVEL</code> (3 = info w <code>platformio.ini</code>) są usuwane podczas kompilacji, więc <code>log_d</code> nic tu nie kosztuje. Wyjście idzie na ten sam port szeregowy co <code>Serial</code>."
+    },
+    "esp-info": {
+      "short": "Pytasz układ o siebie: model, rdzenie, prędkość, rozmiar flasha i PSRAM, adres MAC.",
+      "simple": "Płytka odczytuje na głos własną kartę identyfikacyjną.",
+      "deep": "Lekcja 01 oczekuje <i>ESP32-S3</i>, 2 rdzeni przy 240 MHz, 16 MB flasha (wersja N16) i około 8 MB PSRAM (wersja R8). <code>getEfuseMac()</code> zwraca fabryczny MAC z eFuse jako <code>uint64_t</code>, najniższy bajt pierwszy."
+    },
+    "free-heap": {
+      "short": "Ile pamięci wciąż jest wolne na nowe alokacje.",
+      "simple": "Sprawdzanie, ile miejsca zostało w szafce, zanim kupisz więcej.",
+      "deep": "<code>ESP.getFreeHeap()</code> liczy wewnętrzny RAM; <code>heap_caps_get_free_size(MALLOC_CAP_SPIRAM)</code> liczy PSRAM. Wolne nie znaczy użyteczne: <code>heap_caps_get_largest_free_block</code> mówi, jaki jest największy pojedynczy kawałek, a tego potrzebuje bufor klatki."
+    },
+    "esp-restart": {
+      "short": "Restartuje układ od zera, jakbyś nacisnął przycisk reset.",
+      "simple": "Wyłączenie i ponowne włączenie, ale z poziomu programu.",
+      "deep": "Reset programowy: RAM jest czyszczony, NVS (Preferences) przetrwa, a <code>esp_reset_reason()</code> przy następnym starcie zgłosi <code>ESP_RST_SW</code>. Używane po zmianie zapisanego ustawienia, które działa dopiero przy starcie."
+    },
+    "esp-reset-reason": {
+      "short": "Mówi, dlaczego płytka ostatnio się uruchomiła: włączenie zasilania, przycisk reset, awaria, spadek napięcia...",
+      "simple": "Budzisz się i pytasz: „czy po prostu spałem, czy się przewróciłem?”",
+      "deep": "Zwraca <code>esp_reset_reason_t</code>, np. <code>ESP_RST_POWERON</code>, <code>ESP_RST_SW</code>, <code>ESP_RST_PANIC</code>, <code>ESP_RST_TASK_WDT</code> albo <code>ESP_RST_BROWNOUT</code> (napięcie zasilania spadło). Wypisanie go przy starcie sprawia, że awarie są widoczne."
+    },
+    "esp-timer-get-time": {
+      "short": "Mikrosekundy od startu, z 64-bitowego zegara, który nigdy się nie kończy.",
+      "simple": "Bardzo precyzyjny stoper: dobry do mierzenia, ile zajęło narysowanie jednej klatki ekranu.",
+      "deep": "Zwraca <code>int64_t</code> z wysokorozdzielczego timera ESP-IDF; bezpieczne do wywołania z przerwania. <code>millis()</code> i <code>micros()</code> są na nim zbudowane. Obsługa przycisku zachowuje tylko dolne 32 bity, więc jeden odczyt to pojedynczy krok."
+    },
+    "esp-timer": {
+      "short": "Ustawia callback, który ESP-IDF uruchamia po opóźnieniu albo w równym rytmie, z dokładnością mikrosekund.",
+      "simple": "Minutnik kuchenny, który dzwoni co 125 ms, cokolwiek robi reszta kodu.",
+      "deep": "Callbacki działają w zadaniu <code>esp_timer</code> o wysokim priorytecie, a nie w <code>loop()</code>, więc trzymaj je krótkie i bezpiecznie dziel dane. Okresy podaje się w mikrosekundach."
+    },
+    "esp-random": {
+      "short": "Losowa liczba 32-bitowa ze sprzętowego generatora liczb losowych układu.",
+      "simple": "Kostki rzucone przez fizykę wewnątrz układu, a nie przez wzór.",
+      "deep": "Naprawdę losowe, gdy działa Wi-Fi lub Bluetooth (szum radiowy ją zasila); przedtem traktuj ją jako tylko pseudolosową. <code>esp_fill_random(buf, n)</code> wypełnia bufor, jak robi to laboratorium skarbca dla swojego sekretnego klucza."
+    },
+    "heap-caps-malloc": {
+      "short": "Prosi o blok pamięci z wybranego rodzaju RAM: szybki wewnętrzny albo duży zewnętrzny PSRAM.",
+      "simple": "Wybór między małą szufladą przy biurku (szybko dostępną) a dużym magazynem na końcu korytarza (przestronnym, ale wolniejszym).",
+      "deep": "S3 ma około 512 KB wewnętrznego SRAM i tu 8 MB ośmioliniowego PSRAM. <code>MALLOC_CAP_INTERNAL</code> albo <code>MALLOC_CAP_SPIRAM</code> wybiera pulę; wynik to <code>nullptr</code>, jeśli żaden blok nie jest wystarczająco duży. Zwolnij go przez <code>heap_caps_free</code>."
+    },
+    "gpio-drive": {
+      "short": "Wybiera, jak mocno pin wyjściowy wypycha prąd: od słabego do silnego.",
+      "simple": "Ustawianie, jak mocno kran pcha wodę: delikatny strumyczek czy pełne ciśnienie.",
+      "deep": "Wywołanie ESP-IDF (potrzebuje <code>gpio_num_t</code>, stąd rzutowanie). Poziomy 0-3 to mniej więcej 5, 10, 20 (domyślnie) i 40 mA. Słabszy prąd wyjściowy łagodzi zbocza i trzyma diody LED ciemniejsze."
+    },
+    "esp-err": {
+      "short": "Funkcje ESP-IDF odpowiadają kodem wyniku; <code>ESP_OK</code> (0) oznacza, że się udało.",
+      "simple": "Paragon: „OK” albo powód, dlaczego nie.",
+      "deep": "Każda inna wartość to błąd, jak <code>ESP_ERR_NO_MEM</code> czy <code>ESP_ERR_TIMEOUT</code>; <code>esp_err_to_name()</code> zamienia ją w tekst do logu. Laby sprawdzają <code>!= ESP_OK</code> i wychodzą zamiast się wywalić."
+    },
+    "preferences": {
+      "short": "Zapisuje małe ustawienia we flashu układu, by przetrwały wyłączenie zasilania i ponowne wgranie programu.",
+      "simple": "Notatnik przyklejony w środku płytki: zapisz „nazwa Wi-Fi = dom” i nadal tam będzie jutro.",
+      "deep": "Wrapper Arduino na ESP-IDF NVS, magazyn klucz-wartość we własnej partycji flasha. <code>begin(\"ns\", readOnly)</code> otwiera przestrzeń nazw; nazwy przestrzeni i kluczy mają co najwyżej 15 znaków. Domyślnie nie szyfrowane; wywołaj <code>end()</code>, gdy skończysz."
+    },
+    "preferences-put-get": {
+      "short": "Zapisuje wartość pod kluczem albo odczytuje ją z wartością domyślną, jeśli nigdy nie została zapisana.",
+      "simple": "Podpisane słoiki na półce: włóż coś do słoika o nazwie „vol”, a potem to wyjmij.",
+      "deep": "Typ jest w nazwie (<code>UChar</code> = <code>uint8_t</code>, <code>UInt</code> = <code>uint32_t</code>). <code>getX(key, fallback)</code> zwraca wartość domyślną, gdy klucza brakuje. Zapisy zużywają flash, więc laby zapisują tylko przy zmianie."
+    },
+    "x-task-create": {
+      "short": "Uruchamia nowe zadanie: funkcję działającą równolegle z <code>loop()</code>, na wybranym przez ciebie rdzeniu.",
+      "simple": "Zatrudnienie drugiego kucharza. Ma własny przepis i pracuje jednocześnie z tobą, na własnej kuchence.",
+      "deep": "Argumenty: funkcja, nazwa, rozmiar stosu, parametr <code>void *</code> (często <code>this</code>), priorytet, opcjonalny uchwyt, rdzeń. W ESP-IDF rozmiar stosu jest w <b>bajtach</b>. <code>loop()</code> działa na rdzeniu 1; laby przypinają swoje czytniki i próbkowanie do rdzenia 0. Zwraca <code>pdPASS</code> przy sukcesie."
+    },
+    "v-task-delay": {
+      "short": "Usypia to zadanie na określoną liczbę taktów, by inne zadania dostały CPU.",
+      "simple": "Drugi kucharz odsuwa się na chwilę od kuchenki, żeby ktoś inny mógł z niej skorzystać.",
+      "deep": "Takty to 1 ms na Arduino-ESP32, ale pisz <code>pdMS_TO_TICKS(ms)</code>, by znaczenie było jasne. Nieskończona pętla zadania musi gdzieś blokować lub czekać, inaczej zadania o niższym priorytecie zagłodnieją, a watchdog zaprotestuje."
+    },
+    "pd-ms-to-ticks": {
+      "short": "Zamienia milisekundy na takty FreeRTOS, jednostkę, w której liczy każde czekanie w FreeRTOS.",
+      "simple": "Przeliczanie minut na jednostki zegara kuchennego.",
+      "deep": "Makro: <code>ms * configTICK_RATE_HZ / 1000</code>. Przy takcie 1000 Hz wynik jest jeden do jednego, ale kod pozostaje poprawny, gdy takt się zmieni. Czekania krótsze niż takt zaokrąglają się w dół do 0."
+    },
+    "port-max-delay": {
+      "short": "„Czekaj w nieskończoność”: podaj jako limit czasu, by blokować, aż coś nadejdzie.",
+      "simple": "Siedzenie przy skrzynce, aż przyjdzie poczta, bez względu na to, jak długo to potrwa.",
+      "deep": "Największa liczba taktów, którą FreeRTOS traktuje jako brak limitu. Dobre dla zadania roboczego, które nie ma nic innego do roboty; nigdy nie używaj w <code>loop()</code> ani w przerwaniu."
+    },
+    "pd-true": {
+      "short": "Własne odpowiedzi tak/nie FreeRTOS: <code>pdTRUE</code>/<code>pdPASS</code> znaczą, że się udało.",
+      "simple": "Paragon, jaki FreeRTOS wydaje po żądaniu kolejki lub zadania.",
+      "deep": "Zwykłe liczby całkowite (<code>BaseType_t</code>): 1 dla prawdy/sukcesu i 0 dla fałszu/porażki. Porównuj z nimi jawnie: <code>xQueueSend(...) == pdTRUE</code>."
+    },
+    "x-queue-create": {
+      "short": "Tworzy kolejkę: bezpieczną skrzynkę pocztową do przekazywania elementów między zadaniami.",
+      "simple": "Skrzynka pocztowa ze stałą liczbą szczelin: jedno zadanie wrzuca listy, drugie je wyjmuje, i nigdy się nie zderzają.",
+      "deep": "<code>xQueueCreate(length, itemSize)</code> zwraca <code>QueueHandle_t</code> albo null przy braku pamięci. Elementy są <b>kopiowane</b> do środka i na zewnątrz, więc wysyłaj małe struktury, a nie wskaźniki do rzeczy, które mogą zniknąć."
+    },
+    "x-queue-send": {
+      "short": "Wkłada kopię elementu do kolejki, czekając do limitu czasu, jeśli jest pełna.",
+      "simple": "Wrzucanie listu do skrzynki. Jeśli jest pełna, możesz chwilę poczekać albo odejść.",
+      "deep": "Limit czasu 0 nigdy nie blokuje i zwraca <code>errQUEUE_FULL</code>, gdy nie ma miejsca: to dobre dla <code>loop()</code> i obsług WWW, które nie mogą stać. Z przerwania użyj wersji <code>FromISR</code>."
+    },
+    "x-queue-receive": {
+      "short": "Wyjmuje następny element z kolejki, czekając do limitu czasu, jeśli jest pusta.",
+      "simple": "Otwieranie skrzynki: weź najstarszy list albo poczekaj chwilę, aż jakiś przyjdzie.",
+      "deep": "Elementy wychodzą po kolei, skopiowane do twojej zmiennej. Zadanie robocze zwykle blokuje tu z limitem czasu (lub <code>portMAX_DELAY</code>), nie zużywając CPU, dopóki nie pojawi się praca."
+    },
+    "semaphore": {
+      "short": "Sygnał, na który czeka jedno zadanie, a który daje inne zadanie (lub przerwanie).",
+      "simple": "Pałeczka w sztafecie: biegacz czeka, aż pałeczka zostanie przekazana, i dopiero wtedy rusza.",
+      "deep": "Sterownik MFRC522 śpi w <code>xSemaphoreTake(done_, timeout)</code>, aż przerwanie IRQ czytnika wywoła <code>xSemaphoreGiveFromISR</code>, więc odpytywanie SPI nie jest potrzebne. Semafor mutex dodaje dziedziczenie priorytetu do blokowania."
+    },
+    "task-handle": {
+      "short": "Uchwyt nazywa działające zadanie; <code>vTaskDelete</code> kończy jedno.",
+      "simple": "Plakietka z imieniem drugiego kucharza i kartka, która odsyła go do domu.",
+      "deep": "<code>vTaskDelete(nullptr)</code> kończy wywołujące zadanie; funkcja zadania nigdy nie może po prostu zwrócić wartości. <code>uxTaskGetStackHighWaterMark</code> pokazuje, jak blisko przepełnienia stosu było zadanie."
+    },
+    "critical-section": {
+      "short": "Blokuje kilka linii, by żadne inne zadanie, rdzeń ani przerwanie nie dotknęło w tym czasie tych samych danych.",
+      "simple": "Przytrzymanie drzwi stopą przez chwilę, kiedy zamieniasz dwie rzeczy na półce.",
+      "deep": "Bierze spinlock <code>portMUX_TYPE</code> i wyłącza przerwania na tym rdzeniu, więc działa na obu rdzeniach ESP32 i przy przerwaniach. Trzymaj sekcję do kilku kopiowań: bez wypisywania, bez czekania, bez alokacji."
+    },
+    "adafruit-st7789": {
+      "short": "Sterownik kolorowego ekranu 1,9 cala 320×170 używanego od lekcji 03.",
+      "simple": "Tłumacz między płytką a ekranem: mówisz „narysuj to”, a on mówi językiem ekranu po SPI.",
+      "deep": "Sterownik ST7789 od Adafruit. <code>init(170, 320)</code> ustawia rozmiar panelu, <code>setRotation(1)</code> obraca go do poziomu, <code>setSPISpeed</code> podbija zegar do 40 MHz. Piksele są w RGB565."
+    },
+    "adafruit-gfx": {
+      "short": "Biblioteka rysowania za każdym wywołaniem ekranu: linie, okręgi, prostokąty, tekst.",
+      "simple": "Pudełko szablonów i pisaków. Każdy ekran, który potrafi pokolorować jeden piksel, dostaje za darmo wszystkie inne kształty.",
+      "deep": "Abstrakcyjna klasa bazowa: podklasa musi zaimplementować tylko <code>drawPixel</code>, a reszta jest na tym zbudowana (nasz <code>FrameBuffer</code> nadpisuje też wywołania linii i wypełnienia dla szybkości). Współrzędne to <code>int16_t</code>, liczone od lewego górnego rogu."
+    },
+    "gfx-canvas16": {
+      "short": "Obraz poza ekranem w pamięci, na którym rysujesz, a potem wysyłasz go na ekran za jednym razem.",
+      "simple": "Szkicowanie najpierw na papierze, a potem pokazywanie gotowej kartki do okna, żeby nikt nie widział połowy rysunku.",
+      "deep": "16-bitowy canvas Adafruit GFX: jeden <code>uint16_t</code> na piksel, 320×170×2 = około 106 KB. Alokuje zwykłym <code>malloc</code>, co tu trafia do PSRAM; nasz <code>FrameBuffer</code> woli wewnętrzny RAM."
+    },
+    "frame-buffer": {
+      "short": "Obraz poza ekranem tego projektu: rysujesz w nim zwykłymi wywołaniami GFX, a potem wysyłasz go na ekran.",
+      "simple": "Nasz własny blok do szkicowania, trzymany w najszybszej szufladzie, która ma miejsce.",
+      "deep": "Zdefiniowany w <code>kit/lib/bench/src/frame_buffer.h</code>. <code>begin()</code> najpierw próbuje szybkiego wewnętrznego RAM, a potem PSRAM, a <code>internal()</code> mówi, co dostał. Nadpisuje <code>drawPixel</code>, <code>fillScreen</code> oraz wywołania linii i prostokątów bezpośrednimi zapisami do <code>pixels()</code>."
+    },
+    "display": {
+      "short": "Pomocnik ekranu tego projektu: ST7789, jego podświetlenie i bufor klatki, ustawiane tak samo w każdym labie.",
+      "simple": "Ekran i jego blok do szkicowania spakowane razem: rysujesz na <code>fb()</code>, a <code>push()</code> go pokazuje.",
+      "deep": "Zdefiniowany w <code>kit/lib/bench/src/display.h</code>. <code>begin()</code> startuje PWM na podświetleniu, SPI przy 40 MHz i panel w poziomie; <code>push()</code> wysyła całą klatkę jednym <code>drawRGBBitmap</code>."
+    },
+    "button": {
+      "short": "Pomocnik przycisku tego projektu: zamienia surowe wciśnięcia w czyste kliknięcia, podwójne kliknięcia i długie naciśnięcia.",
+      "simple": "Portier przy przycisku: ignoruje drganie metalowych styków i mówi, co naprawdę ktoś miał na myśli.",
+      "deep": "Zdefiniowany w <code>kit/lib/bench/src/button.h</code>. Przerwanie <code>IRAM_ATTR</code> liczy każde zbocze; <code>poll()</code> przyjmuje nowy poziom po 25 ms ciszy i zgłasza <code>Event::Click</code>, <code>DoubleClick</code> (w ciągu 280 ms) albo <code>LongPress</code> (600 ms)."
+    },
+    "lab-shell": {
+      "short": "Wspólna powłoka, na której zbudowane są laby każdego toru: ekran, przycisk, dioda LED, polecenia portu szeregowego i haki.",
+      "simple": "Gotowy warsztat. Każdy lab przynosi tylko własne narzędzia (widoki i polecenia) i je podłącza.",
+      "deep": "Lab to <code>...Spec</code>: jego widoki (funkcje rysujące plus akcja podwójnego kliknięcia), polecenia portu szeregowego i haki, jak <code>setup</code>, <code>tick</code> i <code>gesture</code>. <code>lab.warn</code> i <code>lab.note</code> wypisują komunikaty w stylu printf do logu i na ekran. Każdy <code>src/&lt;lab&gt;/main.cpp</code> to głównie ta lista, więc <code>help</code> pokazuje dokładnie, czego uczy lekcja."
+    },
+    "mfrc522": {
+      "short": "Własny sterownik tego projektu dla czytnika kart RC522, pisany rejestr po rejestrze bez biblioteki.",
+      "simple": "Bezpośrednie rozmawianie z układem czytnika, bajt po bajcie, tak byś widział każde słowo rozmowy.",
+      "deep": "Zdefiniowany w <code>kit/lib/rfid-kit/src/mfrc522.h</code>: ramkowanie SPI, rejestry, FIFO, timer układu i albo odpytywanie, albo uśpienie na jego przewodzie IRQ. <code>iso14443a.h</code> i <code>mifare_classic.h</code> budują na tym protokół karty."
+    },
+    "rgb565": {
+      "short": "Zamienia czerwony, zielony i niebieski (albo odcień na kole barw) w jeden 16-bitowy kolor ekranu.",
+      "simple": "Mieszanie farby, a potem zapisanie mieszanki jako jednego kodu, który ekran rozumie.",
+      "deep": "RGB565 trzyma 5 bitów czerwieni, 6 zieleni i 5 niebieskiego: <code>((r &amp; 0xF8) &lt;&lt; 8) | ((g &amp; 0xFC) &lt;&lt; 3) | (b &gt;&gt; 3)</code>. Nasz <code>rgb()</code> jest <code>constexpr</code>, więc kolory palety nic nie kosztują w czasie działania."
+    },
+    "gfx-fill-screen": {
+      "short": "Maluje cały ekran (lub canvas) jednym kolorem.",
+      "simple": "Świeża warstwa farby na wszystkim, zwykle pierwszy krok rysowania nowej klatki.",
+      "deep": "Na naszym <code>FrameBuffer</code> to pojedyncze <code>std::fill_n</code> po 54 400 pikselach; na samym panelu wysyła tyle pikseli przez SPI."
+    },
+    "gfx-draw-pixel": {
+      "short": "Koloruje jedną kropkę w x, y.",
+      "simple": "Jedna kropka z flamastra.",
+      "deep": "Jedyna funkcja, którą musi dostarczyć każda powierzchnia Adafruit GFX; wszystkie inne kształty można z niej zbudować. Nasza sprawdza granice i zapisuje do <code>buf_[y * _width + x]</code>."
+    },
+    "gfx-rect": {
+      "short": "Rysuje prostokąt od lewego górnego rogu, szerokością i wysokością: wypełniony, z obrysem albo z zaokrąglonymi rogami.",
+      "simple": "Przybijanie pieczątki prostokąta na obrazie.",
+      "deep": "Argumenty: <code>(x, y, w, h, colour)</code>, plus promień rogu dla wersji zaokrąglonych. <code>fill</code> maluje wnętrze, <code>draw</code> tylko obrys. Paski, panele i przyciski na każdym ekranie labu są z tych elementów."
+    },
+    "gfx-circle": {
+      "short": "Rysuje okrągłe kształty i trójkąty: okręgi od środka i promienia, trójkąty z trzech wierzchołków.",
+      "simple": "Cyrkiel i ekierka dla ekranu.",
+      "deep": "<code>fillCircle(cx, cy, r, colour)</code> używa środka, a nie rogu. Trójkąty przyjmują <code>(x0, y0, x1, y1, x2, y2, colour)</code>. Wszystko zbudowane z szybkich poziomych linii na naszym buforze klatki."
+    },
+    "gfx-line": {
+      "short": "Rysuje prostą linię między dwoma punktami albo szybką poziomą lub pionową.",
+      "simple": "Linijka i ołówek. Te „szybkie” idą tylko prosto w poprzek albo prosto w dół i są dużo szybsze.",
+      "deep": "<code>drawLine(x0, y0, x1, y1, c)</code> używa algorytmu Bresenhama, piksel po pikselu. <code>drawFastHLine(x, y, w, c)</code> wypełnia ciąg pikseli jednym <code>std::fill_n</code> na naszym buforze klatki, więc z tego korzystają przegrody i paski."
+    },
+    "gfx-cursor": {
+      "short": "<code>setCursor</code> ustawia, gdzie zaczyna się tekst; <code>fb.print</code> pisze tam tekst na ekranie.",
+      "simple": "Postawienie długopisu w miejscu przed pisaniem.",
+      "deep": "Przy wbudowanej czcionce punkt to lewy górny róg tekstu; przy własnym <code>GFXfont</code> to lewy koniec linii bazowej, więc y musi być niższe. <code>print</code> i <code>printf</code> (te same kody <code>%</code> co <code>Serial.printf</code>) przesuwają kursor w miarę pisania."
+    },
+    "gfx-text-style": {
+      "short": "Wybiera kolor, rozmiar i czcionkę tekstu, który wypiszesz dalej.",
+      "simple": "Wybór pisaka i szablonu liter.",
+      "deep": "<code>setTextColor(fg)</code> rysuje przezroczysty tekst; <code>setTextColor(fg, bg)</code> maluje też tło (tylko wbudowana czcionka). <code>setFont(&amp;FreeSans9pt7b)</code> wybiera gładką czcionkę dołączoną do Adafruit GFX (9 pt, zwykła); <code>setFont(nullptr)</code> wraca do wbudowanej 6×8; <code>setTextSize(2)</code> podwaja ją."
+    },
+    "gfx-text-bounds": {
+      "short": "Mierzy, jak szeroki i wysoki byłby dany tekst, bez rysowania go.",
+      "simple": "Mierzenie szyldu przed powieszeniem, żeby wycentrować go na ścianie.",
+      "deep": "<code>getTextBounds(text, x, y, &amp;x1, &amp;y1, &amp;w, &amp;h)</code> wypełnia prostokąt, jaki zajmie tekst przy bieżącej czcionce i rozmiarze; służy do centrowania i wyrównywania etykiet do prawej."
+    },
+    "gfx-rgb-bitmap": {
+      "short": "Kopiuje cały blok pikseli na ekran za jednym razem.",
+      "simple": "Wsunięcie gotowego zdjęcia do ramki zamiast malowania go kropka po kropce.",
+      "deep": "<code>drawRGBBitmap(x, y, pixels, w, h)</code> strumieniuje dane RGB565 przez SPI; pełna klatka 320×170 to około 106 KB, mniej więcej 22 ms przy 40 MHz. To górna granica liczby klatek, dlatego laby rysują najpierw poza ekranem."
+    },
+    "gfx-rotation": {
+      "short": "Obraca obraz na ekranie w krokach po 90°, żeby był czytelny prawidłowo.",
+      "simple": "Obracanie ramki na zdjęcie z pionu do poziomu.",
+      "deep": "0-3 to 0°, 90°, 180°, 270°. Obrót 1 zamienia panel 170×320 w poziomy ekran 320×170; szerokość i wysokość odpowiednio się zamieniają."
+    },
+    "wifi-begin": {
+      "short": "Zaczyna dołączać do sieci Wi-Fi z jej nazwą i hasłem.",
+      "simple": "Pukanie do drzwi routera z hasłem; odpowiedź przychodzi kilka sekund później.",
+      "deep": "Zwraca od razu; dołączanie dzieje się w tle, w zadaniu Wi-Fi. Nasza klasa <code>Connection</code> nasłuchuje zdarzeń (połączono, otrzymano IP, rozłączono), zamiast czekać w pętli. Przekazanie <code>nullptr</code> jako hasła dołącza do otwartej sieci."
+    },
+    "wifi-mode": {
+      "short": "Wybiera, czy płytka dołącza do sieci (stacja), tworzy własną (punkt dostępowy), czy obie naraz.",
+      "simple": "Bycie gościem na cudzej imprezie, organizowanie własnej albo obie rzeczy naraz.",
+      "deep": "<code>WIFI_AP_STA</code> uruchamia oba na jednym radiu, więc dzielą kanał; portal konfiguracji używa tego, by pokazać stronę, gdy próbuje twojej sieci. <code>softAP</code> startuje własną sieć płytki, osiągalną domyślnie pod <code>192.168.4.1</code>."
+    },
+    "wifi-info": {
+      "short": "Pytasz połączenie Wi-Fi o szczegóły: adres IP płytki, siłę sygnału, kanał, MAC.",
+      "simple": "Odczytanie numeru domu płytki w sieci i tego, ile ma kresek sygnału.",
+      "deep": "<code>localIP()</code> to <code>IPAddress</code> (<code>toString()</code> daje tekst). <code>RSSI()</code> jest w dBm: około -50 to doskonale, poniżej -80 słabo. Wszystkie są 0 lub puste, dopóki nie połączono."
+    },
+    "wifi-scan": {
+      "short": "Nasłuchuje pobliskich sieci Wi-Fi i wypisuje ich nazwy, sygnał i zabezpieczenia.",
+      "simple": "Kręcenie pokrętłem radia, by usłyszeć, jakie stacje są w pobliżu.",
+      "deep": "Z <code>async = true</code> zwraca od razu (-1, nadal trwa); odpytuj <code>scanComplete()</code> o liczbę, czytaj każdy wpis, a potem <code>scanDelete()</code>, by zwolnić listę. Skanowanie trwa kilka sekund po wszystkich kanałach."
+    },
+    "wifi-events": {
+      "short": "Rejestruje funkcję, którą sterownik Wi-Fi wywołuje, gdy coś się stanie: połączono, otrzymano IP, spadło połączenie.",
+      "simple": "Poproszenie recepcjonisty, by zadzwonił, gdy gość przyjdzie, zamiast czekać w holu.",
+      "deep": "Callback działa w zadaniu zdarzeń Wi-Fi, a nie w <code>loop()</code>, więc powinien tylko ustawiać flagi; <code>loop()</code> robi właściwą pracę. <code>info</code> przenosi szczegóły, jak powód rozłączenia."
+    },
+    "mdns": {
+      "short": "Daje płytce przyjazną nazwę, jak <code>bench.local</code>, w twojej sieci.",
+      "simple": "Plakietka z imieniem, dzięki której inne urządzenia znajdą płytkę, nie znając jej numeru.",
+      "deep": "Multicast DNS odpowiada na zapytania nazw tylko w sieci lokalnej; macOS i iOS obsługują go od razu. <code>addService(\"http\", \"tcp\", 80)</code> ogłasza też serwer WWW."
+    },
+    "ntp-time": {
+      "short": "Ustawia zegar z serwerów czasu w internecie, a potem odczytuje lokalną datę i godzinę.",
+      "simple": "Płytka nie ma zegara z baterią, więc pyta internet „która jest godzina?” raz, gdy jest online.",
+      "deep": "<code>configTzTime(tz, server1, server2)</code> ustawia strefę czasową POSIX i startuje SNTP. <code>getLocalTime(&amp;tm, timeoutMs)</code> wypełnia <code>struct tm</code> i zwraca <code>false</code>, dopóki nie nastąpi pierwsza synchronizacja."
+    },
+    "http-client": {
+      "short": "Wysyła zapytania WWW z płytki, jak mała przeglądarka: pytasz o adres i dostajesz odpowiedź.",
+      "simple": "Wysłanie listu do strony internetowej i czekanie na odpowiedź.",
+      "deep": "Klient HTTP Arduino-ESP32 po połączeniu TCP lub TLS. Nasz <code>https::get</code> sprawdza certyfikat serwera względem dołączonych korzeni Mozilli. Blokuje na 0,3 s do kilku sekund, więc wywołuj go z zadania roboczego, nigdy z <code>loop()</code>."
+    },
+    "json-document": {
+      "short": "Kontener ArduinoJson na dane JSON: wypełniasz go jak słownik albo czytasz otrzymany.",
+      "simple": "Taca na dokumenty z podpisanymi teczkami: <code>doc[\"heap\"] = 1234</code> wkłada liczbę do teczki o nazwie heap.",
+      "deep": "ArduinoJson 7: <code>JsonDocument</code> rośnie na stercie w miarę potrzeb. <code>doc[\"k\"].to&lt;JsonArray&gt;()</code> tworzy zagnieżdżone tablice; <code>doc[\"k\"] | fallback</code> czyta z wartością domyślną, gdy klucza brakuje albo ma zły typ."
+    },
+    "serialize-json": {
+      "short": "Zamienia <code>JsonDocument</code> w tekst JSON, gotowy do wysłania.",
+      "simple": "Przepisanie zawartości tacy na jeden schludny list.",
+      "deep": "<code>serializeJson(doc, out)</code> zapisuje do <code>String</code>, bufora <code>char</code> albo strumienia, jak <code>Serial</code>, i zwraca liczbę zapisanych bajtów."
+    },
+    "deserialize-json": {
+      "short": "Czyta tekst JSON do <code>JsonDocument</code>, w którym możesz szukać wartości.",
+      "simple": "Otwieranie listu i sortowanie jego zawartości do podpisanych teczek.",
+      "deep": "Zwraca <code>DeserializationError</code>, który jest prawdziwy, gdy coś poszło nie tak (<code>e.c_str()</code> mówi co). <code>Filter</code> zachowuje tylko potrzebne pola, co oszczędza dużo RAM przy dużych odpowiedziach pogodowych."
+    },
+    "async-web-server": {
+      "short": "Serwer WWW na płytce: twój telefon lub laptop otwiera stronę albo API, a płytka odpowiada.",
+      "simple": "Mała witryna sklepowa: każdy adres (<code>/api/card</code>) ma sprzedawcę, który wie, co odpowiedzieć.",
+      "deep": "ESPAsyncWebServer odpowiada we własnym zadaniu sieciowym, więc ekran i czytnik nigdy nie czekają. <code>server_.on(path, HTTP_GET, handler)</code> rejestruje trasę; obsługi muszą być szybkie i nie mogą blokować, więc ciężka praca trafia do innego zadania."
+    },
+    "async-request": {
+      "short": "Jedno przychodzące żądanie WWW: o co zapytano i jak odpowiedzieć.",
+      "simple": "Klient przy okienku sklepu: odczytujesz zamówienie i oddajesz odpowiedź.",
+      "deep": "Obsługi dostają je jako wskaźnik, stąd <code>req-&gt;send(200, \"application/json\", body)</code>. <code>hasParam</code>/<code>getParam</code> czytają pola zapytania lub formularza. Każde żądanie musi dostać dokładnie jedno <code>send</code>."
+    },
+    "async-web-socket": {
+      "short": "Żywa dwukierunkowa linia do przeglądarki, dzięki której płytka może wysyłać aktualizacje w chwili, gdy coś się dzieje.",
+      "simple": "Rozmowa telefoniczna zamiast listów: linia zostaje otwarta i każda strona może mówić w każdej chwili.",
+      "deep": "Zamontowany w serwerze WWW pod ścieżką, np. <code>/ws</code>. <code>textAll</code> wysyła do każdej podłączonej przeglądarki; <code>onEvent</code> słyszy połączenia, rozłączenia i wiadomości. Od czasu do czasu wywołuj <code>cleanupClients()</code>, by usunąć połączenia, które zniknęły."
+    },
+    "nimble-device": {
+      "short": "Wejście do Bluetooth LE: uruchamia stos radiowy i rozdaje serwery, skanery i klientów.",
+      "simple": "Recepcja Bluetooth: przywitaj się raz przez <code>init</code>, a potem proś o to, czego potrzebujesz.",
+      "deep": "NimBLE-Arduino, lżejszy stos BLE niż Bluedroid. Jego funkcje są <code>static</code>, więc wywołuje się je jako <code>NimBLEDevice::...</code> bez obiektu. <code>init(name)</code> ustawia ogłaszaną nazwę; <code>setPower</code> ustawia moc nadawania w dBm."
+    },
+    "nimble-server": {
+      "short": "Własne menu Bluetooth płytki: usługi grupują charakterystyki, czyli małe wartości, które telefon może czytać, zapisywać lub subskrybować.",
+      "simple": "Tablica ogłoszeń z podpisanymi przegródkami: telefon podchodzi, czyta przegródkę z temperaturą albo przypina wiadomość w przegródce na wiadomości.",
+      "deep": "GATT: usługa (UUID) trzyma charakterystyki, każda z UUID, właściwościami jak <code>READ | WRITE | NOTIFY</code> i wartością do MTU. <code>notify()</code> wysyła nową wartość do subskrybujących telefonów bez pytania."
+    },
+    "nimble-advertising": {
+      "short": "Sprawia, że płytka kilka razy na sekundę woła „jestem tutaj!”, by telefony mogły ją zobaczyć i połączyć się.",
+      "simple": "Latarnia morska: krótkie błyski w regularnych odstępach, które może dostrzec każdy w pobliżu.",
+      "deep": "Pakiet ogłoszeniowy w starym trybie niesie co najwyżej 31 bajtów (nazwa, flagi, UUID usług, dane producenta), plus kolejne 31 w odpowiedzi na skan."
+    },
+    "nimble-scan": {
+      "short": "Nasłuchuje innych urządzeń Bluetooth ogłaszających się w pobliżu i zgłasza każde znalezione.",
+      "simple": "Obserwowanie wybrzeża pod kątem błysków latarni i zapisywanie każdego, który zobaczysz.",
+      "deep": "Każdy <code>NimBLEAdvertisedDevice</code> ma adres, RSSI i ładunek. Skanowanie aktywne prosi też o odpowiedzi na skan. Callbacki działają w zadaniu hosta NimBLE, więc przekazuj wyniki do <code>loop()</code>, zamiast rysować tam."
+    },
+    "nimble-client": {
+      "short": "Płytka jako gość: łączy się z innym urządzeniem Bluetooth i czyta lub zapisuje jego wartości.",
+      "simple": "Podchodzenie do cudzej tablicy ogłoszeń zamiast prowadzenia własnej.",
+      "deep": "Rola centralna. Połącz się, wykryj usługi (<code>getServices(true)</code>), a potem czytaj, zapisuj lub subskrybuj zdalne charakterystyki. Łączenie i wykrywanie blokują, więc B8 robi to w zadaniu roboczym."
+    },
+    "nimble-conn-info": {
+      "short": "Szczegóły jednego połączenia Bluetooth: kto jest połączony, jak jest zabezpieczone, jak duży może być pakiet.",
+      "simple": "Identyfikator gościa: imię, czy pokazał dowód, i ile może unieść naraz.",
+      "deep": "Przekazywany do callbacków, jak <code>onConnect</code> i <code>onAuthenticationComplete</code>: adres partnera, uchwyt połączenia, MTU i to, czy łącze jest zaszyfrowane, uwierzytelnione i sparowane."
+    },
+    "nimble-callbacks": {
+      "short": "Klasy, po które dziedziczysz, by dowiadywać się o zdarzeniach Bluetooth: połączeniach, rozłączeniach, zapisach, odczytach.",
+      "simple": "Zostawienie numeru telefonu w recepcji: „zadzwoń, gdy ktoś przyjdzie”.",
+      "deep": "Nadpisuj tylko potrzebne funkcje <code>virtual</code> (<code>onConnect</code>, <code>onWrite</code>...), a potem zarejestruj obiekt przez <code>setCallbacks</code>. Działają w zadaniu hosta NimBLE, więc trzymaj je krótkie i bezpieczne wątkowo."
+    },
+    "nimble-security": {
+      "short": "Decyduje, jak zabezpieczone jest łącze Bluetooth: parowanie, klucze dostępu i zapamiętane powiązania.",
+      "simple": "Polityka drzwi: wpuszczaj każdego, proś o kod albo wpuszczaj tylko znajomych, których już poznałeś.",
+      "deep": "<code>setSecurityAuth(bond, mitm, sc)</code> prosi o wiązanie, ochronę przed atakiem man-in-the-middle i LE Secure Connections; możliwość IO decyduje, czy pokazuje się klucz dostępu, czy porównanie tak/nie. Powiązania są zapisywane w NVS i przetrwają restarty."
+    },
+    "ble-note": {
+      "short": "Skrót projektu do dopisania linii do dziennika aktywności labów Bluetooth.",
+      "simple": "Szybka notatka w zeszycie labu, którą pokazują ekran i dziennik portu szeregowego.",
+      "deep": "Makro z <code>kit/lib/ble-kit/src/ble_link.h</code>, rozwijane do <code>::ble::activity().add(::ble::Act::kind, ...)</code>: wpis w stylu printf w buforze pierścieniowym chronionym sekcją krytyczną, więc callbacki w zadaniu NimBLE mogą bezpiecznie pisać."
+    },
+    "i2s-channel": {
+      "short": "Konfiguruje kanał dźwiękowy I2S do cyfrowego mikrofonu lub wzmacniacza głośnika.",
+      "simple": "Układanie taśmy transportowej dla dźwięku: zegar utrzymuje takt, a jedna liczba jedzie z każdą próbką.",
+      "deep": "Sterownik I2S ESP-IDF 5: <code>i2s_new_channel</code> tworzy kanały TX i/lub RX, <code>i2s_channel_init_std_mode</code> ustawia częstotliwość próbkowania, szerokość bitów i piny (standardowy format Philips I2S), <code>i2s_channel_enable</code> startuje zegary i DMA."
+    },
+    "i2s-read-write": {
+      "short": "Pobiera próbki z mikrofonu albo przekazuje próbki do głośnika przez kanał I2S.",
+      "simple": "Zdejmowanie paczek z taśmy albo kładzenie ich na taśmę.",
+      "deep": "<code>i2s_channel_read(handle, buf, bytes, &amp;got, timeoutMs)</code> kopiuje z buforów DMA, czekając, gdy żaden nie jest gotowy. Zapisy czekają, gdy DMA jest pełne, więc zadanie głośnika działa dokładnie tak szybko, jak gra dźwięk."
+    }
+  },
+  "topics": {
+    "basics": {
+      "title": "Podstawowe klocki",
+      "blurb": "Małe symbole, które wykonują działania, porównania i wybory w każdej linii."
+    },
+    "types": {
+      "title": "Rodzaje wartości",
+      "blurb": "Liczby całkowite, ułamki, tekst i tak/nie: co może zmieścić każde pudełko."
+    },
+    "flow": {
+      "title": "Podejmowanie decyzji i powtarzanie",
+      "blurb": "Jak kod wybiera ścieżkę, zapętla się i kończy zadanie."
+    },
+    "functions": {
+      "title": "Funkcje",
+      "blurb": "Nazwane przepisy, które kod może uruchomić, od setup() i loop() po małe lambdy."
+    },
+    "memory": {
+      "title": "Pamięć i const",
+      "blurb": "Gdzie żyją wartości, jak na nie wskazywać i jak nie pozwolić im się zmieniać."
+    },
+    "classes": {
+      "title": "Typy, które budujesz",
+      "blurb": "Struktury, klasy, wyliczenia i przestrzenie nazw: twoje własne rodzaje rzeczy."
+    },
+    "modern": {
+      "title": "Nowoczesny C++",
+      "blurb": "Stałe znane podczas kompilacji, szablony, rzutowania i pomocniki biblioteki standardowej."
+    },
+    "preprocessor": {
+      "title": "Przed kompilacją",
+      "blurb": "Linie zaczynające się od # przestawiające kod, zanim kompilator go przeczyta."
+    },
+    "arduino": {
+      "title": "Podstawy Arduino",
+      "blurb": "Piny, czasy, wypisywanie na port szeregowy i tekst: codzienny zestaw narzędzi Arduino."
+    },
+    "esp": {
+      "title": "Układ ESP32",
+      "blurb": "Logi, pamięć, timery i magazyn, które są specyficzne dla tego układu."
+    },
+    "rtos": {
+      "title": "Robienie dwóch rzeczy naraz",
+      "blurb": "Zadania, kolejki i blokady FreeRTOS, dzięki którym płytka bezpiecznie wykonuje wiele zadań."
+    },
+    "libraries": {
+      "title": "Biblioteki",
+      "blurb": "Pomocniki ekranu, Wi-Fi, serwera WWW, JSON, Bluetooth i dźwięku, których używają laby."
+    }
+  }
+}

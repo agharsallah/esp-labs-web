@@ -1,0 +1,229 @@
+{
+  "W1": {
+    "title": "Skanowanie i dołączanie",
+    "heading": "Przeskanuj eter i dołącz do swojej sieci",
+    "goal": "Pierwsze laboratorium Wi-Fi, z własnym firmware (wifi-lab-w1); kod wspólny dla wszystkich laboratoriów znajduje się w kit/lib/wifi-kit. ESP32 wypisuje każdą sieć 2,4 GHz w pobliżu, a potem łączy się z twoją: wybierasz ją z tabeli skanowania i wpisujesz hasło raz. Hasło zostaje zapisane w układzie, nigdy w kodzie. Widok stanu pokazuje zegar (czas internetowy), adres IP, bench.local i wykres siły sygnału na żywo.",
+    "learn": [
+      "tryb stacji",
+      "kanały i dBm",
+      "typy zabezpieczeń",
+      "pamięć NVS",
+      "zdarzenia Wi-Fi",
+      "czas internetowy (NTP)",
+      "mDNS"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "BLK"
+      },
+      "2": {
+        "role": "RES"
+      },
+      "3": {
+        "role": "DC"
+      },
+      "4": {
+        "role": "CS"
+      },
+      "5": {
+        "role": "SDA"
+      },
+      "6": {
+        "role": "SCL"
+      },
+      "7": {
+        "role": "GND"
+      },
+      "8": {
+        "role": "BTN"
+      },
+      "9": {
+        "role": "BOOT"
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Jak działa skanowanie"
+      },
+      "1": {
+        "title": "Ścieżka Wi-Fi"
+      }
+    },
+    "steps": [
+      "Ekran podłącz jak w lekcji 03. Przycisk (pin 5 + GND) jest opcjonalny: robi dokładnie to samo co BOOT.",
+      "Wgraj program poleceniem powyżej (albo napisz Claude’owi „go”).",
+      "Obserwuj pierwsze skanowanie. <b>Klikaj</b> przez widoki: sieci, kanały, radar, stan.",
+      "Otwórz <code>uv run pio device monitor</code>. Znajdź numer swojej sieci w tabeli skanowania.",
+      "Wpisz <code>join 3</code> (twój numer), a w następnej linii hasło. Zostaje zapisane w układzie; dziennik pokazuje tylko jego długość.",
+      "Widok stanu otwiera się sam: zegar, adres IP, <code>bench.local</code>, wykres sygnału. Wypróbuj <code>ping bench.local</code> ze swojego Maca, a w monitorze wpisz <code>ping</code>, aby sprawdzić router od strony płytki.",
+      "Odłącz i podłącz ponownie: płytka sama dołączy do sieci. <code>forget</code> usuwa zapisaną sieć."
+    ],
+    "note": "Sieci 5 GHz nigdy się nie pojawiają: radio S3 działa tylko na 2,4 GHz. Monitor pokazuje nazwy sieci sąsiadów oraz to, co wpisujesz, także hasło. Nie wklejaj tej części w nic, co udostępniasz."
+  },
+  "W2": {
+    "title": "Sterowanie z telefonu",
+    "heading": "Steruj stanowiskiem z telefonu i Maca",
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "BLK"
+      },
+      "2": {
+        "role": "RES"
+      },
+      "3": {
+        "role": "DC"
+      },
+      "4": {
+        "role": "CS"
+      },
+      "5": {
+        "role": "SDA"
+      },
+      "6": {
+        "role": "SCL"
+      },
+      "7": {
+        "role": "GND"
+      },
+      "8": {
+        "role": "BTN"
+      },
+      "9": {
+        "role": "BOOT"
+      }
+    },
+    "variants": {
+      "lan": {
+        "label": "Wariant 1 · w twojej sieci Wi-Fi",
+        "short": "telefon → płytka, w domu",
+        "goal": "Własny firmware (wifi-lab-w2): wszystko z W1, plus mały serwer WWW: interfejs REST API, żywe połączenie WebSocket, stronę dla telefonu pod adresem bench.local i sieć konfiguracyjną do dołączania do Wi-Fi bez kabla. Panel React + Node w esp-labs/apps/dashboard daje te same sterowania na Macu, z wykresami na żywo i aktualizacjami firmware.",
+        "learn": [
+          "REST API",
+          "WebSocket",
+          "asynchroniczny serwer WWW",
+          "portal przechwytujący (captive portal)",
+          "aktualizacje OTA",
+          "token administratora",
+          "React + Node"
+        ],
+        "panels": {
+          "0": {
+            "title": "Jak ze sobą rozmawiają elementy"
+          }
+        },
+        "steps": [
+          "Takie samo podłączenie jak w W1 (przycisk opcjonalny). Wgraj program poleceniem powyżej (albo napisz Claude’owi „go”).",
+          "Jeszcze nie połączono? Widok stanu pokazuje sieć konfiguracyjną <code>bench-setup</code> i jej hasło. Połącz się z nią telefonem, na otwartej stronie wybierz swoje Wi-Fi i wpisz hasło.",
+          "Po połączeniu otwórz <code>http://bench.local</code> w telefonie. Zmień widok, wyślij wiadomość, wybierz kolor diody, przyciemnij ekran.",
+          "W monitorze portu szeregowego wpisz <code>token</code> i skopiuj wartość.",
+          "Na Macu: <code>cd esp-labs/apps/dashboard</code>, <code>cp .env.example .env</code>, wklej token jako <code>ESP_TOKEN=</code>, a potem <code>pnpm install</code> i <code>pnpm dev</code>. Otwórz <code>http://localhost:5173</code>.",
+          "Naciśnij przycisk albo BOOT: kliknięcie pojawi się na żywo na stronie w telefonie i w panelu.",
+          "Spróbuj aktualizacji bezprzewodowej: <code>uv run pio run -d labs/wifi-lab-w2 -e wifi-lab-w2</code>, a potem wgraj <code>.pio/build/wifi-lab-w2/firmware.bin</code> w panelu Admin. Ekran pokaże postęp."
+        ],
+        "note": "Codzienne sterowanie jest dostępne dla każdego w twojej domowej sieci: to zabawka warsztatowa. Restart, zapominanie Wi-Fi i aktualizacje firmware wymagają tokenu, który jest zapisany w układzie i w pliku .env panelu (ignorowanym przez git), nigdy w przeglądarce. Strona się nie otwiera? Wpisz <code>http://</code>; w FRITZ!Box zaznacz „WLAN devices may communicate with each other”; na Macu zezwól przeglądarce w Prywatność i ochrona → Sieć lokalna."
+      },
+      "remote": {
+        "label": "Wariant 2 · z dowolnego miejsca",
+        "short": "płytka łączy się z twoim serwerem",
+        "goal": "Ta sama płytka i strona dla telefonu, plus zdalne połączenie: płytka łączy się <b>na zewnątrz</b> z twoim serwerem panelu i utrzymuje otwarte bezpieczne połączenie WebSocket. Serwer potrzebuje publicznego adresu https: na razie twojego Maca z tunelem (cloudflared albo ngrok), a później tej samej aplikacji na serwerze hostingowym. Płytka nie widzi różnicy. Sterujesz stanowiskiem z transmisji komórkowej, z biura, skądkolwiek. Nic nie otwiera się w routerze, a izolacja Wi-Fi przestaje mieć znaczenie.",
+        "learn": [
+          "połączenia wychodzące i NAT",
+          "tunele",
+          "TLS i certyfikaty główne",
+          "klient WebSocket",
+          "zadania FreeRTOS",
+          "logowanie i ciasteczka"
+        ],
+        "panels": {
+          "0": {
+            "title": "Jak działa zdalne sterowanie"
+          }
+        },
+        "steps": [
+          "To samo podłączenie (przycisk opcjonalny). Wgraj program poleceniem powyżej (albo napisz Claude’owi „go”). Za pierwszym razem pobiera jedną bibliotekę: links2004/WebSockets 2.7.3.",
+          "Na Macu, w <code>esp-labs/apps/dashboard/.env</code>: <code>ESP_MODE=relay</code>, <code>ESP_TOKEN=</code> wartość <code>token</code> z portu szeregowego, a <code>DASHBOARD_KEY=</code> wynik polecenia <code>openssl rand -hex 16</code>.",
+          "Uruchom serwer: <code>cd esp-labs/apps/dashboard && pnpm remote</code> (buduje aplikację i obsługuje ją na porcie 8787).",
+          "W drugim terminalu otwórz tunel: <code>pnpm tunnel:cloudflare</code> (bez konta; wypisze <code>https://…trycloudflare.com</code>, za każdym razem nowy) albo <code>pnpm tunnel:ngrok</code> (twoje konto ngrok; dodaj <code>--url=&lt;twoja darmowa stała domena&gt;</code>, a adres się nie zmieni).",
+          "Powiedz płytce w monitorze portu szeregowego: <code>relay wss://&lt;host tunelu&gt;</code>. Zapisze adres i się połączy; <code>relay</code> odpowie <code>online</code>, a na ekranie wokół kropki połączenia pojawi się turkusowy pierścień.",
+          "Wyłącz Wi-Fi w telefonie (transmisja komórkowa), otwórz adres tunelu, zaloguj się kluczem i zmień widok albo diodę. Sterujesz stanowiskiem spoza domu.",
+          "Odłącz płytkę i podłącz ją z powrotem: sama połączy się z Wi-Fi i ponownie zadzwoni do serwera. <code>relay off</code> zatrzymuje połączenie."
+        ],
+        "note": "Adresy szybkiego tunelu zmieniają się przy każdym restarcie cloudflared: wpisz nowy poleceniem <code>relay</code> albo raz użyj darmowej stałej domeny ngrok. Aktualizacje firmware na razie zostają w twojej sieci Wi-Fi (wariant 1). Gdy skończysz, zatrzymaj tunel (Ctrl+C), a publiczny adres przestanie działać. Zamiast tego możesz hostować serwer: uruchom tam tę samą aplikację (<code>pnpm build && pnpm start</code>, <code>ESP_MODE=relay</code>, <code>HOST=0.0.0.0</code>, <code>TRUST_PROXY=true</code>) i wskaż jej adres poleceniem <code>relay</code>. Chcesz najpierw przetestować bez tunelu? Ustaw <code>HOST=0.0.0.0</code> w .env i wpisz <code>relay ws://&lt;IP twojego Maca&gt;:8787</code>."
+      }
+    }
+  },
+  "W3": {
+    "title": "Internet i AI",
+    "heading": "Pogoda z internetu, poeta z chmury",
+    "goal": "Płytka staje się klientem internetu. Pobiera pogodę dla twojego miasta przez HTTPS jako JSON (Open-Meteo, bez konta i klucza) i ją rysuje: animowane niebo, następne 24 godziny i tydzień. Potem Wyrocznia Stanowiska: płytka wysyła modelowi AI to, co wie o tej chwili (miejsce, czas, pogoda, jej własna temperatura), a w odpowiedzi dostaje haiku albo odpowiedź na twoje pytanie, plus kolor diody i scenę, jako ustrukturyzowany JSON. Zapytanie przechodzi przez LiteLLM na twoim Macu, więc działa każdy dostawca i model, a klucze dostawców nigdy nie trafiają do układu.",
+    "learn": [
+      "klient HTTPS",
+      "certyfikaty TLS",
+      "JSON i filtry",
+      "REST API",
+      "wywoływanie funkcji przez AI",
+      "brama LLM (LiteLLM)",
+      "zadania robocze"
+    ],
+    "pins": {
+      "0": {
+        "role": "VCC"
+      },
+      "1": {
+        "role": "BLK"
+      },
+      "2": {
+        "role": "RES"
+      },
+      "3": {
+        "role": "DC"
+      },
+      "4": {
+        "role": "CS"
+      },
+      "5": {
+        "role": "SDA"
+      },
+      "6": {
+        "role": "SCL"
+      },
+      "7": {
+        "role": "GND"
+      },
+      "8": {
+        "role": "BTN"
+      },
+      "9": {
+        "role": "BOOT"
+      }
+    },
+    "panels": {
+      "0": {
+        "title": "Prześledź jedno zapytanie krok po kroku"
+      }
+    },
+    "steps": [
+      "To samo podłączenie (przycisk opcjonalny). Wgraj program poleceniem powyżej (albo napisz Claude’owi „go”). Używa zapisanej sieci Wi-Fi z W1/W2.",
+      "Otwórz <code>uv run pio device monitor</code> i wpisz <code>city Hamburg</code> (twoje miasto). Płytka je wyszuka, zapisze i pobierze pogodę.",
+      "<b>Klikaj</b> przez widoki: teraz (animowane niebo), prognoza (następne 24 h), tydzień. Stopka pokazuje każde zapytanie: ile trwało i jak duża była odpowiedź.",
+      "Uruchom bramę AI na Macu: <code>cd esp-labs/apps/ai-gateway</code>, <code>cp .env.example .env</code> (<code>LITELLM_MASTER_KEY</code> oraz klucz dostawcy, np. <code>ANTHROPIC_API_KEY</code>), <code>uv sync</code>, a potem <code>uv run --env-file .env litellm --config config.yaml --port 4000</code>.",
+      "Powiedz płytce, gdzie jest, w monitorze: <code>ai url http://&lt;IP twojego Maca&gt;:4000</code> oraz <code>ai key &lt;LITELLM_MASTER_KEY&gt;</code>. Klucze wpisuj tylko tutaj, nigdy na czacie.",
+      "Przejdź do widoku wyroczni i <b>kliknij dwukrotnie</b>: model napisze haiku o tej chwili i wybierze kolor diody. To samo daje przytrzymanie przycisku z dowolnego widoku.",
+      "Zadawaj pytania: <code>ask czy powinienem jechać rowerem do pracy?</code> albo <code>ask co zbudować dalej?</code>. Zna twoją pogodę i stan płytki.",
+      "Zmieniaj modele bez ponownego wgrywania: <code>ai model oracle-fast</code>, albo dodaj dowolnego dostawcę do <code>config.yaml</code> (OpenAI, Gemini, lokalny model Ollama) i wybierz jego nazwę. Porównaj czas i tokeny przy każdej odpowiedzi."
+    ],
+    "note": "Klucze dostawców zostają w pliku .env bramy na twoim Macu. Płytka zapisuje tylko własny klucz bramy (NVS, nigdy nie wypisywany: dziennik pokazuje jego ostatnie 4 znaki), a <code>ai key forget</code> go usuwa. W twojej sieci Wi-Fi płytka rozmawia z bramą zwykłym http; z dowolnego miejsca umieść bramę za https (tunel albo serwer, jak w W2 wariant 2). Ustaw limit wydatków u każdego dostawcy; płytka pyta najwyżej raz na 10 s i nigdy sama z siebie."
+  },
+  "W4": {
+    "title": "Laboratorium radiowe (bonus)"
+  },
+  "W5": {
+    "title": "Dziennik sprzętu"
+  }
+}

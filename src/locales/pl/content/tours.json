@@ -1,0 +1,378 @@
+{
+  "01-hello": {
+    "bigPicture": "Ten pierwszy program pokazuje, że płytka działa. <code>setup()</code> uruchamia się raz: otwiera monitor portu szeregowego i wypisuje dowód tożsamości układu. Potem <code>loop()</code> działa bez końca i za każdym razem przesuwa wbudowaną diodę RGB o jeden krok po kole kolorów, więc widzisz powolną tęczę.",
+    "files": {
+      "labs/01-hello/src/main.cpp": {
+        "stops": {
+          "0": {
+            "title": "Co robi ten program",
+            "say": "Linie zaczynające się od <code>//</code> to komentarze: notatki dla ludzi, które kompilator ignoruje. Ta mówi, jaki jest plan: wypisać dowód tożsamości, a potem przełączać kolory diody. Nazywa też dwie funkcje, które ma każdy program Arduino: <code>setup()</code> uruchamia się raz, a <code>loop()</code> powtarza się w kółko.",
+            "deep": "Pod spodem rdzeń Arduino ma własne <code>main()</code>: uruchamia FreeRTOS, tworzy zadanie, które wywołuje Twoje <code>setup()</code> raz, a potem wywołuje <code>loop()</code> w nieskończonej pętli <code>for</code>."
+          },
+          "1": {
+            "title": "Pożycz sobie skrzynkę z narzędziami",
+            "say": "<code>#include</code> wkleja inny plik przed kompilacją. <code>Arduino.h</code> dostarcza gotowe narzędzia, jak <code>Serial</code>, <code>delay()</code> i <code>millis()</code>. <code>pins.h</code> to nasz własny plik, który mówi, który przewód dokąd idzie.",
+            "deep": "Nawiasy ostre szukają w folderach bibliotek i frameworku; cudzysłowy najpierw przeszukują projekt. <code>pins.h</code> znajduje się dzięki fladze builda <code>-Iinclude</code> w <code>platformio.ini</code>."
+          },
+          "2": {
+            "title": "Dwie liczby, które możesz zmienić",
+            "say": "Nazwane liczby ułatwiają czytanie i zmienianie kodu. <code>kBrightness</code> przyciemnia bardzo jasną diodę do około jednej szóstej mocy; <code>kHeartbeatMs</code> mówi, jak często (5000 ms = 5 sekund) płytka wypisuje linię „wciąż żyję”.",
+            "deep": "<code>constexpr</code> oznacza, że wartość jest ustalona w czasie kompilacji, więc nie zużywa pamięci w czasie działania. Nienazwana przestrzeń <code>namespace { ... }</code> trzyma te nazwy prywatnie w tym pliku. <code>uint8_t</code> mieści wartości od 0 do 255; <code>uint32_t</code> do około 4 miliardów."
+          },
+          "3": {
+            "title": "Przepis na koło kolorów",
+            "say": "Podajesz pozycję od 0 do 255, a funkcja zwraca ilość czerwieni, zieleni i błękitu. Koło ma trzy wycinki: czerwień przechodzi w zieleń, zieleń w błękit, błękit z powrotem w czerwień. Jeśli przesuwasz pozycję krok po kroku, dostajesz płynną tęczę.",
+            "deep": "Każdy wycinek ma 85 kroków szerokości, a <code>pos * 3</code> rozciąga 0-84 do 0-252. <code>&amp;</code> w <code>uint8_t &amp;r</code> oznacza, że funkcja zapisuje wynik bezpośrednio w zmiennych wywołującego, zamiast zwracać jedną wartość."
+          },
+          "4": {
+            "title": "Wypisz dowód tożsamości układu",
+            "say": "Każda linia <code>Serial.printf</code> zapisuje jeden wiersz karty widocznej w monitorze portu szeregowego: model układu, rozmiar pamięci flash, rozmiar PSRAM i wolną pamięć. Notatki w nawiasach mówią, czego się spodziewać na N16R8: 16 MB flash i około 8 MB PSRAM.",
+            "deep": "<code>printf</code> wstawia kolejną wartość w miejsce każdego <code>%s</code>, <code>%d</code> lub <code>%lu</code>. Rozmiary zwracane są w bajtach, więc dzielenie przez <code>1024 * 1024</code> zamienia je na megabajty. Sterta to pamięć, którą program może wykorzystać podczas działania."
+          },
+          "5": {
+            "title": "Unikalny adres płytki",
+            "say": "Każdy układ opuszcza fabrykę z własnym adresem MAC, identyfikatorem używanym w Wi-Fi i Bluetooth. Ta pętla wypisuje jego sześć bajtów jako pary liter i cyfr oddzielone dwukropkami, a potem wersję zestawu programistycznego w środku.",
+            "deep": "48-bitowy MAC znajduje się w eFuse'ach, jednorazowo programowalnych bitach wewnątrz układu. <code>(mac >> (8 * i)) &amp; 0xFF</code> przesuwa bajt <code>i</code> na dół i zostawia tylko jego wartość; <code>%02X</code> wypisuje go jako dwie wielkie cyfry szesnastkowe."
+          },
+          "6": {
+            "title": "Krzycz, jeśli płytka się nie zgadza",
+            "say": "Jeśli układ zgłasza brak PSRAM albo mniej pamięci flash, niż zapłaciłeś, wypisuje czerwony błąd albo żółte ostrzeżenie. Cisza oznacza, że sprzęt zgadza się z opisem na etykiecie.",
+            "deep": "<code>log_e</code> i <code>log_w</code> to makra logowania rdzenia ESP32. <code>CORE_DEBUG_LEVEL=3</code> w <code>platformio.ini</code> zostawia błędy, ostrzeżenia i linie informacyjne; filtr <code>colorize</code> monitora koloruje je według poziomu."
+          },
+          "7": {
+            "title": "Obudź monitor portu szeregowego",
+            "say": "Ten kod uruchamia się raz, zaraz po włączeniu zasilania lub resecie. Otwiera łącze szeregowe z prędkością 115200 bitów na sekundę, chwilę czeka, wypisuje dowód tożsamości, a potem mówi, na którym pinie jest dioda RGB.",
+            "deep": "Na porcie COM układ USB-do-szeregowego przenosi UART0 ESP32 do komputera; oba końce muszą mieć tę samą prędkość, dlatego <code>monitor_speed</code> to także 115200. <code>log_i</code> dodaje do każdej wiadomości poziom, plik i numer linii.",
+            "quiz": {
+              "question": "Co najprawdopodobniej się stanie, jeśli usuniesz <code>delay(1500)</code>?",
+              "options": [
+                "Płytka nie wystartuje",
+                "Możesz przegapić górę dowodu tożsamości",
+                "Tęcza będzie szybsza"
+              ],
+              "why": "Karta jest wypisywana od razu, zanim monitor na komputerze skończy ponowne połączenie po resecie, więc pierwsze linie mogą przewinąć się niezauważone. Pauza daje mu czas na nasłuchiwanie."
+            }
+          },
+          "8": {
+            "title": "Jeden krok po tęczy",
+            "say": "Każde przejście wybiera kolor na pozycji <code>hue</code>, przesuwa <code>hue</code> o jeden, przyciemnia kolor za pomocą <code>kBrightness</code> i wysyła go do diody. Tysiące drobnych kroków tworzą płynną tęczę, którą widzisz.",
+            "deep": "Zmienne <code>static</code> zachowują wartość między wywołaniami <code>loop()</code>, zamiast zaczynać od nowa. <code>rgbLedWrite</code> steruje za nas jednoprzewodowym protokołem czasowym diody WS2812, korzystając z peryferium RMT w S3. <code>r * kBrightness / 255</code> skaluje 0-255 w dół do 0-40.",
+            "quiz": {
+              "question": "<code>hue</code> to <code>uint8_t</code> (od 0 do 255). Co się dzieje, gdy osiągnie 255?",
+              "options": [
+                "Program się zawiesza",
+                "Wraca do 0 i tęcza zaczyna się od nowa",
+                "Zostaje na 255 i dioda przestaje się zmieniać"
+              ],
+              "why": "Liczba 8-bitowa bez znaku nie ma miejsca na 256, więc przekręca się na 0, jak licznik przebiegu w samochodzie. Dokładnie tego chcemy: koło kolorów zaczyna kolejne okrążenie."
+            }
+          },
+          "9": {
+            "title": "Serce bije co pięć sekund",
+            "say": "<code>millis()</code> to stoper, który wystartował po włączeniu zasilania. Gdy od ostatniego sygnału minie pięć sekund, płytka wypisuje, jak długo działa, i aktualny odcień, a potem resetuje swój znacznik. Tęcza nigdy nie zatrzymuje się w trakcie czekania.",
+            "deep": "Najpierw odejmowanie (<code>millis() - lastHeartbeat</code>) utrzymuje poprawność testu nawet wtedy, gdy 32-bitowy licznik przekręci się po około 49,7 dnia. Ten wzorzec „sprawdź zegar, działaj, jeśli nadszedł czas” pozwala robić kilka rzeczy naraz bez blokowania."
+          },
+          "10": {
+            "title": "Tempo tęczy",
+            "say": "Krótka pauza przed ponownym startem <code>loop()</code>. 256 kroków po 20 ms to około pięć sekund na jedno pełne okrążenie koła kolorów.",
+            "deep": "Krótkie <code>delay()</code> jest tu w porządku, bo nic innego nie wymaga uwagi. Wewnątrz <code>delay()</code> pozwala FreeRTOS uruchamiać inne zadania zamiast kręcić się w miejscu, więc oszczędza też trochę energii.",
+            "quiz": {
+              "question": "Co zobaczysz, jeśli zmienisz to na <code>delay(5)</code>?",
+              "options": [
+                "Tę samą tęczę, cztery razy szybciej",
+                "Ciemniejszą tęczę",
+                "Dioda będzie migotać"
+              ],
+              "why": "Każdy krok trwa teraz 5 ms zamiast 20, więc pełne okrążenie zajmuje około 1,3 sekundy. Jasność ustawia <code>kBrightness</code>, a nie opóźnienie."
+            }
+          }
+        }
+      },
+      "kit/include/pins.h": {
+        "stops": {
+          "0": {
+            "title": "Jeden plik dla każdego przewodu",
+            "say": "Wszystkie lekcje czytają numery pinów stąd, więc zmiana przewodu oznacza zmianę jednej liczby. Lista ostrzega przed pinami, których układ używa już do startu, USB, pamięci flash i PSRAM.",
+            "deep": "<code>#pragma once</code> nie pozwala wkleić pliku dwa razy, gdy kilka plików go dołącza."
+          },
+          "1": {
+            "title": "Gdzie mieszka dioda tęczy",
+            "say": "<code>PIN_RGB</code> to na większości płytek 48. Jeśli lekcja 01 nie pokazuje koloru, Twoja płytka może być wersją v1.1, która używa 38: zmień tę liczbę tutaj.",
+            "deep": "Opakowanie <code>#ifndef</code> ... <code>#endif</code> ustawia tylko wartość domyślną: flaga builda, np. <code>-DPIN_RGB=38</code> w <code>platformio.ini</code>, wygrywa bez edycji tego pliku."
+          },
+          "2": {
+            "title": "Piny dla kolejnych lekcji",
+            "say": "Reszta to przyciski, dioda, ekran, czytnik RFID i części dźwiękowe z późniejszych lekcji. Każdy komentarz mówi, który opis na module idzie do którego pinu ESP32."
+          }
+        }
+      }
+    }
+  },
+  "02-led": {
+    "bigPicture": "Ten program steruje diodą na Twojej płytce stykowej i słucha poleceń, które wpisujesz w monitorze portu szeregowego. <code>setup()</code> uruchamia się raz: przekazuje pin sprzętowi PWM i zaczyna łagodne rozjaśnianie. <code>loop()</code> działa bez końca, wykonując w każdym przebiegu dwie szybkie czynności: odczytuje wpisane litery i ustawia jasność diody dla bieżącego trybu, dzięki czemu animacja nie zatrzymuje się, gdy program nasłuchuje.",
+    "files": {
+      "labs/02-led/src/main.cpp": {
+        "stops": {
+          "0": {
+            "title": "Obwód i polecenia",
+            "say": "Mały rysunek pokazuje obwód: pin 4, przez rezystor, do długiej nóżki diody, a z krótkiej nóżki do masy. Poniżej są dwa nowe pojęcia i polecenia, które możesz wpisać.",
+            "deep": "Rezystor ogranicza prąd: przy około 3,3 V z pinu, około 2 V na czerwonej diodzie i 220 Ω wychodzi około 5 mA, bezpiecznie dla diody i pinu."
+          },
+          "1": {
+            "title": "Narzędzia i odrobina niskiego poziomu",
+            "say": "Tak samo jak w lekcji 01, z jednym dodatkiem: <code>driver/gpio.h</code> daje bezpośredni dostęp do ustawień pinów układu, których używamy jako siatki bezpieczeństwa w <code>setup()</code>.",
+            "deep": "<code>driver/gpio.h</code> pochodzi z ESP-IDF, frameworku Espressif, na którym zbudowany jest rdzeń Arduino, więc oba rodzaje wywołań mogą żyć w jednym programie."
+          },
+          "2": {
+            "title": "Udawanie połowy jasności",
+            "say": "Pin może być tylko w pełni włączony albo w pełni wyłączony. PWM przełącza go 5000 razy na sekundę; udział czasu, w którym jest włączony (wypełnienie), określa, jak jasno świeci dioda. Przy 8 bitach wypełnienie wynosi od 0 (wyłączona) do 255 (zawsze włączona).",
+            "deep": "Peryferium LEDC w S3 generuje PWM sprzętowo, więc CPU jest wolne. Jego licznik działa z zegara APB 80 MHz: 5 kHz × 256 kroków wymaga dzielnika 62,5, a ten jest obsługiwany.",
+            "quiz": {
+              "question": "Dioda dostaje wypełnienie 128 przy 5000 Hz. Co widzisz?",
+              "options": [
+                "Szybkie, widoczne migotanie",
+                "Stałe świecenie, ciemniejsze niż pełne",
+                "Nic: na pół włączone liczy się jak wyłączone"
+              ],
+              "why": "5000 przełączeń na sekundę to za szybko dla oka, które uśrednia światło w stałe, ciemniejsze świecenie."
+            }
+          },
+          "3": {
+            "title": "Pamięć diody",
+            "say": "<code>Mode</code> wylicza każde zachowanie, jakie może mieć dioda. <code>state</code> pamięta bieżące, jasność dla <i>on</i> i <i>blink</i>, prędkość migania oraz moment, w którym zaczął się bieżący tryb.",
+            "deep": "To serce maszyny stanów: wszystko, czego program potrzebuje, by wyliczyć następną jasność, mieści się w jednej małej <code>struct</code>, a polecenia zmieniają tylko te pola.",
+            "quiz": {
+              "question": "Wgrywasz program na płytkę i niczego nie wpisujesz. Co robi dioda?",
+              "options": [
+                "Stoi wyłączona",
+                "Świeci pełnym blaskiem",
+                "Rozjaśnia się i gaśnie"
+              ],
+              "why": "<code>mode</code> startuje jako <code>Mode::Fade</code>, a <code>setup()</code> ustawia fade ponownie, więc dioda oddycha, dopóki czegoś nie wpiszesz."
+            }
+          },
+          "4": {
+            "title": "Zamień tryb w słowo",
+            "say": "Nadaje każdemu trybowi czytelną nazwę, dzięki czemu monitor może pokazać <code>mode -> blink</code> zamiast gołej liczby.",
+            "deep": "<code>return \"?\"</code> po <code>switch</code> nigdy dziś nie jest osiągane, ale uspokaja kompilator i pozostaje bezpieczne, gdyby ktoś dodał tryb i zapomniał o nazwie."
+          },
+          "5": {
+            "title": "Niech wygaszanie wygląda równo",
+            "say": "Oczy zauważają zmiany przy słabym świetle znacznie bardziej niż przy jasnym. Podniesienie wartości do kwadratu trzyma diodę dłużej przyciemnioną i szybciej przebiega jasny koniec, więc wygaszanie wygląda płynnie zamiast od razu skakać do jasności.",
+            "deep": "To krzywa gamma 2: <code>x * x / 255</code>. Najpierw rozszerzenie do <code>uint16_t</code> ma znaczenie, bo 255 × 255 = 65025 nie mieści się w 8 bitach."
+          },
+          "6": {
+            "title": "Zmień tryb i zrestartuj zegar",
+            "say": "Zmiana trybu zapisuje nowy, notuje czas jego startu i zapisuje zmianę w monitorze.",
+            "deep": "Zapisanie <code>modeStartedAt</code> sprawia, że każda animacja mierzy czas od własnego startu, więc <i>sos</i> zawsze zaczyna się od pierwszej kropki."
+          },
+          "7": {
+            "title": "Przypomnij o poleceniach",
+            "say": "Wypisuje listę poleceń i bieżące ustawienia. Uruchamia się przy starcie i za każdym razem, gdy wpiszesz <code>help</code>."
+          },
+          "8": {
+            "title": "Morse jako tekst",
+            "say": "SOS jest zapisany jako rząd jedynek i zer: każdy znak to jeden 150-milisekundowy wycinek czasu, 1 to światło, 0 to ciemność. Krótkie serie jedynek to kropki, długie to kreski, a zera na końcu to przerwa przed powtórzeniem.",
+            "deep": "Ciąg ma 33 znaki, więc jeden pełny SOS trwa 33 × 150 ms, czyli nieco poniżej 5 sekund. Trzymanie wzoru jako danych zamiast kodu utrzymuje logikę rysowania w małej formie."
+          },
+          "9": {
+            "title": "Przepis na jasność",
+            "say": "Mając czas, jaki działa bieżący tryb, odpowiada na jedno pytanie: jak jasno ma teraz świecić dioda? <i>Off</i> to 0, <i>on</i> to Twój poziom, a <i>blink</i> na zmianę przełącza między poziomem a 0.",
+            "deep": "Dla blinka <code>elapsed / blinkMs</code> liczy, ile półokresów minęło; <code>% 2</code> zostawia tylko to, czy liczba jest parzysta (włączona), czy nieparzysta (wyłączona). Bez timerów i bez zapisanej flagi włączenia.",
+            "quiz": {
+              "question": "Wpisujesz <code>blink 100</code>. Ile błysków widzisz na sekundę?",
+              "options": [
+                "10",
+                "5",
+                "1"
+              ],
+              "why": "100 ms włączona, potem 100 ms wyłączona: jeden błysk co 200 ms, czyli pięć na sekundę."
+            }
+          },
+          "10": {
+            "title": "Oddychanie i Morse",
+            "say": "<i>Fade</i> wspina się od ciemności do jasności przez sekundę, potem wraca w dół przez kolejną i przepuszcza wynik przez krzywą przyjazną oku. <i>SOS</i> ustala, w którym wycinku ciągu Morse'a jesteśmy, i zapala diodę, jeśli jest tam 1.",
+            "deep": "Fade to fala trójkątna o okresie 2 s. <code>sizeof(kSos) - 1</code> to długość ciągu bez ukrytego znacznika końca <code>'\\0'</code>; <code>%</code> sprawia, że wzór powtarza się bez końca."
+          },
+          "11": {
+            "title": "Uporządkuj wpisane, potem działaj",
+            "say": "Polecenie przychodzi jako jedna linia tekstu. Program obcina zbędne spacje, zmienia wielkość liter i dzieli tekst przy pierwszej spacji na polecenie i opcjonalną liczbę. Polecenia jednowyrazowe po prostu zmieniają tryb.",
+            "deep": "<code>String</code> to rosnący typ tekstowy Arduino. <code>indexOf(' ')</code> zwraca -1, gdy nie ma spacji, więc <code>arg</code> jest wtedy pusty."
+          },
+          "12": {
+            "title": "Polecenia z liczbą",
+            "say": "<code>blink</code> i <code>level</code> czytają liczbę po poleceniu i sprawdzają, czy ma sens, zanim jej użyją. Wszystko, czego płytka nie rozpoznaje, dostaje uprzejme ostrzeżenie zamiast niespodzianki.",
+            "deep": "<code>toInt()</code> zwraca 0, gdy tekst nie jest liczbą, więc <code>level abc</code> po cichu ustawia 0 (wyłączona). Sprawdzanie zakresów z góry trzyma złe wartości z dala od <code>state</code>.",
+            "quiz": {
+              "question": "Dioda się wygasza, a Ty wpisujesz <code>blink 10</code>. Co się dzieje?",
+              "options": [
+                "Miga bardzo szybko",
+                "Pojawia się ostrzeżenie i dalej gaśnie",
+                "Płytka się resetuje"
+              ],
+              "why": "10 jest poniżej minimum 20 ms, więc kod zapisuje ostrzeżenie i wychodzi przed wywołaniem <code>setMode</code>. Nic się nie zmienia."
+            }
+          },
+          "13": {
+            "title": "Słuchaj, nie czekając",
+            "say": "To pobiera litery, które już dotarły, dokłada je do małego bufora, a gdy zobaczy Enter, przekazuje całą linię do <code>handleCommand</code>. Jeśli nic nie dotarło, od razu wraca, więc dioda animuje się dalej, gdy piszesz.",
+            "deep": "<code>Serial.available()</code> nigdy nie czeka. Monitor wysyła na końcu znak nowej linii (<code>monitor_eol = LF</code>); akceptowany jest też powrót karetki. Limit 32 znaków zapobiega zjadaniu pamięci przez zbyt długą linię."
+          },
+          "14": {
+            "title": "Oddaj pin do PWM",
+            "say": "Uruchamia się raz. Otwiera monitor portu szeregowego, podłącza pin 4 do sprzętu PWM, na wszelki wypadek obniża moc pinu jako siatkę bezpieczeństwa, wyłącza diodę tęczy pozostałą z lekcji 01 i zaczyna wygaszanie.",
+            "deep": "<code>ledcAttach</code> wybiera wolny kanał LEDC dla pinu. <code>GPIO_DRIVE_CAP_0</code> to najsłabsza siła napędu (około 5 mA), która chroni diodę i pin, gdyby zabrakło rezystora; przy dobrym rezystorze można ją usunąć dla pełnej jasności."
+          },
+          "15": {
+            "title": "Słuchaj, potem świeć",
+            "say": "Co 5 ms: sprawdź wpisane litery, wylicz jasność dla bieżącego trybu i zapisz ją do diody. Ponieważ żaden z tych kroków nie czeka, pisanie nigdy nie zamraża animacji.",
+            "deep": "<code>millis() - state.modeStartedAt</code> to czas od startu trybu, czyli wszystko, czego potrzebuje <code>dutyFor</code>. <code>ledcWrite</code> tylko aktualizuje rejestr; sprzęt LEDC utrzymuje PWM między wywołaniami.",
+            "quiz": {
+              "question": "W połowie SOS wpisujesz ponownie <code>sos</code>. Co się dzieje?",
+              "options": [
+                "Nic: już jest w SOS",
+                "Wzór zaczyna się od pierwszej kropki",
+                "Wyłącza się"
+              ],
+              "why": "<code>setMode</code> resetuje <code>modeStartedAt</code>, więc czas, który minął, spada do 0 i wzór zaczyna się od nowa."
+            }
+          }
+        }
+      }
+    }
+  },
+  "03-display": {
+    "bigPicture": "Ten program rozświetla ekran 1,9″. <code>setup()</code> uruchamia się raz: włącza podświetlenie, konfiguruje magistralę SPI, pokazuje czerwone, zielone i niebieskie pasy, żebyś mógł sprawdzić kolory, a potem rezerwuje w PSRAM płótno wielkości obrazu. <code>loop()</code> działa bez końca, rysując na tym płótnie poruszającą się falę sinusoidalną z liczbą klatek i czasem działania, a każdy gotowy obraz wysyła na ekran za jednym razem.",
+    "files": {
+      "labs/03-display/src/main.cpp": {
+        "stops": {
+          "0": {
+            "title": "Okablowanie i plan",
+            "say": "Nagłówek wymienia, który pin ekranu idzie do którego pinu płytki, co zobaczysz (pasy kolorów, potem poruszającą się falę) oraz dwa nowe pojęcia: magistralę SPI i bufor klatki.",
+            "deep": "ST7789 to układ sterujący na module ekranu; trzyma obraz we własnej pamięci i sam odświeża szkło. My wysyłamy mu tylko nowe piksele."
+          },
+          "1": {
+            "title": "Biblioteki, które znają ekran",
+            "say": "<code>Adafruit_GFX</code> wie, jak rysować linie, prostokąty i tekst. <code>Adafruit_ST7789</code> wie, jak rozmawiać z tym ekranem. <code>SPI.h</code> to magistrala, której one używają.",
+            "deep": "Dokładne wersje bibliotek są przypięte w <code>platformio.ini</code> w <code>lib_deps</code>, więc każdy build używa tego samego kodu."
+          },
+          "2": {
+            "title": "Rozmiar ekranu i prędkość magistrali",
+            "say": "Panel ma 170 × 320 pikseli; obracamy go tak, by miał 320 szerokości i 170 wysokości. <code>kSpiHz</code> to tempo, w jakim bity płyną przewodem: 40 milionów na sekundę.",
+            "deep": "Jeden pełny obraz to 320 × 170 × 16 bitów ≈ 870 tysięcy bitów, więc przy 40 MHz wysłanie zajmuje około 22 ms. Znak <code>'</code> w <code>40'000'000</code> to tylko separator cyfr dla czytelności.",
+            "quiz": {
+              "question": "Obniżasz <code>kSpiHz</code> do 20 MHz. Co się zmienia na ekranie?",
+              "options": [
+                "Kolory są bledsze",
+                "Liczba fps spada",
+                "Obraz się kurczy"
+              ],
+              "why": "Każdy obraz wysyła się dwa razy dłużej, więc na ekran dociera w każdej sekundzie mniej klatek. Sam obraz jest identyczny."
+            }
+          },
+          "3": {
+            "title": "Ekran i płótno",
+            "say": "<code>tft</code> to obiekt, który rozmawia z prawdziwym ekranem. <code>frame</code> będzie wskazywać na płótno: niewidoczny obraz w pamięci, na którym rysujemy każdą klatkę przed jej pokazaniem. Zaczyna jako <code>nullptr</code>, czyli „jeszcze nic”.",
+            "deep": "Płótno potrzebuje 320 × 170 × 2 bajtów ≈ 106 KB. To za dużo, by wygodnie trzymać je w wewnętrznym RAM S3, więc trafia do 8 MB PSRAM: rdzeń automatycznie umieszcza tam duże alokacje."
+          },
+          "4": {
+            "title": "Kolory w 16 bitach",
+            "say": "Kolor każdego piksela mieści się w 16 bitach: 5 na czerwień, 6 na zieleń, 5 na błękit (RGB565). <code>pal</code> trzyma sześć kolorów naszego małego oscyloskopu, każdy z nazwą mówiącą, do czego służy.",
+            "deep": "Zieleń dostaje dodatkowy bit, bo nasze oczy są na nią najczulsze. 16 bitów na piksel zmniejsza dane do wysłania w porównaniu z kolorem 24-bitowym, kosztem lekkiego pasowania w gładkich gradientach."
+          },
+          "5": {
+            "title": "Zmieszaj kolory oscyloskopu",
+            "say": "Wypełnia paletę przyjaznymi wartościami czerwieni, zieleni i błękitu 0-255: głębokie tło granatowo-czarne, delikatną siatkę, zielononiebieską linię przebiegu, bursztynowe liczby i dwa kolory tekstu.",
+            "deep": "<code>color565</code> zachowuje najwyższe 5, 6 i 5 bitów każdego kanału i pakuje je w jedną 16-bitową liczbę."
+          },
+          "6": {
+            "title": "Czerwony, zielony, niebieski: szybki test",
+            "say": "Rysuje trzy pasy i je podpisuje. Jeśli lewy pas jest czerwony, środkowy zielony, a prawy niebieski, okablowanie i ustawienia kolorów są dobre. To rysowane wprost na ekranie, bez płótna.",
+            "deep": "<code>ST77XX_RED</code> i podobne to gotowe wartości RGB565. Rysowanie wprost wystarcza dla jednego nieruchomego obrazu; przy animacji widziałbyś, jak każdy pasek się pojawia.",
+            "quiz": {
+              "question": "Pasy wychodzą jako cyjan, magenta i żółty. Jaka jest prawdopodobna przyczyna?",
+              "options": [
+                "Luźny przewód",
+                "Kolory są odwrócone",
+                "Brakuje PSRAM"
+              ],
+              "why": "Cyjan, magenta i żółty to przeciwieństwa czerwieni, zieleni i błękitu. Jak mówi komentarz, <code>tft.invertDisplay(false)</code> po <code>tft.init()</code> to naprawia."
+            }
+          },
+          "7": {
+            "title": "Narysuj siatkę",
+            "say": "Rysuje delikatne pionowe i poziome linie w dolnej części płótna, jak siatkę na ekranie oscyloskopu.",
+            "deep": "<code>drawFastVLine</code> i <code>drawFastHLine</code> są tańsze niż ogólne <code>drawLine</code>, bo wystarczy im wypełnić prosty odcinek pikseli."
+          },
+          "8": {
+            "title": "Wyczyść płótno, napisz nagłówek",
+            "say": "Każda klatka zaczyna się od pomalowania całego płótna kolorem tła. Potem pisze duży tytuł „hello, bench” i w prawym górnym rogu nazwę płytki oraz bieżącą liczbę klatek na sekundę.",
+            "deep": "<code>g</code> to płótno przekazywane przez referencję (<code>&amp;</code>), więc rysujemy na prawdziwym, bez kopiowania 106 KB. <code>setCursor</code> ustawia tekst; <code>setTextSize</code> skaluje wbudowaną czcionkę."
+          },
+          "9": {
+            "title": "Wędrująca fala",
+            "say": "Dla każdej kolumny pikseli wylicza wysokość fali sinusoidalnej i łączy ją z poprzednią kolumną krótką linią. Położenie fali zależy od czasu, więc w każdej klatce przesuwa się trochę: to właśnie ruch, który widzisz.",
+            "deep": "Główna fala ma około 140 px długości i dryfuje z prędkością około 67 px na sekundę. Druga, wolna sinusoida sprawia, że jej wysokość oddycha między 70% a 100%, a mała, szybka dodaje falowanie. Linia środkowa leży na y = 102."
+          },
+          "10": {
+            "title": "Zegar w rogu",
+            "say": "Zamienia milisekundy od startu na godziny, minuty i sekundy i wypisuje je bursztynowo w prawym dolnym rogu.",
+            "deep": "<code>s / 60 % 60</code> to łączna liczba minut minus pełne godziny. <code>%02lu</code> dopełnia każdą liczbę do dwóch cyfr wiodącym zerem.",
+            "quiz": {
+              "question": "Płytka działa od 3725 sekund. Co pokazuje zegar?",
+              "options": [
+                "00:62:05",
+                "01:02:05",
+                "01:00:25"
+              ],
+              "why": "3725 s to 1 godzina (3600 s) plus 125 s, a 125 s to 2 minuty i 5 sekund."
+            }
+          },
+          "11": {
+            "title": "Najpierw podświetlenie",
+            "say": "Uruchamia się raz. Po otwarciu monitora portu szeregowego włącza podświetlenie przed wszystkim innym. Jeśli ekran świeci, ale jest pusty, wiesz, że zasilanie i podświetlenie są w porządku, a problem leży w przewodach danych.",
+            "deep": "Podświetlenie to zestaw diod za panelem; pin BLK tylko je przełącza. Mógłby też przyjmować PWM, jak w lekcji 02, by przyciemniać ekran."
+          },
+          "12": {
+            "title": "Uruchom magistralę, obudź ekran",
+            "say": "Startuje SPI na naszych pinach, budzi ekran, ustawia prędkość, obraca go na bok i miesza paletę. Linia w logu potwierdza rozmiar i prędkość, więc monitor powinien napisać 320x170 przy 40 MHz.",
+            "deep": "Ekran nigdy nie wysyła danych z powrotem, więc MISO to <code>-1</code>. Domyślny obiekt <code>SPI</code> na S3 to peryferium SPI2 (FSPI). <code>setRotation(1)</code> zamienia szerokość z wysokością, dlatego log wypisuje 320x170."
+          },
+          "13": {
+            "title": "Pokaż pasy, potem zrób płótno",
+            "say": "Pokazuje pasy kolorów przez dwie i pół sekundy, a potem prosi o 106 KB płótna. Jeśli się nie uda, zapisuje błąd i się poddaje, byś wiedział, żeby sprawdzić ustawienie PSRAM.",
+            "deep": "<code>new GFXcanvas16</code> się powiedzie nawet wtedy, gdy bufor pikseli nie mógł zostać przydzielony, więc kod sprawdza zarówno obiekt, jak i <code>getBuffer()</code>.",
+            "quiz": {
+              "question": "Gdyby PSRAM było wyłączone i płótna nie dało się utworzyć, co pokazałby ekran?",
+              "options": [
+                "Czarny ekran",
+                "Zamrożone pasy kolorów",
+                "Migoczącą falę"
+              ],
+              "why": "Pasy są rysowane, zanim zostanie zażądane płótno, a <code>loop()</code> po prostu czeka, więc nic nigdy nie rysuje nad nimi."
+            }
+          },
+          "14": {
+            "title": "Zmierz liczbę klatek",
+            "say": "Działa bez końca. Jeśli nie ma płótna, tylko czeka. W przeciwnym razie mierzy czas od ostatniej klatki, zamienia go na klatki na sekundę i wygładza, by liczba na ekranie nie drgała.",
+            "deep": "Wygładzanie zachowuje 90% starej wartości i dodaje 10% nowej (wykładnicza średnia ruchoma). Zmienne <code>static</code> zachowują wartości między przebiegami."
+          },
+          "15": {
+            "title": "Rysuj w ukryciu, pokaż od razu",
+            "say": "Najpierw cały obraz jest rysowany na płótnie, potem <code>drawRGBBitmap</code> wysyła go na ekran jednym długim strumieniem. Co pięć sekund liczba klatek jest też wypisywana w monitorze.",
+            "deep": "Rysowanie wprost na ekranie pokazywałoby każdy krok (tło, siatkę, falę) w miarę jego wykonania, co migocze. Z buforem klatki ekran dostaje tylko gotowe obrazy.",
+            "quiz": {
+              "question": "Dlaczego fala porusza się bez migotania?",
+              "options": [
+                "Ekran odświeża się bardzo szybko",
+                "Każda klatka jest gotowa w pamięci, zanim zostanie wysłana",
+                "Magistrala SPI działa z 40 MHz"
+              ],
+              "why": "Płótno w PSRAM przyjmuje wszystkie pół-gotowe kroki; ekran dostaje tylko ostateczny obraz."
+            }
+          }
+        }
+      }
+    }
+  }
+}

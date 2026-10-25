@@ -22,7 +22,7 @@ export default defineConfig(({ mode }) => ({
         new URL(loadEnv(mode, process.cwd(), "").FIRMWARE_DIR || "../esp-labs", import.meta.url),
       ),
     }),
-    // REFERENCE_FILE: Espressif's reference for the citation reader; optional, never committed.
+    // REFERENCE_FILE: Espressif's reference for the citation reader; optional, committed for the deploy.
     referencePlugin({
       file: fileURLToPath(
         new URL(

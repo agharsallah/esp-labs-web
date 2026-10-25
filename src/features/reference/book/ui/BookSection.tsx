@@ -3,6 +3,7 @@ import { Suspense, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import { useChipContent } from "@/features/chip/hooks/use-chip-content";
+import { useLocale } from "@/i18n/use-locale";
 import { prefersReducedMotion } from "@/lib/media";
 import { useInView } from "@/lib/use-in-view";
 import { ErrorBoundary } from "@/ui/ErrorBoundary";
@@ -51,7 +52,7 @@ export function BookSection({
       aria-label={`§${entry.id} ${entry.title}`}
     >
       {heading ? (
-        <Heading className={styles.sectionTitle} lang="en" dir="ltr">
+        <Heading className={styles.sectionTitle}>
           <Link to={bookLink(entry.id)} className={styles.anchor} preventScrollReset aria-label={t("book.link", { section: entry.id })}>
             <span className={reader.secNum}>§{entry.id}</span>
           </Link>{" "}
@@ -84,7 +85,8 @@ function Placeholder({ size }: { size: number }) {
 
 /** The section's text, laid out by the reader's own parts, in its own reader context. */
 function SectionText({ id }: { id: string }) {
-  const section = useSuspenseQuery(referenceSectionQuery(id)).data;
+  const locale = useLocale();
+  const section = useSuspenseQuery(referenceSectionQuery(id, locale)).data;
   const content = useChipContent();
   const box = useRef<HTMLDivElement>(null);
   // "Key information" cards scroll the page to their passage, numbered within this section.

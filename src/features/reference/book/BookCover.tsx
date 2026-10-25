@@ -39,7 +39,7 @@ export function BookCover({ data }: { data: BookData }) {
               <Icon name="arrow" size={16} />
               <span>
                 {t("book.continue")}{" "}
-                <span lang="en" dir="ltr">
+                <span>
                   §{lastEntry.id} {lastEntry.title}
                 </span>
               </span>

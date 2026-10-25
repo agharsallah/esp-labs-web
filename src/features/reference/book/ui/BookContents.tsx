@@ -59,7 +59,7 @@ export function BookContents({
                       onClick={onPick}
                     >
                       <span className={reader.secNum}>{chapter.entry.id}</span>{" "}
-                      <span className={styles.chapterName} lang="en">
+                      <span className={styles.chapterName}>
                         {chapter.entry.title}
                       </span>{" "}
                       {complete ? (
@@ -85,7 +85,7 @@ export function BookContents({
                                 onClick={onPick}
                               >
                                 <span className={reader.secNum}>{s.id}</span>{" "}
-                                <span lang="en">{s.title}</span>
+                                <span>{s.title}</span>
                               </Link>
                             </li>
                           ))}

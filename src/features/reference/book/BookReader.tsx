@@ -115,7 +115,7 @@ export function BookReader({ data, at }: { data: BookData; at: string }) {
                 <span className={styles.whereDoc} data-doc={activeChapter.entry.doc}>
                   <Icon name={DOC_ICON[activeChapter.entry.doc]} size={14} />
                 </span>
-                <span className={styles.whereText} lang="en" dir="ltr">
+                <span className={styles.whereText}>
                   <span className={reader.secNum}>§{activeEntry?.id ?? active}</span> {activeEntry?.title}
                 </span>
               </p>
@@ -126,7 +126,7 @@ export function BookReader({ data, at }: { data: BookData; at: string }) {
             <Link to={bookLink(previous.entry.id)} className={styles.previous}>
               <Icon name="up" size={14} />
               <span>{t("book.prev")}</span>
-              <span lang="en" dir="ltr">
+              <span>
                 <span className={reader.secNum}>§{previous.entry.id}</span> {previous.entry.title}
               </span>
             </Link>
@@ -140,7 +140,7 @@ export function BookReader({ data, at }: { data: BookData; at: string }) {
                 <span className={styles.nextKicker}>
                   {t("book.next")} <Icon name="arrow" size={14} />
                 </span>
-                <span className={styles.nextTitle} lang="en" dir="ltr">
+                <span className={styles.nextTitle}>
                   <span className={reader.secNum}>§{next.entry.id}</span> {next.entry.title}
                 </span>
                 <span className={reader.minutes}>

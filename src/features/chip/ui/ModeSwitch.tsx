@@ -1,6 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router";
+import { useLocale } from "@/i18n/use-locale";
 import { BOOK_PATH } from "@/features/reference/book/book-url";
 import { isReferenceBuilt, referenceIndexQuery } from "@/features/reference/queries";
 import { Icon } from "@/ui/Icon";
@@ -14,9 +15,10 @@ import styles from "./ModeSwitch.module.css";
 export function ModeSwitch() {
   const { t } = useTranslation("chip");
   const client = useQueryClient();
+  const locale = useLocale();
   const reading = useLocation().pathname.startsWith(BOOK_PATH);
   if (!isReferenceBuilt()) return null;
-  const warm = () => void client.prefetchQuery(referenceIndexQuery());
+  const warm = () => void client.prefetchQuery(referenceIndexQuery(locale));
   return (
     <nav className={styles.switch} aria-label={t("mode.label")}>
       <Link to="/datasheet" viewTransition className={styles.option} aria-current={reading ? undefined : "page"}>

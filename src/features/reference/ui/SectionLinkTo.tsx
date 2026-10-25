@@ -1,6 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import type { ReactNode } from "react";
 import { Link } from "react-router";
+import { useLocale } from "@/i18n/use-locale";
 import { prefetchSection } from "../queries";
 import { useSectionLink } from "../use-reader-nav";
 import { useSectionTarget } from "./section-link-context";
@@ -29,7 +30,8 @@ export function SectionLinkTo({
   const { to, preventScrollReset } = inBook?.(id) ?? drawer;
   const state = inBook ? undefined : drawer.state;
   const client = useQueryClient();
-  const warm = () => prefetchSection(client, id);
+  const locale = useLocale();
+  const warm = () => prefetchSection(client, id, locale);
   return (
     <Link
       to={to}

@@ -1,6 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 import { useChipContent } from "@/features/chip/hooks/use-chip-content";
+import { useLocale } from "@/i18n/use-locale";
 import { useReducedMotion } from "@/lib/media";
 import { citingTexts, neighboursOf, relatedBlock } from "../logic/citations";
 import { collectKeyInfo } from "../logic/key-info";
@@ -27,8 +28,9 @@ function scrollPane(pane: HTMLElement | null, n: number, smooth: boolean) {
 
 /** One open section: loads it, finds why the reader came, and lays out header, body and footer. */
 export function ReaderSection({ id, titleId, onClose }: { id: string; titleId: string; onClose: () => void }) {
-  const section = useSuspenseQuery(referenceSectionQuery(id)).data;
-  const index = useSuspenseQuery(referenceIndexQuery()).data?.sections ?? [];
+  const locale = useLocale();
+  const section = useSuspenseQuery(referenceSectionQuery(id, locale)).data;
+  const index = useSuspenseQuery(referenceIndexQuery(locale)).data?.sections ?? [];
   const content = useChipContent();
   const reduced = useReducedMotion();
   const scroller = useRef<HTMLDivElement>(null);

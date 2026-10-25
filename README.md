@@ -11,6 +11,7 @@ An interactive guide to the ESP32-S3: 32 hands-on labs with live simulators, a 3
 [![TypeScript strict](https://img.shields.io/badge/TypeScript-6.0_strict-3178c6?logo=typescript&logoColor=white)](tsconfig.app.json)
 [![Vite 8](https://img.shields.io/badge/Vite-8.3-646cff?logo=vite&logoColor=white)](https://vite.dev)
 [![8 languages](https://img.shields.io/badge/languages-8_incl._RTL-b5651d)](docs/I18N.md)
+[![CI](https://github.com/agharsallah/esp-labs-web/actions/workflows/ci.yml/badge.svg)](https://github.com/agharsallah/esp-labs-web/actions/workflows/ci.yml)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-1f7a55)](CONTRIBUTING.md)
 
 [Live guide](https://esp-labs-web.vercel.app) ·
@@ -122,7 +123,7 @@ Contributions of every size are welcome. These need no React at all:
 | Fix a typo or a confusing step        | Edit the lesson in `src/content/lessons/<track>.ts` and open a PR                                                  |
 | Add a lab, a simulator or a language  | [CONTRIBUTING.md](CONTRIBUTING.md): step by step, with the checks to run                                          |
 
-Issues labelled [`good first issue`](https://github.com/agharsallah/esp-labs-web/labels/good%20first%20issue) are a good place to start.
+Issues labelled [`good first issue`](https://github.com/agharsallah/esp-labs-web/labels/good%20first%20issue) are a good place to start. Please read the [code of conduct](CODE_OF_CONDUCT.md); report security problems privately ([SECURITY.md](SECURITY.md)). How CI and the review rules work: [docs/MAINTAINING.md](docs/MAINTAINING.md).
 
 ## Commands
 

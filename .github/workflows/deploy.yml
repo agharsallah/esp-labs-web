@@ -1,22 +1,20 @@
-# Deploys main to Vercel production once CI has passed on it, so a merged PR (or a push to main)
-# goes live without a manual `pnpm deploy:prod`. The build runs here, not on Vercel, because the
-# code reader bundles the esp-labs firmware checkout; Vercel only receives the prebuilt output.
+# Deploys main to Vercel production when you run it (Actions → Deploy → Run workflow, or
+# `gh workflow run Deploy`), instead of a local `pnpm deploy:prod`. The build runs here, not on
+# Vercel, because the code reader bundles the esp-labs firmware checkout; Vercel only receives
+# the prebuilt output. The production environment only accepts main, and the commit must be green.
 #
-# workflow_run runs this repo's copy of the workflow with the deploy secrets, so it only deploys
-# a successful CI run of a push to main in this repository, never a pull request's code.
+# A successful deploy is then released: tagged vX.Y.Z (the next semver from the Conventional
+# Commits since the last tag, tools/deploy/), with grouped release notes. Old previews are removed.
 name: Deploy
 
 on:
-  workflow_run:
-    workflows: [CI]
-    types: [completed]
-    branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
+  actions: read
 
-# One production deploy at a time; a newer push replaces a queued one, a running one finishes.
+# One production deploy at a time; a newer run replaces a queued one, a running one finishes.
 concurrency:
   group: deploy-production
   cancel-in-progress: false
@@ -24,26 +22,37 @@ concurrency:
 jobs:
   deploy:
     name: Vercel production
-    if: >-
-      github.event_name == 'workflow_dispatch' ||
-      (github.event.workflow_run.conclusion == 'success' &&
-       github.event.workflow_run.event == 'push' &&
-       github.event.workflow_run.head_repository.full_name == github.repository)
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment:
       name: production
       url: ${{ steps.deploy.outputs.url }}
+    outputs:
+      url: ${{ steps.deploy.outputs.url }}
+      tag: ${{ steps.plan.outputs.tag }}
+      version: ${{ steps.plan.outputs.version }}
+      release: ${{ steps.plan.outputs.release }}
     env:
       VERCEL_CLI: vercel@63.1.2
       VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
     steps:
-      # The commit CI checked, not whatever main is by the time this starts.
+      # Refuses a commit whose CI is still running or failed, so a red main never goes live.
+      - name: CI passed on this commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          conclusion="$(gh run list --repo "$GITHUB_REPOSITORY" --workflow CI --commit "$GITHUB_SHA" \
+            --event push --limit 1 --json conclusion --jq '.[0].conclusion // ""')"
+          if [ "$conclusion" != "success" ]; then
+            echo "::error::CI on $GITHUB_SHA is '${conclusion:-not finished}', not 'success'. Wait for it, or fix main."
+            exit 1
+          fi
+      # The whole history and the tags, to find the last release.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          fetch-depth: 0
           persist-credentials: false
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -53,13 +62,57 @@ jobs:
       - name: Place the firmware beside the guide
         run: mv esp-labs-firmware ../esp-labs
       - uses: ./.github/actions/setup
+      - name: Plan the release
+        id: plan
+        run: node tools/deploy/cli.ts plan | tee -a "$GITHUB_OUTPUT"
       - name: Pull the production settings
         run: pnpm dlx "$VERCEL_CLI" pull --yes --environment=production --token="$VERCEL_TOKEN"
       - name: Build
         run: pnpm dlx "$VERCEL_CLI" build --prod --token="$VERCEL_TOKEN"
+      # The meta shows the commit and the release on the deployment in Vercel's dashboard.
       - name: Deploy
         id: deploy
+        env:
+          TAG: ${{ steps.plan.outputs.tag }}
+          REF: ${{ github.ref_name }}
         run: |
-          url="$(pnpm dlx "$VERCEL_CLI" deploy --prebuilt --prod --token="$VERCEL_TOKEN")"
+          message="$(git log -1 --format=%s)"
+          url="$(pnpm dlx "$VERCEL_CLI" deploy --prebuilt --prod --token="$VERCEL_TOKEN" \
+            --meta githubCommitSha="$GITHUB_SHA" --meta githubCommitRef="$REF" \
+            --meta githubCommitMessage="$message" --meta githubRepo="${GITHUB_REPOSITORY#*/}" \
+            --meta githubOrg="$GITHUB_REPOSITORY_OWNER" --meta release="$TAG")"
           echo "url=$url" >> "$GITHUB_OUTPUT"
-          echo "Deployed $url" >> "$GITHUB_STEP_SUMMARY"
+          echo "Deployed $url ($TAG)" >> "$GITHUB_STEP_SUMMARY"
+      # Housekeeping: a failure here leaves the deploy and the release as they are.
+      - name: Remove previews older than 30 days
+        continue-on-error: true
+        run: node tools/deploy/cli.ts cleanup 30
+
+  release:
+    name: Tag and release
+    needs: deploy
+    if: needs.deploy.outputs.release == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+      - name: Write the release notes
+        env:
+          VERSION: ${{ needs.deploy.outputs.version }}
+          URL: ${{ needs.deploy.outputs.url }}
+        run: node tools/deploy/cli.ts notes "$VERSION" "$URL" > "$RUNNER_TEMP/notes.md"
+      # Creates the tag on the deployed commit and marks this release as the latest.
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ needs.deploy.outputs.tag }}
+        run: |
+          gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+            --title "$TAG" --notes-file "$RUNNER_TEMP/notes.md" --latest
+          echo "Released $TAG: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/tag/$TAG" >> "$GITHUB_STEP_SUMMARY"

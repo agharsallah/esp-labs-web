@@ -38,6 +38,8 @@ jobs:
         run: pnpm typecheck
       - name: Lint
         run: pnpm lint
+      - name: Chip citations name sections of the reference
+        run: pnpm chip:refs
       # CI=true makes Vitest fail on a stale snapshot instead of rewriting it, so a lesson
       # changed without `pnpm i18n:extract` fails here.
       - name: Test

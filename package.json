@@ -25,10 +25,10 @@
     "@tanstack/react-query": "5.104.3",
     "@vercel/analytics": "2.0.1",
     "@vercel/speed-insights": "2.0.0",
-    "i18next": "26.4.2",
+    "i18next": "26.4.3",
     "react": "19.3.1",
     "react-dom": "19.3.1",
-    "react-i18next": "17.0.15",
+    "react-i18next": "17.0.16",
     "react-router": "8.4.0",
     "three": "0.186.1",
     "zod": "4.6.7"

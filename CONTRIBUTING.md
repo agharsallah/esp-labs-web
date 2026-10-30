@@ -143,3 +143,7 @@ Then open the lessons you touched in a browser at desktop width and at 390 px. C
 Every pull request runs `pnpm typecheck`, `pnpm lint`, `pnpm test` and `pnpm build` (with the esp-labs firmware), lints the workflows, and runs CodeQL. A pull request that changes dependencies also gets a vulnerability review. On your first pull request a maintainer approves the CI run before it starts. All of these must pass, and the maintainer must approve, before a pull request merges.
 
 Everyone taking part follows the [code of conduct](CODE_OF_CONDUCT.md). Report a security problem privately, as [SECURITY.md](SECURITY.md) describes, never in a public issue.
+
+## License
+
+By contributing, you agree that your contributions are released under the project's [MIT License](LICENSE).

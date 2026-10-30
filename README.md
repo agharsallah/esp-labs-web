@@ -13,6 +13,7 @@ An interactive guide to the ESP32-S3: 32 hands-on labs with live simulators, a 3
 [![11 languages](https://img.shields.io/badge/languages-11_incl._RTL-b5651d)](docs/I18N.md)
 [![CI](https://github.com/agharsallah/esp-labs-web/actions/workflows/ci.yml/badge.svg)](https://github.com/agharsallah/esp-labs-web/actions/workflows/ci.yml)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-1f7a55)](CONTRIBUTING.md)
+[![MIT License](https://img.shields.io/badge/license-MIT-1f7a55)](LICENSE)
 
 [Live guide](https://esp-labs-web.vercel.app) ·
 [Firmware (esp-labs)](https://github.com/agharsallah/esp-labs) ·
@@ -36,6 +37,7 @@ An interactive guide to the ESP32-S3: 32 hands-on labs with live simulators, a 3
 - [Configuration](#configuration)
 - [Deploy to Vercel](#deploy-to-vercel)
 - [Where things live](#where-things-live)
+- [License](#license)
 
 ## What's inside
 
@@ -221,6 +223,38 @@ Web Analytics (`@vercel/analytics`) and Speed Insights (`@vercel/speed-insights`
 ### Versions
 
 All dependencies are pinned exactly (`savePrefix: ""`): React 19.3, React Router 8.4, TanStack Query 5.104, Vite 8.3, React Compiler 1.0, zod 4.6, three 0.186, i18next 26.4. TypeScript stays on 6.0 because typescript-eslint does not support TypeScript 7 yet.
+
+## License
+
+Open source under the [MIT License](LICENSE). In one line: **do what you like with it, just credit the original work.**
+
+**You can**
+
+- use it for anything: learning, teaching, workshops, your job, commercial products
+- change it, fork it, build on it, mix it into your own projects
+- deploy it, host it, share it, sell it
+
+**You must**
+
+- keep the copyright notice and the [LICENSE](LICENSE) text in any copy or substantial part of the code you pass on. That is how the original work stays credited.
+
+**We ask (not required, but appreciated)**
+
+- if you deploy a version of it, say where it comes from somewhere visible, such as the footer or an about page:
+
+  ```text
+  Based on ESP32 Labs by Abderrehmen Gharsallah: https://github.com/agharsallah/esp-labs-web
+  ```
+
+**Good to know**
+
+- You don't need to ask permission or tell anyone.
+- Your own changes can carry any license you choose, as long as the original notice stays with the original code.
+- It comes as is: no warranty, and the authors aren't liable for what you do with it.
+- Third-party libraries keep their own licenses, and the firmware in [esp-labs](https://github.com/agharsallah/esp-labs) has its own.
+- Espressif, ESP32 and other product names are trademarks of their owners; the license covers this code, not those names.
+
+This summary is a plain-language guide; the [LICENSE](LICENSE) file is the legal text and wins if they ever differ.
 
 ---
 

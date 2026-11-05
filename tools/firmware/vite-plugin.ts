@@ -25,7 +25,7 @@ export function firmwarePlugin(options: { root: string; required?: boolean }): P
   const root = resolve(options.root);
   const collect = () => {
     if (!detectLayout(root)) {
-      console.warn(`[firmware] no PlatformIO project in ${root}: the code reader will be empty`);
+      console.warn(`[firmware] no labs/ folder in ${root}: the code reader will be empty`);
       return [];
     }
     return collectFirmware(root);

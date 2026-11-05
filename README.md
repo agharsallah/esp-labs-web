@@ -213,7 +213,7 @@ Web Analytics (`@vercel/analytics`) and Speed Insights (`@vercel/speed-insights`
 | `src/i18n/`, `src/locales/` | Language setup and translations, one folder per language: see [docs/I18N.md](docs/I18N.md)                           |
 | `src/lib/`                  | Logger, storage, theme, palette, animation loop, http, clipboard                                                     |
 | `src/styles/tokens.css`     | Every colour, font and radius; light and dark themes                                                                 |
-| `tools/firmware/`           | Reads `esp-labs` (or an old `test-esp`) and ships each env's code as JSON (Vite plugin)                              |
+| `tools/firmware/`           | Reads `esp-labs` and ships each env's code as JSON (Vite plugin)                                                   |
 | `tools/reference/`          | Splits the reference into typed sections and emits them as JSON (Vite plugin, only when `REFERENCE_FILE` exists)     |
 | `public/data/`              | Bench status and log (validated with zod when fetched)                                                               |
 | `docs-llm/`                 | Offline React, React Router and TanStack Query docs used to build this (fetched, git-ignored)                        |

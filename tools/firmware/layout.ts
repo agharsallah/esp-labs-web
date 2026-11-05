@@ -1,9 +1,8 @@
 import { existsSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
-// Where a firmware checkout keeps its PlatformIO projects and shared code. Two layouts:
-//   labs  (esp-labs)  labs/<lab>/platformio.ini + labs/<lab>/src, shared code in kit/include, kit/lib
-//   bench (test-esp)  one platformio.ini at the root, src/<lab>, shared code in include/ and lib/
+// Where the esp-labs checkout keeps its PlatformIO projects and shared code:
+//   labs/<lab>/platformio.ini + labs/<lab>/src, shared code in kit/include and kit/lib/<name>/src
 // The collector only walks includes; this module answers "which ini, which src, where else to look".
 
 export type FileRole = "lab" | "shared";
@@ -34,23 +33,16 @@ const libSources = (libDir: string) =>
     .map((name) => join(libDir, name, "src"))
     .filter(existsSync);
 
-/** The layout of the checkout at `root`, or null when it holds no PlatformIO project. */
+/** The layout of the checkout at `root`, or null when it has no labs/ folder. */
 export function detectLayout(root: string): FirmwareLayout | null {
   const labsDir = join(root, "labs");
-  if (existsSync(labsDir)) {
-    const projects = subdirs(labsDir)
-      .map((lab) => join(labsDir, lab))
-      .map((dir) => ({ ini: join(dir, "platformio.ini"), srcDir: join(dir, "src") }))
-      .filter((p) => existsSync(p.ini));
-    const kit = join(root, "kit");
-    return { projects, searchPath: [join(kit, "include"), ...libSources(join(kit, "lib"))] };
-  }
-  const ini = join(root, "platformio.ini");
-  if (!existsSync(ini)) return null;
-  return {
-    projects: [{ ini, srcDir: join(root, "src") }],
-    searchPath: [join(root, "include"), ...libSources(join(root, "lib"))],
-  };
+  if (!existsSync(labsDir)) return null;
+  const projects = subdirs(labsDir)
+    .map((lab) => join(labsDir, lab))
+    .map((dir) => ({ ini: join(dir, "platformio.ini"), srcDir: join(dir, "src") }))
+    .filter((p) => existsSync(p.ini));
+  const kit = join(root, "kit");
+  return { projects, searchPath: [join(kit, "include"), ...libSources(join(kit, "lib"))] };
 }
 
 /**
@@ -60,11 +52,7 @@ export function detectLayout(root: string): FirmwareLayout | null {
 export function groupOf(rel: string): { role: FileRole; group: string } {
   const parts = rel.split("/");
   const [top, second, third] = parts;
-  if (top === "labs" || top === "src") return { role: "lab", group: second ?? top };
-  if (top === "kit") {
-    if (second === "include") return { role: "shared", group: "include" };
-    return { role: "shared", group: third ?? "kit" };
-  }
-  if (top === "include") return { role: "shared", group: "include" };
-  return { role: "shared", group: second ?? top ?? "lib" };
+  if (top === "labs") return { role: "lab", group: second ?? top };
+  if (second === "include") return { role: "shared", group: "include" };
+  return { role: "shared", group: third ?? top ?? "kit" };
 }

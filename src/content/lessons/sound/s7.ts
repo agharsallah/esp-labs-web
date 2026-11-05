@@ -1,0 +1,337 @@
+// sound lesson S7. Strings may carry the inline markup RichText understands:
+// <b>, <i>, <code> and <span class="snd-parts|need|opt">.
+import type { LessonEntry } from "@/domain/lesson";
+
+export const s7 = {
+  kind: "lesson",
+  id: "S7",
+  track: "sound",
+  title: "Speaker",
+  status: "built, not flashed",
+  heading: "Make the board play: a synth on one speaker",
+  goal: '<span class="snd-parts"><span class="need">MAX98357A + speaker</span></span>Numbers go out over I2S to the <b>MAX98357A</b>, a class-D amplifier: it switches the speaker fully on and off about 300 000 times a second, and how long each pulse lasts follows the number. The cone is too slow to follow, so it moves with the average: the wave. S7 makes notes in five timbres, chords, envelopes, tunes and game sounds, and draws what you hear.',
+  goalLine:
+    "Hear the difference between the five waves, play a chord and a tune, change the envelope until a note plucks, and fire every game sound.",
+  goalCheck: [
+    "<code>beep</code> and the hello chime come out of the speaker at <code>vol 20</code>.",
+    "On <b>wave</b>, the spectrum shows one line for sine, odd harmonics for square, all for saw.",
+    "<code>adsr 1 300 0 50</code> makes <code>note A4 600</code> sound plucked; <code>adsr 300 80 65 300</code> soft.",
+    "<code>tune korobeiniki</code> plays and the piano roll scrolls; <code>fx explosion</code> rumbles.",
+  ],
+  learn: [
+    "I2S out",
+    "class-D amplifier",
+    "timbre = harmonics",
+    "aliasing at 16 kHz",
+    "ADSR vs clicks",
+    "semitones & chords",
+    "tempo",
+    "procedural sound",
+    "squared volume",
+  ],
+  pins: [
+    {
+      pin: "3V3",
+      idx: 0,
+      role: "VCC",
+      side: "L",
+      kind: "power",
+    },
+    {
+      pin: "3V3",
+      idx: 1,
+      role: "MICS +",
+      side: "L",
+      kind: "power",
+    },
+    {
+      pin: "6",
+      role: "AO",
+      side: "L",
+      kind: "sound",
+    },
+    {
+      pin: "7",
+      role: "BLK",
+      side: "L",
+    },
+    {
+      pin: "8",
+      role: "RES",
+      side: "L",
+    },
+    {
+      pin: "9",
+      role: "DC",
+      side: "L",
+    },
+    {
+      pin: "10",
+      role: "CS",
+      side: "L",
+    },
+    {
+      pin: "11",
+      role: "SDA",
+      side: "L",
+    },
+    {
+      pin: "12",
+      role: "SCL",
+      side: "L",
+    },
+    {
+      pin: "5V",
+      idx: 20,
+      role: "AMP VIN",
+      side: "L",
+      kind: "power",
+    },
+    {
+      pin: "GND",
+      idx: 21,
+      role: "GND",
+      side: "L",
+      kind: "gnd",
+    },
+    {
+      pin: "5",
+      role: "BTN",
+      side: "L",
+      kind: "btn",
+    },
+    {
+      pin: "GND",
+      idx: 0,
+      role: "MICS G",
+      side: "R",
+      kind: "gnd",
+    },
+    {
+      pin: "42",
+      role: "SD",
+      side: "R",
+      kind: "snd-mic",
+    },
+    {
+      pin: "41",
+      role: "WS",
+      side: "R",
+      kind: "snd-mic",
+    },
+    {
+      pin: "40",
+      role: "SCK",
+      side: "R",
+      kind: "snd-mic",
+    },
+    {
+      pin: "39",
+      role: "BCLK",
+      side: "R",
+      kind: "snd-amp",
+    },
+    {
+      pin: "38",
+      role: "LRC",
+      side: "R",
+      kind: "snd-amp",
+    },
+    {
+      pin: "0",
+      role: "BOOT",
+      side: "R",
+    },
+    {
+      pin: "47",
+      role: "DIN",
+      side: "R",
+      kind: "snd-amp",
+    },
+    {
+      pin: "21",
+      role: "DO",
+      side: "R",
+      kind: "sound",
+    },
+    {
+      pin: "GND",
+      idx: 20,
+      role: "AMP G",
+      side: "R",
+      kind: "gnd",
+    },
+  ],
+  boot: true,
+  cmd: "uv run pio run -d labs/sound-lab-s7 -e sound-lab-s7 -t upload",
+  wiring: {
+    title:
+      "Wiring: the microphones and the speaker (wire what the lab needs; the screen stays as in lesson 03)",
+    head: ["Module pin", "ESP32-S3", "Notes"],
+    rows: [
+      [
+        "KY-037 + · G",
+        "3V3",
+        "The analog mic. + on the second 3V3 pin (the screen has the first), G on GND. <b>Never 5 V</b>: AO and DO swing up to the module's supply, and the ESP32-S3's pins take 3.3 V at most.",
+      ],
+      [
+        "KY-037 AO",
+        "GPIO 6",
+        "Analog out: the microphone's voltage. GPIO 6 is ADC1 channel 5: ADC1 keeps working while Wi-Fi is on, ADC2 doesn't.",
+      ],
+      [
+        "KY-037 DO",
+        "GPIO 21",
+        "Digital out: the LM393 comparator says high when the sound is louder than the blue trim pot's setting.",
+      ],
+      [
+        "INMP441 VDD · GND",
+        "3V3",
+        "The digital mic (I2S). VDD on 3V3 (share the breadboard rail with the KY-037), GND on GND. 3.3 V only.",
+      ],
+      ["INMP441 L/R", "GND", "Low = it talks in the left slot, the one the board reads."],
+      ["INMP441 SCK", "GPIO 40", "The bit clock. The ESP32 drives it: 16 000 × 64 = 1.024 MHz."],
+      [
+        "INMP441 WS",
+        "GPIO 41",
+        "Word select: left slot / right slot, flips every 32 clock ticks.",
+      ],
+      [
+        "INMP441 SD",
+        "GPIO 42",
+        "The data, most significant bit first. Pulled down, so a missing mic reads as zeros.",
+      ],
+      [
+        "MAX98357A VIN · GND",
+        "5V",
+        "The speaker amplifier. 5V gives the most (about 3 W into 4 Ω); 3V3 works, quieter.",
+      ],
+      [
+        "MAX98357A BCLK",
+        "GPIO 39",
+        "Bit clock of the second I2S port (I2S1; the mic uses I2S0, so both run at once).",
+      ],
+      ["MAX98357A LRC", "GPIO 38", "Word select (left/right)."],
+      ["MAX98357A DIN", "GPIO 47", "The samples, 16-bit."],
+      [
+        "MAX98357A GAIN · SD",
+        "nothing",
+        "Leave both unconnected: 9 dB gain, and it plays (left + right) / 2.",
+      ],
+      [
+        "speaker (4 Ω, 3 W)",
+        "amp + / −",
+        "On the amplifier's screw terminal: the JST-PH2.0 lead's two wires, red to +.",
+      ],
+      [
+        "screen (8 wires)",
+        "as lesson 03",
+        "Unchanged. The push button on GPIO 5 is optional: it does what BOOT does.",
+      ],
+    ],
+  },
+  commands: [
+    {
+      command: "uv run pio run -d labs/sound-lab-s7 -e sound-lab-s7 -t upload",
+      where: "mac",
+      card: "squiet",
+      does: "Builds lab S7 and writes it to the board, then open the monitor with <code>uv run pio device monitor</code>.",
+      see: "<code>Listening for an INMP441 on the I2S pins...</code>, <code>Microphone: INMP441 (I2S, digital) (mic setting: auto)</code> (or KY-037), then <code>Sound lab S7 …</code>, the command list and a three-note hello from the speaker. Stay quiet for half a second: <code>- learning the quiet...</code>",
+      fix: "Wrong mic picked: <code>mic inmp441</code> or <code>mic ky037</code> (saved, restarts). No hello: the speaker is optional; check VIN and DIN. “Failed to connect”: hold BOOT, tap RST, release BOOT, run it again.",
+    },
+    {
+      command: "vol 20",
+      card: "squiet",
+      does: "Start quiet: volume is squared, 20 = 4 % of full power. Saved in NVS (default 40).",
+      see: "<code>- volume 20</code>; then <code>beep</code> plays 440 Hz.",
+      fix: "Silent: VIN to 5V, DIN to 47, BCLK 39, LRC 38; the speaker on the terminal.",
+    },
+    {
+      command: "wave square, then wave saw",
+      card: "squiet",
+      does: "The timbre: sine, square, triangle, saw, noise (<code>wave next</code>, or a double-click on <b>wave</b>).",
+      see: "<code>- wave square</code>; the spectrum's lines at 1, 3, 5… × the note.",
+      fix: "",
+    },
+    {
+      command: "note A4 600",
+      card: "squiet",
+      does: "One note (a name or Hz) for 600 ms. A double-click on <b>envelope</b> does the same.",
+      see: "The dot rides the ADSR curve.",
+      fix: "<code>close to 8 kHz: the limit at 16 kHz</code> above 7 kHz.",
+    },
+    {
+      command: "adsr 1 300 0 50",
+      card: "squiet",
+      does: "The envelope: attack ms, decay ms, sustain %, release ms (default 6 80 65 90). Attack 0 makes a click.",
+      see: "<code>- adsr 1 300 0 50</code>: a plucked string.",
+      fix: "",
+    },
+    {
+      command: "chord Am (G7, Fmaj7, Bdim, Dsus4)",
+      card: "squiet",
+      does: "Notes together on a one-voice speaker: the board adds them into one buffer (30 s in PSRAM).",
+      see: "<code>- Am = A4 C5 E5</code>; three keys light on <b>keys</b>.",
+      fix: "",
+    },
+    {
+      command: "play C4 E4 G4/2 r/4 C5",
+      card: "squiet",
+      does: "Notes one after another at <code>bpm</code> (default 120): /4 quarter, /8 eighth, r rest, . dotted.",
+      see: "The keys light in turn.",
+      fix: "",
+    },
+    {
+      command: "tune korobeiniki",
+      card: "squiet",
+      does: "twinkle ode happy korobeiniki scale arpeggio. Double-click on <b>tunes</b> plays the picked one; long press picks the next.",
+      see: "The piano roll scrolls past the amber playhead.",
+      fix: "",
+    },
+    {
+      command: "fx laser (coin jump powerup explosion siren modem)",
+      card: "squiet",
+      does: "Game sounds from recipes: sweeps, noise, a closing filter.",
+      see: "The whole waveform on <b>fx</b>, a playhead crossing it.",
+      fix: "",
+    },
+    {
+      command: "stop",
+      card: "sany",
+      does: "Silence.",
+      see: "The waves in the header stop.",
+      fix: "",
+    },
+  ],
+  panels: [
+    {
+      title: "From numbers to a moving cone",
+      widget: "soundSpeakerPath",
+      intro:
+        "What happens to a sample after the board computes it, why the volume knob is squared, and the echo guard that keeps the microphone from hearing the speaker as claps.",
+    },
+    {
+      title: "A synth to play with",
+      widget: "soundSynth",
+      intro:
+        "The same waves and envelope as the board. Pick a wave, press a key to hear it in this browser (quietly; nothing plays until you press), and drag the envelope's handles. The red bars are harmonics the board can't make at 16 kHz: they fold back as wrong notes.",
+    },
+    {
+      title: "What the screen shows",
+      widget: "soundScreens",
+      intro:
+        "Five views. Click = next, double-click = the action at the bottom left. Keys: long press = the next chord. Tunes and fx: long press picks the next one. Elsewhere a long press stops the sound.",
+    },
+  ],
+  steps: [
+    "Wire the MAX98357A: VIN → 5V, GND, BCLK → 39, LRC → 38, DIN → 47; the speaker on its screw terminal (red to +). GAIN and SD stay unconnected. No microphone needed.",
+    "Flash <code>sound-lab-s7</code>. <b>Checkpoint 1:</b> the hello chime and <code>start quiet: vol 20, then raise it</code>.",
+    "<code>vol 20</code>, then <code>wave next</code> five times with <code>note A4</code>. <b>Checkpoint 2:</b> five timbres, five spectra.",
+    "<code>adsr 1 300 0 50</code>, <code>note A4 600</code>; then <code>adsr 0 0 100 0</code>. <b>Checkpoint 3:</b> you hear the click the envelope removes.",
+    "<code>chord Am</code>, <code>tune ode</code>, <code>fx coin</code>. <b>Checkpoint 4:</b> all three play.",
+  ],
+  note: "One speaker, one stream: chords and tunes are rendered into PSRAM first (up to 30 s), then played. At 16 000 samples a second nothing above 8 kHz exists, so a square or saw's high harmonics fold back down as wrong frequencies: a slight grit on high notes, the honest limit of a simple synth. Every other sound lab uses the same speaker for its chimes, and the echo guard keeps its detectors deaf while it plays.",
+  preview: {
+    widget: "sound",
+  },
+} as const satisfies LessonEntry;

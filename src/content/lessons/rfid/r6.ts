@@ -1,0 +1,223 @@
+// rfid lesson R6. Strings may carry the inline markup RichText understands:
+// <b>, <i>, <code> and <span class="snd-parts|need|opt">.
+import type { LessonEntry } from "@/domain/lesson";
+
+export const r6 = {
+  kind: "lesson",
+  id: "R6",
+  track: "rfid",
+  title: "Edge lab",
+  status: "built, not flashed",
+  heading: "Find the limits on your own bench",
+  goal: "Seven experiments that each push one setting until something breaks: the SPI clock, receiver gain against distance, how fast the card answers, how long each step takes, polling against the IRQ wire, the chip's CRC unit against the ESP32, and hundreds of reads in a row. Each one draws a chart on the screen and prints a table you can paste below.",
+  goalLine: "Measure where your own bench breaks, and compare it with the datasheet.",
+  goalCheck: [
+    "You know the highest SPI clock with 0 errors, your card's reply time, and the read success rate held still.",
+    "Your tables are pasted into the Experiments panel above, next to the example.",
+  ],
+  learn: [
+    "measured vs datasheet",
+    "SPI signal integrity",
+    "timeouts & reply time",
+    "IRQ vs polling",
+    "offloading",
+    "reliability statistics",
+  ],
+  pins: [
+    {
+      pin: "3V3",
+      idx: 0,
+      role: "VCC",
+      side: "L",
+      kind: "power",
+    },
+    {
+      pin: "3V3",
+      idx: 1,
+      role: "RC 3.3V",
+      side: "L",
+      kind: "power",
+    },
+    {
+      pin: "7",
+      role: "BLK",
+      side: "L",
+    },
+    {
+      pin: "8",
+      role: "RES",
+      side: "L",
+    },
+    {
+      pin: "9",
+      role: "DC",
+      side: "L",
+    },
+    {
+      pin: "10",
+      role: "CS",
+      side: "L",
+    },
+    {
+      pin: "11",
+      role: "SDA",
+      side: "L",
+    },
+    {
+      pin: "12",
+      role: "SCL",
+      side: "L",
+    },
+    {
+      pin: "GND",
+      idx: 21,
+      role: "GND",
+      side: "L",
+      kind: "gnd",
+    },
+    {
+      pin: "15",
+      role: "RC SDA",
+      side: "L",
+      kind: "rfid",
+    },
+    {
+      pin: "16",
+      role: "RC SCK",
+      side: "L",
+      kind: "rfid",
+    },
+    {
+      pin: "17",
+      role: "MOSI",
+      side: "L",
+      kind: "rfid",
+    },
+    {
+      pin: "18",
+      role: "MISO",
+      side: "L",
+      kind: "rfid",
+    },
+    {
+      pin: "14",
+      role: "RC RST",
+      side: "L",
+      kind: "rfid",
+    },
+    {
+      pin: "13",
+      role: "IRQ",
+      side: "L",
+      kind: "rfid",
+    },
+    {
+      pin: "GND",
+      idx: 0,
+      role: "RC GND",
+      side: "R",
+      kind: "gnd",
+    },
+    {
+      pin: "5",
+      role: "BTN",
+      side: "L",
+      kind: "btn",
+    },
+    {
+      pin: "0",
+      role: "BOOT",
+      side: "R",
+    },
+  ],
+  boot: true,
+  cmd: "uv run pio run -d labs/rfid-lab-r6 -e rfid-lab-r6 -t upload",
+  commands: [
+    {
+      command: "uv run pio run -d labs/rfid-lab-r6 -e rfid-lab-r6 -t upload",
+      where: "mac",
+      card: "any",
+      does: "Flashes lab R6's own firmware: everything from R5, plus the edge view and the seven edge experiments. <code>help</code> lists exactly this lab's commands.",
+      see: "<code>rfid-lab-r6: reader task started</code>, then this lab's command list and views.",
+      fix: "“Failed to connect”: hold BOOT, tap RST, release BOOT, run it again.",
+    },
+    {
+      command: "edge spi",
+      card: "any",
+      does: "FIFO loopback at 1 to 40 MHz, then a chip reset. About 1 s.",
+      see: "A table of % wrong per MHz and a bar chart; the 10 MHz bar is outlined (the datasheet limit).",
+      fix: "",
+    },
+    {
+      command: "edge crc",
+      card: "any",
+      does: "300 checksums by the chip and by the ESP32.",
+      see: "0 mismatches; the chip much slower (SPI round trips).",
+      fix: "",
+    },
+    {
+      command: "edge irq",
+      card: "any",
+      does: "30 WUPAs polling, 30 sleeping on the IRQ wire. Run it with the card on, then off.",
+      see: "SPI accesses per command for each; the gap grows a lot with no card.",
+      fix: "“IRQ never fired”: the IRQ wire (13) is loose.",
+    },
+    {
+      command: "edge timeout",
+      card: "still",
+      does: "Shrinks the chip's wait timer from 25 ms to 40 µs. About 5 s.",
+      see: "100 % down to ~100 µs, then 0 %: the card's reply time.",
+      fix: "All 0 %: the card wasn't on the reader.",
+    },
+    {
+      command: "edge timing",
+      card: "still",
+      does: "40 full cycles, each step timed.",
+      see: "min / avg / max µs for WUPA, SELECT, AUTH, READ.",
+      fix: "“no complete cycle”: hold the card still.",
+    },
+    {
+      command: "edge gain",
+      card: "still",
+      does: "30 tries at each gain step, at one height. Run it close, then at ~3 cm.",
+      see: "% found per gain: all 100 close up; low gains fail first further away.",
+      fix: "",
+    },
+    {
+      command: "edge stress 500",
+      card: "move",
+      does: "500 full read cycles (~10 s). Lift or tilt the card slowly while it runs.",
+      see: "Counts per outcome: ok, absent, CRC, protocol… and reads per second.",
+      fix: "",
+    },
+  ],
+  panels: [
+    {
+      title: "Experiments",
+      widget: "rfidEdge",
+      intro:
+        "One tab per experiment: what it pushes, what to look for, the example result, and a box for your own table.",
+    },
+    {
+      title: "What the screen shows",
+      widget: "rfidScreens",
+      view: 5,
+      intro:
+        "The board's screen has six views. A click on the push button (or BOOT) goes to the next one, a double-click runs the action written at the bottom left, a long press pauses card polling. Pick a view to see what each part means; the numbers match the list below it.",
+    },
+  ],
+  steps: [
+    "Flash <code>rfid-lab-r6</code> with the command above (same wiring as R1). <code>help</code> shows this lab's commands.",
+    "Card on the reader and kept still (a book on top helps). Click to the <b>edge</b> view: double-click there runs the next experiment.",
+    "<code>edge spi</code>, <code>edge crc</code>, <code>edge irq</code> (card on, then off).",
+    "<code>edge timeout</code> and <code>edge timing</code> with the card still. <b>Checkpoint:</b> your card's reply time.",
+    "<code>edge gain</code> close, then at about 3 cm.",
+    "<code>edge stress 500</code> while you slowly lift the card.",
+    "Paste each table into the matching tab above.",
+  ],
+  note: "Double-click on the edge view runs the next experiment. edge spi resets the chip afterwards, in case a fast, garbled write changed a setting. Pull the IRQ wire and run edge irq: the firmware notices and falls back to polling.",
+  preview: {
+    widget: "rfid",
+    view: 5,
+  },
+} as const satisfies LessonEntry;

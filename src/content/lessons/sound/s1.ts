@@ -1,0 +1,382 @@
+// sound lesson S1. Strings may carry the inline markup RichText understands:
+// <b>, <i>, <code> and <span class="snd-parts|need|opt">.
+import type { LessonEntry } from "@/domain/lesson";
+
+export const s1 = {
+  kind: "lesson",
+  id: "S1",
+  track: "sound",
+  title: "Hear",
+  status: "built, not flashed",
+  heading: "Hear what the microphones really send",
+  goal: '<span class="snd-parts"><span class="need">KY-037 or INMP441</span></span>Two microphones, two ways in. The <b>INMP441</b> is digital: its own amplifier and 24-bit converter, numbers over I2S. The KY-037 has two outputs. <b>AO</b> is the microphone\'s own voltage: a tiny wave riding on a steady <i>bias</i>. <b>DO</b> is a yes/no from the LM393 comparator, set by the blue trim pot. S1 samples AO 16 000 times a second with the ADC\'s DMA (no <code>analogRead()</code> in a loop), draws it as an oscilloscope, shows where it sits in the ADC\'s range, and lets you tune the pot. The <b>mics</b> view puts both side by side. Every other sound lab stands on this: the sampler, the 4-second ring and the level meter live in <code>kit/lib/sound-kit</code>.',
+  goalLine:
+    "See your voice and a clap as a wave, compare the two microphones, read the bias (or the bits), and tune the comparator so it fires only with loud sounds.",
+  goalCheck: [
+    "The <b>scope</b> shows a flat line while you're quiet and a wave when you talk; a whistle stands still (trigger on).",
+    "The <b>bias</b> view shows your module's bias in mV and no CLIPPING when you clap close to it; you tried <code>atten 6</code> and saw the step size halve.",
+    "On the <b>comparator</b> view, DO lights with claps and stays dark while you talk normally: “tuned”.",
+    "<code>status</code> says <code>16000 Hz measured</code> and <code>DMA overruns 0</code>.",
+    "With both mics wired, the <b>mics</b> view says how many dB more clearly the INMP441 hears a word.",
+  ],
+  learn: [
+    "analog vs digital mic",
+    "I2S",
+    "bias voltage",
+    "ADC attenuation",
+    "continuous ADC + DMA",
+    "ring buffer",
+    "6 dB per bit, headroom",
+    "comparator & hysteresis",
+    "dBFS",
+  ],
+  pins: [
+    {
+      pin: "3V3",
+      idx: 0,
+      role: "VCC",
+      side: "L",
+      kind: "power",
+    },
+    {
+      pin: "3V3",
+      idx: 1,
+      role: "MICS +",
+      side: "L",
+      kind: "power",
+    },
+    {
+      pin: "6",
+      role: "AO",
+      side: "L",
+      kind: "sound",
+    },
+    {
+      pin: "7",
+      role: "BLK",
+      side: "L",
+    },
+    {
+      pin: "8",
+      role: "RES",
+      side: "L",
+    },
+    {
+      pin: "9",
+      role: "DC",
+      side: "L",
+    },
+    {
+      pin: "10",
+      role: "CS",
+      side: "L",
+    },
+    {
+      pin: "11",
+      role: "SDA",
+      side: "L",
+    },
+    {
+      pin: "12",
+      role: "SCL",
+      side: "L",
+    },
+    {
+      pin: "5V",
+      idx: 20,
+      role: "AMP VIN",
+      side: "L",
+      kind: "power",
+    },
+    {
+      pin: "GND",
+      idx: 21,
+      role: "GND",
+      side: "L",
+      kind: "gnd",
+    },
+    {
+      pin: "5",
+      role: "BTN",
+      side: "L",
+      kind: "btn",
+    },
+    {
+      pin: "GND",
+      idx: 0,
+      role: "MICS G",
+      side: "R",
+      kind: "gnd",
+    },
+    {
+      pin: "42",
+      role: "SD",
+      side: "R",
+      kind: "snd-mic",
+    },
+    {
+      pin: "41",
+      role: "WS",
+      side: "R",
+      kind: "snd-mic",
+    },
+    {
+      pin: "40",
+      role: "SCK",
+      side: "R",
+      kind: "snd-mic",
+    },
+    {
+      pin: "39",
+      role: "BCLK",
+      side: "R",
+      kind: "snd-amp",
+    },
+    {
+      pin: "38",
+      role: "LRC",
+      side: "R",
+      kind: "snd-amp",
+    },
+    {
+      pin: "0",
+      role: "BOOT",
+      side: "R",
+    },
+    {
+      pin: "47",
+      role: "DIN",
+      side: "R",
+      kind: "snd-amp",
+    },
+    {
+      pin: "21",
+      role: "DO",
+      side: "R",
+      kind: "sound",
+    },
+    {
+      pin: "GND",
+      idx: 20,
+      role: "AMP G",
+      side: "R",
+      kind: "gnd",
+    },
+  ],
+  boot: true,
+  cmd: "uv run pio run -d labs/sound-lab-s1 -e sound-lab-s1 -t upload",
+  wiring: {
+    title:
+      "Wiring: the microphones and the speaker (wire what the lab needs; the screen stays as in lesson 03)",
+    head: ["Module pin", "ESP32-S3", "Notes"],
+    rows: [
+      [
+        "KY-037 + · G",
+        "3V3",
+        "The analog mic. + on the second 3V3 pin (the screen has the first), G on GND. <b>Never 5 V</b>: AO and DO swing up to the module's supply, and the ESP32-S3's pins take 3.3 V at most.",
+      ],
+      [
+        "KY-037 AO",
+        "GPIO 6",
+        "Analog out: the microphone's voltage. GPIO 6 is ADC1 channel 5: ADC1 keeps working while Wi-Fi is on, ADC2 doesn't.",
+      ],
+      [
+        "KY-037 DO",
+        "GPIO 21",
+        "Digital out: the LM393 comparator says high when the sound is louder than the blue trim pot's setting.",
+      ],
+      [
+        "INMP441 VDD · GND",
+        "3V3",
+        "The digital mic (I2S). VDD on 3V3 (share the breadboard rail with the KY-037), GND on GND. 3.3 V only.",
+      ],
+      ["INMP441 L/R", "GND", "Low = it talks in the left slot, the one the board reads."],
+      ["INMP441 SCK", "GPIO 40", "The bit clock. The ESP32 drives it: 16 000 × 64 = 1.024 MHz."],
+      [
+        "INMP441 WS",
+        "GPIO 41",
+        "Word select: left slot / right slot, flips every 32 clock ticks.",
+      ],
+      [
+        "INMP441 SD",
+        "GPIO 42",
+        "The data, most significant bit first. Pulled down, so a missing mic reads as zeros.",
+      ],
+      [
+        "MAX98357A VIN · GND",
+        "5V",
+        "The speaker amplifier. 5V gives the most (about 3 W into 4 Ω); 3V3 works, quieter.",
+      ],
+      [
+        "MAX98357A BCLK",
+        "GPIO 39",
+        "Bit clock of the second I2S port (I2S1; the mic uses I2S0, so both run at once).",
+      ],
+      ["MAX98357A LRC", "GPIO 38", "Word select (left/right)."],
+      ["MAX98357A DIN", "GPIO 47", "The samples, 16-bit."],
+      [
+        "MAX98357A GAIN · SD",
+        "nothing",
+        "Leave both unconnected: 9 dB gain, and it plays (left + right) / 2.",
+      ],
+      [
+        "speaker (4 Ω, 3 W)",
+        "amp + / −",
+        "On the amplifier's screw terminal: the JST-PH2.0 lead's two wires, red to +.",
+      ],
+      [
+        "screen (8 wires)",
+        "as lesson 03",
+        "Unchanged. The push button on GPIO 5 is optional: it does what BOOT does.",
+      ],
+    ],
+  },
+  commands: [
+    {
+      command: "uv run pio run -d labs/sound-lab-s1 -e sound-lab-s1 -t upload",
+      where: "mac",
+      card: "squiet",
+      does: "Builds lab S1 and writes it to the board, then open the monitor with <code>uv run pio device monitor</code>.",
+      see: "<code>Listening for an INMP441 on the I2S pins...</code>, <code>Microphone: INMP441 (I2S, digital) (mic setting: auto)</code> (or KY-037), then <code>Sound lab S1 …</code>, the command list and a three-note hello from the speaker. Stay quiet for half a second: <code>- learning the quiet...</code>",
+      fix: "Wrong mic picked: <code>mic inmp441</code> or <code>mic ky037</code> (saved, restarts). No hello: the speaker is optional; check VIN and DIN. “Failed to connect”: hold BOOT, tap RST, release BOOT, run it again.",
+    },
+    {
+      command: "mic inmp441 (or mic ky037, mic auto)",
+      card: "sany",
+      does: "Which microphone the shell uses. <code>auto</code> (the default) listens for an INMP441 for 0.3 s at start-up. Saved in NVS (namespace <code>sound</code>); the board restarts.",
+      see: "<code>Microphone: INMP441 (I2S, digital) (mic setting: inmp441)</code>; top right of the screen a small <b>D</b> instead of the DO lamp.",
+      fix: "Stays on the KY-037: check SCK 40, WS 41, SD 42, L/R to GND.",
+    },
+    {
+      command: "(click to the mics view, then talk)",
+      where: "button",
+      card: "ssound",
+      does: "Opens the other microphone too and shows both lanes, INMP441 on top: each one's quiet in dBFS and how far above it you are.",
+      see: "<code>INMP441 hears it 12 dB more clearly</code> (the number depends on your room); the KY-037's lane is grainier.",
+      fix: "Only one lane: the other mic isn't wired. Wire it, then press RST: S1 looks for it at start-up.",
+    },
+    {
+      command: "thresh 20",
+      card: "ssound",
+      does: "With the INMP441 there is no DO pin: the board compares in software. thresh is the line in dB above the quiet (default 15), with 3 dB of hysteresis.",
+      see: "<code>- software comparator at 20 dB</code>; on the comparator view only claps cross it.",
+      fix: "",
+    },
+    {
+      command: "(talk, then clap, near the mic)",
+      where: "hands",
+      card: "ssound",
+      does: "The <b>scope</b> view draws the last 20 ms. Talking makes a small wobbly wave, a clap fills the box.",
+      see: "A wave in pink; the scale on the left grows to ±1-5 mV for a voice, ±100 mV and more for a clap.",
+      fix: "Flat line whatever you do: AO isn't on GPIO 6, or + isn't on 3V3 (the module's power LED must be on).",
+    },
+    {
+      command: "status",
+      card: "sany",
+      does: "The sampler, the ADC and the level in numbers.",
+      see: "<code>sampler: 16000 Hz asked, 16000 Hz measured · frames dropped 0 · DMA overruns 0</code>, then <code>ADC: attenuation 12 dB (0-3.1 V) · bias … mV</code>.",
+      fix: "Overruns climbing: something blocks core 0 for long; tell Claude what else runs.",
+    },
+    {
+      command: "(click to the bias view)",
+      where: "button",
+      card: "squiet",
+      does: "The 0-3.3 V ruler, your bias, and the swing of the last 0.1 s.",
+      see: "A bias line somewhere around 1-2 V and a hint such as <code>fits in 0-1.75 V: try atten 6 (2x finer)</code>.",
+      fix: "Bias near 0 or 3.3 V: the module is on 5 V or a wire is loose. Use 3V3.",
+    },
+    {
+      command: "atten 6",
+      card: "sany",
+      does: "Narrows the ADC's range to 0-1.75 V: each step becomes 0.43 mV instead of 0.76. (Double-click on bias steps through 12 → 6 → 2.5 → 0.)",
+      see: "<code>- attenuation 6 dB (0-1.75 V)</code>; on the ruler the shaded range shrinks, the wave looks taller on the scope.",
+      fix: "<code>CLIPPING</code>: the bias or the wave no longer fits. Go back with <code>atten 12</code>.",
+    },
+    {
+      command: "pot",
+      card: "squiet",
+      does: "Prints how to tune the comparator and jumps to the comparator view.",
+      see: "Three steps: quiet → turn until LED2 just goes off; clap → it flashes; adjust.",
+      fix: "",
+    },
+    {
+      command: "(turn the blue pot with a small screwdriver)",
+      where: "hands",
+      card: "ssound",
+      does: "Moves the comparator's threshold. Watch the DO lamp (top right) and the strip: loudness on top, DO below.",
+      see: "Tuned: <code>DO follows the loud moments: tuned</code>, LED2 flashes with claps, dark while you talk.",
+      fix: "<code>DO always on</code>: turn the other way. Which way is more sensitive differs between makers.",
+    },
+    {
+      command: "plot",
+      card: "ssound",
+      does: "Prints the level as a text bar every 50 ms (any sound lab has it). <code>plot off</code> stops it.",
+      see: "<code> 23.4 dB |#########          |   | DO 0</code> lines scrolling.",
+      fix: "",
+    },
+    {
+      command: "dump 64",
+      card: "ssound",
+      does: "Prints the newest 64 samples as numbers (int16 after removing the bias; one ADC step = 16).",
+      see: "Four lines of 16 comma-separated numbers, e.g. <code>-32,16,48,…</code>. Paste into a spreadsheet and draw a line chart.",
+      fix: "",
+    },
+    {
+      command: "freeze, span 5",
+      card: "ssound",
+      does: "Freeze holds the picture (double-click on scope, or long press); span sets the time across the screen.",
+      see: "<code>scope frozen (freeze again to go on)</code>; with <code>span 5</code> single waves of a whistle become clear.",
+      fix: "",
+    },
+  ],
+  panels: [
+    {
+      title: "The sound track, lab by lab",
+      widget: "soundJourney",
+      intro:
+        "Six labs, each its own firmware, all reading the same microphone. Pick one to see what it turns sound into.",
+    },
+    {
+      title: "From air to numbers",
+      widget: "soundChain",
+      intro:
+        "Eight stages between your voice and a number the code can use. Step through them (or let it play); the buttons at the right make sounds, and every value below the picture is live.",
+    },
+    {
+      title: "Analog mic, digital mic: how I2S carries a sample",
+      widget: "soundMics",
+      intro:
+        "The KY-037 hands the ESP32 a voltage to measure; the INMP441 measures it itself and sends the number. Below: one I2S frame on its three wires. Step it tick by tick and watch a 24-bit sample arrive, then become the 16-bit number every lab uses.",
+    },
+    {
+      title: "Where the wave sits in the ADC's range (KY-037)",
+      widget: "soundBias",
+      intro:
+        "Move the bias and the loudness, change the attenuation. The ADC can only measure inside the shaded range: outside it the wave is cut flat (clipping). A smaller range gives finer steps, as long as the wave still fits.",
+    },
+    {
+      title: "The comparator and its pot",
+      widget: "soundComparator",
+      intro:
+        "The LM393 compares AO with the voltage the pot sets. Above the line, DO is high (and LED2 on the module lights). Drag the dashed line (or the slider) and watch DO: too low and it chatters all the time, too high and even a clap is missed.",
+    },
+    {
+      title: "What the screen shows",
+      widget: "soundScreens",
+      intro:
+        "Five views. Click = next view, double-click = the action at the bottom left, long press = freeze. Top right: the level bar, the DO lamp (or <b>D</b> with the INMP441), waves while the speaker plays, and a red dot whenever anything records (S4, S8).",
+    },
+  ],
+  steps: [
+    "Wire the KY-037: + → 3V3 (the second pin), G → GND, AO → GPIO 6, DO → GPIO 21. The screen stays as in lesson 03. The module's power LED lights.",
+    "Flash <code>sound-lab-s1</code>, open the monitor, stay quiet for a second. <b>Checkpoint 1:</b> the <code>Mic: AO on GPIO 6 …</code> line and a flat line on the scope.",
+    "Talk, whistle and clap near the mic. <b>Checkpoint 2:</b> three different waves; the whistle stands still.",
+    "Click to <b>bias</b>, read your bias in mV, try the attenuation the hint suggests. <b>Checkpoint 3:</b> no CLIPPING when you clap 20 cm away.",
+    "Type <code>pot</code> and tune the comparator. <b>Checkpoint 4:</b> “tuned” on the comparator view.",
+    "Type <code>status</code>. <b>Checkpoint 5:</b> 16000 Hz measured, 0 overruns.",
+  ],
+  note: "With the INMP441 the scope's scale is in % of full scale, the bias view becomes a ladder of its 24 bits (each bit = 6 dB; how many the sound uses, the headroom left), the comparator is software, and <b>numbers</b> adds dB SPL. Honest expectations for the KY-037: it has no amplifier. Its AO is the capsule's raw voltage, a few millivolts for a voice, so speech uses only a handful of the ADC's 4096 steps. That makes it a good <b>loudness</b> sensor (claps, knocks, noise, beats) and only a rough microphone. DO is a single comparator: a clap makes dozens of edges on it as the wave crosses the line, so the labs listen to AO and use DO for the hardware lamp and as a second opinion. The ADC samples through ADC1, which keeps working while Wi-Fi is on (ADC2 doesn't).",
+  preview: {
+    widget: "sound",
+  },
+} as const satisfies LessonEntry;

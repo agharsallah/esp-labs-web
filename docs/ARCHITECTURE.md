@@ -94,7 +94,7 @@ The guide is about the labs, so every screen puts them first and everything else
 ## Content model
 
 - `src/content/tracks.ts` is the table of contents: tracks, their colour token and their lesson ids in order.
-- `src/content/lessons/<track>.ts` holds the lessons (`LessonEntry` in `src/domain/lesson.ts`). Text fields may carry `<b>`, `<i>`, `<code>` and `<span class="snd-parts|need|opt">`; `RichText` turns them into React elements from an allow-list (no `dangerouslySetInnerHTML`).
+- `src/content/lessons/<track>.ts` (or `<track>/<id>.ts` with an `index.ts` for the long tracks: rfid, ble, sound) holds the lessons (`LessonEntry` in `src/domain/lesson.ts`). Text fields may carry `<b>`, `<i>`, `<code>` and `<span class="snd-parts|need|opt">`; `RichText` turns them into React elements from an allow-list (no `dangerouslySetInnerHTML`).
 - A lesson names its explainers in `panels: [{ title, widget, intro?, view?, flows? }]` and its simulator in `preview: { widget, view? }`. Widget ids are type-checked against the registry.
 - Variants (03b, W2) override any body field; the URL `?variant=` wins, then your last choice.
 
@@ -242,7 +242,7 @@ Append an entry to `public/data/bench-log.json` (shape: `LogEntrySchema` in `src
 
 - **Text**: never inline. Interface text goes in `src/locales/en/<namespace>.json` and through `t()`; content text is picked up by `pnpm i18n:extract`. Rules, RTL and adding a language: [I18N.md](I18N.md).
 
-- **A lesson**: add it to `src/content/lessons/<track>.ts` and its id to the track's `lessonIds` in `tracks.ts`.
+- **A lesson**: add it to `src/content/lessons/<track>.ts` (or a new `<track>/<id>.ts` listed in that folder's `index.ts`) and its id to the track's `lessonIds` in `tracks.ts`.
 - **A track**: an entry in `TRACKS`, a lessons file, a loader in `content/queries.ts`, a `labs/<track>/widgets.ts` spread into `widgets/registry.ts`, and a colour token.
 - **A widget**: a component taking `WidgetProps` in `labs/<track>/`, one line in that track's `widgets.ts`, then reference its id from a lesson.
 - **A theme**: a token block in `tokens.css` and an entry in `THEMES` (`src/lib/theme.ts`).

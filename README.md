@@ -133,7 +133,7 @@ Contributions of every size are welcome. These need no React at all:
 | Report something broken               | [Bug report](https://github.com/agharsallah/esp-labs-web/issues/new?template=bug-report.yml)                       |
 | Suggest a lab or a theme              | [Lab proposal](https://github.com/agharsallah/esp-labs-web/issues/new?template=new-lab.yml)                        |
 | Fix or improve a translation          | [Translation issue](https://github.com/agharsallah/esp-labs-web/issues/new?template=translation.yml) or edit `src/locales/<lang>/` |
-| Fix a typo or a confusing step        | Edit the lesson in `src/content/lessons/<track>.ts` and open a PR                                                  |
+| Fix a typo or a confusing step        | Edit the lesson in `src/content/lessons/<track>.ts` (or `<track>/<id>.ts`) and open a PR                          |
 | Add a lab, a simulator or a language  | [CONTRIBUTING.md](CONTRIBUTING.md): step by step, with the checks to run                                          |
 
 Issues labelled [`good first issue`](https://github.com/agharsallah/esp-labs-web/labels/good%20first%20issue) are a good place to start. Please read the [code of conduct](CODE_OF_CONDUCT.md); report security problems privately ([SECURITY.md](SECURITY.md)). How CI and the review rules work: [docs/MAINTAINING.md](docs/MAINTAINING.md).

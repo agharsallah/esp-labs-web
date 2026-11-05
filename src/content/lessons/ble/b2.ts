@@ -1,0 +1,205 @@
+// ble lesson B2. Strings may carry the inline markup RichText understands:
+// <b>, <i>, <code> and <span class="snd-parts|need|opt">.
+import type { LessonEntry } from "@/domain/lesson";
+
+export const b2 = {
+  kind: "lesson",
+  id: "B2",
+  track: "ble",
+  title: "Be seen",
+  status: "built, not flashed",
+  heading: "The board shouts its own data",
+  goal: "In B1 the board listened. Now it becomes a <b>beacon</b>: it packs live values (button presses, the chip's temperature, uptime) into its own 31-byte advertisement, so any phone nearby can read them <i>without connecting</i>. The same budget then carries an <b>iBeacon</b>, an <b>Eddystone-URL</b> or just a name. You choose how often it shouts (the interval) and how loud (TX power), and see what that would cost a coin-cell beacon.",
+  goalLine: "Make the board broadcast live values that your phone reads without ever connecting.",
+  goalCheck: [
+    "nRF Connect lists <b>Bench B2</b> and shows <b>Manufacturer data 0xFFFF</b> whose bytes change every second (the uptime) and when you double-click (the presses).",
+    "The <b>packet</b> view shows 24 of 31 bytes in coloured structures, and the changing bytes flash white.",
+    "<code>mode ibeacon</code> shows up as an iBeacon on Android (on iPhone apps can't see iBeacons: that's iOS, not you), <code>mode url</code> as an Eddystone URL in nRF Connect.",
+    "With <code>connectable off</code> and <code>scanresp off</code> the packet view says <b>ADV_NONCONN_IND</b>, nRF Connect no longer offers Connect, and the interval can't go below 100 ms.",
+    "You can explain from the <b>budget</b> view why beacons advertise every 500-1000 ms and not every 20.",
+  ],
+  learn: [
+    "broadcaster role",
+    "31-byte budget",
+    "AD structures",
+    "manufacturer data",
+    "iBeacon & Eddystone",
+    "ADV_IND · SCAN_IND · NONCONN",
+    "interval & advDelay",
+    "TX power vs battery",
+  ],
+  pins: [
+    {
+      pin: "3V3",
+      idx: 0,
+      role: "VCC",
+      side: "L",
+      kind: "power",
+    },
+    {
+      pin: "7",
+      role: "BLK",
+      side: "L",
+    },
+    {
+      pin: "8",
+      role: "RES",
+      side: "L",
+    },
+    {
+      pin: "9",
+      role: "DC",
+      side: "L",
+    },
+    {
+      pin: "10",
+      role: "CS",
+      side: "L",
+    },
+    {
+      pin: "11",
+      role: "SDA",
+      side: "L",
+    },
+    {
+      pin: "12",
+      role: "SCL",
+      side: "L",
+    },
+    {
+      pin: "GND",
+      idx: 21,
+      role: "GND",
+      side: "L",
+      kind: "gnd",
+    },
+    {
+      pin: "5",
+      role: "BTN",
+      side: "L",
+      kind: "btn",
+    },
+    {
+      pin: "0",
+      role: "BOOT",
+      side: "R",
+    },
+  ],
+  boot: true,
+  cmd: "uv run pio run -d labs/ble-lab-b2 -e ble-lab-b2 -t upload",
+  commands: [
+    {
+      command: "uv run pio run -d labs/ble-lab-b2 -e ble-lab-b2 -t upload",
+      where: "mac",
+      card: "bnone",
+      does: "Builds lab B2 and writes it to the board.",
+      see: "The <b>packet</b> view: <code>bench ADV_IND every 100 ms</code> and two rows of coloured cells.",
+      fix: "“Failed to connect”: hold BOOT, tap RST, release BOOT, run it again.",
+    },
+    {
+      command: "uv run pio device monitor",
+      where: "mac",
+      card: "bnone",
+      does: "Opens the serial monitor.",
+      see: "<code>+ bench ADV_IND every 100 ms, 24+7 B</code> and the command list.",
+      fix: "",
+    },
+    {
+      command: "nRF Connect → Scanner → Bench B2 (tap the row, don't connect)",
+      where: "phone",
+      card: "bscan",
+      does: "The phone is the scanner now (one board can't hear itself). Tapping the row opens the advertisement's details.",
+      see: "Complete Local Name <code>Bench B2</code>, Manufacturer data <code>0xFFFF 0x01…</code>; the last two bytes (uptime) change every second. Tap RAW to see all 24 bytes.",
+      fix: "Not listed: pull down to refresh; <code>adv on</code>. On iPhone, Manufacturer data shows as one hex string: the same bytes.",
+    },
+    {
+      command: "(double-click the button) or press",
+      where: "button",
+      card: "bscan",
+      does: "Counts a press into the packet. The board replaces the advertisement data; the controller sends the new bytes from the next event on.",
+      see: "<code>- presses 1: in the next packet</code>; on the packet view two cells flash white; in nRF Connect byte 4-5 of the manufacturer data becomes <code>01 00</code>.",
+      fix: "",
+    },
+    {
+      command: "bytes",
+      card: "bnone",
+      does: "Prints both packets structure by structure.",
+      see: "<code>[02 01 | 06] Flags</code>, <code>[09 09 | 42 65 6E 63 68 20 42 32] Name</code>, <code>[0A FF | FF FF 01 01 00 2E 10 2C 01] Manufacturer data</code>.",
+      fix: "",
+    },
+    {
+      command: "mode ibeacon",
+      card: "bscan",
+      does: "Apple's layout: 4C 00 02 15, a 16-byte UUID, major, minor, the power at 1 m. 30 of 31 bytes: the name moves to the scan response.",
+      see: "<code>+ ibeacon ADV_IND every 100 ms, 30+10 B</code>. Android nRF Connect: “iBeacon”, UUID BA5E0000-B1E5-…, Major 1, Minor 2. B1 on another board would show the beacon kind in violet.",
+      fix: "iPhone shows nothing special, or not the beacon: iOS filters iBeacon frames out of every app's scan. Only Core Location (region monitoring) sees them.",
+    },
+    {
+      command: "mode url, then url https://github.com/",
+      card: "bscan",
+      does: "Eddystone-URL: service data FEAA with a compressed URL (https:// = 1 byte, .com/ = 1 byte).",
+      see: "nRF Connect shows <b>Eddystone URL</b> https://github.com/. A URL too long: <code>x the URL doesn't fit…</code>, and the old one stays.",
+      fix: "Android used to pop these up as notifications (Physical Web); that's gone since 2018. Apps still decode them.",
+    },
+    {
+      command: "connectable off, then scanresp off",
+      card: "bscan",
+      does: "First ADV_SCAN_IND (may be scanned, not connected), then ADV_NONCONN_IND: a pure broadcast that answers nobody.",
+      see: "The packet view's title changes; nRF Connect's Connect button disappears; the scan response row empties.",
+      fix: "<code>interval</code> raised to 100 ms: the floor for non-connectable adverts (Bluetooth 4.x rule; 5.0 allows 20, beacons stay at 100+).",
+    },
+    {
+      command: "interval 20, interval 1000",
+      card: "bscan",
+      does: "How often the board shouts. Click to the <b>air</b> and <b>budget</b> views for each.",
+      see: "<code>+ … every 1000 ms</code>; nRF Connect's interval column (Android) or the RSSI graph updates slower; the budget's coin-cell life jumps from weeks to years.",
+      fix: "<code>interval 20</code> refused with connectable off: switch connectable on first.",
+    },
+    {
+      command: "power -12, power 9",
+      card: "bscan",
+      does: "TX power in dBm (the shell's built-in command). Lower = shorter range and less current.",
+      see: "nRF Connect's RSSI drops by about 20 dB at the same distance; the name mode's TX power field changes too.",
+      fix: "",
+    },
+    {
+      command: "adv off (or a long press)",
+      card: "bscan",
+      does: "Stops advertising. The board is invisible.",
+      see: "<code>- advertising off: the board is invisible</code>; nRF Connect greys it out after a few seconds.",
+      fix: "",
+    },
+  ],
+  panels: [
+    {
+      title: "Build an advertisement",
+      widget: "b2Builder",
+      intro:
+        "Every field you add costs its data plus 2 bytes (length and type). Put each one in the advertisement, in the scan response (sent only when a scanner asks), or leave it out, and watch the 31-byte budget fill. The board's four modes are presets.",
+    },
+    {
+      title: "When does a scanner hear it?",
+      widget: "b2Timing",
+      intro:
+        "The board sends each advertising event on channels 37, 38 and 39 in a row, every interval plus a random 0-10 ms. A phone listens on one channel at a time, for a window out of each scan interval. Slide the numbers and count what gets caught. Switch the random delay off to see why it exists.",
+    },
+    {
+      title: "What the screen shows",
+      widget: "bleScreens",
+      intro:
+        "Four views. A click goes to the next one; a double-click anywhere counts a press into the packet; a long press switches advertising on or off.",
+    },
+  ],
+  steps: [
+    "Same wiring as B1. Flash <code>ble-lab-b2</code> and open the monitor. <b>Checkpoint 1:</b> <code>bench ADV_IND every 100 ms, 24+7 B</code>.",
+    "Install nRF Connect (or LightBlue) on your phone and find <b>Bench B2</b>; tap it open, don't connect. <b>Checkpoint 2:</b> Manufacturer data 0xFFFF with bytes that change every second.",
+    "Double-click the board's button a few times. <b>Checkpoint 3:</b> the press counter changes on the phone without any connection.",
+    "Try <code>mode ibeacon</code> (Android shows it) and <code>mode url</code>. Compare with the builder above: which fields moved to the scan response, and why?",
+    "<code>connectable off</code>, <code>scanresp off</code>. <b>Checkpoint 4:</b> ADV_NONCONN_IND, no Connect button on the phone.",
+    "Click to <b>air</b> and <b>budget</b>, then try <code>interval 1000</code> and <code>power -12</code>. <b>Checkpoint 5:</b> you can say what each costs and what it buys.",
+  ],
+  note: "Anyone nearby can read what the board broadcasts: never put anything private in an advertisement. 0xFFFF is the company ID the Bluetooth SIG reserves for tests, fine on a bench, not for a product. iPhone apps can't see iBeacon frames at all (iOS removes them from scans), so test that mode on Android or with B1 on a second board. The budget view is an estimate for a typical coin-cell beacon chip with its stated assumptions: this ESP32-S3 board itself draws about 80 mA with the screen on, far too much for a coin cell. The one radio can't hear itself, so the phone is the scanner in this lab.",
+  preview: {
+    widget: "ble",
+  },
+} as const satisfies LessonEntry;

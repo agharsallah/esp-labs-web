@@ -1,0 +1,333 @@
+// sound lesson S2. Strings may carry the inline markup RichText understands:
+// <b>, <i>, <code> and <span class="snd-parts|need|opt">.
+import type { LessonEntry } from "@/domain/lesson";
+
+export const s2 = {
+  kind: "lesson",
+  id: "S2",
+  track: "sound",
+  title: "Loudness",
+  status: "built, not flashed",
+  heading: "A sound level meter for your room",
+  goal: '<span class="snd-parts"><span class="need">KY-037 or INMP441</span><span class="opt">MAX98357A + speaker (optional)</span></span>How loud is it? With the <b>INMP441</b> S2 shows real <b>dB SPL</b> (its datasheet says −26 dBFS at 94 dB SPL, so RMS dBFS + 111): 30 whisper, 60 talk, 85 the hearing-risk line. With the KY-037 it shows dB above your room\'s quiet. S2 turns the samples into decibels the way a sound level meter does: <b>fast</b> (125 ms) or <b>slow</b> (1 s) smoothing, a peak hold, and a noise floor that learns your room. Then it keeps a minute of graph, a ten-minute noise diary, and an alarm that lights lesson 02\'s LED on GPIO 4 when it stays too loud.',
+  goalLine:
+    "Read your room's level (in dB SPL with the INMP441), see the difference between fast and slow, keep a diary, and set off (and silence) the alarm.",
+  goalCheck: [
+    "The <b>meter</b> reads about 0 when quiet, 15-25 when you talk, 40+ for a clap, and says what that roughly is.",
+    "With <code>speed slow</code> the number calms down; the peak tick still catches a clap.",
+    "After a few minutes, <code>diary</code> prints rows with low / avg / high.",
+    "Loud music for a second turns the <b>alarm</b> view red, lights the LED, and a button press silences it.",
+  ],
+  learn: [
+    "decibels (+6 = ×2)",
+    "RMS",
+    "dB SPL needs a known sensitivity",
+    "unweighted vs dBA",
+    "85 dB risk line",
+    "fast / slow smoothing",
+    "noise floor",
+    "echo guard",
+  ],
+  pins: [
+    {
+      pin: "3V3",
+      idx: 0,
+      role: "VCC",
+      side: "L",
+      kind: "power",
+    },
+    {
+      pin: "3V3",
+      idx: 1,
+      role: "MICS +",
+      side: "L",
+      kind: "power",
+    },
+    {
+      pin: "6",
+      role: "AO",
+      side: "L",
+      kind: "sound",
+    },
+    {
+      pin: "7",
+      role: "BLK",
+      side: "L",
+    },
+    {
+      pin: "8",
+      role: "RES",
+      side: "L",
+    },
+    {
+      pin: "9",
+      role: "DC",
+      side: "L",
+    },
+    {
+      pin: "10",
+      role: "CS",
+      side: "L",
+    },
+    {
+      pin: "11",
+      role: "SDA",
+      side: "L",
+    },
+    {
+      pin: "12",
+      role: "SCL",
+      side: "L",
+    },
+    {
+      pin: "5V",
+      idx: 20,
+      role: "AMP VIN",
+      side: "L",
+      kind: "power",
+    },
+    {
+      pin: "GND",
+      idx: 21,
+      role: "GND",
+      side: "L",
+      kind: "gnd",
+    },
+    {
+      pin: "5",
+      role: "BTN",
+      side: "L",
+      kind: "btn",
+    },
+    {
+      pin: "GND",
+      idx: 0,
+      role: "MICS G",
+      side: "R",
+      kind: "gnd",
+    },
+    {
+      pin: "42",
+      role: "SD",
+      side: "R",
+      kind: "snd-mic",
+    },
+    {
+      pin: "41",
+      role: "WS",
+      side: "R",
+      kind: "snd-mic",
+    },
+    {
+      pin: "40",
+      role: "SCK",
+      side: "R",
+      kind: "snd-mic",
+    },
+    {
+      pin: "39",
+      role: "BCLK",
+      side: "R",
+      kind: "snd-amp",
+    },
+    {
+      pin: "38",
+      role: "LRC",
+      side: "R",
+      kind: "snd-amp",
+    },
+    {
+      pin: "0",
+      role: "BOOT",
+      side: "R",
+    },
+    {
+      pin: "47",
+      role: "DIN",
+      side: "R",
+      kind: "snd-amp",
+    },
+    {
+      pin: "21",
+      role: "DO",
+      side: "R",
+      kind: "sound",
+    },
+    {
+      pin: "GND",
+      idx: 20,
+      role: "AMP G",
+      side: "R",
+      kind: "gnd",
+    },
+  ],
+  boot: true,
+  cmd: "uv run pio run -d labs/sound-lab-s2 -e sound-lab-s2 -t upload",
+  wiring: {
+    title:
+      "Wiring: the microphones and the speaker (wire what the lab needs; the screen stays as in lesson 03)",
+    head: ["Module pin", "ESP32-S3", "Notes"],
+    rows: [
+      [
+        "KY-037 + · G",
+        "3V3",
+        "The analog mic. + on the second 3V3 pin (the screen has the first), G on GND. <b>Never 5 V</b>: AO and DO swing up to the module's supply, and the ESP32-S3's pins take 3.3 V at most.",
+      ],
+      [
+        "KY-037 AO",
+        "GPIO 6",
+        "Analog out: the microphone's voltage. GPIO 6 is ADC1 channel 5: ADC1 keeps working while Wi-Fi is on, ADC2 doesn't.",
+      ],
+      [
+        "KY-037 DO",
+        "GPIO 21",
+        "Digital out: the LM393 comparator says high when the sound is louder than the blue trim pot's setting.",
+      ],
+      [
+        "INMP441 VDD · GND",
+        "3V3",
+        "The digital mic (I2S). VDD on 3V3 (share the breadboard rail with the KY-037), GND on GND. 3.3 V only.",
+      ],
+      ["INMP441 L/R", "GND", "Low = it talks in the left slot, the one the board reads."],
+      ["INMP441 SCK", "GPIO 40", "The bit clock. The ESP32 drives it: 16 000 × 64 = 1.024 MHz."],
+      [
+        "INMP441 WS",
+        "GPIO 41",
+        "Word select: left slot / right slot, flips every 32 clock ticks.",
+      ],
+      [
+        "INMP441 SD",
+        "GPIO 42",
+        "The data, most significant bit first. Pulled down, so a missing mic reads as zeros.",
+      ],
+      [
+        "MAX98357A VIN · GND",
+        "5V",
+        "The speaker amplifier. 5V gives the most (about 3 W into 4 Ω); 3V3 works, quieter.",
+      ],
+      [
+        "MAX98357A BCLK",
+        "GPIO 39",
+        "Bit clock of the second I2S port (I2S1; the mic uses I2S0, so both run at once).",
+      ],
+      ["MAX98357A LRC", "GPIO 38", "Word select (left/right)."],
+      ["MAX98357A DIN", "GPIO 47", "The samples, 16-bit."],
+      [
+        "MAX98357A GAIN · SD",
+        "nothing",
+        "Leave both unconnected: 9 dB gain, and it plays (left + right) / 2.",
+      ],
+      [
+        "speaker (4 Ω, 3 W)",
+        "amp + / −",
+        "On the amplifier's screw terminal: the JST-PH2.0 lead's two wires, red to +.",
+      ],
+      [
+        "screen (8 wires)",
+        "as lesson 03",
+        "Unchanged. The push button on GPIO 5 is optional: it does what BOOT does.",
+      ],
+    ],
+  },
+  commands: [
+    {
+      command: "uv run pio run -d labs/sound-lab-s2 -e sound-lab-s2 -t upload",
+      where: "mac",
+      card: "squiet",
+      does: "Builds lab S2 and writes it to the board, then open the monitor with <code>uv run pio device monitor</code>.",
+      see: "<code>Listening for an INMP441 on the I2S pins...</code>, <code>Microphone: INMP441 (I2S, digital) (mic setting: auto)</code> (or KY-037), then <code>Sound lab S2 …</code>, the command list and a three-note hello from the speaker. Stay quiet for half a second: <code>- learning the quiet...</code>",
+      fix: "Wrong mic picked: <code>mic inmp441</code> or <code>mic ky037</code> (saved, restarts). No hello: the speaker is optional; check VIN and DIN. “Failed to connect”: hold BOOT, tap RST, release BOOT, run it again.",
+    },
+    {
+      command: "(talk, then clap)",
+      where: "hands",
+      card: "ssound",
+      does: "The <b>meter</b> view: the big number is dB above your room's quiet.",
+      see: "Around 15-25 while you talk (“talking”), 40+ on a clap (“shout, clap, bang”). The white tick is the peak hold.",
+      fix: "Always 0: the quiet was learnt while you were talking. Type <code>quiet</code> and stay silent for half a second.",
+    },
+    {
+      command: "speed slow",
+      card: "ssound",
+      does: "Switches the meter, graphs and alarm to 1 s smoothing (double-click on meter toggles).",
+      see: "<code>- slow: 1 s smoothing</code>; the number moves calmly, a clap barely lifts it.",
+      fix: "",
+    },
+    {
+      command: "units quiet (units spl)",
+      card: "sany",
+      does: "Switches between dB SPL (INMP441 only) and dB above the quiet.",
+      see: "<code>- units: dB above the quiet</code>; <code>units spl</code> on the KY-037: <code>dB SPL needs the INMP441 (its sensitivity is known)</code>.",
+      fix: "",
+    },
+    {
+      command: "limit 75 spl (or limit 30 quiet)",
+      card: "sany",
+      does: "The alarm line: 30-120 dB SPL (default 80) or 3-60 dB above the quiet (default 35). Saved in NVS (namespace <code>loud</code>).",
+      see: "<code>- limit 75 dB SPL</code>; the dotted red line moves.",
+      fix: "",
+    },
+    {
+      command: "alarm sound off",
+      card: "sany",
+      does: "The alarm tune plays once per alarm on the speaker (the button stops it too). The echo guard keeps S2 from measuring its own tune.",
+      see: "<code>- alarm sound off</code>.",
+      fix: "",
+    },
+    {
+      command: "(play loud music for 2 s)",
+      where: "hands",
+      card: "smusic",
+      does: "Over the limit for <code>hold</code> (1 s) fires the alarm.",
+      see: "<code>x too loud: 38 dB</code>; the <b>alarm</b> view pulses red, the LED on GPIO 4 lights (if wired).",
+      fix: "No alarm: <code>alarm on</code>, or a lower <code>limit</code>.",
+    },
+    {
+      command: "(press the button)",
+      where: "button",
+      card: "sany",
+      does: "While the alarm rings, any press silences it; it re-arms when the room is calm (3 dB under the line).",
+      see: "<code>- alarm silenced</code>, later <code>+ calm again</code>.",
+      fix: "",
+    },
+    {
+      command: "diary",
+      card: "sany",
+      does: "Prints the last ten minutes, one row per 10 s: quietest, average, loudest, and ALARM.",
+      see: "<code>  60s     2   11   34  |=====      |</code> rows.",
+      fix: "Empty: the diary fills one row every 10 s. Come back in a few minutes.",
+    },
+  ],
+  panels: [
+    {
+      title: "What a decibel is",
+      widget: "soundDecibels",
+      intro:
+        "Our ears hear ratios, not differences, so loudness is measured in decibels: 20 × log10(this ÷ the quiet). Slide the loudness and watch the wave: every +6 dB doubles its height, +20 dB is ten times.",
+    },
+    {
+      title: "Fast, slow and the floor",
+      widget: "soundBallistics",
+      intro:
+        "The same sound through the meter's three lenses, replayed. Pick a scene. The floor follows the quiet: it drops at once and creeps up 0.5 dB a second, so a fan that keeps running becomes the new quiet.",
+    },
+    {
+      title: "What the screen shows",
+      widget: "soundScreens",
+      intro:
+        "Four views. Click = next, double-click = the action at the bottom left (speed, quiet, diary, alarm), long press = re-learn the quiet. While the alarm rings, any press silences it.",
+    },
+  ],
+  steps: [
+    "Same wiring as S1. Optional: lesson 02's LED on GPIO 4 through its resistor (the alarm light).",
+    "Flash <code>sound-lab-s2</code> and stay quiet for a second. <b>Checkpoint 1:</b> the meter reads 0-3 dB, “quiet”.",
+    "Talk at a normal voice 30 cm away. <b>Checkpoint 2:</b> 15-25 dB, “talking”.",
+    "<code>speed slow</code>, then <code>speed fast</code>. <b>Checkpoint 3:</b> you can describe the difference.",
+    "Play music loudly near the mic. <b>Checkpoint 4:</b> TOO LOUD on the alarm view, then silence it with the button.",
+    "Leave it for ten minutes, then <code>diary</code>. <b>Checkpoint 5:</b> a table of your room's ten minutes.",
+  ],
+  note: "dB SPL needs a microphone whose sensitivity is known: the INMP441's is in its datasheet, so S2 can show it (unweighted, about ±2 dB; real meters often show dBA, which weights the frequencies like the ear and reads lower for a deep hum). The KY-037's numbers are dB above <i>your</i> room's quiet, not dB SPL (the number a calibrated meter shows): that would need a reference microphone and the capsule's sensitivity. The floor is learnt in the first half second after boot or <code>quiet</code>, then follows the quiet (down at once, up 0.5 dB/s). Settings (speed, limit, hold, alarm) survive a reset in NVS; the diary doesn't.",
+  preview: {
+    widget: "sound",
+  },
+} as const satisfies LessonEntry;

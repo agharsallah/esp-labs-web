@@ -1,0 +1,310 @@
+// sound lesson S8. Strings may carry the inline markup RichText understands:
+// <b>, <i>, <code> and <span class="snd-parts|need|opt">.
+import type { LessonEntry } from "@/domain/lesson";
+
+export const s8 = {
+  kind: "lesson",
+  id: "S8",
+  track: "sound",
+  title: "Voice FX",
+  status: "built, not flashed",
+  heading: "A parrot that repeats you, and a live robot voice",
+  goal: '<span class="snd-parts"><span class="need">INMP441</span><span class="need">MAX98357A + speaker</span></span>Microphone in, speaker out. Say something and the parrot says it back: normal, as a <b>chipmunk</b> (1.5× faster), a <b>giant</b> (0.7×), a <b>robot</b> (ring modulator + 6-bit crunch), with an <b>echo</b>, or <b>reverse</b>. Then live effects: an echo you talk into, a robot voice. The parrot is voice-activated like S4 (12 dB, 0.3 s pre-roll, 0.7 s hold, 6 s at most) and never hears itself.',
+  goalLine:
+    "Make the parrot repeat you in three voices, talk through the live echo without a howl, and explain why a chipmunk talks fast.",
+  goalCheck: [
+    "You said a word and the parrot answered in the chipmunk voice; <code>fx giant</code> + <code>again</code> answered deep and slow.",
+    "<b>echo</b> view: <code>echo on</code>, a clap comes back as fading repeats, latency about 60-80 ms.",
+    "You provoked (and the guard stopped) a howl by pointing the speaker at the mic: <code>Howl! Move the speaker away or turn it down</code>.",
+  ],
+  learn: [
+    "resampling = pitch + speed",
+    "ring modulation f±c",
+    "bitcrush",
+    "delay + feedback",
+    "loop gain < 1",
+    "howl detection",
+    "latency budget",
+    "echo guard",
+  ],
+  pins: [
+    {
+      pin: "3V3",
+      idx: 0,
+      role: "VCC",
+      side: "L",
+      kind: "power",
+    },
+    {
+      pin: "3V3",
+      idx: 1,
+      role: "MICS +",
+      side: "L",
+      kind: "power",
+    },
+    {
+      pin: "6",
+      role: "AO",
+      side: "L",
+      kind: "sound",
+    },
+    {
+      pin: "7",
+      role: "BLK",
+      side: "L",
+    },
+    {
+      pin: "8",
+      role: "RES",
+      side: "L",
+    },
+    {
+      pin: "9",
+      role: "DC",
+      side: "L",
+    },
+    {
+      pin: "10",
+      role: "CS",
+      side: "L",
+    },
+    {
+      pin: "11",
+      role: "SDA",
+      side: "L",
+    },
+    {
+      pin: "12",
+      role: "SCL",
+      side: "L",
+    },
+    {
+      pin: "5V",
+      idx: 20,
+      role: "AMP VIN",
+      side: "L",
+      kind: "power",
+    },
+    {
+      pin: "GND",
+      idx: 21,
+      role: "GND",
+      side: "L",
+      kind: "gnd",
+    },
+    {
+      pin: "5",
+      role: "BTN",
+      side: "L",
+      kind: "btn",
+    },
+    {
+      pin: "GND",
+      idx: 0,
+      role: "MICS G",
+      side: "R",
+      kind: "gnd",
+    },
+    {
+      pin: "42",
+      role: "SD",
+      side: "R",
+      kind: "snd-mic",
+    },
+    {
+      pin: "41",
+      role: "WS",
+      side: "R",
+      kind: "snd-mic",
+    },
+    {
+      pin: "40",
+      role: "SCK",
+      side: "R",
+      kind: "snd-mic",
+    },
+    {
+      pin: "39",
+      role: "BCLK",
+      side: "R",
+      kind: "snd-amp",
+    },
+    {
+      pin: "38",
+      role: "LRC",
+      side: "R",
+      kind: "snd-amp",
+    },
+    {
+      pin: "0",
+      role: "BOOT",
+      side: "R",
+    },
+    {
+      pin: "47",
+      role: "DIN",
+      side: "R",
+      kind: "snd-amp",
+    },
+    {
+      pin: "21",
+      role: "DO",
+      side: "R",
+      kind: "sound",
+    },
+    {
+      pin: "GND",
+      idx: 20,
+      role: "AMP G",
+      side: "R",
+      kind: "gnd",
+    },
+  ],
+  boot: true,
+  cmd: "uv run pio run -d labs/sound-lab-s8 -e sound-lab-s8 -t upload",
+  wiring: {
+    title:
+      "Wiring: the microphones and the speaker (wire what the lab needs; the screen stays as in lesson 03)",
+    head: ["Module pin", "ESP32-S3", "Notes"],
+    rows: [
+      [
+        "KY-037 + · G",
+        "3V3",
+        "The analog mic. + on the second 3V3 pin (the screen has the first), G on GND. <b>Never 5 V</b>: AO and DO swing up to the module's supply, and the ESP32-S3's pins take 3.3 V at most.",
+      ],
+      [
+        "KY-037 AO",
+        "GPIO 6",
+        "Analog out: the microphone's voltage. GPIO 6 is ADC1 channel 5: ADC1 keeps working while Wi-Fi is on, ADC2 doesn't.",
+      ],
+      [
+        "KY-037 DO",
+        "GPIO 21",
+        "Digital out: the LM393 comparator says high when the sound is louder than the blue trim pot's setting.",
+      ],
+      [
+        "INMP441 VDD · GND",
+        "3V3",
+        "The digital mic (I2S). VDD on 3V3 (share the breadboard rail with the KY-037), GND on GND. 3.3 V only.",
+      ],
+      ["INMP441 L/R", "GND", "Low = it talks in the left slot, the one the board reads."],
+      ["INMP441 SCK", "GPIO 40", "The bit clock. The ESP32 drives it: 16 000 × 64 = 1.024 MHz."],
+      [
+        "INMP441 WS",
+        "GPIO 41",
+        "Word select: left slot / right slot, flips every 32 clock ticks.",
+      ],
+      [
+        "INMP441 SD",
+        "GPIO 42",
+        "The data, most significant bit first. Pulled down, so a missing mic reads as zeros.",
+      ],
+      [
+        "MAX98357A VIN · GND",
+        "5V",
+        "The speaker amplifier. 5V gives the most (about 3 W into 4 Ω); 3V3 works, quieter.",
+      ],
+      [
+        "MAX98357A BCLK",
+        "GPIO 39",
+        "Bit clock of the second I2S port (I2S1; the mic uses I2S0, so both run at once).",
+      ],
+      ["MAX98357A LRC", "GPIO 38", "Word select (left/right)."],
+      ["MAX98357A DIN", "GPIO 47", "The samples, 16-bit."],
+      [
+        "MAX98357A GAIN · SD",
+        "nothing",
+        "Leave both unconnected: 9 dB gain, and it plays (left + right) / 2.",
+      ],
+      [
+        "speaker (4 Ω, 3 W)",
+        "amp + / −",
+        "On the amplifier's screw terminal: the JST-PH2.0 lead's two wires, red to +.",
+      ],
+      [
+        "screen (8 wires)",
+        "as lesson 03",
+        "Unchanged. The push button on GPIO 5 is optional: it does what BOOT does.",
+      ],
+    ],
+  },
+  commands: [
+    {
+      command: "uv run pio run -d labs/sound-lab-s8 -e sound-lab-s8 -t upload",
+      where: "mac",
+      card: "squiet",
+      does: "Builds lab S8 and writes it to the board, then open the monitor with <code>uv run pio device monitor</code>.",
+      see: "<code>Listening for an INMP441 on the I2S pins...</code>, <code>Microphone: INMP441 (I2S, digital) (mic setting: auto)</code> (or KY-037), then <code>Sound lab S8 …</code>, the command list and a three-note hello from the speaker. Stay quiet for half a second: <code>- learning the quiet...</code>",
+      fix: "Wrong mic picked: <code>mic inmp441</code> or <code>mic ky037</code> (saved, restarts). No hello: the speaker is optional; check VIN and DIN. “Failed to connect”: hold BOOT, tap RST, release BOOT, run it again.",
+    },
+    {
+      command: "vol 25",
+      card: "squiet",
+      does: "Keep it low: the mic hears the speaker.",
+      see: "<code>- volume 25</code>.",
+      fix: "With the KY-037: <code>KY-037: it works, but an INMP441 sounds much clearer</code>.",
+    },
+    {
+      command: "(say “hello parrot”)",
+      where: "hands",
+      card: "ssound",
+      does: "Louder than 12 dB above the quiet starts a recording with 0.3 s from before; 0.7 s of quiet ends it; then it plays back through the voice.",
+      see: "The bubble: <code>I'm listening...</code>, REC, then <code>Squawk!</code> with the beak moving; <code>+ chipmunk, 1.4 s, x9 louder</code>.",
+      fix: "<code>too short: a bang, not a word</code>: speak a little longer. Never starts: <code>trigger 8</code>.",
+    },
+    {
+      command: "fx next (or fx robot, fx reverse)",
+      card: "sany",
+      does: "The parrot's voice: normal chipmunk giant robot echo reverse. Double-click on <b>parrot</b>.",
+      see: "<code>- voice: robot (ring modulator + bitcrush)</code>.",
+      fix: "",
+    },
+    {
+      command: "again",
+      card: "squiet",
+      does: "Says the last recording again with the current voice (double-click on <b>scope</b>).",
+      see: "The same words, another voice.",
+      fix: "<code>nothing recorded yet: say something first</code>.",
+    },
+    {
+      command: "echo on",
+      card: "ssound",
+      does: "Live: mic → delay line → speaker. <code>delay 120</code> (20-500 ms), <code>feedback 60</code> (0-70 %). Needs the mic at 16 000 Hz.",
+      see: "<code>! live echo: speaker away from the mic, volume low</code>; the taps of one clap on the <b>echo</b> view and a latency of ~60-80 ms.",
+      fix: "A howl: the guard stops it with a low No. Turn the speaker away, lower <code>vol</code> or <code>feedback</code>.",
+    },
+    {
+      command: "robot on",
+      card: "ssound",
+      does: "Live: your voice × a slow sine (<code>carrier 50</code>, 10-300 Hz) + crunch. Every frequency f becomes f − c and f + c.",
+      see: "The robot's mouth lights with what comes out. <code>carrier 200</code> sounds like a bell.",
+      fix: "",
+    },
+  ],
+  panels: [
+    {
+      title: "The parrot, in your browser",
+      widget: "soundParrot",
+      intro:
+        "The same effects as fx.h, in this page. An example voice is loaded; recording your own is optional and only starts when you press the button (3 s, a red indicator while it records, nothing leaves the page).",
+    },
+    {
+      title: "What the screen shows",
+      widget: "soundScreens",
+      intro:
+        "Four views. Click = next, double-click = the action at the bottom left (fx next, echo, robot, again), long press = record by hand / stop.",
+    },
+  ],
+  steps: [
+    "Wire the INMP441 (VDD 3V3, GND, L/R → GND, SCK 40, WS 41, SD 42) and the MAX98357A + speaker as in S7. Point the speaker away from the mic.",
+    "Flash <code>sound-lab-s8</code>, <code>vol 25</code>. <b>Checkpoint 1:</b> <code>Microphone: INMP441</code> and the parrot says “Say something!”.",
+    "Say a short sentence. <b>Checkpoint 2:</b> the chipmunk answers.",
+    "<code>fx giant</code>, <code>again</code>; <code>fx reverse</code>, <code>again</code>. <b>Checkpoint 3:</b> you can say why the giant is slow.",
+    "<code>echo on</code>, clap. <b>Checkpoint 4:</b> fading repeats; <code>echo off</code>.",
+    "<code>robot on</code>, talk. <b>Checkpoint 5:</b> a robot voice; <code>robot off</code>.",
+  ],
+  note: "Changing the speed of a recording changes its pitch and its length together: that's why the chipmunk talks fast. Keeping the speed while shifting the pitch needs much more DSP (grains or a phase vocoder). Feedback: if what the mic hears comes back louder than it went out (loop gain above 1), it goes round and round: the howl. The guard cuts the live effect when the level keeps climbing (9 dB within 300 ms) or stays above −12 dBFS. Latency = one screen frame of processing + the speaker's queue + its 16 ms DMA block.",
+  preview: {
+    widget: "sound",
+  },
+} as const satisfies LessonEntry;

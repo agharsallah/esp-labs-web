@@ -1,0 +1,327 @@
+// sound lesson S4. Strings may carry the inline markup RichText understands:
+// <b>, <i>, <code> and <span class="snd-parts|need|opt">.
+import type { LessonEntry } from "@/domain/lesson";
+
+export const s4 = {
+  kind: "lesson",
+  id: "S4",
+  track: "sound",
+  title: "Recorder",
+  status: "built, not flashed",
+  heading: "A voice-activated recorder",
+  goal: '<span class="snd-parts"><span class="need">KY-037 or INMP441</span><span class="opt">Wi-Fi (W1) (optional)</span><span class="opt">MAX98357A + speaker (optional)</span></span>Armed, the board waits for a sound louder than the trigger, then records into PSRAM, starting half a second <i>before</i> the trigger (the ring buffer still has it), until 1.2 s of quiet. Up to 12 clips, 6 MB, gone on reset. Listen on your phone at <code>http://bench.local</code> (the Wi-Fi network W1 saved, plus the admin token), or pull a WAV over USB with <code>tools/sound_pull.py</code>, or play it on the board\'s own speaker (<code>play 3 0.7</code>: slower and deeper). The board always shows REC and a red LED while it records, whoever started it.',
+  goalLine:
+    "Record a sentence hands-free, see the pre-roll, play it on your phone, and pull one clip to your Mac as a WAV file.",
+  goalCheck: [
+    "<code>arm</code>, then talk: the <b>recorder</b> view goes ARMED → REC → ARMED and <code>clips</code> lists a voice clip.",
+    "A door slam or a single clap starts a recording but is dropped (too short).",
+    "The phone page at <code>http://bench.local</code> unlocks with the token, draws the clip and plays it.",
+    "<code>tools/sound_pull.py</code> wrote a .wav that plays on the Mac.",
+    "<code>play</code> (or a double-click on <b>clips</b>) plays the picked clip on the board's speaker; <code>play 1 2</code> is a chipmunk.",
+  ],
+  learn: [
+    "pre-roll from a ring",
+    "trigger + hold",
+    "PSRAM clip store",
+    "WAV format",
+    "streaming responses",
+    "base64 + CRC-32",
+    "playback speed = pitch",
+    "tokens & visible recording",
+  ],
+  pins: [
+    {
+      pin: "3V3",
+      idx: 0,
+      role: "VCC",
+      side: "L",
+      kind: "power",
+    },
+    {
+      pin: "3V3",
+      idx: 1,
+      role: "MICS +",
+      side: "L",
+      kind: "power",
+    },
+    {
+      pin: "6",
+      role: "AO",
+      side: "L",
+      kind: "sound",
+    },
+    {
+      pin: "7",
+      role: "BLK",
+      side: "L",
+    },
+    {
+      pin: "8",
+      role: "RES",
+      side: "L",
+    },
+    {
+      pin: "9",
+      role: "DC",
+      side: "L",
+    },
+    {
+      pin: "10",
+      role: "CS",
+      side: "L",
+    },
+    {
+      pin: "11",
+      role: "SDA",
+      side: "L",
+    },
+    {
+      pin: "12",
+      role: "SCL",
+      side: "L",
+    },
+    {
+      pin: "5V",
+      idx: 20,
+      role: "AMP VIN",
+      side: "L",
+      kind: "power",
+    },
+    {
+      pin: "GND",
+      idx: 21,
+      role: "GND",
+      side: "L",
+      kind: "gnd",
+    },
+    {
+      pin: "5",
+      role: "BTN",
+      side: "L",
+      kind: "btn",
+    },
+    {
+      pin: "GND",
+      idx: 0,
+      role: "MICS G",
+      side: "R",
+      kind: "gnd",
+    },
+    {
+      pin: "42",
+      role: "SD",
+      side: "R",
+      kind: "snd-mic",
+    },
+    {
+      pin: "41",
+      role: "WS",
+      side: "R",
+      kind: "snd-mic",
+    },
+    {
+      pin: "40",
+      role: "SCK",
+      side: "R",
+      kind: "snd-mic",
+    },
+    {
+      pin: "39",
+      role: "BCLK",
+      side: "R",
+      kind: "snd-amp",
+    },
+    {
+      pin: "38",
+      role: "LRC",
+      side: "R",
+      kind: "snd-amp",
+    },
+    {
+      pin: "0",
+      role: "BOOT",
+      side: "R",
+    },
+    {
+      pin: "47",
+      role: "DIN",
+      side: "R",
+      kind: "snd-amp",
+    },
+    {
+      pin: "21",
+      role: "DO",
+      side: "R",
+      kind: "sound",
+    },
+    {
+      pin: "GND",
+      idx: 20,
+      role: "AMP G",
+      side: "R",
+      kind: "gnd",
+    },
+  ],
+  boot: true,
+  cmd: "uv run pio run -d labs/sound-lab-s4 -e sound-lab-s4 -t upload",
+  wiring: {
+    title:
+      "Wiring: the microphones and the speaker (wire what the lab needs; the screen stays as in lesson 03)",
+    head: ["Module pin", "ESP32-S3", "Notes"],
+    rows: [
+      [
+        "KY-037 + · G",
+        "3V3",
+        "The analog mic. + on the second 3V3 pin (the screen has the first), G on GND. <b>Never 5 V</b>: AO and DO swing up to the module's supply, and the ESP32-S3's pins take 3.3 V at most.",
+      ],
+      [
+        "KY-037 AO",
+        "GPIO 6",
+        "Analog out: the microphone's voltage. GPIO 6 is ADC1 channel 5: ADC1 keeps working while Wi-Fi is on, ADC2 doesn't.",
+      ],
+      [
+        "KY-037 DO",
+        "GPIO 21",
+        "Digital out: the LM393 comparator says high when the sound is louder than the blue trim pot's setting.",
+      ],
+      [
+        "INMP441 VDD · GND",
+        "3V3",
+        "The digital mic (I2S). VDD on 3V3 (share the breadboard rail with the KY-037), GND on GND. 3.3 V only.",
+      ],
+      ["INMP441 L/R", "GND", "Low = it talks in the left slot, the one the board reads."],
+      ["INMP441 SCK", "GPIO 40", "The bit clock. The ESP32 drives it: 16 000 × 64 = 1.024 MHz."],
+      [
+        "INMP441 WS",
+        "GPIO 41",
+        "Word select: left slot / right slot, flips every 32 clock ticks.",
+      ],
+      [
+        "INMP441 SD",
+        "GPIO 42",
+        "The data, most significant bit first. Pulled down, so a missing mic reads as zeros.",
+      ],
+      [
+        "MAX98357A VIN · GND",
+        "5V",
+        "The speaker amplifier. 5V gives the most (about 3 W into 4 Ω); 3V3 works, quieter.",
+      ],
+      [
+        "MAX98357A BCLK",
+        "GPIO 39",
+        "Bit clock of the second I2S port (I2S1; the mic uses I2S0, so both run at once).",
+      ],
+      ["MAX98357A LRC", "GPIO 38", "Word select (left/right)."],
+      ["MAX98357A DIN", "GPIO 47", "The samples, 16-bit."],
+      [
+        "MAX98357A GAIN · SD",
+        "nothing",
+        "Leave both unconnected: 9 dB gain, and it plays (left + right) / 2.",
+      ],
+      [
+        "speaker (4 Ω, 3 W)",
+        "amp + / −",
+        "On the amplifier's screw terminal: the JST-PH2.0 lead's two wires, red to +.",
+      ],
+      [
+        "screen (8 wires)",
+        "as lesson 03",
+        "Unchanged. The push button on GPIO 5 is optional: it does what BOOT does.",
+      ],
+    ],
+  },
+  commands: [
+    {
+      command: "uv run pio run -d labs/sound-lab-s4 -e sound-lab-s4 -t upload",
+      where: "mac",
+      card: "squiet",
+      does: "Builds lab S4 and writes it to the board, then open the monitor with <code>uv run pio device monitor</code>.",
+      see: "<code>Listening for an INMP441 on the I2S pins...</code>, <code>Microphone: INMP441 (I2S, digital) (mic setting: auto)</code> (or KY-037), then <code>Sound lab S4 …</code>, the command list and a three-note hello from the speaker. Stay quiet for half a second: <code>- learning the quiet...</code>",
+      fix: "Wrong mic picked: <code>mic inmp441</code> or <code>mic ky037</code> (saved, restarts). No hello: the speaker is optional; check VIN and DIN. “Failed to connect”: hold BOOT, tap RST, release BOOT, run it again.",
+    },
+    {
+      command: "arm",
+      card: "squiet",
+      does: "Voice-activated: louder than <code>trigger</code> (15 dB above the quiet) starts a clip.",
+      see: "<code>- armed: talk and it records</code>; the <b>recorder</b> view says ARMED (teal ring).",
+      fix: "",
+    },
+    {
+      command: "(say a sentence, then wait)",
+      where: "hands",
+      card: "ssound",
+      does: "Records from half a second before your first word until 1.2 s after the last loud moment.",
+      see: "<code>x REC clip 1 (voice)</code>; REC 2.4 s in red, the header's red dot, the RGB LED red; then <code>+ clip 1: 3.1 s</code>.",
+      fix: "Never starts: speak closer, or <code>trigger 10</code>.",
+    },
+    {
+      command: "play 1 0.7",
+      card: "sany",
+      does: "Plays clip 1 on the board's speaker at 0.7× speed (deeper, slower). Without a number: the clip picked on the <b>clips</b> view. Made louder like the download, but at most ×16. <code>stop</code> stops it; <code>rec</code> stops it before recording; it is refused while recording.",
+      see: "<code>+ playing clip 1 (4.4 s) at x0.70</code>, then <code>- clip 1 played</code>; waves in the header.",
+      fix: "<code>recording: stop first (the microphone would hear the speaker)</code>.",
+    },
+    {
+      command: "clips",
+      card: "sany",
+      does: "Lists the clips: number, length, voice or hand, loudest, how much louder it is sent, when.",
+      see: "<code>    1    3.1s  voice  -38.2 dBFS  x23.4  2026-10-14 14:02:31</code>",
+      fix: "",
+    },
+    {
+      command: "token",
+      card: "sany",
+      does: "Prints the admin token the phone page asks for (shared with W2/R7/R8).",
+      see: "<code>Admin token: 3f…</code> and where to paste it.",
+      fix: "Keep it out of chats and git; <code>token new</code> replaces it.",
+    },
+    {
+      command: "http://bench.local",
+      where: "phone",
+      card: "sany",
+      does: "The board's own page: live level, arm / rec / stop, the clip list with each waveform, play and download, a speed choice and <b>Play on board</b> / <b>Stop on board</b> per clip. The token stays in that tab only.",
+      see: "A clip card with its shape; play moves a playhead.",
+      fix: "“no Wi-Fi saved”: flash wifi-lab-w1 once and join. Page unreachable: same network? Try the IP from <code>wifi</code>.",
+    },
+    {
+      command: "uv run python tools/sound_pull.py /dev/cu.usbserial-A5069RR4 1",
+      where: "mac",
+      card: "sany",
+      does: "Close the monitor first. Types <code>send 1</code>, reads the base64 WAV, checks the CRC-32 and the size, writes the file.",
+      see: "<code>Receiving clip 1: 99244 bytes as …</code>, then <code>Saved … (3.1 s at 16000 Hz, 99244 bytes, CRC ok)</code>.",
+      fix: "<code>Could not open … (is the serial monitor still open?)</code>: close it.",
+    },
+  ],
+  panels: [
+    {
+      title: "Voice-activated recording, step by step",
+      widget: "soundRecorderTimeline",
+      intro:
+        "Nine seconds: a door bang, then a sentence with a pause in it. Step through or play, move the trigger and the hold. Amber = the pre-roll taken from the ring, red = recorded, grey = dropped.",
+    },
+    {
+      title: "Getting the audio out",
+      widget: "soundGetOut",
+      intro:
+        "Three paths: the phone over Wi-Fi, the Mac over the USB serial port, or the board's own speaker. Below: the 44 bytes every WAV file starts with (for a 3.2 s clip at 16 000 Hz).",
+    },
+    {
+      title: "What the screen shows",
+      widget: "soundScreens",
+      intro:
+        "Three views. Click = next, double-click = the action at the bottom left (arm, next, wifi), long press = rec / stop.",
+    },
+  ],
+  steps: [
+    "Same wiring as S1. The board needs the Wi-Fi network W1 saved (only for the phone page).",
+    "Flash <code>sound-lab-s4</code>. <b>Checkpoint 1:</b> OFF on the recorder view and <code>page: http://bench.local</code> once Wi-Fi joins.",
+    "<code>arm</code>, say a sentence. <b>Checkpoint 2:</b> one clip; the amber pre-roll before your first word.",
+    "Clap once. <b>Checkpoint 3:</b> <code>a bang, not a voice: clip 2 dropped</code>.",
+    "Open the page on your phone, paste the <code>token</code>. <b>Checkpoint 4:</b> your clip plays.",
+    "Close the monitor, run <code>tools/sound_pull.py</code>. <b>Checkpoint 5:</b> a .wav on your Mac.",
+  ],
+  note: "Privacy is built in, not optional: recording always shows on the board (REC, red dot, red LED) whoever starts it; every audio route on the page needs the admin token; clips live in RAM only and vanish on reset. The sound will be thin and hissy: the clips are normalised (made up to 64 times louder) on the way out, and that lifts the hiss with the voice. This module is a loudness sensor first, a microphone second.",
+  preview: {
+    widget: "sound",
+  },
+} as const satisfies LessonEntry;

@@ -1,0 +1,318 @@
+// sound lesson S3. Strings may carry the inline markup RichText understands:
+// <b>, <i>, <code> and <span class="snd-parts|need|opt">.
+import type { LessonEntry } from "@/domain/lesson";
+
+export const s3 = {
+  kind: "lesson",
+  id: "S3",
+  track: "sound",
+  title: "Clap control",
+  status: "built, not flashed",
+  heading: "Switch things with your hands",
+  goal: '<span class="snd-parts"><span class="need">KY-037 or INMP441</span><span class="opt">MAX98357A + speaker (optional)</span></span>One clap toggles the LED, two change the RGB colour, three put the screen to sleep, four throw a party. A voice, a whistle or music never counts: a clap is not just loud, it has a <b>shape</b> (a jump within 4 ms, over within 160 ms). Claps close together form one pattern; a pause of 0.65 s ends it. What each pattern does is a map in NVS you can change, and each action answers with its own little sound on the speaker.',
+  goalLine:
+    "Make 1, 2, 3 and 4 claps do four different things, prove that talking doesn't trigger them, and tune the detector to your own claps.",
+  goalCheck: [
+    "One clap toggles the LED on GPIO 4 (or prints <code>LED on</code>), two change the RGB colour.",
+    "On the <b>timeline</b>, a clap gets a teal flag, a spoken word an amber <i>long</i> bar, and nothing happens.",
+    "<code>learn</code> + 5 claps set <code>sens</code> from your softest clap.",
+    "You remapped a pattern with <code>map</code> and it survived a reset.",
+  ],
+  learn: [
+    "onset detection",
+    "a clap's shape",
+    "hysteresis",
+    "grouping in time",
+    "calibrating from data",
+    "NVS map",
+    "sound as feedback",
+    "echo guard",
+  ],
+  pins: [
+    {
+      pin: "3V3",
+      idx: 0,
+      role: "VCC",
+      side: "L",
+      kind: "power",
+    },
+    {
+      pin: "3V3",
+      idx: 1,
+      role: "MICS +",
+      side: "L",
+      kind: "power",
+    },
+    {
+      pin: "6",
+      role: "AO",
+      side: "L",
+      kind: "sound",
+    },
+    {
+      pin: "7",
+      role: "BLK",
+      side: "L",
+    },
+    {
+      pin: "8",
+      role: "RES",
+      side: "L",
+    },
+    {
+      pin: "9",
+      role: "DC",
+      side: "L",
+    },
+    {
+      pin: "10",
+      role: "CS",
+      side: "L",
+    },
+    {
+      pin: "11",
+      role: "SDA",
+      side: "L",
+    },
+    {
+      pin: "12",
+      role: "SCL",
+      side: "L",
+    },
+    {
+      pin: "5V",
+      idx: 20,
+      role: "AMP VIN",
+      side: "L",
+      kind: "power",
+    },
+    {
+      pin: "GND",
+      idx: 21,
+      role: "GND",
+      side: "L",
+      kind: "gnd",
+    },
+    {
+      pin: "5",
+      role: "BTN",
+      side: "L",
+      kind: "btn",
+    },
+    {
+      pin: "GND",
+      idx: 0,
+      role: "MICS G",
+      side: "R",
+      kind: "gnd",
+    },
+    {
+      pin: "42",
+      role: "SD",
+      side: "R",
+      kind: "snd-mic",
+    },
+    {
+      pin: "41",
+      role: "WS",
+      side: "R",
+      kind: "snd-mic",
+    },
+    {
+      pin: "40",
+      role: "SCK",
+      side: "R",
+      kind: "snd-mic",
+    },
+    {
+      pin: "39",
+      role: "BCLK",
+      side: "R",
+      kind: "snd-amp",
+    },
+    {
+      pin: "38",
+      role: "LRC",
+      side: "R",
+      kind: "snd-amp",
+    },
+    {
+      pin: "0",
+      role: "BOOT",
+      side: "R",
+    },
+    {
+      pin: "47",
+      role: "DIN",
+      side: "R",
+      kind: "snd-amp",
+    },
+    {
+      pin: "21",
+      role: "DO",
+      side: "R",
+      kind: "sound",
+    },
+    {
+      pin: "GND",
+      idx: 20,
+      role: "AMP G",
+      side: "R",
+      kind: "gnd",
+    },
+  ],
+  boot: true,
+  cmd: "uv run pio run -d labs/sound-lab-s3 -e sound-lab-s3 -t upload",
+  wiring: {
+    title:
+      "Wiring: the microphones and the speaker (wire what the lab needs; the screen stays as in lesson 03)",
+    head: ["Module pin", "ESP32-S3", "Notes"],
+    rows: [
+      [
+        "KY-037 + · G",
+        "3V3",
+        "The analog mic. + on the second 3V3 pin (the screen has the first), G on GND. <b>Never 5 V</b>: AO and DO swing up to the module's supply, and the ESP32-S3's pins take 3.3 V at most.",
+      ],
+      [
+        "KY-037 AO",
+        "GPIO 6",
+        "Analog out: the microphone's voltage. GPIO 6 is ADC1 channel 5: ADC1 keeps working while Wi-Fi is on, ADC2 doesn't.",
+      ],
+      [
+        "KY-037 DO",
+        "GPIO 21",
+        "Digital out: the LM393 comparator says high when the sound is louder than the blue trim pot's setting.",
+      ],
+      [
+        "INMP441 VDD · GND",
+        "3V3",
+        "The digital mic (I2S). VDD on 3V3 (share the breadboard rail with the KY-037), GND on GND. 3.3 V only.",
+      ],
+      ["INMP441 L/R", "GND", "Low = it talks in the left slot, the one the board reads."],
+      ["INMP441 SCK", "GPIO 40", "The bit clock. The ESP32 drives it: 16 000 × 64 = 1.024 MHz."],
+      [
+        "INMP441 WS",
+        "GPIO 41",
+        "Word select: left slot / right slot, flips every 32 clock ticks.",
+      ],
+      [
+        "INMP441 SD",
+        "GPIO 42",
+        "The data, most significant bit first. Pulled down, so a missing mic reads as zeros.",
+      ],
+      [
+        "MAX98357A VIN · GND",
+        "5V",
+        "The speaker amplifier. 5V gives the most (about 3 W into 4 Ω); 3V3 works, quieter.",
+      ],
+      [
+        "MAX98357A BCLK",
+        "GPIO 39",
+        "Bit clock of the second I2S port (I2S1; the mic uses I2S0, so both run at once).",
+      ],
+      ["MAX98357A LRC", "GPIO 38", "Word select (left/right)."],
+      ["MAX98357A DIN", "GPIO 47", "The samples, 16-bit."],
+      [
+        "MAX98357A GAIN · SD",
+        "nothing",
+        "Leave both unconnected: 9 dB gain, and it plays (left + right) / 2.",
+      ],
+      [
+        "speaker (4 Ω, 3 W)",
+        "amp + / −",
+        "On the amplifier's screw terminal: the JST-PH2.0 lead's two wires, red to +.",
+      ],
+      [
+        "screen (8 wires)",
+        "as lesson 03",
+        "Unchanged. The push button on GPIO 5 is optional: it does what BOOT does.",
+      ],
+    ],
+  },
+  commands: [
+    {
+      command: "uv run pio run -d labs/sound-lab-s3 -e sound-lab-s3 -t upload",
+      where: "mac",
+      card: "squiet",
+      does: "Builds lab S3 and writes it to the board, then open the monitor with <code>uv run pio device monitor</code>.",
+      see: "<code>Listening for an INMP441 on the I2S pins...</code>, <code>Microphone: INMP441 (I2S, digital) (mic setting: auto)</code> (or KY-037), then <code>Sound lab S3 …</code>, the command list and a three-note hello from the speaker. Stay quiet for half a second: <code>- learning the quiet...</code>",
+      fix: "Wrong mic picked: <code>mic inmp441</code> or <code>mic ky037</code> (saved, restarts). No hello: the speaker is optional; check VIN and DIN. “Failed to connect”: hold BOOT, tap RST, release BOOT, run it again.",
+    },
+    {
+      command: "(clap once, then twice)",
+      where: "hands",
+      card: "ssound",
+      does: "One clap = <code>led</code>, two = <code>colour</code> (the defaults; three = <code>screen</code>, four = <code>party</code>).",
+      see: "<code>- 1 clap -> led</code>, <code>+ LED on</code>; then <code>- 2 claps -> colour</code>, <code>+ colour: warm white</code>. The <b>lamp</b> view shows both.",
+      fix: "Nothing: claps too soft for <code>sens</code> 18 dB. Try <code>learn</code>.",
+    },
+    {
+      command: "test",
+      card: "ssound",
+      does: "Prints every clap, long sound and group as it happens.",
+      see: "<code>  clap at 5120 ms: 31.0 dB, 48 ms long</code>, <code>  LONG (not a clap) at …: 22.0 dB, 380 ms long</code>, <code>  group of 2: gaps 290 ms</code>.",
+      fix: "<code>test off</code> to stop.",
+    },
+    {
+      command: "learn",
+      card: "ssound",
+      does: "Jumps to <b>tune</b>: clap 5 times as you normally would. sens becomes 60 % of the softest (between 8 and 40 dB), saved.",
+      see: "<code>- clap 1 of 5: 29 dB</code> … <code>+ learnt: sens 17 dB (saved)</code>; five bars with their dB and ms.",
+      fix: "Talking during learn is counted under <i>long (voice?)</i>, not as a clap.",
+    },
+    {
+      command: "map 3 tune",
+      card: "sany",
+      does: "Three claps now play twinkle on the speaker. Actions: led colour dark screen view party tune none.",
+      see: "<code>+ 3 claps -> tune (saved)</code>; <code>maps</code> prints all four.",
+      fix: "",
+    },
+    {
+      command: "sound off",
+      card: "sany",
+      does: "Each action answers with a sound: LED up/down, a colour arpeggio, a click for screen and view, a fanfare for the party, a low No when a pattern isn't mapped. <code>sound off</code> silences them (saved).",
+      see: "<code>+ pattern sounds off (saved)</code>.",
+      fix: "",
+    },
+    {
+      command: "gap 400",
+      card: "sany",
+      does: "A shorter pause ends a pattern: snappier, but slow clappers split into two patterns.",
+      see: "<code>+ pause 400 ms ends a pattern (saved)</code>.",
+      fix: "",
+    },
+    {
+      command: "do party",
+      card: "any",
+      does: "Runs an action without clapping (to test the wiring).",
+      see: "<code>+ party!</code>, 2 s of rainbow on the RGB LED.",
+      fix: "",
+    },
+  ],
+  panels: [
+    {
+      title: "Is it a clap? The detector, 4 ms at a time",
+      widget: "soundClapMachine",
+      intro:
+        "The same rules as kit/lib/sound-kit/src/onsets.h, run on a sound you pick. Step one frame at a time or play it, move the rise and release lines. Armed → loud (ONSET) → quiet (CLAP if it was short, LONG if not) → armed again after 40 ms of quiet.",
+    },
+    {
+      title: "What the screen shows",
+      widget: "soundScreens",
+      intro:
+        "Four views. Click = next, double-click = the action at the bottom left (test, colour, maps, learn), long press = learn.",
+    },
+  ],
+  steps: [
+    "Same wiring as S1. Optional: lesson 02's LED on GPIO 4.",
+    "Flash <code>sound-lab-s3</code>, stay quiet a second. <b>Checkpoint 1:</b> the <b>timeline</b> shows a flat line with the rise and release lines.",
+    "Clap once, then twice. <b>Checkpoint 2:</b> LED toggles, RGB changes colour.",
+    "Talk normally next to the mic. <b>Checkpoint 3:</b> amber <i>long</i> bars, no action.",
+    "<code>learn</code>, clap 5 times. <b>Checkpoint 4:</b> a new <code>sens</code>, saved.",
+    "<code>map 1 party</code>, clap once, reset the board, clap once again. <b>Checkpoint 5:</b> still a party.",
+  ],
+  note: "The board's own sounds never count as claps: while the speaker plays (and 200 ms after) the detector gets no frames, the echo guard. Five or more claps in a row count as applause and do nothing. Three claps put the backlight out: it comes back after 30 s or with any button press, so the screen can't be lost. The detector listens to AO through the level meter, not to DO: one clap makes dozens of DO edges.",
+  preview: {
+    widget: "sound",
+  },
+} as const satisfies LessonEntry;

@@ -217,5 +217,13 @@
     "warn": "Dikkat",
     "yes": "Evet",
     "outOf": "{{max}} içinden {{value}}"
+  },
+  "offline": {
+    "ready": "Rehber bu cihaza kaydedildi: artık çevrimdışı da çalışıyor.",
+    "offline": "Çevrimdışısın. Tüm dersler çalışmaya devam ediyor; daha önce açmadığın başvuru görselleri için bağlantı gerekir.",
+    "update": "Rehberin yeni bir sürümü hazır.",
+    "reload": "Yeniden yükle",
+    "later": "Sonra",
+    "dismiss": "Tamam"
   }
 }

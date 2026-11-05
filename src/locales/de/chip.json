@@ -313,7 +313,8 @@
     },
     "figure": {
       "enlarge": "Vergrößern: {{caption}}",
-      "close": "Abbildung schließen"
+      "close": "Abbildung schließen",
+      "offline": "Diese Abbildung lädt, sobald du das erste Mal online bist."
     },
     "pins": "Einen Pin öffnen",
     "chart": {

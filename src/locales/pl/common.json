@@ -219,5 +219,13 @@
     "warn": "Uwaga",
     "yes": "Tak",
     "outOf": "{{value}} z {{max}}"
+  },
+  "offline": {
+    "ready": "Przewodnik jest zapisany na tym urządzeniu: teraz działa offline.",
+    "offline": "Jesteś offline. Wszystkie lekcje nadal działają; rysunki z dokumentacji, których jeszcze nie otwierałeś, wymagają połączenia.",
+    "update": "Nowa wersja przewodnika jest gotowa.",
+    "reload": "Odśwież",
+    "later": "Później",
+    "dismiss": "OK"
   }
 }

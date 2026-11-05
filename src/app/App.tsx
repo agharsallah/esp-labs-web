@@ -3,6 +3,7 @@ import { lazy, Suspense } from "react";
 import { I18nextProvider } from "react-i18next";
 import { RouterProvider } from "react-router/dom";
 import { env } from "@/config/env";
+import { OfflineNotice } from "@/features/offline/OfflineNotice";
 import { i18n } from "@/i18n/i18n";
 import { queryClient } from "./query-client";
 import { router } from "./router";
@@ -20,6 +21,7 @@ export function App() {
     <I18nextProvider i18n={i18n}>
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
+        <OfflineNotice />
         <VercelInsights />
         <Suspense>
           <QueryDevtools buttonPosition="bottom-left" />

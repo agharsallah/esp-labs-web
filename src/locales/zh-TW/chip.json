@@ -307,7 +307,8 @@
     },
     "figure": {
       "enlarge": "放大：{{caption}}",
-      "close": "關閉圖片"
+      "close": "關閉圖片",
+      "offline": "這張圖會在你第一次連線時載入。"
     },
     "pins": "開啟腳位",
     "chart": {

@@ -307,7 +307,8 @@
     },
     "figure": {
       "enlarge": "放大：{{caption}}",
-      "close": "关闭图片"
+      "close": "关闭图片",
+      "offline": "这张图会在你首次联网时加载。"
     },
     "pins": "打开引脚",
     "chart": {

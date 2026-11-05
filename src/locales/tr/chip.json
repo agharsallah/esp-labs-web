@@ -313,7 +313,8 @@
     },
     "figure": {
       "enlarge": "Büyüt: {{caption}}",
-      "close": "Şekli kapat"
+      "close": "Şekli kapat",
+      "offline": "Bu görsel ilk kez çevrimiçi olduğunda yüklenir."
     },
     "pins": "Bir pin aç",
     "chart": {

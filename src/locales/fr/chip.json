@@ -319,7 +319,8 @@
     },
     "figure": {
       "enlarge": "Agrandir : {{caption}}",
-      "close": "Fermer la figure"
+      "close": "Fermer la figure",
+      "offline": "Cette figure se charge la première fois que tu es en ligne."
     },
     "pins": "Ouvrir une broche",
     "chart": {

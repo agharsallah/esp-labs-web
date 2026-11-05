@@ -190,5 +190,13 @@
         "callTimed": "第 {{step}} / {{total}} 步 · {{from}} → {{to}} · 约 {{duration}}"
       }
     }
+  },
+  "offline": {
+    "ready": "指南已保存到此设备：现在可以离线使用。",
+    "offline": "你已离线。所有课程仍可使用；之前没打开过的参考图片需要联网。",
+    "update": "指南的新版本已就绪。",
+    "reload": "重新加载",
+    "later": "稍后",
+    "dismiss": "好的"
   }
 }

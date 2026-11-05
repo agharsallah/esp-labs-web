@@ -325,7 +325,8 @@
     },
     "figure": {
       "enlarge": "Powiększ: {{caption}}",
-      "close": "Zamknij rysunek"
+      "close": "Zamknij rysunek",
+      "offline": "Ten rysunek wczyta się, gdy pierwszy raz będziesz online."
     },
     "pins": "Otwórz pin",
     "chart": {

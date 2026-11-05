@@ -192,5 +192,13 @@
         "callTimed": "Étape {{step}} sur {{total}} · {{from}} → {{to}} · environ {{duration}}"
       }
     }
+  },
+  "offline": {
+    "ready": "Le guide est enregistré sur cet appareil : il marche maintenant hors ligne.",
+    "offline": "Tu es hors ligne. Toutes les leçons marchent encore ; les figures de référence que tu n'as jamais ouvertes ont besoin d'une connexion.",
+    "update": "Une nouvelle version du guide est prête.",
+    "reload": "Recharger",
+    "later": "Plus tard",
+    "dismiss": "OK"
   }
 }

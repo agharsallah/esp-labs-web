@@ -313,7 +313,8 @@
     },
     "figure": {
       "enlarge": "Enlarge: {{caption}}",
-      "close": "Close the figure"
+      "close": "Close the figure",
+      "offline": "This figure loads the first time you're online."
     },
     "pins": "Open a pin",
     "chart": {

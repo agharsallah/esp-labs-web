@@ -6,7 +6,7 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "jsx": "react-jsx",
-    "types": ["vite/client"],
+    "types": ["vite/client", "vite-plugin-pwa/react"],
     "strict": true,
     "noEmit": true,
     "allowImportingTsExtensions": true,

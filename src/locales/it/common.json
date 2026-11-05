@@ -192,5 +192,13 @@
         "callTimed": "Passo {{step}} di {{total}} · {{from}} → {{to}} · circa {{duration}}"
       }
     }
+  },
+  "offline": {
+    "ready": "La guida è salvata su questo dispositivo: ora funziona offline.",
+    "offline": "Sei offline. Tutte le lezioni funzionano ancora; le figure di riferimento che non hai mai aperto hanno bisogno di una connessione.",
+    "update": "È pronta una nuova versione della guida.",
+    "reload": "Ricarica",
+    "later": "Più tardi",
+    "dismiss": "OK"
   }
 }

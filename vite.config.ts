@@ -2,6 +2,7 @@ import { fileURLToPath } from "node:url";
 import babel from "@rolldown/plugin-babel";
 import react, { reactCompilerPreset } from "@vitejs/plugin-react";
 import { loadEnv } from "vite";
+import { VitePWA } from "vite-plugin-pwa";
 import { defineConfig } from "vitest/config";
 import { firmwarePlugin } from "./tools/firmware/vite-plugin.ts";
 import { referencePlugin } from "./tools/reference/vite-plugin.ts";
@@ -30,6 +31,48 @@ export default defineConfig(({ mode }) => ({
           import.meta.url,
         ),
       ),
+    }),
+    // Offline: a service worker precaches the app (every route, lesson, widget and language), the
+    // lab code, the bench data and the reference text (~0.9 MB gzipped). The reference figures
+    // (10 MB of PNG) and the fonts are cached the first time they are shown.
+    // `prompt`: a new deploy waits for the reader's "Reload" (features/offline), never mid-lesson.
+    VitePWA({
+      registerType: "prompt",
+      injectRegister: false,
+      manifest: false,
+      workbox: {
+        globPatterns: [
+          "index.html",
+          "assets/**/*.{js,css}",
+          "firmware/*.json",
+          "data/*.json",
+          "reference/index.json",
+          "reference/sections/*.json",
+        ],
+        navigateFallback: "index.html",
+        cleanupOutdatedCaches: true,
+        runtimeCaching: [
+          {
+            urlPattern: /\/reference\/images\//,
+            handler: "StaleWhileRevalidate",
+            options: { cacheName: "reference-images", expiration: { maxEntries: 300 } },
+          },
+          {
+            urlPattern: /^https:\/\/fonts\.googleapis\.com\//,
+            handler: "StaleWhileRevalidate",
+            options: { cacheName: "font-css", cacheableResponse: { statuses: [0, 200] } },
+          },
+          {
+            urlPattern: /^https:\/\/fonts\.gstatic\.com\//,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "font-files",
+              cacheableResponse: { statuses: [0, 200] },
+              expiration: { maxEntries: 30, maxAgeSeconds: 365 * 24 * 60 * 60 },
+            },
+          },
+        ],
+      },
     }),
   ],
   // Web Analytics and Speed Insights only work on a Vercel deployment (it serves their scripts);

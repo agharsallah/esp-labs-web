@@ -559,6 +559,15 @@ tr.highlight {
   inline-size: 100%;
   block-size: auto;
 }
+.figMissing {
+  margin: 0;
+  padding: 16px;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-m);
+  color: var(--muted);
+  font-size: 14px;
+  text-align: center;
+}
 .figZoom {
   position: absolute;
   inset-block-end: 8px;

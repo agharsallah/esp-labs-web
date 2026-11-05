@@ -1,0 +1,74 @@
+/* Bottom start corner, clear of the back-to-top button at the end corner. */
+.notice {
+  position: fixed;
+  inset-block-end: max(16px, env(safe-area-inset-bottom));
+  inset-inline-start: max(var(--gutter), env(safe-area-inset-left));
+  z-index: 16;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  max-inline-size: min(420px, calc(100vw - 2 * var(--gutter) - 60px));
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 10px 24px -14px var(--ink);
+  animation: rise 0.24s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.notice[data-kind="offline"] {
+  border-color: var(--copper);
+}
+.text {
+  flex: 1 1 200px;
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: var(--leading);
+}
+.actions {
+  display: flex;
+  gap: 8px;
+}
+.primary,
+.secondary {
+  min-block-size: 36px;
+  padding: 4px 12px;
+  border-radius: var(--radius-s);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.primary {
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--surface);
+}
+.primary:hover {
+  border-color: var(--copper);
+  background: var(--copper);
+}
+.secondary {
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+}
+.secondary:hover {
+  border-color: var(--ink);
+}
+.primary:focus-visible,
+.secondary:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .notice {
+    animation: none;
+  }
+}

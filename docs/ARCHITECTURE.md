@@ -228,6 +228,16 @@ A chip page's citation chip can open the cited section of Espressif's reference 
 | Variant, log filter, chip filters   | URL search params                                                                   | Shareable                                                |
 | Simulator internals                 | refs / `Simulation`                                                                 | 60 fps, not rendering state                              |
 
+## Offline
+
+The guide works with no network after its first visit. `vite-plugin-pwa` (Workbox `generateSW`, set up in `vite.config.ts`) builds `sw.js`:
+
+- **Precached at install** (about 1 900 files, revisioned, refreshed per deploy): `index.html`, every JS/CSS chunk (all routes, lessons, widgets and languages), `firmware/*.json`, `data/*.json` and the reference text (`reference/index.json`, `reference/sections/*.json`, ~0.9 MB gzipped).
+- **Cached on first use**: reference figures (`reference/images/`, 10 MB of PNG, stale-while-revalidate) and Google Fonts. Offline, a figure never seen says so (`FigureView`) instead of breaking.
+- **Updates wait for the reader** (`registerType: "prompt"`): `features/offline/OfflineNotice` registers the worker, checks for a new deploy hourly, and shows one notice at a time (`pickNotice`: update ready, then offline, then "saved for offline"). A new version never reloads a page mid-lesson.
+- **Queries use `networkMode: "offlineFirst"`** (`app/query-client.ts`): with the default `online`, TanStack Query would pause every fetch while the browser is offline and never ask the service worker.
+- `sw.js` is served `max-age=0, must-revalidate` (`vercel.json`). A sandboxed frame that refuses service workers still runs the guide online; the failure is logged as a warning.
+
 ## Configuration, logging, errors
 
 - `src/config/env.ts` parses `import.meta.env` with zod at start-up. `VITE_BENCH_DATA_URL` points at the bench JSON (default `./data/`), `VITE_FIRMWARE_URL` at the bundled lab code (default `./firmware/`), `VITE_LOG_LEVEL` filters logs. `FIRMWARE_DIR` (build time only) is the PlatformIO project to read. See `.env.example`.

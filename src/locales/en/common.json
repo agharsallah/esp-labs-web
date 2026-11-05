@@ -217,5 +217,13 @@
     "warn": "Watch out",
     "yes": "Yes",
     "outOf": "{{value}} of {{max}}"
+  },
+  "offline": {
+    "ready": "The guide is saved on this device: it now works offline.",
+    "offline": "You're offline. Every lesson still works; reference figures you haven't opened before need a connection.",
+    "update": "A new version of the guide is ready.",
+    "reload": "Reload",
+    "later": "Later",
+    "dismiss": "OK"
   }
 }

@@ -319,7 +319,8 @@
     },
     "figure": {
       "enlarge": "Ingrandisci: {{caption}}",
-      "close": "Chiudi la figura"
+      "close": "Chiudi la figura",
+      "offline": "Questa figura si carica la prima volta che sei online."
     },
     "pins": "Apri un pin",
     "chart": {

@@ -12,10 +12,14 @@ export const queryClient = new QueryClient({
   mutationCache: new MutationCache({
     onError: (error) => log.error("mutation failed", errorData(error)),
   }),
+  // offlineFirst: run each fetch once even when the browser says offline, so the service worker
+  // can answer from its cache; only retries wait for the network ("online" would pause them all).
   defaultOptions: {
     queries: {
+      networkMode: "offlineFirst",
       retry: 2,
       refetchOnWindowFocus: true,
     },
+    mutations: { networkMode: "offlineFirst" },
   },
 });

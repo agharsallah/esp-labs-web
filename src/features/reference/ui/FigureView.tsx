@@ -4,15 +4,33 @@ import { Icon } from "@/ui/Icon";
 import { imageUrl } from "../queries";
 import styles from "./reader.module.css";
 
-/** A figure of the reference with its caption; a tap opens it full size over the reader. */
+/**
+ * A figure of the reference with its caption; a tap opens it full size over the reader. Figures are
+ * cached the first time they are shown, so offline an unseen one says so instead of breaking.
+ */
 export function FigureView({ src, alt, caption }: { src: string; alt: string; caption?: string }) {
   const { t } = useTranslation("chip");
   const [large, setLarge] = useState(false);
+  const [missing, setMissing] = useState(false);
   const label = caption ?? alt;
+  if (missing) {
+    return (
+      <figure className={styles.figure}>
+        <p className={styles.figMissing}>{t("reader.figure.offline")}</p>
+        {caption ? <figcaption>{caption}</figcaption> : null}
+      </figure>
+    );
+  }
   return (
     <figure className={styles.figure}>
       <button type="button" className={styles.figButton} onClick={() => setLarge(true)}>
-        <img src={imageUrl(src)} alt={alt} loading="lazy" decoding="async" />
+        <img
+          src={imageUrl(src)}
+          alt={alt}
+          loading="lazy"
+          decoding="async"
+          onError={() => setMissing(true)}
+        />
         <span className="visually-hidden">{t("reader.figure.enlarge", { caption: label })}</span>
         <span className={styles.figZoom} aria-hidden="true">
           <Icon name="expand" size={16} />

@@ -1,0 +1,142 @@
+# Keeps this fork in step with the original repo (agharsallah/esp-labs-web): hourly, or by hand
+# (Actions → Sync upstream → Run workflow). When upstream has new commits it merges them into main,
+# runs the checks and the build, and pushes main. The push is what deploys: the Cloudflare Workers
+# Builds integration builds every push to main.
+#
+# If the merge conflicts, or the merged code fails the checks, main is left alone: the result goes
+# to the upstream-sync branch with a pull request, and this run fails so it shows up red.
+#
+# Two jobs, so the upstream code (installs, tests, build scripts) never runs in a job that holds
+# the write token: "merge" has a read-only token, "publish" has SYNC_TOKEN and runs no project code.
+name: Sync upstream
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sync-upstream
+  cancel-in-progress: false
+
+env:
+  UPSTREAM: https://github.com/agharsallah/esp-labs-web.git
+
+jobs:
+  merge:
+    name: Merge and check
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    outputs:
+      result: ${{ steps.merge.outputs.result }}
+    env:
+      REQUIRE_FIRMWARE: "1"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
+      # result: uptodate (nothing to do), merged (clean merge), conflict (needs a person).
+      - name: Merge upstream main
+        id: merge
+        run: |
+          set -euo pipefail
+          git config user.name "t0mer"
+          git config user.email "t0mer@users.noreply.github.com"
+          git fetch --no-tags "$UPSTREAM" main:refs/remotes/upstream/main
+          if git merge-base --is-ancestor upstream/main HEAD; then
+            echo "result=uptodate" >> "$GITHUB_OUTPUT"
+            echo "Already up to date with upstream." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          if git merge --no-ff -m "chore: sync with upstream agharsallah/esp-labs-web" upstream/main; then
+            result=merged
+            git branch -f sync-result HEAD
+          else
+            result=conflict
+            git merge --abort
+            git branch -f sync-result upstream/main
+          fi
+          echo "result=$result" >> "$GITHUB_OUTPUT"
+          git bundle create "$RUNNER_TEMP/sync.bundle" sync-result
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: steps.merge.outputs.result == 'merged'
+        with:
+          repository: agharsallah/esp-labs
+          path: esp-labs-firmware
+          persist-credentials: false
+      - name: Place the firmware beside the guide
+        if: steps.merge.outputs.result == 'merged'
+        run: mv esp-labs-firmware ../esp-labs
+      - uses: ./.github/actions/setup
+        if: steps.merge.outputs.result == 'merged'
+      # The same gates as a pull request: CI's checks plus the build the deploy runs.
+      - name: Check the merged code
+        id: verify
+        if: steps.merge.outputs.result == 'merged'
+        continue-on-error: true
+        run: |
+          pnpm check
+          pnpm build
+      - name: Record the verdict
+        if: steps.merge.outputs.result == 'merged' && steps.verify.outcome != 'success'
+        run: echo "failed" > "$RUNNER_TEMP/verdict"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: steps.merge.outputs.result != 'uptodate'
+        with:
+          name: sync
+          path: |
+            ${{ runner.temp }}/sync.bundle
+            ${{ runner.temp }}/verdict
+          if-no-files-found: error
+          retention-days: 3
+          include-hidden-files: false
+
+  publish:
+    name: Push or open a pull request
+    needs: merge
+    if: needs.merge.outputs.result != 'uptodate'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production
+    env:
+      # A fine-grained token for this repo: Contents, Pull requests and Workflows (read and write).
+      # Workflows is needed because upstream changes .github/workflows; a push from the default
+      # token is refused then, and it would not start CI or the Cloudflare build either.
+      GH_TOKEN: ${{ secrets.SYNC_TOKEN }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          fetch-depth: 0
+          token: ${{ secrets.SYNC_TOKEN }}
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: sync
+          path: ${{ runner.temp }}/sync
+      - name: Publish the result
+        env:
+          RESULT: ${{ needs.merge.outputs.result }}
+        run: |
+          set -euo pipefail
+          dir="$RUNNER_TEMP/sync"
+          git fetch "$dir/sync.bundle" sync-result:refs/sync/result
+          if [ "$RESULT" = "merged" ] && [ ! -e "$dir/verdict" ]; then
+            # Fast-forward only: refused if main moved while the checks ran; the next run retries.
+            git merge-base --is-ancestor origin/main refs/sync/result
+            git push origin refs/sync/result:refs/heads/main
+            echo "Merged upstream into main: $(git rev-parse --short refs/sync/result). Cloudflare builds it next." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git push --force origin refs/sync/result:refs/heads/upstream-sync
+          if [ -z "$(gh pr list --head upstream-sync --base main --state open --json number --jq '.[0].number')" ]; then
+            gh pr create --head upstream-sync --base main \
+              --title "chore: sync with upstream agharsallah/esp-labs-web" \
+              --body "Automatic sync could not land on main ($RESULT). Resolve the conflicts or fix the failing checks, then merge."
+          fi
+          echo "::error::Sync needs attention ($RESULT): see the upstream-sync pull request."
+          exit 1

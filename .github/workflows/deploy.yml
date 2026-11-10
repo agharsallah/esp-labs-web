@@ -1,10 +1,10 @@
-# Deploys main to Vercel production when you run it (Actions → Deploy → Run workflow, or
-# `gh workflow run Deploy`), instead of a local `pnpm deploy:prod`. The build runs here, not on
-# Vercel, because the code reader bundles the esp-labs firmware checkout; Vercel only receives
-# the prebuilt output. The production environment only accepts main, and the commit must be green.
+# Deploys main to Cloudflare Workers when you run it (Actions → Deploy → Run workflow, or
+# `gh workflow run Deploy`), instead of a local `pnpm deploy:prod`. The build runs here because the
+# code reader bundles the esp-labs firmware checkout; Workers only receives the built assets.
+# The production environment only accepts main, and the commit must be green.
 #
 # A successful deploy is then released: tagged vX.Y.Z (the next semver from the Conventional
-# Commits since the last tag, tools/deploy/), with grouped release notes. Old previews are removed.
+# Commits since the last tag, tools/deploy/), with grouped release notes.
 name: Deploy
 
 on:
@@ -21,7 +21,7 @@ concurrency:
 
 jobs:
   deploy:
-    name: Vercel production
+    name: Cloudflare Workers production
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment:
@@ -33,10 +33,10 @@ jobs:
       version: ${{ steps.plan.outputs.version }}
       release: ${{ steps.plan.outputs.release }}
     env:
-      VERCEL_CLI: vercel@63.1.2
-      VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
-      VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
-      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      # The build fails without the firmware instead of shipping an empty code reader.
+      REQUIRE_FIRMWARE: "1"
     steps:
       # Refuses a commit whose CI is still running or failed, so a red main never goes live.
       - name: CI passed on this commit
@@ -65,28 +65,20 @@ jobs:
       - name: Plan the release
         id: plan
         run: node tools/deploy/cli.ts plan | tee -a "$GITHUB_OUTPUT"
-      - name: Pull the production settings
-        run: pnpm dlx "$VERCEL_CLI" pull --yes --environment=production --token="$VERCEL_TOKEN"
       - name: Build
-        run: pnpm dlx "$VERCEL_CLI" build --prod --token="$VERCEL_TOKEN"
-      # The meta shows the commit and the release on the deployment in Vercel's dashboard.
+        run: pnpm build
+      # wrangler writes one JSON line per event; the "deploy" one lists the URLs the Worker is live on.
       - name: Deploy
         id: deploy
         env:
           TAG: ${{ steps.plan.outputs.tag }}
-          REF: ${{ github.ref_name }}
+          WRANGLER_OUTPUT_FILE_PATH: ${{ runner.temp }}/wrangler-output.ndjson
         run: |
-          message="$(git log -1 --format=%s)"
-          url="$(pnpm dlx "$VERCEL_CLI" deploy --prebuilt --prod --token="$VERCEL_TOKEN" \
-            --meta githubCommitSha="$GITHUB_SHA" --meta githubCommitRef="$REF" \
-            --meta githubCommitMessage="$message" --meta githubRepo="${GITHUB_REPOSITORY#*/}" \
-            --meta githubOrg="$GITHUB_REPOSITORY_OWNER" --meta release="$TAG")"
+          pnpm exec wrangler deploy --message "$TAG $GITHUB_SHA" --tag "$TAG"
+          url="$(jq -rs '[.[] | select(.type == "deploy") | .targets[]?] | first // empty' "$WRANGLER_OUTPUT_FILE_PATH")"
+          [ -n "$url" ] || { echo "::error::wrangler printed no deployment URL"; exit 1; }
           echo "url=$url" >> "$GITHUB_OUTPUT"
           echo "Deployed $url ($TAG)" >> "$GITHUB_STEP_SUMMARY"
-      # Housekeeping: a failure here leaves the deploy and the release as they are.
-      - name: Remove previews older than 30 days
-        continue-on-error: true
-        run: node tools/deploy/cli.ts cleanup 30
 
   release:
     name: Tag and release

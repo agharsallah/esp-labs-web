@@ -12,7 +12,6 @@ const EnvSchema = z.object({
     z.string().check(z.minLength(1)),
     "https://github.com/agharsallah/esp-labs/tree/main/labs/",
   ),
-  VITE_ON_VERCEL: z._default(z.string(), ""),
   VITE_LOG_LEVEL: z._default(z.enum(["debug", "info", "warn", "error", "silent"]), "info"),
   DEV: z.boolean(),
   MODE: z.string(),
@@ -40,8 +39,6 @@ export const env = {
   labsSourceUrl: parsed.VITE_LABS_SOURCE_URL.endsWith("/")
     ? parsed.VITE_LABS_SOURCE_URL
     : `${parsed.VITE_LABS_SOURCE_URL}/`,
-  /** Built for a Vercel deployment (set by vite.config.ts, not an env file). */
-  onVercel: parsed.VITE_ON_VERCEL === "1",
   logLevel: parsed.VITE_LOG_LEVEL,
   isDev: parsed.DEV,
   mode: parsed.MODE,

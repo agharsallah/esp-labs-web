@@ -4,3 +4,4 @@ packages: []
 savePrefix: ""
 allowBuilds:
   esbuild: true
+  workerd: true

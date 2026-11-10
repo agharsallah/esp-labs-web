@@ -117,20 +117,3 @@ export function releaseNotes({ version, previous, repository, commits, deploymen
   );
   return `${parts.join("\n\n")}\n`;
 }
-
-export interface VercelDeployment {
-  uid: string;
-  url: string;
-  created: number;
-  target: string | null;
-}
-
-/** Preview deployments older than `maxAgeDays`. Production deployments stay: they are rollbacks. */
-export function stalePreviews(
-  deployments: readonly VercelDeployment[],
-  now: number,
-  maxAgeDays: number,
-): VercelDeployment[] {
-  const cutoff = now - maxAgeDays * 24 * 60 * 60 * 1000;
-  return deployments.filter((d) => d.target !== "production" && d.created < cutoff);
-}

@@ -2,12 +2,11 @@ import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { z } from "zod";
-import { bumpOf, nextVersion, parseCommit, releaseNotes, stalePreviews, type Commit } from "./release.ts";
+import { bumpOf, nextVersion, parseCommit, releaseNotes, type Commit } from "./release.ts";
 
 // The Deploy workflow's helper (.github/workflows/deploy.yml). Needs the full history and tags.
 //   node tools/deploy/cli.ts plan                  key=value lines for $GITHUB_OUTPUT
 //   node tools/deploy/cli.ts notes <version> <url> the release notes, on stdout
-//   node tools/deploy/cli.ts cleanup <days>        removes Vercel previews older than <days>
 
 const ROOT = join(import.meta.dirname, "..", "..");
 
@@ -75,35 +74,7 @@ function notes(version: string | undefined, url: string | undefined): void {
   );
 }
 
-const DeploymentList = z.object({
-  deployments: z.array(
-    z.object({ uid: z.string(), url: z.string(), created: z.number(), target: z.string().nullable() }),
-  ),
-});
-
-async function cleanup(days: string | undefined): Promise<void> {
-  const maxAgeDays = Number(days);
-  if (!Number.isInteger(maxAgeDays) || maxAgeDays < 1) throw new Error("usage: cleanup <days>");
-  const headers = { Authorization: `Bearer ${env("VERCEL_TOKEN")}` };
-  const team = env("VERCEL_ORG_ID");
-  const query = new URLSearchParams({ projectId: env("VERCEL_PROJECT_ID"), teamId: team, target: "preview", limit: "100" });
-  const response = await fetch(`https://api.vercel.com/v6/deployments?${query.toString()}`, { headers });
-  if (!response.ok) throw new Error(`listing deployments: HTTP ${String(response.status)}`);
-  const { deployments } = DeploymentList.parse(await response.json());
-  const stale = stalePreviews(deployments, Date.now(), maxAgeDays);
-  for (const deployment of stale) {
-    const removed = await fetch(`https://api.vercel.com/v13/deployments/${deployment.uid}?teamId=${team}`, {
-      method: "DELETE",
-      headers,
-    });
-    if (!removed.ok) throw new Error(`removing ${deployment.url}: HTTP ${String(removed.status)}`);
-    console.log(`removed preview ${deployment.url}`);
-  }
-  console.log(`${String(stale.length)} preview deployment(s) older than ${String(maxAgeDays)} days removed.`);
-}
-
 const [command, ...args] = process.argv.slice(2);
 if (command === "plan") plan();
 else if (command === "notes") notes(args[0], args[1]);
-else if (command === "cleanup") await cleanup(args[0]);
-else throw new Error(`unknown command "${command ?? ""}": plan, notes or cleanup`);
+else throw new Error(`unknown command "${command ?? ""}": plan or notes`);

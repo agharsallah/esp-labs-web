@@ -1,6 +1,0 @@
-node_modules
-dist
-docs-llm
-.env
-.env.*
-!.env.example

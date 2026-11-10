@@ -7,7 +7,7 @@ What runs on every pull request, what protects `main`, and the repository settin
 | Workflow                                                     | When                              | What it does                                                                                       |
 | ------------------------------------------------------------ | --------------------------------- | -------------------------------------------------------------------------------------------------- |
 | [CI](../.github/workflows/ci.yml)                            | every PR, push to `main`, merge queue | `pnpm typecheck`, `pnpm lint`, `pnpm test` (a stale translator catalogue fails), `pnpm chip:refs` (every chip citation names a section of the committed reference), `pnpm build` with the esp-labs firmware, actionlint on the workflows |
-| [Deploy](../.github/workflows/deploy.yml)                    | by hand (Run workflow, `gh workflow run Deploy`) | once CI passed on `main`'s latest commit, builds it with the esp-labs firmware and the reference (`vercel build --prod`), deploys it to Vercel production, tags it `vX.Y.Z` with a GitHub release and its notes, and removes previews older than 30 days. Never runs a PR's code |
+| [Deploy](../.github/workflows/deploy.yml)                    | by hand (Run workflow, `gh workflow run Deploy`) | once CI passed on `main`'s latest commit, builds it with the esp-labs firmware and the reference, deploys it with `wrangler deploy`, and tags it `vX.Y.Z` with a GitHub release and its notes. Never runs a PR's code |
 | [CodeQL](../.github/workflows/codeql.yml)                    | every PR, push to `main`, weekly  | security analysis of the TypeScript and of the workflows                                          |
 | [Dependency review](../.github/workflows/dependency-review.yml) | PRs that touch dependencies or `.github/` | fails when a PR adds a dependency with a known moderate-or-worse vulnerability          |
 | [PR title](../.github/workflows/pr-title.yml)                | PR opened or edited               | the title (the squash commit) follows Conventional Commits, lower-case subject                    |
@@ -60,13 +60,12 @@ JSON
 
 ## Production deploys
 
-[Deploy](../.github/workflows/deploy.yml) puts `main` on Vercel production when you run it (merging does not deploy), and refuses a commit whose CI has not passed. After a successful deploy:
+[Deploy](../.github/workflows/deploy.yml) puts `main` on Cloudflare Workers when you run it (merging does not deploy), and refuses a commit whose CI has not passed. After a successful deploy:
 
 - **Release.** `tools/deploy/` picks the next version from the Conventional Commits since the last `v*` tag (breaking: major, or minor below 1.0.0; `feat`: minor; anything else: patch; the first release is `package.json`'s version), tags the deployed commit and publishes a GitHub release marked latest. The notes group the changes (breaking first, then features, fixes, performance, docs, maintenance) with their PRs, and link the live URL, the commit, the run and the comparison with the previous tag. Redeploying a commit that is already tagged makes no new release. Tags are the version; `package.json`'s stays the starting point.
-- **Metadata.** The Vercel deployment carries the commit, branch, message and release tag (`--meta`), so the dashboard shows what each deployment is; GitHub's `production` environment lists each deploy with its URL.
-- **Cleanup.** Preview deployments (`pnpm deploy:preview`) older than 30 days are removed. Production deployments are kept: they are Vercel's instant rollbacks. A cleanup failure does not fail the deploy.
+- **Metadata.** The Worker version carries the release tag and the commit as its message and tag, so `wrangler deployments list` and the dashboard show what each deployment is; GitHub's `production` environment lists each deploy with its URL.
 
-Undo a bad release by promoting the previous production deployment in Vercel (Instant Rollback), then fix forward; the next Deploy releases the fix.
+Undo a bad release with `pnpm exec wrangler rollback` (or the dashboard: Worker → Deployments → Rollback to the previous version), then fix forward; the next Deploy releases the fix.
 
 It reads, once:
 
@@ -77,11 +76,11 @@ gh api -X PUT repos/$R/environments/production --input - <<'JSON'
 { "deployment_branch_policy": { "protected_branches": false, "custom_branch_policies": true } }
 JSON
 gh api -X POST repos/$R/environments/production/deployment-branch-policies -f name=main -f type=branch
-# The ids from .vercel/project.json (after `vercel link`); not secret.
-gh variable set VERCEL_ORG_ID --repo $R --body "$(jq -r .orgId .vercel/project.json)"
-gh variable set VERCEL_PROJECT_ID --repo $R --body "$(jq -r .projectId .vercel/project.json)"
-# A token from https://vercel.com/account/tokens, scoped to the project's team. Pasted at the prompt.
-gh secret set VERCEL_TOKEN --repo $R --env production
+# Your account id (dashboard sidebar, or `wrangler whoami`); not secret.
+gh variable set CLOUDFLARE_ACCOUNT_ID --repo $R --body "<account id>"
+# An API token from https://dash.cloudflare.com/profile/api-tokens, from the "Edit Cloudflare Workers"
+# template, limited to this account. Pasted at the prompt.
+gh secret set CLOUDFLARE_API_TOKEN --repo $R --env production
 ```
 
 A secret set on the environment, rather than on the repository, is readable only by jobs that name that environment, so only Deploy sees the token. `pnpm deploy:prod` still works from your machine.

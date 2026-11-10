@@ -35,7 +35,7 @@ An interactive guide to the ESP32-S3: 32 hands-on labs with live simulators, a 3
 - [Contributing](#contributing)
 - [Commands](#commands)
 - [Configuration](#configuration)
-- [Deploy to Vercel](#deploy-to-vercel)
+- [Deploy to Cloudflare Workers](#deploy-to-cloudflare-workers)
 - [Where things live](#where-things-live)
 - [License](#license)
 
@@ -165,29 +165,28 @@ Copy `.env.example` to `.env` to override:
 | `REFERENCE_FILE`       | `docs-llm/esp32-s3/ESP32-S3_REFERENCE.md`             | Build time only: Espressif's reference (with its `images/`) for the datasheet reader and book; absent, they are off |
 | `VITE_REFERENCE_URL`   | `./reference/`                                        | Where the reference sections are read (set to `""` when there is no reference) |
 
-## Deploy to Vercel
+## Deploy to Cloudflare Workers
 
 <details>
-<summary>Production deploys from GitHub, local prebuilt deploys, Web Analytics and Speed Insights</summary>
+<summary>Production deploys from GitHub, local deploys, Web Analytics</summary>
 
 <br>
 
-Configuration is in `vercel.json` (Vite preset, pnpm, cache and security headers). The app uses a hash router, so no rewrite rules are needed.
+The guide is a static site served by [Workers static assets](https://developers.cloudflare.com/workers/static-assets/): `wrangler.jsonc` points at `dist/`, and `public/_headers` (copied into `dist/`) carries the security headers and the cache rules. The app uses a hash router, so no rewrite or SPA-fallback rules are needed.
 
-The code reader bundles the firmware from the sibling `esp-labs` checkout at build time, and that checkout is not on Vercel's build servers. So Vercel never builds: the build runs elsewhere (`vercel build`, using `../esp-labs`) and the result is uploaded with `--prebuilt`. Git-triggered builds are turned off in `vercel.json` for the same reason.
+The code reader bundles the firmware from the sibling `esp-labs` checkout at build time, so the build always runs where that checkout is (your machine, or the Deploy workflow); Workers only receives the built `dist/`. `REQUIRE_FIRMWARE=1` makes the build fail when the firmware is missing instead of shipping an empty code reader.
 
-**Deploy production from GitHub.** Merging to `main` does not deploy. When you want `main` live, run the [Deploy](.github/workflows/deploy.yml) workflow (Actions → **Deploy → Run workflow**, or `gh workflow run Deploy`). It checks that CI passed on `main`'s latest commit, checks it out with the firmware, runs `vercel build --prod` and uploads it. Then it tags the commit `vX.Y.Z` and publishes a [release](https://github.com/agharsallah/esp-labs-web/releases) with its notes: the version follows the PR titles since the last tag (`feat` bumps the minor, anything else the patch, a breaking change the major from 1.0.0), and the notes group them by kind with the live URL. It also removes preview deployments older than 30 days. It needs, once (see [docs/MAINTAINING.md](docs/MAINTAINING.md#production-deploys)): a `VERCEL_TOKEN` secret and the `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID` variables.
+**Deploy production from GitHub.** Merging to `main` does not deploy. When you want `main` live, run the [Deploy](.github/workflows/deploy.yml) workflow (Actions → **Deploy → Run workflow**, or `gh workflow run Deploy`). It checks that CI passed on `main`'s latest commit, checks it out with the firmware, builds it and runs `wrangler deploy`. Then it tags the commit `vX.Y.Z` and publishes a [release](https://github.com/agharsallah/esp-labs-web/releases) with its notes: the version follows the PR titles since the last tag (`feat` bumps the minor, anything else the patch, a breaking change the major from 1.0.0), and the notes group them by kind with the live URL. It needs, once (see [docs/MAINTAINING.md](docs/MAINTAINING.md#production-deploys)): a `CLOUDFLARE_API_TOKEN` secret and the `CLOUDFLARE_ACCOUNT_ID` variable.
 
-Preview deploys, and production from your machine if you need it:
+Deploys from your machine:
 
 ```sh
-vercel login          # once
-vercel link           # once: creates/links the project, writes .vercel/ (git-ignored)
-pnpm deploy:preview   # preview deployment, prints its URL
-pnpm deploy:prod      # production deployment
+pnpm exec wrangler login   # once
+pnpm deploy:preview        # uploads a version without promoting it; prints its preview URL
+pnpm deploy:prod           # production deployment
 ```
 
-Web Analytics (`@vercel/analytics`) and Speed Insights (`@vercel/speed-insights`) are mounted by `src/app/VercelInsights.tsx` only in builds made for Vercel (`vercel build` sets `VERCEL`). Dev and a plain `pnpm build` load neither. Switch both on once per project in the dashboard (**Analytics** and **Speed Insights**, then **Enable**) and redeploy. Because the router is hash-based, `#/lessons/R3` is reported as the page `/lessons/R3`.
+**Web Analytics.** Cloudflare Web Analytics needs no code in the app: switch it on for the Worker in the dashboard (**Workers & Pages → esp-labs-web → Metrics**, or **Web Analytics → Add a site**). Because the router is hash-based, every visit counts as the page `/`.
 
 </details>
 

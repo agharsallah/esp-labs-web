@@ -12,5 +12,5 @@ docs-llm/*
 docs-llm/esp32-s3/*
 !docs-llm/esp32-s3/ESP32-S3_REFERENCE.md
 !docs-llm/esp32-s3/images/
-.vercel
+.wrangler
 .env*

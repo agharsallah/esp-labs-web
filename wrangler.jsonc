@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // A static site: Workers serves ./dist as assets, with no Worker script. The app uses a hash
+  // router, so every URL is "/" and no SPA fallback is needed. Security and cache headers are in
+  // public/_headers (copied into dist/).
+  "name": "esp-labs-web",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./dist"
+  },
+  "observability": { "enabled": true }
+}

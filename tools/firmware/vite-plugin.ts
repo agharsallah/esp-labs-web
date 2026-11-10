@@ -57,8 +57,8 @@ export function firmwarePlugin(options: { root: string; required?: boolean }): P
       const envs = collect();
       if (options.required && envs.length === 0) {
         this.error(
-          `no firmware found in ${root}. The esp-labs checkout is not available here: build locally ` +
-            "and upload it with `pnpm deploy:prod` / `pnpm deploy:preview` (see README, Deploy to Vercel).",
+          `no firmware found in ${root}. Place the esp-labs checkout there ` +
+            "(or set FIRMWARE_DIR) before building for a deploy (see README, Deploy to Cloudflare Workers).",
         );
       }
       for (const [name, doc] of documents(envs)) {

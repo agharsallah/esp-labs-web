@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { bumpOf, nextVersion, parseCommit, releaseNotes, stalePreviews } from "./release.ts";
+import { bumpOf, nextVersion, parseCommit, releaseNotes } from "./release.ts";
 
 const SHA = "1681662abcdef0123456789abcdef0123456789a";
 
@@ -77,23 +77,5 @@ describe("releaseNotes", () => {
   it("says when a deploy has nothing new", () => {
     const notes = releaseNotes({ version: "0.2.1", previous: "v0.2.0", repository: "o/r", deployment, commits: [] });
     expect(notes).toContain("No changes since the last release");
-  });
-});
-
-describe("stalePreviews", () => {
-  const day = 24 * 60 * 60 * 1000;
-  const now = 100 * day;
-
-  it("picks previews past the age and never a production deployment", () => {
-    const stale = stalePreviews(
-      [
-        { uid: "old-preview", url: "a", created: now - 40 * day, target: null },
-        { uid: "new-preview", url: "b", created: now - 2 * day, target: "preview" },
-        { uid: "old-prod", url: "c", created: now - 90 * day, target: "production" },
-      ],
-      now,
-      30,
-    );
-    expect(stale.map((d) => d.uid)).toEqual(["old-preview"]);
   });
 });

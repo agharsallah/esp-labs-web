@@ -35,7 +35,7 @@
     "lessonId": "درس {{id}}",
     "eyebrow": "{{track}} · درس {{index}} از {{total}}",
     "goal": "هدف",
-    "doneWhen": "وقتی تموم می‌شه که",
+    "doneWhen": "وقتی تمام می‌شود که",
     "onBoard": "روی برد",
     "learn": "یاد می‌گیری",
     "allTicked": "همهٔ مرحله‌ها تیک خوردند",

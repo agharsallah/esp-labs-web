@@ -268,7 +268,7 @@
   --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, var(--font-script);
   --leading: 1.75;
 }
-:root:lang(ar) {
+:root:is(:lang(ar), :lang(fa)) {
   --font-script: "SF Arabic", "Geeza Pro", "Noto Sans Arabic", "Segoe UI", Tahoma, sans-serif;
   --font-display: "Archivo", var(--font-script);
   --font-body: "Archivo", var(--font-script);

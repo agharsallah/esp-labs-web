@@ -120,12 +120,12 @@ a {
   transform: scaleX(-1);
 }
 
-/* Arabic letters join: tracking pulls words apart, and the script has no italic. Chinese and
-   Japanese are set solid too; tracked-out small caps are a Latin habit. */
-:root:is(:lang(ar), :lang(zh), :lang(ja)) :not(code, kbd, pre, samp) {
+/* Arabic and Persian letters join: tracking pulls words apart, and the script has no italic.
+   Chinese and Japanese are set solid too; tracked-out small caps are a Latin habit. */
+:root:is(:lang(ar), :lang(fa), :lang(zh), :lang(ja)) :not(code, kbd, pre, samp) {
   letter-spacing: normal !important;
 }
-:root:lang(ar) :is(i, em) {
+:root:is(:lang(ar), :lang(fa)) :is(i, em) {
   font-style: normal;
   font-weight: 600;
 }

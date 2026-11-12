@@ -76,4 +76,16 @@ describe("App", () => {
     await (await import("./router")).router.navigate("/lessons/01");
     await vi.waitFor(() => expect(window.location.hash).toBe("#/lessons/01?lang=fr"));
   });
+
+  it("opens a shared link in Persian and applies RTL direction", async () => {
+    window.location.hash = "#/lessons/02?lang=fa";
+    const App = await loadApp();
+    render(<App />);
+    expect(
+      await screen.findByRole("heading", { name: "یک LED روی بردبورد" }, LOAD),
+    ).toBeTruthy();
+    expect(document.documentElement.lang).toBe("fa");
+    expect(document.documentElement.dir).toBe("rtl");
+    expect(localStorage.getItem("esp-locale")).toBe('"fa"');
+  });
 });

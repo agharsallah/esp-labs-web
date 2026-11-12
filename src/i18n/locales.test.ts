@@ -9,6 +9,7 @@ describe("matchLocale", () => {
     expect(matchLocale(["zh-Hant-HK"])).toBe("zh-TW");
     expect(matchLocale(["zh-Hans-HK"])).toBe("zh");
     expect(matchLocale(["ja_JP"])).toBe("ja");
+    expect(matchLocale(["fa-IR"])).toBe("fa");
   });
 
   it("falls back to English", () => {
@@ -25,9 +26,9 @@ describe("resolveLocale", () => {
 });
 
 describe("LOCALE_INFO", () => {
-  it("describes every locale, and only Arabic is right to left", () => {
+  it("describes every locale, and Arabic and Persian are right to left", () => {
     expect(Object.keys(LOCALE_INFO).sort()).toEqual([...LOCALES].sort());
-    expect(LOCALES.filter((l) => LOCALE_INFO[l].dir === "rtl")).toEqual(["ar"]);
+    expect(LOCALES.filter((l) => LOCALE_INFO[l].dir === "rtl")).toEqual(["ar", "fa"]);
   });
 
   it("rejects unknown choices", () => {

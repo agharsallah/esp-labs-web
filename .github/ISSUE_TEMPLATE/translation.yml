@@ -22,6 +22,7 @@ body:
         - 繁體中文
         - 日本語
         - العربية
+        - فارسی
         - English (the source text)
         - A new language (name it below)
     validations:

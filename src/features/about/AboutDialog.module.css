@@ -1,0 +1,182 @@
+/* The button wears the top bar's pill, like the language button beside it. */
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  min-width: 44px;
+  justify-content: center;
+  padding-inline: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font: 600 13px var(--font-mono);
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+.button:hover {
+  color: var(--ink);
+  border-color: var(--copper);
+}
+/* Phones: the icon alone, so the bar keeps to one line; the aria-label names it. */
+@media (max-width: 559px) {
+  .button {
+    padding-inline: 0;
+  }
+  .buttonLabel {
+    display: none;
+  }
+}
+
+.dialog {
+  width: min(560px, calc(100vw - 2 * var(--gutter)));
+  max-height: calc(100dvh - 2 * var(--gutter));
+  margin: auto;
+  padding: 28px 32px 30px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-l);
+  box-shadow: 0 24px 60px color-mix(in srgb, var(--pcb) 40%, transparent);
+}
+.dialog::backdrop {
+  background: color-mix(in srgb, var(--pcb) 62%, transparent);
+  backdrop-filter: blur(2px);
+}
+.dialog[open] {
+  animation: rise 0.18s ease-out;
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dialog[open] {
+    animation: none;
+  }
+}
+@media (max-width: 559px) {
+  .dialog {
+    padding: 22px 20px 24px;
+  }
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-stretch: 125%;
+  font-weight: 800;
+  font-size: 26px;
+  line-height: 1.1;
+}
+.close {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  margin-inline-end: -10px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+.close:hover {
+  background: var(--bg);
+  color: var(--ink);
+}
+.tagline {
+  margin: 4px 0 18px;
+  font: 500 13px var(--font-mono);
+  color: var(--muted);
+}
+
+.body p,
+.made {
+  margin: 0 0 14px;
+  font-size: 16px;
+  line-height: var(--leading);
+}
+.body b,
+.made b {
+  color: var(--copper);
+  font-weight: 700;
+}
+.body a,
+.link {
+  color: var(--copper);
+  font-weight: 650;
+  text-underline-offset: 3px;
+}
+
+.rule {
+  margin: 20px 0 18px;
+  border: 0;
+  border-top: 1px dashed var(--line);
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 22px;
+  margin-top: 4px;
+}
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+}
+.link:hover {
+  color: var(--ink);
+}
+.coffee {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  margin-inline-start: auto;
+  padding-inline: 18px 22px;
+  border-radius: var(--radius-m);
+  background: var(--coffee);
+  color: var(--coffee-ink);
+  font-weight: 700;
+  font-size: 16px;
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.coffee:hover {
+  box-shadow: 0 10px 24px -14px var(--coffee);
+  transform: translateY(-1px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .coffee {
+    transition: none;
+  }
+  .coffee:hover {
+    transform: none;
+  }
+}
+/* On a phone the coffee button takes the whole row under the links. */
+@media (max-width: 559px) {
+  .coffee {
+    flex: 1 1 100%;
+    justify-content: center;
+    margin-inline-start: 0;
+  }
+}

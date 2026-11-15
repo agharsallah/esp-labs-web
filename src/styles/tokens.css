@@ -44,6 +44,10 @@
   --part-glass: #1c2733;
   --part-screen: #2fd5c4;
 
+  /* Buy Me a Coffee's own yellow, on the about dialog's one call to action (same in both themes) */
+  --coffee: #ffdd00;
+  --coffee-ink: #18221f;
+
   /* Chip block families (src/domain/chip.ts BlockFamily): aliases of existing colours, so both
      themes follow. Always paired with a family glyph, never the only cue. */
   --fam-system: var(--copper);

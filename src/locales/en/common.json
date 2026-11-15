@@ -225,5 +225,23 @@
     "reload": "Reload",
     "later": "Later",
     "dismiss": "OK"
+  },
+  "about": {
+    "button": "About",
+    "open": "About this guide",
+    "title": "About",
+    "close": "Close",
+    "tagline": "What this is, and what it is not.",
+    "intro": "A free, open guide to the <b>ESP32-S3</b>: hands-on labs you wire and flash on a real DevKitC-1, simulators to try without a board, a 3D board and pinout, a reader that explains the firmware line by line, and the chip's datasheet made readable.",
+    "disclaimer": "This is an unofficial, independent project, not affiliated with or endorsed by Espressif. Every lab is built and run on a real board, but wiring, pinouts and figures are reviewed, never guaranteed: the labels printed on your board and Espressif's own documents always win.",
+    "feedback": "Spotted a mistake, or want a new lab? <issues>An issue on GitHub</issues> is the fastest way to get it fixed.",
+    "madeBy": "Made by <b>Abderrahmen Gharsallah (Abdu)</b>: one human, many tokens. Say hello, and let's connect:",
+    "links": {
+      "linkedin": "LinkedIn",
+      "github": "GitHub",
+      "x": "X",
+      "coffee": "Buy me a coffee"
+    },
+    "newTab": "(opens in a new tab)"
   }
 }

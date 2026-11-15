@@ -225,5 +225,23 @@
     "reload": "Yeniden yükle",
     "later": "Sonra",
     "dismiss": "Tamam"
+  },
+  "about": {
+    "button": "Hakkında",
+    "open": "Bu rehber hakkında",
+    "title": "Hakkında",
+    "close": "Kapat",
+    "tagline": "Bu ne, ve ne değil.",
+    "intro": "<b>ESP32-S3</b> için ücretsiz ve açık bir rehber: gerçek bir DevKitC-1 üzerinde kablolayıp yüklediğin uygulamalı laboratuvarlar, kartsız denenebilen simülatörler, 3D kart ve pin şeması, firmware'i satır satır açıklayan bir okuyucu ve okunur hâle getirilmiş çip veri sayfası.",
+    "disclaimer": "Bu, Espressif ile bağlantılı olmayan ve onun tarafından onaylanmayan, resmî olmayan bağımsız bir projedir. Her laboratuvar gerçek bir kartta kurulup çalıştırılır, ancak kablolama, pin şemaları ve değerler gözden geçirilir, asla garanti edilmez: kartının üzerindeki yazılar ve Espressif'in kendi belgeleri her zaman önceliklidir.",
+    "feedback": "Bir hata mı fark ettin, yoksa yeni bir laboratuvar mı istiyorsun? <issues>GitHub'da bir issue</issues> düzeltilmesinin en hızlı yolu.",
+    "madeBy": "<b>Abderrahmen Gharsallah (Abdu)</b> tarafından yapıldı: bir insan, bir sürü token. Merhaba de, bağlantı kuralım:",
+    "links": {
+      "linkedin": "LinkedIn",
+      "github": "GitHub",
+      "x": "X",
+      "coffee": "Bana bir kahve ısmarla"
+    },
+    "newTab": "(yeni sekmede açılır)"
   }
 }

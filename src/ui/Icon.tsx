@@ -60,6 +60,10 @@ const PATHS = {
   power: "M12 3v8M7 6.5a7 7 0 1 0 10 0",
   pin: "M9 3h6v4H9zM12 7v14M8 21h8",
   warning: "M12 3l10 18H2zM12 10v5M12 18v.5",
+
+  // The about dialog
+  info: `${o(12, 12, 9)}M12 11v6M12 7.5v.5`,
+  coffee: "M4 9h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5zM16 11h1.5a2.5 2.5 0 0 1 0 5H15M8 3.5c-.6.8-.6 1.7 0 2.5M12 3.5c-.6.8-.6 1.7 0 2.5",
 } as const;
 
 export type IconName = keyof typeof PATHS;

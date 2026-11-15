@@ -198,5 +198,23 @@
     "reload": "重新載入",
     "later": "稍後",
     "dismiss": "好"
+  },
+  "about": {
+    "button": "關於",
+    "open": "關於本指南",
+    "title": "關於",
+    "close": "關閉",
+    "tagline": "它是什麼，又不是什麼。",
+    "intro": "一份免費、開放的 <b>ESP32-S3</b> 指南：在真實的 DevKitC-1 上接線與燒錄的動手實驗、不需開發板就能試用的模擬器、3D 開發板與腳位圖、逐行解說韌體的閱讀器，以及變得好讀的晶片資料手冊。",
+    "disclaimer": "這是非官方的獨立專案，與樂鑫（Espressif）無關，也未獲其認可。每個實驗都在真實開發板上搭建並執行，但接線、腳位圖與數值皆經審閱，而非保證：請一律以開發板上的絲印與樂鑫官方文件為準。",
+    "feedback": "發現錯誤，或想要新的實驗？<issues>在 GitHub 上開 issue</issues> 是最快的修正方式。",
+    "madeBy": "由 <b>Abderrahmen Gharsallah (Abdu)</b> 製作：一個人，很多 token。打聲招呼，保持聯繫：",
+    "links": {
+      "linkedin": "LinkedIn",
+      "github": "GitHub",
+      "x": "X",
+      "coffee": "請我喝杯咖啡"
+    },
+    "newTab": "（在新分頁中開啟）"
   }
 }

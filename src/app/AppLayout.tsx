@@ -1,6 +1,7 @@
 /* eslint-disable i18next/no-literal-string -- literal text here is the repository name, not interface text. */
 import { Trans, useTranslation } from "react-i18next";
 import { Link, Outlet, ScrollRestoration, useLocation, useNavigation } from "react-router";
+import { AboutDialog } from "@/features/about/AboutDialog";
 import { BenchPill } from "@/features/bench/BenchPill";
 import { LanguageMenu } from "@/features/language/LanguageMenu";
 import { BackToTop } from "@/ui/BackToTop";
@@ -81,7 +82,10 @@ export function AppLayout() {
             );
           })}
         </nav>
-        <LanguageMenu />
+        <div className={styles.tools}>
+          <AboutDialog />
+          <LanguageMenu />
+        </div>
       </header>
       <main id="main" tabIndex={-1} className={styles.main}>
         <Outlet />

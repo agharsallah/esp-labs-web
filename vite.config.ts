@@ -4,6 +4,7 @@ import react, { reactCompilerPreset } from "@vitejs/plugin-react";
 import { loadEnv } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 import { defineConfig } from "vitest/config";
+import { contributorsPlugin } from "./tools/contributors/vite-plugin.ts";
 import { firmwarePlugin } from "./tools/firmware/vite-plugin.ts";
 import { referencePlugin } from "./tools/reference/vite-plugin.ts";
 
@@ -32,6 +33,8 @@ export default defineConfig(({ mode }) => ({
         ),
       ),
     }),
+    // The about dialog thanks the repo's contributors, fetched from GitHub when the build starts.
+    contributorsPlugin({ repo: "agharsallah/esp-labs-web" }),
     // Offline: a service worker precaches the app (every route, lesson, widget and language), the
     // lab code, the bench data and the reference text (~0.9 MB gzipped). The reference figures
     // (10 MB of PNG) and the fonts are cached the first time they are shown.

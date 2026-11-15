@@ -123,6 +123,41 @@
   text-underline-offset: 3px;
 }
 
+/* Contributors: small mono chips, one per GitHub login, then the full list. */
+.people {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: -4px 0 18px;
+  padding: 0;
+  list-style: none;
+}
+.person,
+.everyone {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding-inline: 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font: 600 13px var(--font-mono);
+  color: var(--ink);
+  text-decoration: none;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+.person:hover,
+.everyone:hover {
+  border-color: var(--copper);
+  color: var(--copper);
+}
+.everyone {
+  border-style: dashed;
+  color: var(--muted);
+  font-family: var(--font-body);
+}
+
 .rule {
   margin: 20px 0 18px;
   border: 0;

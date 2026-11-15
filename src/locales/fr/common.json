@@ -210,7 +210,10 @@
     "intro": "Un guide libre et gratuit de l'<b>ESP32-S3</b> : des labs pratiques à câbler et flasher sur une vraie DevKitC-1, des simulateurs à essayer sans carte, une carte en 3D et son brochage, un lecteur qui explique le firmware ligne par ligne, et la fiche technique de la puce rendue lisible.",
     "disclaimer": "Ce projet est non officiel et indépendant, ni affilié à Espressif ni approuvé par Espressif. Chaque lab est construit et exécuté sur une vraie carte, mais câblages, brochages et chiffres sont relus, jamais garantis : les marquages de votre carte et les documents d'Espressif font toujours foi.",
     "feedback": "Une erreur repérée, ou envie d'un nouveau lab ? <issues>Un ticket sur GitHub</issues> est le moyen le plus rapide de la faire corriger.",
-    "madeBy": "Réalisé par <b>Abderrahmen Gharsallah (Abdu)</b> : un humain, beaucoup de tokens. Dites bonjour, et restons en contact :",
+    "madeBy": "Réalisé par <b>Abderrahmen Gharsallah (Abdu)</b>.",
+    "thanks": "Avec l'aide de ces contributeurs sur GitHub :",
+    "allContributors": "Tous les contributeurs",
+    "connect": "Dites bonjour, et restons en contact :",
     "links": {
       "linkedin": "LinkedIn",
       "github": "GitHub",

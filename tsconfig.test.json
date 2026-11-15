@@ -4,6 +4,6 @@
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.test.tsbuildinfo",
     "types": ["vite/client", "vite-plugin-pwa/react", "node"]
   },
-  "include": ["src/**/*.test.ts", "src/**/*.test.tsx", "src/test", "src/i18n/i18next.d.ts"],
+  "include": ["src/**/*.test.ts", "src/**/*.test.tsx", "src/test", "src/**/*.d.ts"],
   "exclude": []
 }

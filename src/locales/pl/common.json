@@ -237,7 +237,10 @@
     "intro": "Darmowy, otwarty przewodnik po <b>ESP32-S3</b>: praktyczne laboratoria, które podłączasz i wgrywasz na prawdziwą płytkę DevKitC-1, symulatory do wypróbowania bez płytki, płytka w 3D z wyprowadzeniami, czytnik objaśniający firmware linia po linii i karta katalogowa układu w czytelnej formie.",
     "disclaimer": "To nieoficjalny, niezależny projekt, niezwiązany z firmą Espressif ani przez nią nie popierany. Każde laboratorium jest zbudowane i uruchomione na prawdziwej płytce, ale okablowanie, wyprowadzenia i wartości są sprawdzane, nigdy gwarantowane: oznaczenia na Twojej płytce i dokumenty Espressif są zawsze ważniejsze.",
     "feedback": "Widzisz błąd albo chcesz nowe laboratorium? <issues>Zgłoszenie na GitHubie</issues> to najszybszy sposób, by to naprawić.",
-    "madeBy": "Autor: <b>Abderrahmen Gharsallah (Abdu)</b>. Jeden człowiek, wiele tokenów. Przywitaj się i bądźmy w kontakcie:",
+    "madeBy": "Autor: <b>Abderrahmen Gharsallah (Abdu)</b>.",
+    "thanks": "Z pomocą tych osób na GitHubie:",
+    "allContributors": "Wszyscy współtwórcy",
+    "connect": "Przywitaj się i bądźmy w kontakcie:",
     "links": {
       "linkedin": "LinkedIn",
       "github": "GitHub",

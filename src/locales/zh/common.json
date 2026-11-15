@@ -208,7 +208,10 @@
     "intro": "一份免费、开放的 <b>ESP32-S3</b> 指南：在真实的 DevKitC-1 上接线和烧录的动手实验、无需开发板即可试用的模拟器、3D 开发板与引脚图、逐行讲解固件的阅读器，以及变得易读的芯片数据手册。",
     "disclaimer": "这是一个非官方的独立项目，与乐鑫（Espressif）无关，也未获其认可。每个实验都在真实开发板上搭建并运行，但接线、引脚图和数据都经过审核，而非保证：请始终以开发板上的丝印和乐鑫官方文档为准。",
     "feedback": "发现错误，或想要新的实验？<issues>在 GitHub 上提交 issue</issues> 是最快的修复途径。",
-    "madeBy": "由 <b>Abderrahmen Gharsallah (Abdu)</b> 制作：一个人，很多 token。打个招呼，保持联系：",
+    "madeBy": "由 <b>Abderrahmen Gharsallah (Abdu)</b> 制作。",
+    "thanks": "感谢 GitHub 上这些贡献者的帮助：",
+    "allContributors": "所有贡献者",
+    "connect": "打个招呼，保持联系：",
     "links": {
       "linkedin": "LinkedIn",
       "github": "GitHub",

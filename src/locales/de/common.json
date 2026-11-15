@@ -209,7 +209,10 @@
     "intro": "Ein freier, kostenloser Leitfaden zum <b>ESP32-S3</b>: Praxis-Labs, die du auf einem echten DevKitC-1 verdrahtest und flashst, Simulatoren zum Ausprobieren ohne Board, ein 3D-Board mit Pinbelegung, ein Reader, der die Firmware Zeile für Zeile erklärt, und das Datenblatt des Chips, lesbar gemacht.",
     "disclaimer": "Dies ist ein inoffizielles, unabhängiges Projekt, weder mit Espressif verbunden noch von Espressif unterstützt. Jedes Lab wird auf einem echten Board gebaut und ausgeführt, aber Verdrahtung, Pinbelegung und Werte sind geprüft, nie garantiert: Die Beschriftung auf deinem Board und Espressifs eigene Dokumente haben immer Vorrang.",
     "feedback": "Einen Fehler entdeckt oder ein neues Lab gewünscht? <issues>Ein Issue auf GitHub</issues> ist der schnellste Weg zur Korrektur.",
-    "madeBy": "Gemacht von <b>Abderrahmen Gharsallah (Abdu)</b>: ein Mensch, viele Tokens. Sag Hallo, und lass uns vernetzen:",
+    "madeBy": "Gemacht von <b>Abderrahmen Gharsallah (Abdu)</b>.",
+    "thanks": "Mit Hilfe dieser Mitwirkenden auf GitHub:",
+    "allContributors": "Alle Mitwirkenden",
+    "connect": "Sag Hallo, und lass uns vernetzen:",
     "links": {
       "linkedin": "LinkedIn",
       "github": "GitHub",

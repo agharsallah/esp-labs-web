@@ -210,7 +210,10 @@
     "intro": "Una guía libre y gratuita del <b>ESP32-S3</b>: laboratorios prácticos que cableas y flasheas en una DevKitC-1 real, simuladores para probar sin placa, una placa en 3D con su pinout, un lector que explica el firmware línea a línea y la hoja de datos del chip hecha legible.",
     "disclaimer": "Es un proyecto no oficial e independiente, sin relación con Espressif ni respaldado por ella. Cada laboratorio se construye y se ejecuta en una placa real, pero el cableado, los pinouts y las cifras se revisan, nunca se garantizan: las serigrafías de tu placa y los documentos de Espressif siempre mandan.",
     "feedback": "¿Has visto un error o quieres un laboratorio nuevo? <issues>Una incidencia en GitHub</issues> es la forma más rápida de arreglarlo.",
-    "madeBy": "Hecho por <b>Abderrahmen Gharsallah (Abdu)</b>: un humano, muchos tokens. Saluda y conectemos:",
+    "madeBy": "Hecho por <b>Abderrahmen Gharsallah (Abdu)</b>.",
+    "thanks": "Con la ayuda de estas personas en GitHub:",
+    "allContributors": "Todas las contribuciones",
+    "connect": "Saluda y conectemos:",
     "links": {
       "linkedin": "LinkedIn",
       "github": "GitHub",

@@ -6,6 +6,7 @@ import { RichText } from "@/ui/RichText";
 import { XMark } from "@/ui/XMark";
 import { AUTHOR_LINKS, COFFEE_URL, ISSUES_URL, isOutside } from "./about-links";
 import styles from "./AboutDialog.module.css";
+import { Contributors } from "./Contributors";
 
 /**
  * The top bar's "About" button and the modal it opens: what the guide is and is not, who made it,
@@ -85,6 +86,8 @@ export function AboutDialog() {
         <p className={styles.made}>
           <RichText text={t("about.madeBy")} />
         </p>
+        <Contributors />
+        <p className={styles.made}>{t("about.connect")}</p>
         <div className={styles.links}>
           {AUTHOR_LINKS.map((l) => (
             <a

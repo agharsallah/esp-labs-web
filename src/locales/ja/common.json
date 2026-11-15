@@ -208,7 +208,10 @@
     "intro": "<b>ESP32-S3</b> の無料でオープンなガイドです。本物の DevKitC-1 に配線して書き込むハンズオンのラボ、ボードなしで試せるシミュレーター、3D ボードとピン配置、ファームウェアを 1 行ずつ解説するリーダー、そして読みやすくしたチップのデータシートがあります。",
     "disclaimer": "これは非公式の個人プロジェクトであり、Espressif とは提携しておらず、承認も受けていません。どのラボも実機で組み立てて動かしていますが、配線・ピン配置・数値はレビュー済みであっても保証はしません。ボードに印刷された表記と Espressif 自身の資料が常に優先します。",
     "feedback": "間違いを見つけた、または新しいラボが欲しいときは、<issues>GitHub の issue</issues> がいちばん早い修正への近道です。",
-    "madeBy": "作者は <b>Abderrahmen Gharsallah (Abdu)</b>。一人の人間と、たくさんのトークン。気軽に声をかけて、つながりましょう：",
+    "madeBy": "作者は <b>Abderrahmen Gharsallah (Abdu)</b> です。",
+    "thanks": "GitHub のこのコントリビューターの皆さんに助けられています：",
+    "allContributors": "すべてのコントリビューター",
+    "connect": "気軽に声をかけて、つながりましょう：",
     "links": {
       "linkedin": "LinkedIn",
       "github": "GitHub",

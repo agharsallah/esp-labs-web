@@ -6,7 +6,6 @@ import type home from "@/locales/en/home.json";
 import type lesson from "@/locales/en/lesson.json";
 import type code from "@/locales/en/code.json";
 import type settings from "@/locales/en/settings.json";
-import type bench from "@/locales/en/bench.json";
 import type parts from "@/locales/en/parts.json";
 import type labsShared from "@/locales/en/labs-shared.json";
 import type labsIntro from "@/locales/en/labs-intro.json";
@@ -27,7 +26,6 @@ declare module "i18next" {
       lesson: typeof lesson;
       code: typeof code;
       settings: typeof settings;
-      bench: typeof bench;
       parts: typeof parts;
       "labs-shared": typeof labsShared;
       "labs-intro": typeof labsIntro;

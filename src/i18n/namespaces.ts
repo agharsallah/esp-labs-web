@@ -9,7 +9,6 @@ export const CORE_NAMESPACES = [
   "lesson",
   "code",
   "settings",
-  "bench",
   "parts",
 ] as const;
 

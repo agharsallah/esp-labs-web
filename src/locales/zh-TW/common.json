@@ -18,7 +18,6 @@
     "nav": {
       "labs": "實驗",
       "chip": "晶片",
-      "bench": "工作臺",
       "settings": "設定"
     },
     "footnote": "腳位配置遵循樂鑫 DevKitC-1 v1.0。相容板幾乎一樣，但以你開發板上印的標註為準。你的勾選只儲存在這個瀏覽器裡。",
@@ -29,7 +28,6 @@
     "labs": "實驗 · ESP32-S3 工作臺指南",
     "lesson": "{{id}} · {{title}} · ESP32-S3 工作臺指南",
     "code": "{{id}} 程式碼 · {{title}} · ESP32-S3 工作臺指南",
-    "log": "工作臺日誌 · ESP32-S3 工作臺指南",
     "parts": "元件函式庫 · ESP32-S3 工作臺指南",
     "settings": "設定 · ESP32-S3 工作臺指南",
     "chip": "{{page}} · 晶片 · ESP32-S3 工作臺指南"

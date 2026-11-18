@@ -71,13 +71,6 @@ export const router = createHashRouter([
             lazy: async () => ({ Component: (await import("./routes/parts-route")).Component }),
           },
           {
-            path: "log",
-            lazy: async () => {
-              const route = await import("./routes/log-route");
-              return { loader: route.logLoader(queryClient), Component: route.Component };
-            },
-          },
-          {
             path: "*",
             loader: () => {
               throw data({ reason: "noPage" } satisfies RouteErrorReason, { status: 404 });

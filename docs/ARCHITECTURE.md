@@ -1,6 +1,6 @@
 # Bench guide (React): architecture
 
-The ESP32-S3 bench guide, rebuilt from the single 11k-line `hardware-diary/test-esp/guide/bench-guide.html` into a React 19 app. Same content, same look, now modular: lessons are data, simulators are lazily loaded widgets, bench state is fetched JSON.
+The ESP32-S3 bench guide, rebuilt from the single 11k-line `hardware-diary/test-esp/guide/bench-guide.html` into a React 19 app. Same content, same look, now modular: lessons are data, simulators are lazily loaded widgets.
 
 ## Stack
 
@@ -9,7 +9,7 @@ The ESP32-S3 bench guide, rebuilt from the single 11k-line `hardware-diary/test-
 | UI           | React 19.3 + React Compiler 1.0                                                         | Automatic memoization; no hand-written `useMemo`/`useCallback`                               |
 | Build        | Vite 8 (Rolldown), `base: "./"`                                                         | One static bundle that runs on any static host, in any subfolder, or as a claude.ai artifact |
 | Routing      | React Router 8, data mode, `createHashRouter`                                           | Loaders prefetch content before render; hash URLs need no server rewrites                    |
-| Server state | TanStack Query 5                                                                        | Bench log/status JSON and lesson content chunks: cache, dedupe, retries, refetch on focus    |
+| Server state | TanStack Query 5                                                                        | Lesson content chunks, lab code and reference text: cache, dedupe, retries                    |
 | Languages    | i18next 26 + react-i18next 17; content as JSON overlays                                 | Typed keys, lazy catalogues per language and namespace, CLDR plurals, RTL ([I18N.md](I18N.md)) |
 | Validation   | zod 4                                                                                   | Env config and every fetched JSON document are parsed at the boundary                        |
 | Styles       | CSS Modules + design tokens (`src/styles/tokens.css`)                                   | Scoped, zero runtime; themes are token sets                                                  |
@@ -28,7 +28,6 @@ flowchart TB
     lesson["lesson/<br/>LessonPage sheet, sections, dock"]
     nav["navigation/<br/>TrackNav, LessonStepper"]
     board["board/<br/>BoardPinout + board signals"]
-    bench["bench/<br/>status + log (Query)"]
     progress["progress/<br/>ticks, variants (localStorage)"]
   end
   subgraph content["content/ (data)"]
@@ -78,7 +77,7 @@ sequenceDiagram
 
 The guide is about the labs, so every screen puts them first and everything else one tap away.
 
-- **Top bar** (`app/AppLayout.tsx`): brand, a `BenchPill` (what is flashed on the board now, linking to the Bench page), and three sections: **Labs**, **Bench**, **Settings**. Board specs and the full bench status live on the Bench page; the colour theme and motion live in Settings.
+- **Top bar** (`app/AppLayout.tsx`): brand and three sections: **Labs**, **Datasheet**, **Settings**. The colour theme and motion live in Settings.
 - **Labs** (`#/`, `features/home/`), on drafting paper with PCB traces in the margins: the title, a progress readout (one tick per lab), the "continue" card (the lesson you last opened, else the first one), **Meet the board**, then one row per theme with a progress ring and one icon tile per lesson.
 - **Meet the board** (`features/home/board3d/`): the DevKitC-1 in 3D (`esp32-scene.ts`: module and can, meander antenna, USB-C ports, BOOT/RST, the RGB LED walking the colour wheel, 44 header pins, silkscreen drawn from `domain/board`'s pin list). Six callouts (`parts.ts`) are tied to the model by leader lines; each lists the labs that use its part, found from the content (`partLessons`: pins, `usb`, `boot`, firmware, theme). Hover or pick a callout to light its part.
 - **A lesson** (`#/lessons/:id`): the theme pills (`TrackNav`, each with a one-segment-per-lesson meter), the lesson trace (`LessonStepper`, pads on a copper trace lit up to the open lesson), the sticky **dock** (`LessonTabs`: Do the lab / Read the code, plus the lab page's `SectionNav`, plus a scroll-driven reading line), then the lesson as **one sheet** and a `NextUp` card (next lesson, or the next theme).
@@ -219,7 +218,6 @@ A chip page's citation chip can open the cited section of Espressif's reference 
 | State                               | Where                                                                               | Why                                                      |
 | ----------------------------------- | ----------------------------------------------------------------------------------- | -------------------------------------------------------- |
 | Lesson content                      | Query cache, `staleTime: "static"`                                                  | Bundled, never changes while the page is open            |
-| Bench status + log                  | Query cache, fresh for 60 s, refetched on focus                                     | Changes when Claude records a command; no rebuild needed |
 | Ticks, last lesson, variants, theme, datasheet read | `createPersistentStore` (localStorage + `useSyncExternalStore`, synced across tabs) | Yours, in this browser only                              |
 | Section you are reading             | `useActiveSection` (IntersectionObserver), lesson route                              | Lights the sheet's via and the dock's chip               |
 | Code settings, motion, code read, words met | Same stores; settings are re-validated (`normalizeSettings`) on every read | Yours; a stale value falls back to defaults |
@@ -240,13 +238,9 @@ The guide works with no network after its first visit. `vite-plugin-pwa` (Workbo
 
 ## Configuration, logging, errors
 
-- `src/config/env.ts` parses `import.meta.env` with zod at start-up. `VITE_BENCH_DATA_URL` points at the bench JSON (default `./data/`), `VITE_FIRMWARE_URL` at the bundled lab code (default `./firmware/`), `VITE_LOG_LEVEL` filters logs. `FIRMWARE_DIR` (build time only) is the PlatformIO project to read. See `.env.example`.
+- `src/config/env.ts` parses `import.meta.env` with zod at start-up. `VITE_FIRMWARE_URL` at the bundled lab code (default `./firmware/`), `VITE_LOG_LEVEL` filters logs. `FIRMWARE_DIR` (build time only) is the PlatformIO project to read. See `.env.example`.
 - `src/lib/logger.ts` emits structured events (`level, scope, message, data, at`) to pluggable sinks (console by default). Query failures, route errors, render errors (`createRoot` hooks), widget crashes, uncaught errors and unhandled rejections are all logged once, centrally.
 - Errors are contained at three levels: route `ErrorBoundary` (404, failed loaders), per-widget `ErrorBoundary`, and a simulator's own draw guard (a failing view draws its error on the simulated screen).
-
-## Updating the bench data
-
-Append an entry to `public/data/bench-log.json` (shape: `LogEntrySchema` in `src/features/bench/schema.ts`) and update `public/data/bench-status.json`. A running guide picks it up on the next focus; no rebuild.
 
 ## Adding things
 

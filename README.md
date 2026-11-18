@@ -78,7 +78,6 @@ The guide is in English, French, Spanish, Italian, German, Polish, Turkish, Chin
 ### Also inside
 
 - **Meet the board**: the DevKitC-1 in 3D (three.js) with six callouts. Each one lights up its part and lists the labs that use it.
-- **The bench log**: what is flashed on the board right now and every command recorded. It is plain JSON in `public/data/`, so you can update it without a rebuild.
 - **Progress**: your ticks, the last lesson you opened and the variants you picked stay in your browser, with no account.
 - **The parts library** at [`#/parts`](https://esp-labs-web.vercel.app/#/parts): 42 isometric drawings of every component on the bench, coloured from design tokens only.
 
@@ -108,17 +107,16 @@ pnpm install
 pnpm dev              # http://localhost:5180
 ```
 
-Without `../esp-labs`, everything else still works: the lessons, the simulators and the bench log. Only the code reader has nothing to show. Point `FIRMWARE_DIR` elsewhere if your checkout lives somewhere else ([Configuration](#configuration)).
+Without `../esp-labs`, everything else still works: the lessons and the simulators. Only the code reader has nothing to show. Point `FIRMWARE_DIR` elsewhere if your checkout lives somewhere else ([Configuration](#configuration)).
 
 ## How it is built
 
-React 19 with React Compiler, React Router 8 (data mode, hash URLs), TanStack Query 5, zod 4, i18next, three.js, CSS Modules and design tokens, built by Vite 8. Lessons are data, simulators are lazily loaded widgets, and the bench log is JSON fetched at run time.
+React 19 with React Compiler, React Router 8 (data mode, hash URLs), TanStack Query 5, zod 4, i18next, three.js, CSS Modules and design tokens, built by Vite 8. Lessons are data, simulators are lazily loaded widgets, and each track's lessons load as their own chunk.
 
 ```mermaid
 flowchart LR
   url["#/lessons/R3"] --> loader["route loader"] --> query["TanStack Query cache"]
   query --> content["lesson content<br/>(one chunk per track)"]
-  query --> data["public/data/*.json<br/>(bench status + log)"]
   loader --> page["LessonPage"] --> slot["WidgetSlot<br/>(lazy + error boundary)"] --> sim["simulator / diagram"]
 ```
 
@@ -157,7 +155,6 @@ Copy `.env.example` to `.env` to override:
 
 | Variable               | Default                                               | Meaning                                                       |
 | ---------------------- | ----------------------------------------------------- | ------------------------------------------------------------- |
-| `VITE_BENCH_DATA_URL`  | `./data/`                                             | Where `bench-status.json` and `bench-log.json` are read       |
 | `VITE_FIRMWARE_URL`    | `./firmware/`                                         | Where the bundled lab code is read                            |
 | `VITE_LABS_SOURCE_URL` | `https://github.com/agharsallah/esp-labs/tree/main/labs/` | Where each lesson's "code on GitHub" link points          |
 | `VITE_LOG_LEVEL`       | `info`                                                | `debug`, `info`, `warn`, `error` or `silent`                  |
@@ -204,7 +201,7 @@ Web Analytics (`@vercel/analytics`) and Speed Insights (`@vercel/speed-insights`
 | `src/domain/`               | Pure, tested logic: the lesson model, progress, the board, the C++ analyser and tour builder (`code/`)               |
 | `src/labs/<track>/`         | That track's simulators and explainers, registered in `widgets.ts`                                                   |
 | `src/labs/shared/`          | `Simulation` and the lab-screen engine (screen + buttons + serial)                                                   |
-| `src/features/`             | App screens: labs map, lesson sheet and dock, navigation, board pinout, code reader, bench log, settings, progress   |
+| `src/features/`             | App screens: labs map, lesson sheet and dock, navigation, board pinout, code reader, settings, progress             |
 | `src/features/chip/`, `src/content/chip/` | The Datasheet section's pages and their curated, cited chip data                                        |
 | `src/features/reference/`   | The reference reader (side sheet) and the book (`#/datasheet/read`)                                                 |
 | `src/ui/`                   | Design-system pieces: Panel, Button, Terminal, SequenceDiagram, RichText…                                            |
@@ -215,7 +212,6 @@ Web Analytics (`@vercel/analytics`) and Speed Insights (`@vercel/speed-insights`
 | `src/styles/tokens.css`     | Every colour, font and radius; light and dark themes                                                                 |
 | `tools/firmware/`           | Reads `esp-labs` and ships each env's code as JSON (Vite plugin)                                                   |
 | `tools/reference/`          | Splits the reference into typed sections and emits them as JSON (Vite plugin, only when `REFERENCE_FILE` exists)     |
-| `public/data/`              | Bench status and log (validated with zod when fetched)                                                               |
 | `docs-llm/`                 | Offline React, React Router and TanStack Query docs used to build this (fetched, git-ignored)                        |
 
 </details>

@@ -18,7 +18,6 @@
     "nav": {
       "labs": "Deneyler",
       "chip": "Veri sayfası",
-      "bench": "Tezgâh",
       "settings": "Ayarlar"
     },
     "footnote": "Pin düzeni Espressif DevKitC-1 v1.0'a göre. Klonlar neredeyse aynıdır, ama kartının üstündeki yazılar her zaman geçerlidir. İşaretlerin yalnızca bu tarayıcıda kaydedilir.",
@@ -29,7 +28,6 @@
     "labs": "Deneyler · ESP32-S3 Tezgâh Rehberi",
     "lesson": "{{id}} · {{title}} · ESP32-S3 Tezgâh Rehberi",
     "code": "{{id}} kodu · {{title}} · ESP32-S3 Tezgâh Rehberi",
-    "log": "Tezgâh günlüğü · ESP32-S3 Tezgâh Rehberi",
     "parts": "Parça kütüphanesi · ESP32-S3 Tezgâh Rehberi",
     "settings": "Ayarlar · ESP32-S3 Tezgâh Rehberi",
     "chip": "{{page}} · Veri sayfası · ESP32-S3 Tezgâh Rehberi"

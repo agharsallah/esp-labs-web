@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "license": "MIT",
-  "description": "The ESP32-S3 bench guide as a React app: pinout, lessons, simulators and the bench log.",
+  "description": "The ESP32-S3 bench guide as a React app: pinout, lessons and simulators.",
   "type": "module",
   "packageManager": "pnpm@11.10.0",
   "engines": {

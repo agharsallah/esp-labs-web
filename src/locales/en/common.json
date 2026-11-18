@@ -18,7 +18,6 @@
     "nav": {
       "labs": "Labs",
       "chip": "Datasheet",
-      "bench": "Bench",
       "settings": "Settings"
     },
     "footnote": "Pin layout follows the Espressif DevKitC-1 v1.0. Clones are nearly identical, but the labels printed on your board always win. Your ticks are saved in this browser only.",
@@ -29,7 +28,6 @@
     "labs": "Labs · ESP32-S3 Bench Guide",
     "lesson": "{{id}} · {{title}} · ESP32-S3 Bench Guide",
     "code": "{{id}} code · {{title}} · ESP32-S3 Bench Guide",
-    "log": "Bench log · ESP32-S3 Bench Guide",
     "parts": "Parts library · ESP32-S3 Bench Guide",
     "settings": "Settings · ESP32-S3 Bench Guide",
     "chip": "{{page}} · Datasheet · ESP32-S3 Bench Guide"

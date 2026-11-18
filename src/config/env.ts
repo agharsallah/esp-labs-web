@@ -4,7 +4,6 @@ import * as z from "zod/mini";
 // once at start-up so a typo fails loudly instead of as a 404 three screens later.
 // zod/mini: the tree-shakable build, so validation adds a few kB, not the whole library.
 const EnvSchema = z.object({
-  VITE_BENCH_DATA_URL: z._default(z.string().check(z.minLength(1)), "./data/"),
   VITE_FIRMWARE_URL: z._default(z.string().check(z.minLength(1)), "./firmware/"),
   // "" turns the reference reader off (set by tools/reference when REFERENCE_FILE is absent).
   VITE_REFERENCE_URL: z._default(z.string(), "./reference/"),
@@ -21,10 +20,6 @@ const EnvSchema = z.object({
 const parsed = EnvSchema.parse(import.meta.env);
 
 export const env = {
-  /** Base URL of the bench data JSON (status + log), always ending in "/". */
-  benchDataUrl: parsed.VITE_BENCH_DATA_URL.endsWith("/")
-    ? parsed.VITE_BENCH_DATA_URL
-    : `${parsed.VITE_BENCH_DATA_URL}/`,
   /** Base URL of the bundled lab code (firmware/index.json + one JSON per environment). */
   firmwareUrl: parsed.VITE_FIRMWARE_URL.endsWith("/")
     ? parsed.VITE_FIRMWARE_URL

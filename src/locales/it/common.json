@@ -18,7 +18,6 @@
     "nav": {
       "labs": "Lab",
       "chip": "Scheda tecnica",
-      "bench": "Banco",
       "settings": "Impostazioni"
     },
     "footnote": "La disposizione dei pin segue l'Espressif DevKitC-1 v1.0. I cloni sono quasi identici, ma contano sempre le etichette stampate sulla tua scheda. Le tue spunte sono salvate solo in questo browser.",
@@ -29,7 +28,6 @@
     "labs": "Lab · Guida da banco ESP32-S3",
     "lesson": "{{id}} · {{title}} · Guida da banco ESP32-S3",
     "code": "Codice {{id}} · {{title}} · Guida da banco ESP32-S3",
-    "log": "Registro del banco · Guida da banco ESP32-S3",
     "parts": "Libreria dei componenti · Guida da banco ESP32-S3",
     "settings": "Impostazioni · Guida da banco ESP32-S3",
     "chip": "{{page}} · Scheda tecnica · Guida da banco ESP32-S3"

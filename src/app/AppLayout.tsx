@@ -2,7 +2,6 @@
 import { Trans, useTranslation } from "react-i18next";
 import { Link, Outlet, ScrollRestoration, useLocation, useNavigation } from "react-router";
 import { AboutDialog } from "@/features/about/AboutDialog";
-import { BenchPill } from "@/features/bench/BenchPill";
 import { LanguageMenu } from "@/features/language/LanguageMenu";
 import { BackToTop } from "@/ui/BackToTop";
 import { Icon, type IconName } from "@/ui/Icon";
@@ -14,7 +13,6 @@ const SECTIONS = [
   { to: "/", key: "labs", icon: "board", match: /^\/($|lessons|tracks)/ },
   // Shipped 25 Oct 2026: marked new for three days.
   { to: "/datasheet", key: "chip", icon: "chip", match: /^\/datasheet/, newUntil: "2026-10-28" },
-  { to: "/log", key: "bench", icon: "log", match: /^\/log/ },
   { to: "/settings", key: "settings", icon: "sliders", match: /^\/settings/ },
 ] as const satisfies readonly {
   to: string;
@@ -61,7 +59,6 @@ export function AppLayout() {
             </span>
           </span>
         </Link>
-        <BenchPill />
         <nav aria-label={t("layout.sections")} className={styles.sections}>
           {SECTIONS.map((s) => {
             const here = s.match.test(pathname);

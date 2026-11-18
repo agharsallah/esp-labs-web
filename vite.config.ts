@@ -48,7 +48,6 @@ export default defineConfig(({ mode }) => ({
           "index.html",
           "assets/**/*.{js,css}",
           "firmware/*.json",
-          "data/*.json",
           "reference/index.json",
           "reference/sections/*.json",
         ],

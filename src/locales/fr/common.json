@@ -18,7 +18,6 @@
     "nav": {
       "labs": "Labos",
       "chip": "Fiche technique",
-      "bench": "Établi",
       "settings": "Réglages"
     },
     "footnote": "Le brochage suit l'Espressif DevKitC-1 v1.0. Les clones sont presque identiques, mais les étiquettes imprimées sur ta carte font toujours foi. Tes coches sont enregistrées dans ce navigateur uniquement.",
@@ -29,7 +28,6 @@
     "labs": "Labos · Guide d'établi ESP32-S3",
     "lesson": "{{id}} · {{title}} · Guide d'établi ESP32-S3",
     "code": "Code {{id}} · {{title}} · Guide d'établi ESP32-S3",
-    "log": "Journal de l'établi · Guide d'établi ESP32-S3",
     "parts": "Bibliothèque de pièces · Guide d'établi ESP32-S3",
     "settings": "Réglages · Guide d'établi ESP32-S3",
     "chip": "{{page}} · Fiche technique · Guide d'établi ESP32-S3"
